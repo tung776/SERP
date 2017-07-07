@@ -20,11 +20,11 @@ export default (state = INITIAL_STATE, action)=> {
         case PASSWORD_CHANGED:
             return {...state, password: action.payload}
         case LOGIN_USER_PENDING:
-            return {...state, loading: true, error: ''}
+            return {...state, /*loading: true,*/ error: ''}
         case LOGIN_USER_FAIL:
-            return {...state, error: action.payload, password: '', email: '', loading: false}
+            return {...state, error: action.payload, /*password: '', email: '',*/ loading: false}
         case LOGIN_USER_SUCCESS:
-            return {...state, user: action.payload, password: '', email: '', error: '', loading: false}
+            return {...state, user: action.payload, /*password: '', email: '', error: '',*/ loading: false}
         default:
             return state;
     }

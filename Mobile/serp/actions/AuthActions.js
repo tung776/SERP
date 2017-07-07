@@ -8,6 +8,8 @@ import {
     LOGIN_USER_FAIL,
     LOGIN_USER_PENDING
  } from './types';
+import {URL} from '../env';
+
 
 export const emailChanged = (text)=> {
     return {
@@ -27,13 +29,21 @@ export const loginUser = ({ email, password })=> {
         dispatch({
             type: LOGIN_USER_PENDING
         })
-        // firebase.auth().signInWithEmailAndPassword(email, password)
-        //     .then(user=> loginUserSuccess(dispatch, user))
-        //     .catch(()=> {
-        //         firebase.auth().createUserWithEmailAndPassword(email, password)
-        //             .then(user => loginUserSuccess(dispatch, user))
-        //             .catch(err=> loginUserFail(dispatch, err))
-        //     });
+        axios.post(`${URL}/register`, {email, password})
+        .then(function(res){
+            console.log(res)
+            // dispatch({
+            //     type: LOGIN_USER_SUCCESS,
+            //     payload: res.data
+            // })
+        })
+        .catch(function(err){
+            console.log(err);
+            dispatch({
+                type: LOGIN_USER_FAIL,
+                payload: err
+            })
+        })
     }
 }
 const loginUserSuccess = (dispatch, user) => {

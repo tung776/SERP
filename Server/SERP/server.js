@@ -1,91 +1,58 @@
-#!/usr/bin/env node
+import express from  'express';
+import path from 'path';
+import favicon from 'serve-favicon';
+import logger from 'morgan';
+import cookieParser from 'cookie-parser';
+import bodyParser from 'body-parser';
+const app = express();
+import { appConfig, databaseConfig, passportConfig} from './config';
+import { AuthRoutes, IndexRouter } from './routes';
 
-/**
- * Module dependencies.
- */
-require('babel-register');
-require('babel-polyfill');
-var app = require('./app');
-var debug = require('debug')('reduxapp:server');
-var http = require('http');
+databaseConfig();
 
-/**
- * Get port from environment and store in Express.
- */
+//=========
+//config aplication
+//=========
+appConfig(app);
 
-var port = normalizePort(process.env.PORT || '3000');
-app.set('port', port);
+//=========
+//Passport config
+//=========
 
-/**
- * Create HTTP server.
- */
 
-var server = http.createServer(app);
+passportConfig();
 
-/**
- * Listen on provided port, on all network interfaces.
- */
+// app.use(cartQuantity);
 
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
+// app.use(async function(req, res, next){
+//     res.locals.currenUser = req.user;
+//     res.locals.session = req.session;
+//     res.locals.error = req.flash("errors");
+//     res.locals.message = req.flash("messages");
+//     preFillCategories(req, res, next);
+// });
+//=========
+//router
+//=========
+app.use('/', IndexRouter);
+app.use('/api/auth', AuthRoutes);
 
-/**
- * Normalize a port into a number, string, or false.
- */
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+  var err = new Error('Not Found');
+  err.status = 404;
+  next(err);
+});
 
-function normalizePort(val) {
-  var port = parseInt(val, 10);
+// error handler
+app.use(function(err, req, res, next) {
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  if (isNaN(port)) {
-    // named pipe
-    return val;
-  }
+  // render the error page
+  res.status(err.status || 500);
+  res.render('error');
+});
 
-  if (port >= 0) {
-    // port number
-    return port;
-  }
-
-  return false;
-}
-
-/**
- * Event listener for HTTP server "error" event.
- */
-
-function onError(error) {
-  if (error.syscall !== 'listen') {
-    throw error;
-  }
-
-  var bind = typeof port === 'string'
-    ? 'Pipe ' + port
-    : 'Port ' + port;
-
-  // handle specific listen errors with friendly messages
-  switch (error.code) {
-    case 'EACCES':
-      console.error(bind + ' requires elevated privileges');
-      process.exit(1);
-      break;
-    case 'EADDRINUSE':
-      console.error(bind + ' is already in use');
-      process.exit(1);
-      break;
-    default:
-      throw error;
-  }
-}
-
-/**
- * Event listener for HTTP server "listening" event.
- */
-
-function onListening() {
-  var addr = server.address();
-  var bind = typeof addr === 'string'
-    ? 'pipe ' + addr
-    : 'port ' + addr.port;
-  debug('Listening on ' + bind);
-}
+module.exports = app;
