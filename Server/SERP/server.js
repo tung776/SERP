@@ -3,23 +3,24 @@ import path from 'path';
 const app = express();
 import { appConfig, databaseConfig, passportConfig} from './config';
 import { AuthRoutes, IndexRouter } from './routes';
-
-/**
- * webpack middleware for dev
- */
 import webpack from 'webpack';
 import webpackMiddleware from 'webpack-dev-middleware';
 import webpackHotMiddleware from 'webpack-hot-middleware';
 import webpackConfig from './webpack.config.dev.js'
+/**
+ * webpack middleware for dev
+ */
+if(process.env.APP_ENV == 'development') {
 
-const complier = webpack(webpackConfig);
-app.use(webpackMiddleware(complier, {
-    hot:true,
-    noInfo: true, 
-    publicPath: webpackConfig.output.publicPath,
-    contentBase: '/'
-}));
-app.use(webpackHotMiddleware(complier));
+  const complier = webpack(webpackConfig);
+  app.use(webpackMiddleware(complier, {
+      hot:true,
+      noInfo: true, 
+      publicPath: webpackConfig.output.publicPath,
+      contentBase: '/'
+  }));
+  app.use(webpackHotMiddleware(complier));
+}
 /**
  * webpack middleware for dev
  */
