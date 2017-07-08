@@ -49,10 +49,10 @@ passportConfig();
 //=========
 //router
 //=========
-app.use('/', IndexRouter);
+// app.use('/', IndexRouter);
 app.use('/api/auth', AuthRoutes);
-// import {RequestHandler} from'./requestHandler';
-// app.use( RequestHandler);
+import {RequestHandler} from'./requestHandler';
+app.use( RequestHandler);
 // catch 404 and forward to error handler
 // app.use(function(req, res, next) {
 //   var err = new Error('Not Found');

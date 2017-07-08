@@ -5,7 +5,7 @@ module.exports = {
     devtool: 'eval-source-map',
     entry: {
         bundle:[
-        'webpack-hot-middware/src',
+        'webpack-hot-middleware',
         './src/client.js'
         ]},
     output: {
@@ -13,16 +13,17 @@ module.exports = {
         path: path.resolve(__dirname, 'public'),
         publicPath: '/'
     },
-    // watch: true,
+    watch: true,
     module: {
         loaders: [
             {
                 test:/\.js$/,
                 exclude: /node_modules/,
                 loaders: ['react-hot-loader', 'babel-loader'],
-                query: {
-                    presets: ['react', 'es2015', 'stage-1']
-                }
+                include: path.join(__dirname, 'src'),
+                // query: {
+                //     presets: ['react', 'es2015', 'stage-1']
+                // }
             }
         ]
     },
