@@ -7,7 +7,7 @@ module.exports = {
         filename: 'bundle.js',
         path: path.resolve(__dirname, 'public')
     },
-    // watch: true,
+    watch: true,
     module: {
         loaders: [
             {
@@ -21,11 +21,11 @@ module.exports = {
         ]
     },
     plugins: [
-        new webpack.DefinePlugin({
-        'process.env': {
-            NODE_ENV: JSON.stringify('production')
-        }
-        }),
-        new webpack.optimize.UglifyJsPlugin()
+        // new webpack.DefinePlugin({
+        // 'process.env': {
+        //     NODE_ENV: JSON.stringify('production')
+        // }
+        // }),
+        // new webpack.optimize.UglifyJsPlugin()
     ]
 }
