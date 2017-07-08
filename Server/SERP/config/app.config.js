@@ -1,3 +1,4 @@
+// import compression from 'compression'
 import morgan from 'morgan';
 import bodyParser from 'body-parser';
 import express from 'express';
@@ -30,6 +31,6 @@ export const config = function(app){
     app.use(passport.initialize());//middleware được gọi ở từng request, kiểm tra session lấy ra passport.user nếu chưa có thì tạo rỗng.
     app.use(passport.session()); //middleware sử dụng kịch bản Passport , sử dụng session lấy thông tin user rồi gắn vào req.user.
     app.use(expressValidator());
-    
+    // app.use(compression());
     
 };
