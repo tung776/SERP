@@ -51,7 +51,9 @@ passportConfig();
 //router
 //=========
 // app.use('/', IndexRouter);
-app.use('/api/auth', AuthRoutes);
+// app.use('/api/auth', AuthRoutes);
+import {UserRouters} from './routes/UserRouters';
+app.use('/api/users', UserRouters);
 import {RequestHandler} from'./requestHandler';
 app.use( RequestHandler);
 // catch 404 and forward to error handler
