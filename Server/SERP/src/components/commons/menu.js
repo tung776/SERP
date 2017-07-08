@@ -30,7 +30,9 @@ class Menu extends React.Component {
                             {(this.props.cartItemsNumber)?(<span className="badge">{this.props.cartItemsNumber}</span>):("")}
                             
                             </a></li>
-
+                            <li>
+                                <a href="/signup">Đăng Nhập</a>
+                            </li>
                             <li className="dropdown">
                                 <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Người Dùng <span className="caret"></span></a>
                                 <ul className="dropdown-menu">

@@ -1,13 +1,28 @@
 import express from  'express';
 import path from 'path';
-import favicon from 'serve-favicon';
-import logger from 'morgan';
-import cookieParser from 'cookie-parser';
-import bodyParser from 'body-parser';
 const app = express();
 import { appConfig, databaseConfig, passportConfig} from './config';
 import { AuthRoutes, IndexRouter } from './routes';
 
+/**
+ * webpack middleware for dev
+ */
+import webpack from 'webpack';
+import webpackMiddleware from 'webpack-dev-middleware';
+import webpackHotMiddleware from 'webpack-hot-middleware';
+import webpackConfig from './webpack.config.dev.js'
+
+const complier = webpack(webpackConfig);
+app.use(webpackMiddleware(complier, {
+    hot:true,
+    noInfo: true, 
+    publicPath: webpackConfig.output.publicPath,
+    contentBase: '/'
+}));
+app.use(webpackHotMiddleware(complier));
+/**
+ * webpack middleware for dev
+ */
 databaseConfig();
 
 //=========
@@ -34,10 +49,10 @@ passportConfig();
 //=========
 //router
 //=========
-// app.use('/', IndexRouter);
+app.use('/', IndexRouter);
 app.use('/api/auth', AuthRoutes);
-import {RequestHandler} from'./requestHandler';
-app.use( RequestHandler);
+// import {RequestHandler} from'./requestHandler';
+// app.use( RequestHandler);
 // catch 404 and forward to error handler
 // app.use(function(req, res, next) {
 //   var err = new Error('Not Found');
