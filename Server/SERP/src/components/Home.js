@@ -5,7 +5,7 @@ class Home extends Component {
     state = {  }
     render() {
         return (
-            <div>
+            <div className = "container">
                 <p>Home Page</p>
             </div>
         );

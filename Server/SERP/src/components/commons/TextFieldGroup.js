@@ -18,16 +18,6 @@ const TextFieldGroup = ({ field, value, label, error, type, onChange, placeholde
     );
 }
 
-// TextFieldGroup.propTypes = {
-//     field: React.PropTypes.string.isRequired,
-//     value: React.PropTypes.string.isRequired,
-//     label: React.PropTypes.string.isRequired,
-//     error: React.PropTypes.string,
-//     placeholder: React.PropTypes.string,
-//     type: React.PropTypes.string.isRequired,
-//     onChange: React.PropTypes.func.isRequired
-// }
-
 TextFieldGroup.defaultProps = {
     type: 'Text'
 }

@@ -24,7 +24,7 @@ if(process.env.APP_ENV == 'development') {
 /**
  * webpack middleware for dev
  */
-databaseConfig();
+// databaseConfig();
 
 //=========
 //config aplication
@@ -36,7 +36,7 @@ appConfig(app);
 //=========
 
 
-passportConfig();
+// passportConfig();
 
 // app.use(cartQuantity);
 

@@ -3,18 +3,28 @@ import Menu from './commons/menu';
 import Footer from './commons/footer';
 import {connect} from 'react-redux';
 import { SUCCESS_MESSAGE, WARNING_MESSAGE, ERROR_MESSAGE } from '../actions/types';
+import classnames from 'classnames';
 
 class Main extends React.Component {
     renderMessage() {
-        if(this.props.message != "") {
-            if(this.props.TypeMessage == SUCCESS_MESSAGE) {
-                return (
-                    <div className="alert alert-success alert-dismissible" role="alert">
+        const { message, TypeMessage } = this.props;
+        if(message != "") {
+            
+            return (
+                <div className = "container">
+                    <div className= {
+                        classnames('alert', {
+                                'alert-success': TypeMessage == SUCCESS_MESSAGE, 
+                                'alert-danger': TypeMessage == ERROR_MESSAGE, 
+                                "alert-warning": TypeMessage == WARNING_MESSAGE
+                            })
+                        } role="alert">
                         <button type="button" className="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        {this.props.message}
+                        {message}
                     </div>
-                );
-            }
+                </div>
+            );
+            
         }
         return (
             <div></div>
