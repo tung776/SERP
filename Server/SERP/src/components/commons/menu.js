@@ -31,7 +31,10 @@ class Menu extends React.Component {
                             
                             </a></li>
                             <li>
-                                <a href="/signup">Đăng Nhập</a>
+                                <a href="/signup">Đăng ký</a>
+                            </li>
+                            <li>
+                                <a href="/login">Đăng Nhập</a>
                             </li>
                             <li className="dropdown">
                                 <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Người Dùng <span className="caret"></span></a>
