@@ -4,19 +4,32 @@ import Footer from './commons/footer';
 import {connect} from 'react-redux';
 
 class Main extends React.Component {
+    renderMessage() {
+        if(this.props.message != "") {
+            return (
+                <div className="alert alert-success alert-dismissible" role="alert">
+                    <button type="button" className="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    {this.props.message}
+                </div>
+            );
+        }
+        return (
+            <div></div>
+        );
+    }
     render(){
         return (
             <div>
-                <Menu cartItemsNumber = {this.props.totalQty}/>
+                <Menu cartItemsNumber = {this.props.totalQty}/>                
+                {this.renderMessage()}
                 {this.props.children}
                 <Footer/>
             </div>
         );
     }
 }
-// function mapStateToProps(state){
-//     return {
-//         totalQty: state.cart.totalQty
-//     }
-// }
-export default Main;
+const mapStateToProps = (state) => {
+    const { message } = state.flashMessage
+    return { message }; 
+}
+export default connect(mapStateToProps)(Main);

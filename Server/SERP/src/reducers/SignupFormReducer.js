@@ -15,7 +15,8 @@ const INITIAL_STATE = {
     phone: "",
     user: null,
     error: '',
-    loading: false
+    loading: false,
+    message: ""
 }
 
 export default (state = INITIAL_STATE, action)=> {
@@ -24,11 +25,12 @@ export default (state = INITIAL_STATE, action)=> {
              const newState = {...state, [action.payload.prop]: action.payload.value };
             return newState;        
         case SIGNUP_USER_PENDING:
-            return {...state, loading: true, error: ''}
+            return {...state, loading: true, error: '', message: ""}
         case SIGNUP_USER_FAIL:
-            return {...state, error: action.payload, loading: false}
+            return {...state, error: action.payload, loading: false, message: "Tạo người dùng thất bại"}
         case SIGNUP_USER_SUCCESS:
-            return {...state, user: action.payload, error: '', loading: false}
+            console.log(action.payload);
+            return {...state, user: action.payload.user, message: "Chúc mừng bạn đã tạo người thành công", error: '', loading: false}
         default:
             return state;
     }

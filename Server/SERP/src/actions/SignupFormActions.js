@@ -3,7 +3,8 @@ import {
     SIGNUP_USER_SUCCESS,
     SIGNUP_USER_FAIL,
     SIGNUP_USER_PENDING,
-    SIGNUPFORM_CHANGED
+    SIGNUPFORM_CHANGED,
+    ADD_FLASH_MESSAGE
  } from './types';
 import validateInput from '../../validators/SignupValidator';
 import { browserHistory } from 'react-router';
@@ -30,11 +31,15 @@ export const SignupFormSubmit = (user) => {
         } else {
             axios.post('/api/users/signup', user)
             .then(
-                data => {
+                res => {
                     dispatch({
                         type: SIGNUP_USER_SUCCESS,
-                        payload: data
-                    })                    
+                        payload: res.data
+                    })
+                    dispatch({
+                        type: ADD_FLASH_MESSAGE,
+                        payload: { message: "Chúc mừng bạn đã tạo người dùng thành công"}
+                    })                 
                     browserHistory.push('/');                    
                 }
             )
