@@ -4,7 +4,10 @@ import {
     SIGNUP_USER_FAIL,
     SIGNUP_USER_PENDING,
     SIGNUPFORM_CHANGED,
-    ADD_FLASH_MESSAGE
+    ADD_FLASH_MESSAGE,
+    SUCCESS_MESSAGE,
+    WARNING_MESSAGE,
+    ERROR_MESSAGE
  } from './types';
 import validateInput from '../../validators/SignupValidator';
 import { browserHistory } from 'react-router';
@@ -38,7 +41,7 @@ export const SignupFormSubmit = (user) => {
                     })
                     dispatch({
                         type: ADD_FLASH_MESSAGE,
-                        payload: { message: "Chúc mừng bạn đã tạo người dùng thành công"}
+                        payload: { message: "Chúc mừng bạn đã tạo người dùng thành công", TypeMessage: SUCCESS_MESSAGE}
                     })                 
                     browserHistory.push('/');                    
                 }
