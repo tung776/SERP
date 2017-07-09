@@ -5,7 +5,7 @@ export default function validateInput(data) {
     if(Validator.isEmpty(data.email)) {
         errors.email = 'Bạn chưa điền email';
     }
-    if(Validator.isEmail(data.email)) {
+    if(!Validator.isEmail(data.email)) {
         errors.email = 'Không đúng định dạng địa chỉ email';
     }
     if(Validator.isEmpty(data.username)) {

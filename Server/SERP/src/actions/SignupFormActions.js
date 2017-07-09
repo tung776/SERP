@@ -6,6 +6,7 @@ import {
     SIGNUPFORM_CHANGED
  } from './types';
 import validateInput from '../../validators/SignupValidator';
+import { browserHistory } from 'react-router';
 
 export const SignupFormChanged = ({prop, value}) => {
     return {
@@ -20,33 +21,32 @@ export const SignupFormSubmit = (user) => {
          dispatch({
              type: SIGNUP_USER_PENDING
          });
-         axios.post('/api/users/signup', user)
-        .then(
-            data => {
-                dispatch({
-                    type: SIGNUP_USER_SUCCESS,
-                    payload: data
-                })
-            }
-        )
-        .catch(
-            err=> {
-                // console.log("err = ", err);
-                dispatch({
-                    type: SIGNUP_USER_FAIL,
-                    payload: err.response.data
-                })
-        });
+         const {errors, isValid} = validateInput(user);
+        if(!isValid) {
+            dispatch ({
+                type: SIGNUP_USER_FAIL,
+                payload: errors
+            })
+        } else {
+            axios.post('/api/users/signup', user)
+            .then(
+                data => {
+                    dispatch({
+                        type: SIGNUP_USER_SUCCESS,
+                        payload: data
+                    })                    
+                    browserHistory.push('/');                    
+                }
+            )
+            .catch(
+                err=> {
+                    // console.log("err = ", err);
+                    dispatch({
+                        type: SIGNUP_USER_FAIL,
+                        payload: err.response.data
+                    })
+            });
+        }         
      }
      
-}
-
-export const validateSignup = (data)=> {
-    const {errors, isValid} = validateInput(data);
-    if(!isValid) {
-        return {
-            type: SIGNUP_USER_FAIL,
-            payload: errors
-        }
-    }
 }

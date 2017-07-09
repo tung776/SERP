@@ -5,7 +5,10 @@ import validateInput from '../validators/SignupValidator';
 UserRouters.post('/signup',  (req, res, next) => {
     const { username, email, password, passwordConfirm, gender, role, phone } = req.body;
     const {errors, isValid} = validateInput(req.body);
-    if(!isValid) {
+    if(isValid) {
+        res.json({ success: true });
+    }
+    else {
         res.status(400).json(errors);
     }
     // res.json({ username, email, password, passwordConfirm, gender, role, phone });

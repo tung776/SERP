@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import {SignupFormChanged, SignupFormSubmit, validateSignup} from '../actions/SignupFormActions';
-// import axios from 'axios';
 import isEmpty from 'lodash/isEmpty';
 import classnames from 'classnames';
 import TextFieldGroup from './commons/TextFieldGroup';
@@ -14,10 +13,7 @@ class SignupForm extends Component {
 
     onSubmit(e) {
         e.preventDefault();
-        this.props.validateSignup(this.props);
-        if(!isEmpty(this.props.error)) {
-           this.props.SignupFormSubmit(this.props);
-        }
+        this.props.SignupFormSubmit(this.props)
     }
 
     render() {
@@ -79,6 +75,7 @@ class SignupForm extends Component {
                 <div className="col-md-6">
                 <TextFieldGroup
                         label = "Điện Thoại"
+                        type = "Text"
                         value = {phone}
                         field = "phone"
                         onChange = {e=> SignupFormChanged({
