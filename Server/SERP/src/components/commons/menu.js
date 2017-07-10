@@ -25,10 +25,10 @@ class Menu extends React.Component {
                     <li className="dropdown">
                         <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Người Dùng <span className="caret"></span>
                         </a>
-
                         <ul className="dropdown-menu">
                             <li><a href="#">Thông tin</a></li>
                             <li><a href="#">Lịch sử giao dịch</a></li>
+                            
                             <li role="separator" className="divider"></li>
                             <li><a href="/logout" onClick = {this.logout.bind(this)} >Thoát</a></li>
                         </ul>
@@ -40,11 +40,11 @@ class Menu extends React.Component {
         const guestLink = (
                 <ul className="nav navbar-nav navbar-right">
                     <li>
-                        <a href="/signup">Đăng ký</a>
-                    </li>
-                    <li>
                         <a href="/login">Đăng Nhập</a>
                     </li>
+                    <li>
+                                <a href="/signup">Tạo người dùng</a>
+                            </li>
                 </ul>
             )
         
@@ -71,8 +71,6 @@ class Menu extends React.Component {
                         </ul>
                         
                             { isAuthenticated ? userLink : guestLink }
-                            
-                            
                         
                     </div>
                 </div>
