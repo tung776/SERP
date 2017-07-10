@@ -28,7 +28,9 @@ class Menu extends React.Component {
                         <ul className="dropdown-menu">
                             <li><a href="#">Thông tin</a></li>
                             <li><a href="#">Lịch sử giao dịch</a></li>
-                            
+                            <li>
+                                <a href="/signup">Tạo người dùng</a>
+                            </li>
                             <li role="separator" className="divider"></li>
                             <li><a href="/logout" onClick = {this.logout.bind(this)} >Thoát</a></li>
                         </ul>
@@ -42,9 +44,7 @@ class Menu extends React.Component {
                     <li>
                         <a href="/login">Đăng Nhập</a>
                     </li>
-                    <li>
-                                <a href="/signup">Tạo người dùng</a>
-                            </li>
+                    
                 </ul>
             )
         
