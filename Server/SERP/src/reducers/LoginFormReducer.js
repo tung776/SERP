@@ -2,7 +2,8 @@ import {
     LOGIN_FORM_CHANGED,
     LOGIN_USER_FAIL,
     LOGIN_USER_PENDING,
-    LOGIN_USER_SUCCESS
+    LOGIN_USER_SUCCESS,
+    LOGOUT_REQUEST
  } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -25,6 +26,8 @@ export default (state = INITIAL_STATE, action) => {
         case LOGIN_USER_SUCCESS:
             // console.log(action.payload);
             return {...state, user: action.payload.user, error: '', loading: false}
+        case LOGOUT_REQUEST:
+            return {...state, user: null, error: '', loading: false, identifier: "", password: ""}
         default:
             return state;
     }

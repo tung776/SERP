@@ -4,6 +4,7 @@ export const LOGIN_USER_SUCCESS = "LOGIN_USER_SUCCESS";
 export const LOGIN_USER_FAIL = "LOGIN_USER_FAIL";
 export const LOGIN_USER_PENDING = "LOGIN_USER_PENDING";
 export const LOGIN_FORM_CHANGED = "LOGIN_FORM_CHANGED";
+export const LOGOUT_REQUEST = "LOGOUT_REQUEST";
 //===================== Signup =================================================//
 export const SIGNUPFORM_CHANGED = "SIGNUPFORM_CHANGED";
 export const SIGNUP_USER_SUCCESS = "SIGNUP_USER_SUCCESS";

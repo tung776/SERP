@@ -1,7 +1,45 @@
 import React from 'react';
+import {connect} from 'react-redux';
+import {logout} from '../../actions/LoginFormActions';
 
 class Menu extends React.Component {
+    logout(e) {
+        e.preventDefault();
+        this.props.logout();
+    }
     render(){
+        const { isAuthenticated } = this.props.auth;
+
+        const userLink = (
+                <ul className="nav navbar-nav navbar-right">
+                    <li><a href="/admin">Quản trị</a></li>
+                    <li className="dropdown">
+                        <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Người Dùng <span className="caret"></span>
+                        </a>
+
+                        <ul className="dropdown-menu">
+                            <li><a href="#">Thông tin</a></li>
+                            <li><a href="#">Lịch sử giao dịch</a></li>
+                            <li role="separator" className="divider"></li>
+                            <li><a href="/logout" onClick = {this.logout.bind(this)} >Thoát</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            )
+        
+
+        const guestLink = (
+                <ul className="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/signup">Đăng ký</a>
+                    </li>
+                    <li>
+                        <a href="/login">Đăng Nhập</a>
+                    </li>
+                </ul>
+            )
+        
+
         return(
             <nav className="navbar navbar-inverse navbar-fixed-top">
                 <div className="container-fluid">
@@ -22,30 +60,11 @@ class Menu extends React.Component {
                             </li>
                             <li><a href="/contacts">Liên Hệ</a></li>
                         </ul>
-                        <ul className="nav navbar-nav navbar-right">
-                            <li><a href="/admin">Quản trị</a></li>
-
-                            <li><a href="/cart">Giỏ hàng 
+                        
+                            { isAuthenticated ? userLink : guestLink }
                             
-                            {(this.props.cartItemsNumber)?(<span className="badge">{this.props.cartItemsNumber}</span>):("")}
                             
-                            </a></li>
-                            <li>
-                                <a href="/signup">Đăng ký</a>
-                            </li>
-                            <li>
-                                <a href="/login">Đăng Nhập</a>
-                            </li>
-                            <li className="dropdown">
-                                <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Người Dùng <span className="caret"></span></a>
-                                <ul className="dropdown-menu">
-                                    <li><a href="#">Thông tin</a></li>
-                                    <li><a href="#">Lịch sử giao dịch</a></li>
-                                    <li role="separator" className="divider"></li>
-                                    <li><a href="#">Thoát</a></li>
-                                </ul>
-                            </li>
-                        </ul>
+                        
                     </div>
                 </div>
             </nav>
@@ -53,4 +72,10 @@ class Menu extends React.Component {
     }
 }
 
-export default Menu;
+const mapStateToProps = (state) => {
+    return {
+        auth: state.auth
+    }
+}
+
+export default connect(mapStateToProps, {logout})(Menu);

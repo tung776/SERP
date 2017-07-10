@@ -8,7 +8,8 @@ import {
     SUCCESS_MESSAGE,
     WARNING_MESSAGE,
     ERROR_MESSAGE,
-    SET_CURRENT_USER
+    SET_CURRENT_USER,
+    LOGOUT_REQUEST
  } from './types';
 import { browserHistory } from 'react-router';
 import {LoginValidator} from '../../validators';
@@ -58,13 +59,13 @@ export const LoginFormSubmit = (user) => {
                     const {token} = res.data;
                     localStorage.setItem('jwtToken', token);
                     setAuthorizationToken(token);
-                    dispatch(setAuthorizationToken(jwt.decode(token)));
+                    dispatch(SetCurrentUser( jwt.decode(localStorage.jwtToken)));
                     browserHistory.push('/');  
                 }
             )
             .catch(
                 err => {
-                    console.log("err = ", err.response.data.error);
+                    console.log("err = ", err);
                     dispatch({
                         type: LOGIN_USER_FAIL,
                         payload: err.response.data.error
@@ -77,5 +78,16 @@ export const LoginFormSubmit = (user) => {
             )
         }
         
+    }
+}
+
+export const logout = () => {
+    return dispatch => {
+        localStorage.removeItem('jwtToken');
+        setAuthorizationToken(false);
+        dispatch(SetCurrentUser({}));
+        dispatch({
+            type: LOGOUT_REQUEST
+        })
     }
 }
