@@ -8,6 +8,7 @@ import  isEmpty from 'lodash/isEmpty';
 import Validator from 'validator';
 import jwt from 'jsonwebtoken';
 import config from '../config/jwt';
+import authentization from '../middleware/authenticate';
 
 function validateInput(data, otherValidation) {
     let { errors } = otherValidation(data);
@@ -33,8 +34,13 @@ function validateInput(data, otherValidation) {
     )
 }
 
+UserRouters.get('/contacts', authentization, (req, res) => {
+    res.json({
+        message: 'success'
+    });
+})
 
-UserRouters.post('/signup',  (req, res, next) => {
+UserRouters.post('/signup', authentization, (req, res, next) => {
     const { username, email, password, passwordConfirm, gender, role, phone } = req.body;
     const user = { username, email, password, gender, phone, role }
 

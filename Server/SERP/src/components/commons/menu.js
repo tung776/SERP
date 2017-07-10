@@ -1,11 +1,20 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {logout} from '../../actions/LoginFormActions';
+import axios from 'axios';
 
 class Menu extends React.Component {
     logout(e) {
         e.preventDefault();
         this.props.logout();
+    }
+    onContactClick(e) {
+        e.preventDefault();
+        axios.get('/api/users/contacts').then(
+            res => {
+                console.log(res);
+            }
+        );
     }
     render(){
         const { isAuthenticated } = this.props.auth;
@@ -58,7 +67,7 @@ class Menu extends React.Component {
                             <li className="active">
                                 <a href="/book-list">Chúng Tôi <span className="sr-only">(current)</span></a>
                             </li>
-                            <li><a href="/contacts">Liên Hệ</a></li>
+                            <li><a href="/contacts" onClick = { this.onContactClick.bind(this) }>Liên Hệ</a></li>
                         </ul>
                         
                             { isAuthenticated ? userLink : guestLink }
