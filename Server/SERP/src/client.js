@@ -7,6 +7,9 @@ import {render} from 'react-dom';
 import {Provider} from 'react-redux';
 import ReduxThunk from 'redux-thunk'
 import routes from './routes';
+import setAuthorizationToken from './utils/setAuthorizationToken';
+import { SetCurrentUser } from './actions/LoginFormActions';
+import jwt from 'jsonwebtoken';
 
 // Chúng ta sẽ chuyển State khởi tạo từ SERVER STORE
 const initialState = window.INITIAL_STATE;
@@ -18,7 +21,11 @@ const store = createStore(reducers, initialState, /* preloadedState, */ compose(
     window.devToolsExtension? window.devToolsExtension() : f=> f
   ));
 
-  
+if(localStorage.jwtToken) {
+    setAuthorizationToken(localStorage.jwtToken);
+    store.dispatch(SetCurrentUser( jwt.decode(localStorage.jwtToken) ));
+}
+
 const Routes = (
     <Provider store = {store}>
         {routes}

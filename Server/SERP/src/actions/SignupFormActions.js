@@ -9,7 +9,7 @@ import {
     WARNING_MESSAGE,
     ERROR_MESSAGE
  } from './types';
-import validateInput from '../../validators/SignupValidator';
+import {SignupValidator} from '../../validators';
 import { browserHistory } from 'react-router';
 
 export const SignupFormChanged = ({prop, value}) => {
@@ -25,7 +25,7 @@ export const SignupFormSubmit = (user) => {
          dispatch({
              type: SIGNUP_USER_PENDING
          });
-         const {errors, isValid} = validateInput(user);
+         const {errors, isValid} = SignupValidator(user);
         if(!isValid) {
             dispatch ({
                 type: SIGNUP_USER_FAIL,

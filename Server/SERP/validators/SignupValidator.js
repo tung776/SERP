@@ -1,6 +1,6 @@
 import isEmpty from 'lodash/isEmpty';
 import Validator from 'validator';
-export default function validateInput(data) {
+export const SignupValidator = (data) => {
     let errors = {};
     if(Validator.isEmpty(data.email)) {
         errors.email = 'Bạn chưa điền email';

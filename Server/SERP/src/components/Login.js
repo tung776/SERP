@@ -1,22 +1,24 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import TextfieldGroup from './commons/TextFieldGroup';
-import { LoginFormChanged } from '../actions/LoginFormActions';
+import { LoginFormChanged, LoginFormSubmit } from '../actions/LoginFormActions';
 
 class Login extends Component {
     state = {  }
 
     onSubmit(e) {
          e.preventDefault();
+         const { password, identifier,error, loading, LoginFormSubmit } = this.props;
+         LoginFormSubmit({ identifier, password });
     }
 
     render() {
-        const { password, identifier, LoginFormChanged, error } = this.props;
+        const { password, identifier,error, loading, LoginFormChanged } = this.props;
         return (
             <div className = "row">
                 <div className="col-md-4 col-md-offset-4">
-                    <form onSubmit = {this.onSubmit} >
-                        <h2>Login</h2>
+                    <form onSubmit = {this.onSubmit.bind(this)} >
+                        <h2 className = "text-center">Login</h2>
                         <TextfieldGroup 
                             field = "identifier"
                             label = "Email/Tên đăng nhập"
@@ -29,6 +31,7 @@ class Login extends Component {
                             placeholder = "Điền tên đăng nhập hoặc email"
                         />
                         <TextfieldGroup 
+                            type = "password"
                             field = "password"
                             label = "Mật khẩu"
                             value = {password}
@@ -53,4 +56,7 @@ const mapStateToProps = (state) => {
 
     return { identifier, password, error, loading }
 }
-export default connect(mapStateToProps, { LoginFormChanged })(Login);
+export default connect(mapStateToProps, { 
+    LoginFormChanged,
+    LoginFormSubmit
+})(Login);

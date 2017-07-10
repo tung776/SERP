@@ -27,6 +27,13 @@ module.exports = {
             }
         ]
     },
+    // resolve: {
+    //     extentions: ['', '.js']
+    // },
+    node: {
+        net: 'empty',
+        dns: 'empty'
+    },
     plugins: [
         new webpack.NoEmitOnErrorsPlugin(),
         new webpack.HotModuleReplacementPlugin(),

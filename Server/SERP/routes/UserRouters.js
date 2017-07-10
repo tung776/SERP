@@ -1,10 +1,13 @@
 import express, {Router} from 'express';
 const UserRouters = Router();
-import commonValidation from '../validators/SignupValidator';
+import {SignupValidator, LoginValidator} from '../validators';
 import bcrypt from 'bcrypt';
 // import Promise from 'bluebird';
 import UserModel from '../models/UserModel';
 import  isEmpty from 'lodash/isEmpty';
+import Validator from 'validator';
+import jwt from 'jsonwebtoken';
+import config from '../config/jwt';
 
 function validateInput(data, otherValidation) {
     let { errors } = otherValidation(data);
@@ -35,7 +38,7 @@ UserRouters.post('/signup',  (req, res, next) => {
     const { username, email, password, passwordConfirm, gender, role, phone } = req.body;
     const user = { username, email, password, gender, phone, role }
 
-    validateInput(req.body, commonValidation).then(
+    validateInput(req.body, SignupValidator).then(
         ({errors, isValid})=> {            
             if(isValid) {
                 const password_hash = bcrypt.hashSync(password, 10);
@@ -44,7 +47,7 @@ UserRouters.post('/signup',  (req, res, next) => {
                     .save()
                     .then(
                         data => {
-                            console.log("data = ", data);
+                            // console.log("data = ", data);
                             res.json({ success: true, user: data})
                         }
                     )
@@ -64,7 +67,49 @@ UserRouters.post('/signup',  (req, res, next) => {
 });
 
 UserRouters.post('/login', (req, res, next)=> {
-    console.log('go here!!!!');
+    const { identifier, password } = req.body;
+    const { isValid, errors } = LoginValidator(req.body);
+
+    if(isValid) {
+        UserModel.query({
+            where: {username: identifier},
+            orWhere: { email: identifier }
+        }).fetch().then(
+            user=> {
+                if(!user) {
+                    res.status(400).json({ error: ` Không tim thấy người dùng ${identifier} ` })
+                }
+                else{
+                    // console.log("user = ", user)
+                    bcrypt.compare(password, user.get("password"), function(err, isValid) {
+                        if(!isValid) {
+                            // console.log("err = ", err);
+                            // console.log(password, user.get("password"));
+                            res.status(400).json({ error: "Mật khẩu không đúng" })
+                        }
+                        else {
+                            // console.log("isValid = ", isValid);
+                            const token = jwt.sign({
+                                id: user.get('id'),
+                                username: user.get('username')
+                            }, config.jwtSecret);
+                            res.status(200).json({ message: " Bạn đã đăng nhập thành công ", user: user, token: token });
+                        }
+                        
+                    });    
+                }        
+            }
+        ).catch(
+            err=> {
+                console.log("err = ", err);
+                res.status(500).json({ error: `Chi Tiết lỗi: ${err}` });
+            }
+        )
+    }
+    else {
+        res.status(400).json(errors);
+    }
+
 });
 
 // AuthRoutes.get('/logout', userController.getLogout);
