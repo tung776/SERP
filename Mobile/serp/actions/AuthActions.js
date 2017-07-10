@@ -6,9 +6,22 @@ import {
     PASSWORD_CHANGED,
     LOGIN_USER_SUCCESS,
     LOGIN_USER_FAIL,
-    LOGIN_USER_PENDING
+    LOGIN_USER_PENDING,
+    LOGIN_FORM_CHANGED,
+    SET_CURRENT_USER
  } from './types';
 import {URL} from '../env';
+import setAuthorizationToken from '../utils/setAuthorizationToken';
+import {LoginValidator} from '../validators';
+import jwt from 'jsonwebtoken';
+
+
+export const SetCurrentUser = (user) => {
+    return {
+        type: SET_CURRENT_USER,
+        payload: user
+    }
+}
 
 
 export const emailChanged = (text)=> {
@@ -24,26 +37,65 @@ export const passwordChanged = (text)=> {
     }
 }
 
-export const loginUser = ({ email, password })=> {
-    return (dispatch)=> {
+export const LoginFormChanged = ({prop, value}) => {
+    return {
+        type: LOGIN_FORM_CHANGED,
+        payload: {prop, value}
+    }
+}
+
+export const loginUser = (user)=> {
+    console.log("user = ", user);
+    return (dispatch) => {
         dispatch({
             type: LOGIN_USER_PENDING
-        })
-        axios.post(`${URL}/register`, {email, password})
-        .then(function(res){
-            console.log(res)
-            // dispatch({
-            //     type: LOGIN_USER_SUCCESS,
-            //     payload: res.data
-            // })
-        })
-        .catch(function(err){
-            console.log(err);
-            dispatch({
+        });
+
+        const {errors, isValid} = LoginValidator(user);
+        if(!isValid) {
+            dispatch ({
                 type: LOGIN_USER_FAIL,
-                payload: err
+                payload: errors
             })
-        })
+        } else {
+            axios.post('/api/users/login', user)
+            .then(
+                res => {
+                    // console.log("res = ", res);
+                    dispatch({
+                        type: LOGIN_USER_SUCCESS,
+                        payload: res.data
+                    });
+                    dispatch({
+                        type: ADD_FLASH_MESSAGE,
+                        payload: { message: "Bạn đã đăng nhập thành công", TypeMessage: SUCCESS_MESSAGE }
+                    });
+                    const {token} = res.data;
+
+                    localStorage.setItem('jwtToken', token);
+
+                    setAuthorizationToken(token);
+
+                    dispatch(SetCurrentUser( jwt.decode(localStorage.jwtToken)));
+                    
+                     Actions.main();  
+                }
+            )
+            .catch(
+                err => {
+                    console.log("err = ", err);
+                    dispatch({
+                        type: LOGIN_USER_FAIL,
+                        payload: err.response.data.error
+                    })
+                    dispatch({
+                        type: ADD_FLASH_MESSAGE,
+                        payload: { message: `Đăng nhập thất bại: ${err.response.data.error}`, TypeMessage: ERROR_MESSAGE}
+                    })
+                }
+            )
+        }
+        
     }
 }
 const loginUserSuccess = (dispatch, user) => {
