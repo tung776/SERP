@@ -22,6 +22,7 @@ import {AsyncStorage} from 'react-native';
 import setAuthorizationToken from './utils/setAuthorizationToken';
 import { SetCurrentUser } from './actions/AuthActions';
 import jwt from 'jwt-decode';
+import {AppBody, AppHeader, AppFooter} from './components/commons';
 
 export default class serp extends Component {
   state = { loadingFont: false  }
