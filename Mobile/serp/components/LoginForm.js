@@ -5,33 +5,45 @@ import {connect} from 'react-redux';
 import { 
     emailChanged, 
     passwordChanged,
-    loginUser
+    loginUser,
+    LoginFormChanged
 } from '../actions';
+import TextFieldGroup from './commons/TextFieldGroup';
 
 class LoginForm extends Component {
     
     
-    onEmailChange(text) {
-        this.props.LoginFormChanged({prop: "email", value: text});
+    onIdentifierChange(text) {
+        this.props.LoginFormChanged({prop: "identifier", value: text});
     }
     onPasswordChange(text) {
         this.props.LoginFormChanged({prop: "password", value: text});
     }
-    onLoginPress() {
-        const {email, password, loginUser} = this.props;
-        loginUser({email, password});
+    onLoginPress(e) {
+        e.preventDefault();
+        const {identifier, password, loginUser} = this.props;
+        console.log(identifier, password);
+        loginUser({identifier, password});
     }
     renderMessage(){
         const {error,user} = this.props;
         if(error) {
+            console.log("err = ", error);
+            console.log("err.length = ", error.length);
+            let listError = [];
+            if(error.identifier) {
+                return null;
+            }
+            if(error.password) {
+                return null;
+            }
             return (
                 <Text style = {styles.erroMessage}>{error}</Text>
             );
         }
         if(user) {
             return (
-                    <Text style = {styles.successMessage}>Login successful</Text>
-               
+                <Text style = {styles.successMessage}>Login successful</Text>               
             );
         }
     }
@@ -50,29 +62,32 @@ class LoginForm extends Component {
         );
     }
     render() {
-        const {email, password} = this.props;
+        const {identifier, password, error} = this.props;
         
         return (
             <Container>                
                 <Content>
                     <Item>
-                    <Input 
-                        label = "Email"
-                        placeholder = "email@company.com"
-                        onChangeText = {this.onEmailChange.bind(this)}
-                        value = { email }
-                    />
-                </Item>
+                        <TextFieldGroup 
+                            label = "Email/Tên đăng nhập"
+                            placeholder = "email hoặc tên đăng nhập"
+                            onChangeText = {this.onIdentifierChange.bind(this)}
+                            value = { identifier }
+                            error = { error.identifier }
+                        />
+                        
+                    </Item>
                 <Item>
-                    <Input 
-                        label = "Password"
-                        secureTextEntry
-                        placeholder = "password"
-                        onChangeText = {this.onPasswordChange.bind(this)}
-                        value = { password }
-                    />
+                    <TextFieldGroup 
+                            label = "Mật khẩu"
+                            placeholder = "Điền mật khẩu"
+                            onChangeText = {this.onPasswordChange.bind(this)}
+                            value = { password }
+                            error = { error.password }
+                        />
+                    
                 </Item>
-                {this.renderMessage()}
+                    {this.renderMessage()}
                 <Item>
                     {this.renderButtonLogin()}
                 </Item>
@@ -94,9 +109,9 @@ const styles = {
 }
 
 const mapStateToProps = (state, ownProps) => {
-    const {email, password, error, user, loading} = state.auth;
+    const {identifier, password, error, user, loading} = state.loginForm;
     return {
-    email,
+    identifier,
     password,
     error,
     user,
@@ -106,5 +121,6 @@ const mapStateToProps = (state, ownProps) => {
 export default connect(mapStateToProps, {
     emailChanged,
     passwordChanged,
-    loginUser
+    loginUser,
+    LoginFormChanged
 })(LoginForm);

@@ -18,6 +18,11 @@ import Routers from './Routers';
 import Reducers from './Reducers';
 import Expo from 'expo';
 import {Spinner} from 'native-base';
+import {AsyncStorage} from 'react-native';
+import setAuthorizationToken from './utils/setAuthorizationToken';
+import { SetCurrentUser } from './actions/AuthActions';
+import jwt from 'jwt-decode';
+
 export default class serp extends Component {
   state = { loadingFont: false  }
 
@@ -32,6 +37,16 @@ export default class serp extends Component {
     render() {
       const store = createStore(Reducers, compose(
         applyMiddleware(ReduxThunk, reduxLogger)));
+        AsyncStorage.getItem('jwtToken').then(
+          token=> {
+            if(token) {
+              console.log("token = ", token)
+              setAuthorizationToken(token);
+              store.dispatch(SetCurrentUser( jwt( token )));
+            }
+          }
+        )
+        
         if(this.state.loadingFont) {
             return (
                 <Spinner></Spinner>

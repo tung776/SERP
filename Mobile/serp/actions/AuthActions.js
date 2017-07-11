@@ -8,13 +8,17 @@ import {
     LOGIN_USER_FAIL,
     LOGIN_USER_PENDING,
     LOGIN_FORM_CHANGED,
-    SET_CURRENT_USER
+    SET_CURRENT_USER,
+    ADD_FLASH_MESSAGE,
+    ERROR_MESSAGE,
+    WARNING_MESSAGE,
+    SUCCESS_MESSAGE
  } from './types';
 import {URL} from '../env';
 import setAuthorizationToken from '../utils/setAuthorizationToken';
 import {LoginValidator} from '../validators';
-import jwt from 'jsonwebtoken';
-
+// import jwt from 'jsonwebtoken';
+import {AsyncStorage} from 'react-native';
 
 export const SetCurrentUser = (user) => {
     return {
@@ -58,7 +62,7 @@ export const loginUser = (user)=> {
                 payload: errors
             })
         } else {
-            axios.post('/api/users/login', user)
+            axios.post(`${URL}/api/users/login`, user)
             .then(
                 res => {
                     // console.log("res = ", res);
@@ -72,11 +76,11 @@ export const loginUser = (user)=> {
                     });
                     const {token} = res.data;
 
-                    localStorage.setItem('jwtToken', token);
-
+                    // localStorage.setItem('jwtToken', token);
+                     AsyncStorage.setItem('jwtToken', token)
                     setAuthorizationToken(token);
 
-                    dispatch(SetCurrentUser( jwt.decode(localStorage.jwtToken)));
+                    dispatch(SetCurrentUser( user ));
                     
                      Actions.main();  
                 }
@@ -84,13 +88,23 @@ export const loginUser = (user)=> {
             .catch(
                 err => {
                     console.log("err = ", err);
+                    if(err.response) {
+                        dispatch({
+                            type: LOGIN_USER_FAIL,
+                            payload: err.response.data.error
+                        })
+                        dispatch({
+                            type: ADD_FLASH_MESSAGE,
+                            payload: { message: `Đăng nhập thất bại: ${err.response.data.error}`, TypeMessage: ERROR_MESSAGE}
+                        })
+                    }
                     dispatch({
                         type: LOGIN_USER_FAIL,
-                        payload: err.response.data.error
+                        payload: err
                     })
                     dispatch({
                         type: ADD_FLASH_MESSAGE,
-                        payload: { message: `Đăng nhập thất bại: ${err.response.data.error}`, TypeMessage: ERROR_MESSAGE}
+                        payload: { message: `Đăng nhập thất bại: ${err}`, TypeMessage: ERROR_MESSAGE}
                     })
                 }
             )
