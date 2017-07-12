@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
-import {SignupFormChanged, SignupFormSubmit, validateSignup} from '../actions/SignupFormActions';
+import {SignupFormChanged, SignupFormSubmit, validateSignup} from '../actions';
 // import isEmpty from 'lodash/isEmpty';
 import classnames from 'classnames';
 import TextFieldGroup from './commons/TextFieldGroup';
+import { browserHistory } from 'react-router';
 
 class SignupForm extends Component {
     constructor(props) {
@@ -13,7 +14,9 @@ class SignupForm extends Component {
 
     onSubmit(e) {
         e.preventDefault();
-        this.props.SignupFormSubmit(this.props)
+        this.props.SignupFormSubmit('/api/users/signup', this.props, ()=> {
+            browserHistory.push('/'); 
+        })
     }
 
     render() {

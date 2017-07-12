@@ -6,7 +6,9 @@ import axios from 'axios';
 class Menu extends React.Component {
     logout(e) {
         e.preventDefault();
-        this.props.logout();
+        this.props.logout(()=> {
+            localStorage.removeItem('jwtToken');
+        });
     }
     onContactClick(e) {
         e.preventDefault();

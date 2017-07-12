@@ -1,15 +1,20 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import TextfieldGroup from './commons/TextFieldGroup';
-import { LoginFormChanged, LoginFormSubmit } from '../actions';
+import { LoginFormChanged, LoginFormSubmit, loginUser } from '../actions';
+import { browserHistory } from 'react-router';
 
 class Login extends Component {
     state = {  }
 
     onSubmit(e) {
          e.preventDefault();
-         const { password, identifier,error, loading, LoginFormSubmit } = this.props;
-         LoginFormSubmit({ identifier, password });
+         const { password, identifier,error, loading, loginUser } = this.props;
+         loginUser(`/api/users/login`,{ identifier, password }, (token)=> {
+             console.log("go here");
+             localStorage.setItem('jwtToken', token);
+             browserHistory.push('/'); 
+         });
     }
 
     render() {
@@ -58,5 +63,6 @@ const mapStateToProps = (state) => {
 }
 export default connect(mapStateToProps, { 
     LoginFormChanged,
-    LoginFormSubmit
+    // LoginFormSubmit,
+    loginUser
 })(Login);

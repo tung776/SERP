@@ -11,6 +11,9 @@ import {
     LoginFormChanged
 } from '../actions';
 
+import { Actions } from 'react-native-router-flux';
+import {AsyncStorage} from 'react-native';
+
 class LoginForm extends Component {
     
     
@@ -23,8 +26,12 @@ class LoginForm extends Component {
     onLoginPress(e) {
         e.preventDefault();
         const {identifier, password, loginUser} = this.props;
-        console.log(identifier, password);
-        loginUser({identifier, password});
+        // console.log(identifier, password);
+
+        loginUser({identifier, password}, (token)=> {
+            AsyncStorage.setItem('jwtToken', token)
+            Actions.main();
+        });
     }
     renderMessage(){
         const {error,user} = this.props;
