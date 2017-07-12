@@ -3,7 +3,7 @@ import {
     SIGNUP_USER_FAIL,
     SIGNUP_USER_PENDING,
     SIGNUPFORM_CHANGED
- } from '../actions/types';
+ } from '../actions';
 
 const INITIAL_STATE = {
     email: '',

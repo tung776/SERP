@@ -1,5 +1,5 @@
 import {SET_CURRENT_USER } from '../actions/types';
-// import isEmpty from 'lodash/isEmpty';
+import isEmpty from 'lodash/isEmpty';
 const INITIAL_STATE = {
     user: null,
     isAuthenticated: false
@@ -11,7 +11,7 @@ export default (state = INITIAL_STATE, action)=> {
             return {
                 ...state, 
                 user: action.payload,
-                isAuthenticated: !action.payload
+                isAuthenticated: !isEmpty(action.payload)
             }
         default:
             return state;

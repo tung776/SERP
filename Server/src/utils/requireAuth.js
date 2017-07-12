@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { browserHistory } from 'react-router';
 import {connect} from 'react-redux';
-import {addFlashMessage} from '../actions/FlashMessageActions';
-import { ERROR_MESSAGE } from '../actions/types';
+import {addFlashMessage, ERROR_MESSAGE} from '../actions';
 import PropTypes from 'prop-types';
 
 export default function (ComposedComponent) {

@@ -1,3 +1,5 @@
+export const PASSWORD_CHANGED = 'PASSWORD_CHANGED'
+export const EMAIL_CHANGED = 'EMAIL_CHANGED'
 export const SET_CURRENT_USER = 'SET_CURRENT_USER';
 //===================== Login =================================================//
 export const LOGIN_USER_SUCCESS = "LOGIN_USER_SUCCESS";

@@ -5,11 +5,10 @@ module.exports = {
     devtool: 'eval-source-map',
     entry: {
         bundle:[
-            'webpack-hot-middleware',
             './Server/src/client.js'
         ]},
     output: {
-        filename: 'bundle.js',
+        // filename: 'bundle.js',
         path: path.resolve(__dirname, 'Server/public'),
         publicPath: '/'
     },
@@ -37,7 +36,7 @@ module.exports = {
     plugins: [
         new webpack.NoEmitOnErrorsPlugin(),
         new webpack.HotModuleReplacementPlugin(),
-        new webpack.optimize.OccurrenceOrderPlugin ()
+        // new webpack.optimize.OccurrenceOrderPlugin ()
         // new webpack.DefinePlugin({
         // 'process.env': {
         //     NODE_ENV: JSON.stringify('production')

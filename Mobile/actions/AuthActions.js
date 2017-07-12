@@ -13,10 +13,10 @@ import {
     ERROR_MESSAGE,
     WARNING_MESSAGE,
     SUCCESS_MESSAGE
- } from './types';
+ } from './index';
 import {URL} from '../../env';
-import setAuthorizationToken from '../utils/setAuthorizationToken';
-import {LoginValidator} from '../validators';
+import {setAuthorizationToken} from '../../Shared/utils';
+import {LoginValidator} from '../../Shared/validators';
 // import jwt from 'jsonwebtoken';
 import {AsyncStorage} from 'react-native';
 

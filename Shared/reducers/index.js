@@ -1,8 +1,8 @@
 import {combineReducers} from 'redux';
 import SignupFormReducer from './SignupFormReducer';
-import FlashMessageReducer from '../../../Shared/reducers/flashMessageReducer';
+import FlashMessageReducer from './flashMessageReducer';
 import LoginFormReducer from './LoginFormReducer';
-import AuthReducer from '../../../Shared/reducers/authReducer';
+import AuthReducer from './authReducer';
 
 const reducers = combineReducers({
     main: ()=> null ,

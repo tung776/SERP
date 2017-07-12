@@ -10,12 +10,16 @@ import webpackConfig from './webpack.config.dev.js'
 /**
  * webpack middleware for dev
  */
+console.log("env = ", process.env.APP_ENV);
 if(process.env.APP_ENV == 'development') {
-
+  console.log("enabled webpack");
+  
+  console.log("public path = ", webpackConfig.output);
   const complier = webpack(webpackConfig);
   app.use(webpackMiddleware(complier, {
       hot:true,
       noInfo: true, 
+      reload:true,
       publicPath: webpackConfig.output.publicPath,
       contentBase: '/'
   }));

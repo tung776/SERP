@@ -2,7 +2,7 @@ const INITIAL_STATE = {
     message: "",
     TypeMessage: ""
 }
-import { ADD_FLASH_MESSAGE, SUCCESS_MESSAGE, WARNING_MESSAGE, ERROR_MESSAGE } from '../actions/types';
+import { ADD_FLASH_MESSAGE, SUCCESS_MESSAGE, WARNING_MESSAGE, ERROR_MESSAGE } from '../actions';
 
 export default (state = INITIAL_STATE, action)=> {
     switch (action.type) {

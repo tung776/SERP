@@ -5,7 +5,7 @@ import {addFlashMessage} from '../actions/FlashMessageActions';
 import { ERROR_MESSAGE } from '../actions/types';
 import PropTypes from 'prop-types';
 
-export default function (ComposedComponent) {
+export const requireAuth = (ComposedComponent) => {
     class Authenticate extends Component {
         state = {  }
 

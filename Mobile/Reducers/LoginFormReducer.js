@@ -4,7 +4,7 @@ import {
     LOGIN_USER_PENDING,
     LOGIN_USER_SUCCESS,
     LOGOUT_REQUEST
- } from '../actions/types';
+ } from '../actions';
 
 const INITIAL_STATE = {
     identifier: "",

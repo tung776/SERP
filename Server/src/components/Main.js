@@ -2,7 +2,7 @@ import React from 'react';
 import Menu from './commons/menu';
 import Footer from './commons/footer';
 import {connect} from 'react-redux';
-import { SUCCESS_MESSAGE, WARNING_MESSAGE, ERROR_MESSAGE } from '../actions/types';
+import { SUCCESS_MESSAGE, WARNING_MESSAGE, ERROR_MESSAGE } from '../actions';
 import classnames from 'classnames';
 
 class Main extends React.Component {

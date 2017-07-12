@@ -10,25 +10,11 @@ import {
     ERROR_MESSAGE,
     SET_CURRENT_USER,
     LOGOUT_REQUEST
- } from './types';
+ } from './index';
 import { browserHistory } from 'react-router';
-import {LoginValidator} from '../../validators';
-import setAuthorizationToken from '../utils/setAuthorizationToken';
+import {LoginValidator} from '../../../Shared/validators';
+import setAuthorizationToken from '../../../Shared/utils/setAuthorizationToken';
 // import jwt from 'jsonwebtoken';
-
-export const LoginFormChanged = ({prop, value}) => {
-    return {
-        type: LOGIN_FORM_CHANGED,
-        payload: {prop, value}
-    }
-}
-
-export const SetCurrentUser = (user) => {
-    return {
-        type: SET_CURRENT_USER,
-        payload: user
-    }
-}
 
 export const LoginFormSubmit = (user) => {
     console.log("user = ", user);
@@ -72,7 +58,7 @@ export const LoginFormSubmit = (user) => {
                     })
                     dispatch({
                         type: ADD_FLASH_MESSAGE,
-                        payload: { message: `Đăng nhập thất bại: ${err.response.data.error}`, TypeMessage: ERROR_MESSAGE}
+                        payload: { message: `Đăng nhập thất bại : ${err.response.data.error}`, TypeMessage: ERROR_MESSAGE}
                     })
                 }
             )

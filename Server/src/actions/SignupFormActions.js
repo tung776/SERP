@@ -8,8 +8,8 @@ import {
     SUCCESS_MESSAGE,
     WARNING_MESSAGE,
     ERROR_MESSAGE
- } from './types';
-import {SignupValidator} from '../../validators';
+ } from './index';
+import {SignupValidator} from '../../../Shared/validators';
 import { browserHistory } from 'react-router';
 
 export const SignupFormChanged = ({prop, value}) => {
