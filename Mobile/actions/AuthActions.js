@@ -19,34 +19,8 @@ import {setAuthorizationToken} from '../../Shared/utils';
 import {LoginValidator} from '../../Shared/validators';
 // import jwt from 'jsonwebtoken';
 import {AsyncStorage} from 'react-native';
+import { SetCurrentUser} from './index';
 
-export const SetCurrentUser = (user) => {
-    return {
-        type: SET_CURRENT_USER,
-        payload: user
-    }
-}
-
-
-export const emailChanged = (text)=> {
-    return {
-        type: EMAIL_CHANGED,
-        payload: text
-    }
-}
-export const passwordChanged = (text)=> {
-    return {
-        type: PASSWORD_CHANGED,
-        payload: text
-    }
-}
-
-export const LoginFormChanged = ({prop, value}) => {
-    return {
-        type: LOGIN_FORM_CHANGED,
-        payload: {prop, value}
-    }
-}
 
 export const loginUser = (user)=> {
     console.log("user = ", user);

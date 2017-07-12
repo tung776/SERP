@@ -13,7 +13,8 @@ import {
  } from './index';
 import { browserHistory } from 'react-router';
 import {LoginValidator} from '../../../Shared/validators';
-import setAuthorizationToken from '../../../Shared/utils/setAuthorizationToken';
+import {setAuthorizationToken} from '../../../Shared/utils/setAuthorizationToken';
+import {SetCurrentUser} from './index';
 // import jwt from 'jsonwebtoken';
 
 export const LoginFormSubmit = (user) => {
@@ -52,14 +53,26 @@ export const LoginFormSubmit = (user) => {
             .catch(
                 err => {
                     console.log("err = ", err);
-                    dispatch({
-                        type: LOGIN_USER_FAIL,
-                        payload: err.response.data.error
-                    })
-                    dispatch({
-                        type: ADD_FLASH_MESSAGE,
-                        payload: { message: `Đăng nhập thất bại : ${err.response.data.error}`, TypeMessage: ERROR_MESSAGE}
-                    })
+                    if(err.response) {
+                        dispatch({
+                            type: LOGIN_USER_FAIL,
+                            payload: err.response.data.error
+                        })
+                        dispatch({
+                            type: ADD_FLASH_MESSAGE,
+                            payload: { message: `Đăng nhập thất bại : ${err.response.data.error}`, TypeMessage: ERROR_MESSAGE}
+                        })
+                    }
+                    else {
+                        dispatch({
+                            type: LOGIN_USER_FAIL,
+                            payload: err
+                        })
+                        dispatch({
+                            type: ADD_FLASH_MESSAGE,
+                            payload: { message: `Đăng nhập thất bại : ${err}`, TypeMessage: ERROR_MESSAGE}
+                        })
+                    }
                 }
             )
         }

@@ -19,8 +19,8 @@ import Reducers from './Mobile/Reducers';
 // import Expo from 'expo';
 import {Spinner} from './Mobile/components/commons/Spinner';
 import {AsyncStorage} from 'react-native';
-import setAuthorizationToken from './Mobile/utils/setAuthorizationToken';
-import { SetCurrentUser } from './Mobile/actions/AuthActions';
+import {setAuthorizationToken} from './Shared/utils/setAuthorizationToken';
+import { SetCurrentUser } from './Shared/actions/authCommon';
 import jwt from 'jwt-decode';
 import {AppBody, AppHeader, AppFooter} from './Mobile/components/commons';
 
@@ -36,7 +36,7 @@ export default class serp extends Component {
     //     this.setState({ loadingFont: false});
     // }
     render() {
-      const store = createStore(Reducers, compose(
+        const store = createStore(Reducers, compose(
         applyMiddleware(ReduxThunk, reduxLogger)));
         AsyncStorage.getItem('jwtToken').then(
           token=> {
@@ -47,7 +47,7 @@ export default class serp extends Component {
             }
           }
         )
-        
+
         // if(this.state.loadingFont) {
         //     return (
         //         <Spinner></Spinner>

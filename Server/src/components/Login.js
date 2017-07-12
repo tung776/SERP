@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import TextfieldGroup from './commons/TextFieldGroup';
-import { LoginFormChanged, LoginFormSubmit } from '../actions/LoginFormActions';
+import { LoginFormChanged, LoginFormSubmit } from '../actions';
 
 class Login extends Component {
     state = {  }

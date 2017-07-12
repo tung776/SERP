@@ -1,4 +1,4 @@
-// import compression from 'compression'
+import compression from 'compression'
 import morgan from 'morgan';
 import bodyParser from 'body-parser';
 import express from 'express';
@@ -11,10 +11,41 @@ import passport from 'passport';
 import expressValidator from "express-validator";
 const connectMongo = require('connect-mongo')(expressSession);
 import path from 'path';
+import webpack from 'webpack';
+import webpackMiddleware from 'webpack-dev-middleware';
+import webpackHotMiddleware from 'webpack-hot-middleware';
+import webpackConfig from '../webpack.config.dev.js'
 
 import { connectString } from './database.config';
+
 export const config = function(app){
-    app.use(morgan('dev'));
+
+ 
+/**
+ * webpack middleware for dev
+ */
+    console.log("env = ", process.env.APP_ENV);
+    if(process.env.APP_ENV == 'development') {
+        console.log("enabled webpack");
+        
+        console.log("public path = ", webpackConfig.output);
+        const complier = webpack(webpackConfig);
+        app.use(webpackMiddleware(complier, {
+            hot:true,
+            noInfo: true, 
+            reload:true,
+            publicPath: webpackConfig.output.publicPath,
+            contentBase: '/'
+        }));
+        app.use(webpackHotMiddleware(complier));
+        app.use(morgan('dev'));
+    }
+    else {
+        app.use(compression());
+    }
+/**
+ * webpack middleware for dev
+ */
     app.set('view engine', 'ejs');
     app.engine('ejs', ejsMate);
     app.use(express.static(path.resolve('Server/public')));
@@ -32,7 +63,7 @@ export const config = function(app){
     app.use(passport.initialize());//middleware được gọi ở từng request, kiểm tra session lấy ra passport.user nếu chưa có thì tạo rỗng.
     app.use(passport.session()); //middleware sử dụng kịch bản Passport , sử dụng session lấy thông tin user rồi gắn vào req.user.
     app.use(expressValidator());
-    // app.use(compression());
+    
     console.log(path.resolve('Server/views'));
     app.set('views', path.resolve('Server/views'));
 };

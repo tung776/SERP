@@ -7,14 +7,15 @@ import {render} from 'react-dom';
 import {Provider} from 'react-redux';
 import ReduxThunk from 'redux-thunk'
 import routes from './routes';
-import setAuthorizationToken from './utils/setAuthorizationToken';
-import { SetCurrentUser } from './actions/LoginFormActions';
+import {setAuthorizationToken} from './utils';
+import { SetCurrentUser } from './actions';
 // import jwt from 'jsonwebtoken';
 import jwt from 'jwt-decode';
 // Chúng ta sẽ chuyển State khởi tạo từ SERVER STORE
 const initialState = window.INITIAL_STATE;
 //window.INITIAL_STATE là một biến global, chúng ta sẽ sử dụng để lưu state khởi tạo
 //trên server và chuyển nó tới STORE trên client
+
 const store = createStore(reducers, initialState, /* preloadedState, */ compose(
     // applyMiddleware(ReduxPromise),
     applyMiddleware(ReduxThunk, reduxLogger),

@@ -19,16 +19,20 @@ module.exports = {
                 test:/\.js$/,
                 exclude: /node_modules/,
                 loaders: ['react-hot-loader', 'babel-loader'],
-                include: path.join(__dirname, 'src'),
+                // include: path.join(__dirname, 'src'),
                 // query: {
                 //     presets: ['react', 'es2015', 'stage-1']
                 // }
             }
         ]
     },
-    // resolve: {
-    //     extentions: ['', '.js']
-    // },
+    resolve: {
+        modules: [
+            path.resolve('./src'), 
+            'node_modules',
+             path.resolve('./Shared')
+        ]
+    },
     node: {
         net: 'empty',
         dns: 'empty'
