@@ -5,12 +5,13 @@ import {View, Text, TextInput} from 'react-native';
 import {Card} from './card';
 import {CardSection} from './cardSection';
 
-export const TextFieldGroup = ({ field, value, label, error, type, onChangeText, placeholder }) => {
+export const TextFieldGroup = ({ field, value, label, error, type, onChangeText, placeholder, secureTextEntry }) => {
     return (
         <Card>
                 <Text style = {styles.label} >{label}</Text>
                 <TextInput 
-                style = {styles.textInput}
+                    style = {styles.textInput}
+                    secureTextEntry = {secureTextEntry}
                     value = {value}
                     onChangeText = {onChangeText}
                     type= { type } 

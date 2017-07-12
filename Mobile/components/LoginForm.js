@@ -13,6 +13,7 @@ import {
 
 import { Actions } from 'react-native-router-flux';
 import {AsyncStorage} from 'react-native';
+import {URL} from '../../env';
 
 class LoginForm extends Component {
     
@@ -28,7 +29,7 @@ class LoginForm extends Component {
         const {identifier, password, loginUser} = this.props;
         // console.log(identifier, password);
 
-        loginUser({identifier, password}, (token)=> {
+        loginUser(`${URL}/api/users/login`, {identifier, password}, (token)=> {
             AsyncStorage.setItem('jwtToken', token)
             Actions.main();
         });
@@ -86,6 +87,7 @@ class LoginForm extends Component {
                         
                         <TextFieldGroup 
                                 label = "Mật khẩu"
+                                secureTextEntry
                                 placeholder = "Điền mật khẩu"
                                 onChangeText = {this.onPasswordChange.bind(this)}
                                 value = { password }
