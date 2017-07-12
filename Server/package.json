@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "server": "cross-env APP_ENV=development nodemon index.js",
-    "dev": "webpack"
+    "webpack": "webpack Server"
   },
   "dependencies": {
     

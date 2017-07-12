@@ -9,8 +9,8 @@ import ReduxThunk from 'redux-thunk'
 import routes from './routes';
 import setAuthorizationToken from './utils/setAuthorizationToken';
 import { SetCurrentUser } from './actions/LoginFormActions';
-import jwt from 'jsonwebtoken';
-
+// import jwt from 'jsonwebtoken';
+import jwt from 'jwt-decode';
 // Chúng ta sẽ chuyển State khởi tạo từ SERVER STORE
 const initialState = window.INITIAL_STATE;
 //window.INITIAL_STATE là một biến global, chúng ta sẽ sử dụng để lưu state khởi tạo
@@ -23,7 +23,7 @@ const store = createStore(reducers, initialState, /* preloadedState, */ compose(
 
 if(localStorage.jwtToken) {
     setAuthorizationToken(localStorage.jwtToken);
-    store.dispatch(SetCurrentUser( jwt.decode(localStorage.jwtToken) ));
+    store.dispatch(SetCurrentUser(jwt( localStorage.jwtToken ) ));
 }
 
 const Routes = (

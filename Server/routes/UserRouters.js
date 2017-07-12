@@ -4,7 +4,7 @@ import {SignupValidator, LoginValidator} from '../validators';
 import bcrypt from 'bcrypt';
 // import Promise from 'bluebird';
 import UserModel from '../models/UserModel';
-import  isEmpty from 'lodash/isEmpty';
+// import  isEmpty from 'lodash/isEmpty';
 import Validator from 'validator';
 import jwt from 'jsonwebtoken';
 import config from '../config/jwt';
@@ -17,18 +17,21 @@ function validateInput(data, otherValidation) {
         orWhere: { username: data.username }
     }).fetch().then(
         user=> {
+            let isValid = true;
            if(user) {
                 if(user.get('username') === data.username) {
+                    isValid = false;
                     errors.username = "Đã có người dùng khác đăng ký tên đăng nhập này, bạn hãy chọn tên đăng nhập khác"
                 }
                 if(user.get('email') === data.email) {
+                    isValid = false;
                     errors.email = "Đã có người dùng khác sử dụng email này, bạn hãy chọn email khác"
                 }
            }
            
            return {
                errors,
-               isValid: isEmpty(errors)
+               isValid: isValid
            }
         }
     )

@@ -3,7 +3,7 @@ const webpack = require('webpack');
 
 module.exports = {
     // devtool: 'eval-source-map',
-    entry: './src/client.js',
+    entry: './Server/src/client.js',
     output: {
         filename: 'bundle.js',
         path: path.resolve(__dirname, 'public')
@@ -21,9 +21,12 @@ module.exports = {
             }
         ]
     },
-    // resolve: {
-    //     extentions: ['', '.js']
-    // },
+    resolve: {
+        modules: [
+            path.resolve('./src'), 
+            'node_modules'
+        ]
+    },
     node: {
         net: 'empty',
         dns: 'empty'
@@ -36,6 +39,10 @@ module.exports = {
             NODE_ENV: JSON.stringify('production')
         }
         }),
-        new webpack.optimize.UglifyJsPlugin()
+        new webpack.optimize.UglifyJsPlugin(),
+        new webpack.LoaderOptionsPlugin({
+            minimize: true,
+            debug: false
+        }),
     ]
 }

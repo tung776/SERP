@@ -14,7 +14,7 @@ import {
 import { browserHistory } from 'react-router';
 import {LoginValidator} from '../../validators';
 import setAuthorizationToken from '../utils/setAuthorizationToken';
-import jwt from 'jsonwebtoken';
+// import jwt from 'jsonwebtoken';
 
 export const LoginFormChanged = ({prop, value}) => {
     return {
@@ -59,7 +59,7 @@ export const LoginFormSubmit = (user) => {
                     const {token} = res.data;
                     localStorage.setItem('jwtToken', token);
                     setAuthorizationToken(token);
-                    dispatch(SetCurrentUser( jwt.decode(localStorage.jwtToken)));
+                    dispatch(SetCurrentUser( user ));
                     browserHistory.push('/');  
                 }
             )
