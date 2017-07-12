@@ -5,9 +5,9 @@
 
 import React, { Component } from 'react';
 import {
-  StyleSheet,
-  Text,
-  View
+  View, Text,
+  StatusBar,
+  Navigator
 } from 'react-native';
 import {Router} from 'react-native-router-flux';
 import {Provider} from 'react-redux';
@@ -17,12 +17,20 @@ import { createStore,  applyMiddleware, compose } from 'redux';
 import Routers from './Mobile/Routers';
 import Reducers from './Mobile/Reducers';
 // import Expo from 'expo';
-import {Spinner} from './Mobile/components/commons/Spinner';
+// import {Spinner} from './Mobile/components/commons/Spinner';
 import {AsyncStorage} from 'react-native';
 import {setAuthorizationToken} from './Shared/utils/setAuthorizationToken';
 import { SetCurrentUser } from './Shared/actions/authCommon';
 import jwt from 'jwt-decode';
 import {AppBody, AppHeader, AppFooter} from './Mobile/components/commons';
+
+import CustomComponents from 'react-native-deprecated-custom-components';
+import ChangeInfor from './Mobile/components/ChangeInfor/ChangeInfor';
+import Main from './Mobile/components/Main/Main';
+import Authentication from './Mobile/components/Authentication/Authentication';
+import OrderHistory from './Mobile/components/OrderHistory/OrderHistory';
+
+StatusBar.setHidden(true);
 
 export default class serp extends Component {
   state = { loadingFont: false  }
@@ -48,14 +56,24 @@ export default class serp extends Component {
           }
         )
 
-        // if(this.state.loadingFont) {
-        //     return (
-        //         <Spinner></Spinner>
-        //     );
-        // }
+       
+        // return (
+        //   <Provider store = { store }>
+        //     <Routers />
+        //   </Provider>
+        // );
+        //Tạm thời Navigator bị ngừng hỗ trợ nên tạm cài đặt CustomComponents
         return (
           <Provider store = { store }>
-            <Routers />
+            <CustomComponents.Navigator
+              initialRoute = {{ name: 'MAIN' }}
+              renderScene = { (route, navigator) => {
+                switch(route.name) {
+                  case 'MAIN': return <Main />
+                  default: return <Main />
+                }
+              } }
+            />
           </Provider>
         );
     }

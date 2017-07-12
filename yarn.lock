@@ -5808,6 +5808,15 @@ react-native-branch@2.0.0-beta.3:
   version "2.0.0-beta.3"
   resolved "https://registry.yarnpkg.com/react-native-branch/-/react-native-branch-2.0.0-beta.3.tgz#2167af86bbc9f964bd45bd5f37684e5b54965e32"
 
+react-native-deprecated-custom-components@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/react-native-deprecated-custom-components/-/react-native-deprecated-custom-components-0.1.0.tgz#f716d431ef2dc4f91b7a686af091ee3656538086"
+  dependencies:
+    fbjs "~0.8.9"
+    immutable "~3.7.6"
+    react-timer-mixin "^0.13.2"
+    rebound "^0.0.13"
+
 react-native-dismiss-keyboard@1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/react-native-dismiss-keyboard/-/react-native-dismiss-keyboard-1.0.0.tgz#32886242b3f2317e121f3aeb9b0a585e2b879b49"
