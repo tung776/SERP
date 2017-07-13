@@ -98,3 +98,13 @@ AppRegistry.registerComponent('auth', () => auth);
 npm i
 npm run dev
 ```
+
+Debug react native như sau;
+tải công cụ : react native debugger
+
+chạy lệnh 
+adb reverse tcp:19000 tcp:19000
+adb reverse tcp:19001 tcp:19001
+
+mở công cụ debug react native
+bật chức năng remote js debugger trên nút menu điện thoại android
