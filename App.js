@@ -24,11 +24,8 @@ import { SetCurrentUser } from './Shared/actions/authCommon';
 import jwt from 'jwt-decode';
 import {AppBody, AppHeader, AppFooter} from './Mobile/components/commons';
 
-import CustomComponents from 'react-native-deprecated-custom-components';
-import ChangeInfor from './Mobile/components/ChangeInfor/ChangeInfor';
-import Main from './Mobile/components/Main/Main';
-import Authentication from './Mobile/components/Authentication/Authentication';
-import OrderHistory from './Mobile/components/OrderHistory/OrderHistory';
+// import CustomComponents from 'react-native-deprecated-custom-components';
+
 
 StatusBar.setHidden(true);
 
@@ -57,25 +54,25 @@ export default class serp extends Component {
         )
 
        
-        // return (
-        //   <Provider store = { store }>
-        //     <Routers />
-        //   </Provider>
-        // );
-        //Tạm thời Navigator bị ngừng hỗ trợ nên tạm cài đặt CustomComponents
         return (
           <Provider store = { store }>
-            <CustomComponents.Navigator
-              initialRoute = {{ name: 'MAIN' }}
-              renderScene = { (route, navigator) => {
-                switch(route.name) {
-                  case 'MAIN': return <Main />
-                  default: return <Main />
-                }
-              } }
-            />
+            <Routers />
           </Provider>
         );
+        //Tạm thời Navigator bị ngừng hỗ trợ nên tạm cài đặt CustomComponents
+        // return (
+        //   <Provider store = { store }>
+        //     <CustomComponents.Navigator
+        //       initialRoute = {{ name: 'MAIN' }}
+        //       renderScene = { (route, navigator) => {
+        //         switch(route.name) {
+        //           case 'MAIN': return <Main />
+        //           default: return <Main />
+        //         }
+        //       } }
+        //     />
+        //   </Provider>
+        // );
     }
 }
 

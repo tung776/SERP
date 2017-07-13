@@ -31,7 +31,7 @@ class LoginForm extends Component {
 
         loginUser(`${URL}/api/users/login`, {identifier, password}, (token)=> {
             AsyncStorage.setItem('jwtToken', token)
-            Actions.main();
+            Actions.drawer();
         });
     }
     renderMessage(){

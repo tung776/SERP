@@ -1,35 +1,51 @@
 import React, { Component } from 'react';
-// import { Container,Icon, Button,Content, Title, FooterTab, Text, Header, Body, Footer, Right, Left} from 'native-base';
-import {View, Text} from 'react-native';
-import {Card, CardSection, Button} from './commons';
+import TabNavigator from 'react-native-tab-navigator';
+import { Text, View} from 'react-native';
+import Dashboard from './Dashboard';
+import Profile from './Profile';
+import Header from './commons/Header';
 
-class Home extends Component {
-    state = {  }
+class Main extends Component {
+    state = {
+        selectedTab: 'Dashboard'
+    }
+    
     render() {
+        const { container, headerStyle } = styles;
         return (
-            <Card>
-                <CardSection>
-                    <CardSection>
-                        <Button transparent>
-                        </Button>
-                    </CardSection>
-                    <CardSection>
-                        <Text>Header</Text>
-                    </CardSection>
-                </CardSection>
-                <CardSection>
-                    <Text>
-                        This is Content Section
-                    </Text>
-                </CardSection>
-                <CardSection>
-                        <Button full>
-                            <Text>Footer</Text>
-                        </Button>
-                </CardSection>
-            </Card>
+            <View style={container}>
+                <Header/>
+                <TabNavigator
+                    style = {{flex: 1}}
+                >
+                    <TabNavigator.Item
+                        style = {{flex: 1}}
+                        selected={this.state.selectedTab === 'Dashboard'}
+                        title="Dashboard"
+                        onPress={() => this.setState({ selectedTab: 'Dashboard' })}>
+                        <Dashboard />
+                    </TabNavigator.Item>
+                    <TabNavigator.Item
+                        selected={this.state.selectedTab === 'Profile'}
+                        title="Profile"
+                        onPress={() => this.setState({ selectedTab: 'Profile' })}>
+                        <Profile />
+                    </TabNavigator.Item>
+                </TabNavigator>
+            </View>
         );
     }
 }
 
-export default Home;
+
+
+const styles = {
+    container: {
+        flex: 1,
+        // justifyContent: 'center',
+        // alignItems: 'center',
+        // backgroundColor: 'transparent',
+    }
+};
+
+export default Main;
