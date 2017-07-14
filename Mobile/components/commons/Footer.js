@@ -5,11 +5,23 @@ class AppFooter extends Component {
     state = {  }
     render() {
         return (
-            <Text>
-                AppFooter
-            </Text>
+            <View style = {styles.footerContainer}>
+                <Text>Footer</Text>
+            </View>
         );
     }
 }
 
+const styles = {
+    footerContainer: {
+        flex: 1,
+        backgroundColor: '#2c3e50',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingLeft: 10,
+        paddingRight: 10,
+        paddingTop:5,
+        paddingBottom: 5
+    }
+}
 export default AppFooter;

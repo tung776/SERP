@@ -196,7 +196,9 @@ const styles = {
     },
     buttonContainer: {
         flex: 0.2,
-        marginBottom: height / 55
+        marginBottom: height / 55,
+        paddingLeft: 10,
+        paddingRight: 10
     },
     
 }
