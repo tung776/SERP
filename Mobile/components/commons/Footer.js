@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 // import { Container,Icon, Button,Content, Title, FooterTab, Text, Header, Body, Footer, Right, Left} from 'native-base';
-import {Text} from 'react-native';
+import {Text, View} from 'react-native';
 class AppFooter extends Component {
     state = {  }
     render() {

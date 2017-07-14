@@ -1,23 +1,23 @@
 import React, { Component } from 'react';
 // import { Container,Icon, Button,Content, Title, FooterTab, Text, Header, Body, Footer, Right, Left} from 'native-base';
-import {View, Text, Dimensions} from 'react-native';
-import {Button} from './index';
+import { View, Text, Dimensions, TouchableOpacity, Image } from 'react-native';
+import { Button } from './index';
 import { Actions } from 'react-native-router-flux';
 
 class AppHeader extends Component {
-    state = {  }
+    state = {}
     render() {
-        const {headerStyle} = styles;
+        const { headerStyle } = styles;
         return (
-            <View style = {styles.headerContainer}>
-                    <TouchableOpacity onPress={() => {
-                        Actions.refresh({ key: 'drawer', open: value => !value });
-                        }}>
-                        <Image style = {styles.logoStyle} source = {require('../../Shared/images/Logo.png')} />
-                    </TouchableOpacity>
-                    <Text style = {styles.headerTitle} >SERP</Text>
-                    <Image style = {styles.settingIcon} source = {require('../../Shared/images/icons/setting.png')} />
-                </View>
+            <View style={styles.headerContainer}>
+                <TouchableOpacity onPress={() => {
+                    Actions.refresh({ key: 'drawer', open: value => !value });
+                }}>
+                    <Image style={styles.logoStyle} source={require('../../../Shared/images/Logo.png')} />
+                </TouchableOpacity>
+                <Text style={styles.headerTitle} >SERP</Text>
+                <Image style={styles.settingIcon} source={require('../../../Shared/images/icons/setting.png')} />
+            </View>
         );
     }
 }
@@ -31,7 +31,7 @@ const styles = {
         backgroundColor: '#2c3e50',
         paddingLeft: 10,
         paddingRight: 10,
-        paddingTop:5,
+        paddingTop: 5,
         paddingBottom: 5
     },
     logoStyle: {

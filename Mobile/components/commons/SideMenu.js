@@ -31,7 +31,7 @@ class SideMenu extends Component {
                         <Button     
                             onPress={goHomePage}                
                             title="Lập Hóa Đơn Bán"
-                            color="rgba(41, 128, 185,1.0)"
+                            color="#d35400"
                             accessibilityLabel="Learn more about this purple button"
                         />
                     </View>
@@ -52,6 +52,22 @@ class SideMenu extends Component {
                         />
                     </View>
                     <View style = {styles.buttonMenuContainer}>
+                        <Button                
+                            onPress={goHomePage}   
+                            title="Thêm Sản Phẩm"
+                            color="#d35400"
+                            accessibilityLabel="Learn more about this purple button"
+                        />
+                    </View>
+                    <View style = {styles.buttonMenuContainer}>
+                        <Button                
+                            onPress={goHomePage}   
+                            title="Lập Hóa Đơn Mua"
+                            color="#d35400"
+                            accessibilityLabel="Learn more about this purple button"
+                        />
+                    </View>
+                    <View style = {styles.buttonMenuContainer}>
                         <Button           
                             onPress={goHomePage}        
                             title="Lập Phiếu Chi"
@@ -63,6 +79,38 @@ class SideMenu extends Component {
                         <Button              
                             onPress={goHomePage}     
                             title="Lập Phiếu Thu"
+                            color="rgba(41, 128, 185,1.0)"
+                            accessibilityLabel="Learn more about this purple button"
+                        />
+                    </View>
+                    <View style = {styles.buttonMenuContainer}>
+                        <Button              
+                            onPress={goHomePage}     
+                            title="Theo Dõi Công Nợ"
+                            color="#d35400"
+                            accessibilityLabel="Learn more about this purple button"
+                        />
+                    </View>
+                    <View style = {styles.buttonMenuContainer}>
+                        <Button              
+                            onPress={goHomePage}     
+                            title="Theo dõi Thu-Chi"
+                            color="rgba(41, 128, 185,1.0)"
+                            accessibilityLabel="Learn more about this purple button"
+                        />
+                    </View>
+                    <View style = {styles.buttonMenuContainer}>
+                        <Button              
+                            onPress={goHomePage}     
+                            title="Danh Sách Khách Hàng"
+                            color="rgba(41, 128, 185,1.0)"
+                            accessibilityLabel="Learn more about this purple button"
+                        />
+                    </View>
+                    <View style = {styles.buttonMenuContainer}>
+                        <Button              
+                            onPress={goHomePage}     
+                            title="Danh Sách Nhà Cung cấp"
                             color="rgba(41, 128, 185,1.0)"
                             accessibilityLabel="Learn more about this purple button"
                         />
@@ -87,6 +135,22 @@ class SideMenu extends Component {
                         <Button         
                             onPress={goHomePage}          
                             title="Báo Cáo Tồn Kho"
+                            color="rgba(41, 128, 185,1.0)"
+                            accessibilityLabel="Learn more about this purple button"
+                        />
+                    </View>
+                    <View style = {styles.buttonMenuContainer}>
+                        <Button         
+                            onPress={goHomePage}          
+                            title="Báo Cáo Lợi Nhuận"
+                            color="rgba(41, 128, 185,1.0)"
+                            accessibilityLabel="Learn more about this purple button"
+                        />
+                    </View>
+                    <View style = {styles.buttonMenuContainer}>
+                        <Button         
+                            onPress={goHomePage}          
+                            title="Báo Cáo Doanh Thu"
                             color="rgba(41, 128, 185,1.0)"
                             accessibilityLabel="Learn more about this purple button"
                         />
