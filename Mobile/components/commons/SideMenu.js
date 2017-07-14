@@ -1,30 +1,107 @@
 import React, { Component } from 'react';
-import {View, Text, TouchableOpacity} from 'react-native';
+import { View, Text, Button, Image, ScrollView} from 'react-native';
 import { Actions } from 'react-native-router-flux'
-import { Card, CardSection, Button } from './index';
+import { Card, CardSection, } from './index';
 
 class SideMenu extends Component {
-    state = {  }
+    state = {}
     render() {
-        const {containerStyle, textMenuStyle} = styles;
+        const { containerStyle, textMenuStyle } = styles;
+        goHomePage = ()=>{
+            Actions.Home();
+        }
+        goSignin = ()=> {
+            Actions.auth();
+        }
         return (
-            <Card style = {containerStyle}>
-                <CardSection></CardSection>
-                <CardSection>
-                    <Button
-                        onPress={() => {
-                            Actions.auth();
-                        }}>
-                        <Text>Đăng Nhập</Text>
-                    </Button>
-                    <Button
-                        onPress={() => {
-                            Actions.Home();
-                        }}>
-                        <Text>Main</Text>
-                    </Button>
-                </CardSection>
-            </Card>
+            <View style={containerStyle}>
+                <View>
+                    <Image style = {styles.logoImage} source = {require("../../../Shared/images/Logo.png")} />
+                </View>
+                <ScrollView>
+                    <View style = {styles.buttonMenuContainer}>
+                        <Button                        
+                            onPress={goHomePage}
+                            title="Trang Chủ"
+                            color="#841584"
+                            accessibilityLabel="Learn more about this purple button"
+                        />
+                    </View>
+                    <View style = {styles.buttonMenuContainer}>
+                        <Button     
+                            onPress={goHomePage}                
+                            title="Lập Hóa Đơn Bán"
+                            color="rgba(41, 128, 185,1.0)"
+                            accessibilityLabel="Learn more about this purple button"
+                        />
+                    </View>
+                    <View style = {styles.buttonMenuContainer}>
+                        <Button        
+                            onPress={goHomePage}           
+                            title="Tìm Kiếm Sản Phẩm"
+                            color="rgba(41, 128, 185,1.0)"
+                            accessibilityLabel="Learn more about this purple button"
+                        />
+                    </View>
+                    <View style = {styles.buttonMenuContainer}>
+                        <Button                
+                            onPress={goHomePage}   
+                            title="Nhóm Sản Phẩm"
+                            color="rgba(41, 128, 185,1.0)"
+                            accessibilityLabel="Learn more about this purple button"
+                        />
+                    </View>
+                    <View style = {styles.buttonMenuContainer}>
+                        <Button           
+                            onPress={goHomePage}        
+                            title="Lập Phiếu Chi"
+                            color="rgba(41, 128, 185,1.0)"
+                            accessibilityLabel="Learn more about this purple button"
+                        />
+                    </View>
+                    <View style = {styles.buttonMenuContainer}>
+                        <Button              
+                            onPress={goHomePage}     
+                            title="Lập Phiếu Thu"
+                            color="rgba(41, 128, 185,1.0)"
+                            accessibilityLabel="Learn more about this purple button"
+                        />
+                    </View>
+                    <View style = {styles.buttonMenuContainer}>
+                        <Button            
+                            onPress={goHomePage}       
+                            title="Lập Lệnh Sản Xuất"
+                            color="rgba(41, 128, 185,1.0)"
+                            accessibilityLabel="Learn more about this purple button"
+                        />
+                    </View>
+                    <View style = {styles.buttonMenuContainer}>
+                        <Button             
+                            onPress={goHomePage}      
+                            title="Lập Lệnh Công Thức Nghiên Cứu"
+                            color="rgba(41, 128, 185,1.0)"
+                            accessibilityLabel="Learn more about this purple button"
+                        />
+                    </View>
+                    <View style = {styles.buttonMenuContainer}>
+                        <Button         
+                            onPress={goHomePage}          
+                            title="Báo Cáo Tồn Kho"
+                            color="rgba(41, 128, 185,1.0)"
+                            accessibilityLabel="Learn more about this purple button"
+                        />
+                    </View>
+                    <View style = {styles.buttonMenuContainer}>
+                        <Button                        
+                            onPress={goSignin}
+                            title="Đăng Nhập"
+                            color="rgba(39, 174, 96,1.0)"
+                            accessibilityLabel="Learn more about this purple button"
+                        />
+                    </View>
+
+                </ScrollView>
+            </View>
         );
     }
 }
@@ -32,14 +109,35 @@ class SideMenu extends Component {
 const styles = {
     containerStyle: {
         flex: 1,
-        backgroundColor: 'blue',
+        backgroundColor: 'rgba(52, 73, 94,1.0)',
         alignItems: 'center',
-        justifyContent: 'center'
     },
     textMenuStyle: {
         fontSize: 16,
         color: 'white'
+    },
+    logoImage: {
+        width: 200,
+        height: 110,
+        margin: 20
+    },
+    buttonMenuContainer: {
+        margin: 3,
+        width: 250
     }
 }
 
 export default SideMenu;
+
+// <Button
+//     onPress={() => {
+//         Actions.Home();
+//     }}>
+//     title= "Trang chủ"
+//                     </Button>
+//     <Button
+//         onPress={() => {
+//             Actions.auth();
+//         }}>
+//         title = "Đăng Nhập"
+//                     </Button>
