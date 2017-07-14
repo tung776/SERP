@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 // import { Container, Content, Form, Item, Button, Text, Header, Body, Footer, Right, Left, Spinner, Input} from 'native-base';
 import { connect } from 'react-redux';
-import { Text, View, Image, TextInput } from 'react-native';
-import { Button, TextFieldGroup, Card, CardSection, Spinner } from './commons';
+import { Text, View, Image, TextInput, TouchableOpacity, Dimensions, Button } from 'react-native';
+import { Card, CardSection, Spinner } from './commons';
 // import Expo from 'expo';
 import {
     emailChanged,
@@ -14,6 +14,7 @@ import {
 import { Actions } from 'react-native-router-flux';
 import { AsyncStorage } from 'react-native';
 import { URL } from '../../env';
+const height = Dimensions.get("window").height;
 
 class LoginForm extends Component {
 
@@ -65,10 +66,26 @@ class LoginForm extends Component {
         return (
             <Button
                 onPress={this.onLoginPress.bind(this)}
-            >
-                <Text>Login</Text>
-            </Button>
+                title="Đăng Nhập"
+                color="rgba(39, 174, 96,1.0)"
+                accessibilityLabel="Đăng Nhập"
+            />
+
+
         );
+        // return (
+        //     <TouchableOpacity onPress={this.onLoginPress.bind(this)} style={styles.LoginButtonStyle} >
+        //         <Text style={styles.LoginTextStyle}>Đăng Nhập</Text>
+        //     </TouchableOpacity>
+
+        // );
+        // return (
+        //     <Button
+        //         onPress={this.onLoginPress.bind(this)}
+        //     >
+        //         <Text>Login</Text>
+        //     </Button>
+        // );
     }
     render() {
         const { identifier, password, error } = this.props;
@@ -81,44 +98,52 @@ class LoginForm extends Component {
                         source={require('../../Shared/images/Logo.png')}
                     />
                 </View>
-                <View style = {styles.groupControl}>
-                    <Text style={styles.label} >Email</Text>
-                    <TextInput
-                        style={styles.textInput}
-                        value={identifier}
-                        onChangeText={this.onIdentifierChange.bind(this)}
-                        type="Text"
-                        name="email"
-                        placeholder="Điền tên hoặc email:"
-                    />
 
-                    <Text>
-                        {error && <Text style={styles.errorStyle}>{error}</Text>}
-                    </Text>
+                <View style = {styles.InputContainer}>
+                    <View style={styles.groupControl}>
+                        <Text style={styles.label} >Email</Text>
+                        <TextInput
+                            disableFullscreenUI = {true}
+                            underlineColorAndroid = {'transparent'}
+                            style={styles.textInput}
+                            blurOnSubmit={true}
+                            value={identifier}
+                            onChangeText={this.onIdentifierChange.bind(this)}
+                            type="Text"
+                            name="email"
+                            placeholder="Điền tên hoặc email:"
+                        />
+
+                        <Text>
+                            {error && <Text style={styles.errorStyle}>{error.identifier}</Text>}
+                        </Text>
+                    </View>
+                    <View style={styles.groupControl}>
+                        <Text style={styles.label} >Mật khẩu</Text>
+                        <TextInput
+                            disableFullscreenUI = {true}
+                            underlineColorAndroid = {'transparent'}
+                            style={styles.textInput}
+                            secureTextEntry
+                            blurOnSubmit={true}
+                            caretHidden={true}
+                            value={password}
+                            onChangeText={this.onPasswordChange.bind(this)}
+                            type="password"
+                            name="password"
+                            placeholder="Điền mật khẩu:"
+                        />
+
+                        <Text>
+                            {error && <Text style={styles.errorStyle}>{error.password}</Text>}
+                        </Text>
+                    </View>
+                    {this.renderMessage()}
                 </View>
-                <View style = {styles.groupControl}>
-                    <Text style={styles.label} >Mật khẩu</Text>
-                    <TextInput
-                        style={styles.textInput}
-                        secureTextEntry
-                        value={password}
-                        onChangeText={this.onIdentifierChange.bind(this)}
-                        type="password"
-                        name="password"
-                        placeholder="Điền mật khẩu:"
-                    />
-
-                    <Text>
-                        {error && <Text style={styles.errorStyle}>{error}</Text>}
-                    </Text>
-                </View>
-
-
-
-                {this.renderMessage()}
-                <CardSection>
+                
+                <View style={styles.buttonContainer}>
                     {this.renderButtonLogin()}
-                </CardSection>
+                </View>
             </View>
         );
     }
@@ -146,6 +171,18 @@ const styles = {
         color: 'green',
         fontSize: 18
     },
+    InputContainer: {
+        paddingBottom: 30,
+        marginLeft: 10,
+        marginRight: 10
+    },
+    groupControl: {
+        borderRadius: 5,
+        borderWidth: 1,
+        marginBottom: 10,
+        padding: 5,
+        borderColor: 'rgba(41, 128, 185,1.0)'
+    },
     textInput: {
         color: 'white'
     },
@@ -157,10 +194,13 @@ const styles = {
         fontSize: 18,
         color: 'rgba(255,255,255,0.6)'
     },
-    groupControl: {
-
-    }
+    buttonContainer: {
+        flex: 0.2,
+        marginBottom: height / 55
+    },
+    
 }
+
 
 const mapStateToProps = (state, ownProps) => {
     const { identifier, password, error, user, loading } = state.loginForm;
