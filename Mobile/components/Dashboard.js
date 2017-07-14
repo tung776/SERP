@@ -21,7 +21,7 @@ class Dashboard extends Component {
 const styles = {
     container: {
         flex: 1,
-        backgroundColor: 'red',
+        backgroundColor: '#bdc3c7',
     }
 };
 export default Dashboard;

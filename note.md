@@ -1,3 +1,21 @@
+###     Ngày 14/7/2017: ###
+Thiết kế và thực thi chức năng login logout
+Sau khi login hệ thống sẽ trả về giá trị token
+mobile sẽ lưu lại token này và sử dụng cho lần sau. Nếu có token sẽ dc bỏ qua bước đăng nhập
+Ngược lại người dùng sẽ bị yêu cầu đăng nhập lại
+
+Tạo uploadImage picker cho phép người dùng upload ảnh lên server
+
+Lỗi cài RNFetchBlob
+error: package com.RNFetchBlob does not exist
+import com.RNFetchBlob.RNFetchBlobPackage;
+
+khắc phục bằng cách bổ xung dòng mã 
+compile project(':react-native-fetch-blob')
+
+vào trong file: android/app/build.gradle
+###     Ngày 13/7/2017: ###
+Tiếp tục tái cấu trúc dự án và sửa lỗi
 ###     Ngày 12/7/2017: ###
 Tiếp tục tái cấu trúc dự án:
 Thư mục Shared là nơi chữa code chia sẻ xuyên suốt dự án cho mobile, server và trình duyệt

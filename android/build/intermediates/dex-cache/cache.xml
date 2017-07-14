@@ -3,6 +3,15 @@
 
     <item
         is-multidex="false"
+        jar="F:\SERP\android\app\build\intermediates\exploded-aar\serp\react-native-fetch-blob\unspecified\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.1"
+        sha1="7dbf8d204fa8d4e7e3bc58ea51f3a9bdd95b9780">
+        <dex dex="F:\SERP\android\app\build\intermediates\pre-dexed\debug\serp-react-native-fetch-blob-unspecified_5d820dbafc0af5a455c719b0b39b5e76c945559e.jar" />
+    </item>
+    <item
+        is-multidex="false"
         jar="D:\androidSDK\extras\android\m2repository\com\android\support\support-annotations\23.0.1\support-annotations-23.0.1.jar"
         jumboMode="false"
         optimize="true"
@@ -90,6 +99,15 @@
         revision="23.0.1"
         sha1="f162442a19fff13995fbd51ba414d9ee05579080">
         <dex dex="F:\SERP\android\app\build\intermediates\pre-dexed\debug\staticlayout-proxy-1.0_403691b6b104008509c439ada009c621ce03dded.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="F:\SERP\android\app\build\intermediates\exploded-aar\serp\react-native-image-picker\unspecified\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.1"
+        sha1="185debb713f05e6ae262b4167d7645dce64ca4cb">
+        <dex dex="F:\SERP\android\app\build\intermediates\pre-dexed\debug\serp-react-native-image-picker-unspecified_dd7aa9f773ad62e69beb7229224f60858dbade44.jar" />
     </item>
     <item
         is-multidex="false"

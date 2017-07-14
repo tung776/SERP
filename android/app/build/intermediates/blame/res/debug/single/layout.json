@@ -156,6 +156,10 @@
         "source": "F:\\SERP\\Mobile\\android\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.0.1\\res\\layout\\abc_list_menu_item_layout.xml"
     },
     {
+        "merged": "F:\\SERP\\android\\app\\build\\intermediates\\res\\merged\\debug\\layout\\list_item.xml",
+        "source": "F:\\SERP\\android\\app\\build\\intermediates\\exploded-aar\\serp\\react-native-image-picker\\unspecified\\res\\layout\\list_item.xml"
+    },
+    {
         "merged": "F:\\SERP\\android\\app\\build\\intermediates\\res\\merged\\debug\\layout\\select_dialog_multichoice_material.xml",
         "source": "F:\\SERP\\android\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.0.1\\res\\layout\\select_dialog_multichoice_material.xml"
     },

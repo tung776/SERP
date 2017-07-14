@@ -17,7 +17,7 @@ class Profile extends Component {
 const styles = {
     container: {
         flex: 1,
-        backgroundColor: 'blue',
+        backgroundColor: '#bdc3c7',
     }
 };
 export default Profile;

@@ -6,7 +6,7 @@ class AppFooter extends Component {
     render() {
         return (
             <View style = {styles.footerContainer}>
-                <Text>Footer</Text>
+                <Text style = {styles.footerTitleStyle}>Footer</Text>
             </View>
         );
     }
@@ -21,7 +21,11 @@ const styles = {
         paddingLeft: 10,
         paddingRight: 10,
         paddingTop:5,
-        paddingBottom: 5
+        paddingBottom: 5,
+    },
+    footerTitleStyle: {
+        color: '#ecf0f1',
+        fontSize: 20
     }
 }
 export default AppFooter;

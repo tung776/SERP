@@ -15,7 +15,7 @@ class AppHeader extends Component {
                 }}>
                     <Image style={styles.logoStyle} source={require('../../../Shared/images/Logo.png')} />
                 </TouchableOpacity>
-                <Text style={styles.headerTitle} >SERP</Text>
+                {this.children}
                 <Image style={styles.settingIcon} source={require('../../../Shared/images/icons/setting.png')} />
             </View>
         );
@@ -43,11 +43,6 @@ const styles = {
         width: 30,
         height: 30,
         padding: 5
-    },
-    headerTitle: {
-        fontSize: 20,
-        fontWeight: '600',
-        color: '#FFFFFF'
     }
 }
 export default AppHeader;
