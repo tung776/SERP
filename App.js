@@ -44,7 +44,9 @@ StatusBar.setHidden(true);
 //   return fonts.map(font => Expo.Font.loadAsync(font));
 // }
 
-
+const store = createStore(Reducers, compose(
+    applyMiddleware(ReduxThunk, reduxLogger)));
+    
 export default class serp extends Component {
   state = { appIsReady: false }
 
@@ -66,12 +68,8 @@ export default class serp extends Component {
   // }
 
   componentWillMount() {
-    this.setState({appIsReady: true});
-  }
+    
 
-  render() {
-    const store = createStore(Reducers, compose(
-      applyMiddleware(ReduxThunk, reduxLogger)));
     AsyncStorage.getItem('jwtToken').then(
       token => {
         if (token) {
@@ -79,8 +77,15 @@ export default class serp extends Component {
           setAuthorizationToken(token);
           store.dispatch(SetCurrentUser(jwt(token)));
         }
+        this.setState({appIsReady: true});
       }
     )
+    
+  }
+
+  render() {
+    
+    
 
     if (!this.state.appIsReady) {
       return (
