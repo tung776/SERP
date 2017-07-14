@@ -123,7 +123,7 @@ const styles = {
     },
     buttonMenuContainer: {
         margin: 3,
-        width: 250
+        width: 250,
     }
 }
 
