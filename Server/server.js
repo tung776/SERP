@@ -3,14 +3,16 @@ import path from 'path';
 const app = express();
 import { appConfig, databaseConfig, passportConfig} from './config';
 import { AuthRoutes, IndexRouter } from './routes';
-
+import formidable from 'express-formidable';
 // databaseConfig();
 
 //=========
 //config aplication
 //=========
 appConfig(app);
-
+app.use(formidable({
+  uploadDir: path.resolve("Server/public/images")
+}));
 //=========
 //Passport config
 //=========
@@ -36,6 +38,7 @@ import {UserRouters} from './routes/UserRouters';
 app.use('/api/users', UserRouters);
 import {RequestHandler} from'./requestHandler';
 app.use( RequestHandler);
+
 // catch 404 and forward to error handler
 // app.use(function(req, res, next) {
 //   var err = new Error('Not Found');

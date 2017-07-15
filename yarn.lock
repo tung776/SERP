@@ -2822,6 +2822,12 @@ expo@^17.0.0:
     uuid-js "^0.7.5"
     websql "^0.4.4"
 
+express-formidable@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/express-formidable/-/express-formidable-1.0.0.tgz#dc922f0455132322458a9ec1a301d891b3ffca8d"
+  dependencies:
+    formidable "^1.0.17"
+
 express-session@^1.15.3:
   version "1.15.3"
   resolved "https://registry.yarnpkg.com/express-session/-/express-session-1.15.3.tgz#db545f0435a7b1b228ae02da8197f65141735c67"
@@ -3105,7 +3111,7 @@ form-data@^2.1.1, form-data@~2.1.1:
     combined-stream "^1.0.5"
     mime-types "^2.1.12"
 
-formidable@^1.1.1:
+formidable@^1.0.17, formidable@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/formidable/-/formidable-1.1.1.tgz#96b8886f7c3c3508b932d6bd70c4d3a88f35f1a9"
 
@@ -4969,9 +4975,9 @@ native-base-shoutem-theme@0.1.7:
     lodash "^4.10.1"
     prop-types "^15.5.10"
 
-native-base@^2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/native-base/-/native-base-2.2.0.tgz#63d1aadd72c3ef737076f0be9d9c2ff64608c609"
+native-base@^2.2.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/native-base/-/native-base-2.2.1.tgz#af2e3388411c04a92c13101d7757496b7252850b"
   dependencies:
     "@shoutem/animation" "^0.8.9"
     blueimp-md5 "^2.5.0"
@@ -4982,7 +4988,7 @@ native-base@^2.2.0:
     native-base-shoutem-theme "0.1.7"
     print-message "^2.1.0"
     react-native-drawer "^2.3.0"
-    react-native-easy-grid "0.1.7"
+    react-native-easy-grid "0.1.9"
     react-native-keyboard-aware-scroll-view "0.2.9"
     react-native-vector-icons "~4.1.1"
     react-tween-state "^0.1.5"
@@ -5832,9 +5838,9 @@ react-native-drawer@^2.3.0:
   dependencies:
     tween-functions "^1.0.1"
 
-react-native-easy-grid@0.1.7:
-  version "0.1.7"
-  resolved "https://registry.yarnpkg.com/react-native-easy-grid/-/react-native-easy-grid-0.1.7.tgz#44205cc39adff32a8a20efa8451d76a4499f0a3f"
+react-native-easy-grid@0.1.9:
+  version "0.1.9"
+  resolved "https://registry.yarnpkg.com/react-native-easy-grid/-/react-native-easy-grid-0.1.9.tgz#41b00b2fa02c3fab125cb80ef90429bfb3d698cc"
   dependencies:
     lodash "^4.11.1"
 
