@@ -6,23 +6,25 @@ import { Actions } from 'react-native-router-flux';
 import Header from './commons/Header';
 import Footer from './commons/Footer';
 import { ImagePicker, Constants } from 'expo';
-import {URL} from '../../env';
-const apiUrl = URL+"/api/users/upload";
+import { URL } from '../../env';
+const apiUrl = URL + "/api/users/upload";
 import { AsyncStorage } from 'react-native';
+import axios from 'axios';
 
 class Home extends Component {
     state = {
         uploading: false,
-        image: null
+        image: null,
+        imageUrl: null
     }
     uploadImageAsync = async (uri) => {
         console.log("uri =", uri);
-        console.log("apiURL = ", URL+"/api/users/upload");
+        console.log("apiURL = ", URL + "/api/users/upload");
         console.log("begin upload!!!");
 
         const uriParts = uri.split('.');
         console.log("uriParts= ", uriParts)
-        console.log("length = ", uriParts[uriParts.length-1]);
+        console.log("length = ", uriParts[uriParts.length - 1]);
         const fileType = uriParts[uriParts.length - 1];
         console.log("filetype = ", fileType);
         const formData = new FormData();
@@ -30,27 +32,28 @@ class Home extends Component {
             uri,
             name: `photo.${fileType}`,
             filename: `photo.${fileType}`,
-            type: `image/${fileType}`,
-            data: uri
+            type: `image/${fileType}`
+            // data: uri
         });
         console.log("formData ", formData);
         const token = await AsyncStorage.getItem('jwtToken')
         const options = {
-            method: 'POST',
-            body: formData,
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Accept': 'application/json',
                 'Content-Type': 'multipart/form-data',
             },
         };
-        console.log("begin fetch");
+       
 
-        return fetch(apiUrl, options);
+        return axios.post(apiUrl, formData, options);
+
+        // return fetch(apiUrl, options);
     }
     _pickImage = async () => {
         let pickerResult = await ImagePicker.launchImageLibraryAsync({
-            allowsEditing: false
+            allowsEditing: false,
+            base64: true
         });
 
         await this._handleImagePicked(pickerResult);
@@ -60,13 +63,21 @@ class Home extends Component {
         let uploadResponse, uploadResult;
 
         try {
-            this.setState({ uploading: true});
+            this.setState({ uploading: true });
 
             if (!pickerResult.cancelled) {
-                uploadResponse = await this.uploadImageAsync(pickerResult.uri);
-                console.log({ uploadResponse });
-                uploadResult = await uploadResponse.json();
-                this.setState({ image: uploadResult.location });
+                this.uploadImageAsync(pickerResult.uri).then(
+                    res => {
+                        console.log("res = ", res);
+                        const url = URL + res.data.url;
+                        this.setState({ imageUrl: url});
+                    }
+                )
+                // uploadResponse = await this.uploadImageAsync(pickerResult.uri);
+                // // console.log({ uploadResponse });
+                // // uploadResult = await uploadResponse.json();
+                // console.log("uploadResult", uploadResponse)
+                // this.setState({ imageUrl: uploadResponse });
             }
         } catch (e) {
             console.log({ uploadResponse });
@@ -85,12 +96,12 @@ class Home extends Component {
         });
 
         this._handleImagePicked(pickerResult);
-    }    
+    }
 
     render() {
-        const renderImage = (this.state.avatarSource === null) ? null :
+        const renderImage = (this.state.image === null) ? null :
             <Image
-                source={this.state.avatarSource}
+                source={this.state.image}
                 style={{ width: 100, height: 100 }}
             />
         let { image } = this.state;
@@ -110,18 +121,19 @@ class Home extends Component {
                         title="Chọn ảnh tải lên"
                         onPress={this._pickImage}
                     />
-                    {image &&
-                        <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
+                    {
+                        this.state.imageUrl &&
+                        <Image style={{ width: 200, height: 200 }} source={{ uri: this.state.imageUrl }} />}
                 </View>
-                <View>
-                    {this._maybeRenderImage()}
-                    {this._maybeRenderUploadingOverlay()}
-                </View>
+
                 <Footer />
             </View>
         );
     }
-
+    // <View>
+    //     {this._maybeRenderImage()}
+    //     {this._maybeRenderUploadingOverlay()}
+    // </View>
     _maybeRenderUploadingOverlay = () => {
         if (this.state.uploading) {
             return (
@@ -137,11 +149,14 @@ class Home extends Component {
     }
 
     _maybeRenderImage = () => {
+
+
         let { image } = this.state;
         if (!image) {
             return;
         }
-
+        console.log("begin render image");
+        console.log("image", image);
         return (
             <View style={{
                 marginTop: 30,

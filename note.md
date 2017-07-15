@@ -1,3 +1,6 @@
+###     Ngày 15/7/2017: ###
+Học cách upload ảnh từ react native lên server sử dụng imagepickup của expo, và formidable trên server
+Chỉnh sửa app.json để thư nghiệm build ứng dụng từ expo
 ###     Ngày 14/7/2017: ###
 Thiết kế và thực thi chức năng login logout
 Sau khi login hệ thống sẽ trả về giá trị token

@@ -3,16 +3,16 @@ import path from 'path';
 const app = express();
 import { appConfig, databaseConfig, passportConfig} from './config';
 import { AuthRoutes, IndexRouter } from './routes';
-import formidable from 'express-formidable';
+// import formidable from 'express-formidable';
 // databaseConfig();
 
 //=========
 //config aplication
 //=========
 appConfig(app);
-app.use(formidable({
-  uploadDir: path.resolve("Server/public/images")
-}));
+// app.use(formidable({
+//   uploadDir: path.resolve("Server/public/images")
+// }));
 //=========
 //Passport config
 //=========

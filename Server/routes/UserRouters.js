@@ -9,7 +9,7 @@ import Validator from 'validator';
 import jwt from 'jsonwebtoken';
 import config from '../config/jwt';
 import authentization from '../middleware/authenticate';
-// const multer = require('multer');
+const multer = require('multer');
 
 function validateInput(data, otherValidation) {
     let { errors } = otherValidation(data);
@@ -122,32 +122,34 @@ UserRouters.post('/login', (req, res, next) => {
 
 });
 
-// var storage = multer.diskStorage({
-//   destination: function (req, file, cb) {
-//       console.log("file = ", file);
-//     cb(null, '/public/images/userProfile')
-//   },
-//   filename: function (req, file, cb) {
-//       console.log("file = ", file);
-//     cb(null, `${file.fieldname}-${Date.now()}.png`)
-//   }
-// });
-// var upload = multer({ storage: storage })
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+      cb(null, './Server/public/uploads/');
+    },
+    filename: function (req, file, cb) {
+          let extent = file["originalname"].slice(file["originalname"].length-4, file["originalname"].length);
+          cb(null, file.fieldname + '-' + Date.now() + extent)
+    }
+  })
+var upload = multer({ storage: storage })
+// var upload = multer({ dest: './Server/public/uploads/' })
 
-// UserRouters.post('/upload', upload.single('photo'), (req, res, next) => {
-//     console.log("req.file = ", req.file);
-//     res.json(req.file)
-// })
-
-
-
-UserRouters.post('/upload', (req, res)=> {
-
-    console.log("req.files = ", req.files)
-    console.log("req.body = ", req.body)
-    console.log("req.field = ", req.fields)
-    res.json("ok")
+UserRouters.post('/upload', upload.single('photo'), (req, res, next) => {
+    console.log("req.file.filename = ", req.file.filename);
+    console.log("req.file = ", req.file);
+    const url = "/uploads/" + req.file.filename;
+    res.status(200).json({url: url, filename: req.file.filename });
 })
+
+
+
+// UserRouters.post('/upload', (req, res)=> {
+
+//     console.log("req.files = ", req.files)
+//     console.log("req.files.photo = ", req.files.photo)
+//     console.log("req.field = ", req.fields)
+//     res.status(200).json(req.files.photo);
+// })
 
 // AuthRoutes.get('/logout', userController.getLogout);
 
