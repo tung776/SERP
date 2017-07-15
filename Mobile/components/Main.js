@@ -10,6 +10,7 @@ import { URL } from '../../env';
 const apiUrl = URL + "/api/users/upload";
 import { AsyncStorage } from 'react-native';
 import axios from 'axios';
+import Communications from 'react-native-communications';
 
 class Home extends Component {
     state = {
@@ -44,7 +45,7 @@ class Home extends Component {
                 'Content-Type': 'multipart/form-data',
             },
         };
-       
+
 
         return axios.post(apiUrl, formData, options);
 
@@ -70,7 +71,7 @@ class Home extends Component {
                     res => {
                         console.log("res = ", res);
                         const url = URL + res.data.url;
-                        this.setState({ imageUrl: url});
+                        this.setState({ imageUrl: url });
                     }
                 )
             }
@@ -121,6 +122,34 @@ class Home extends Component {
                         <Image style={{ width: 200, height: 200 }} source={{ uri: this.state.imageUrl }} />
                     }
                 </View>
+
+
+
+                <View style={styles.container}>
+                    <TouchableOpacity onPress={() => Communications.phonecall('0916678845', true)}>
+                        <View style={styles.holder}>
+                            <Text style={styles.text}>Make phonecall</Text>
+                        </View>
+                    </TouchableOpacity>
+                    
+                    <TouchableOpacity onPress={() => Communications.text('0916678845', "Thanh tung")}>
+                        <View style={styles.holder}>
+                            <Text style={styles.text}>Send a text/iMessage</Text>
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => Communications.email(['thanhtung776@gmail.com', 'thanhtung776@hotmal.com'], null, null, 'My Subject', 'My body text')}>
+                        <View style={styles.holder}>
+                            <Text style={styles.text}>Send an email</Text>
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => Communications.web('https://github.com/facebook/react-native')}>
+                        <View style={styles.holder}>
+                            <Text style={styles.text}>Open react-native repo on Github</Text>
+                        </View>
+                    </TouchableOpacity>
+                </View>
+
+
 
                 <Footer />
             </View>
@@ -187,7 +216,16 @@ class Home extends Component {
 
 const styles = {
     container: {
-        flex: 1
+        flex: 1,
+        // alignItems: 'center',
+        // backgroundColor: 'rgb(253,253,253)',
+    },
+    holder: {
+        // flex: 0.25,
+        // justifyContent: 'center',
+    },
+    text: {
+        // fontSize: 32,
     },
     contentContainer: {
         flex: 12,
