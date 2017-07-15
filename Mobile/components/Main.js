@@ -73,11 +73,6 @@ class Home extends Component {
                         this.setState({ imageUrl: url});
                     }
                 )
-                // uploadResponse = await this.uploadImageAsync(pickerResult.uri);
-                // // console.log({ uploadResponse });
-                // // uploadResult = await uploadResponse.json();
-                // console.log("uploadResult", uploadResponse)
-                // this.setState({ imageUrl: uploadResponse });
             }
         } catch (e) {
             console.log({ uploadResponse });
@@ -123,7 +118,8 @@ class Home extends Component {
                     />
                     {
                         this.state.imageUrl &&
-                        <Image style={{ width: 200, height: 200 }} source={{ uri: this.state.imageUrl }} />}
+                        <Image style={{ width: 200, height: 200 }} source={{ uri: this.state.imageUrl }} />
+                    }
                 </View>
 
                 <Footer />

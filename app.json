@@ -1,6 +1,4 @@
 {
-  "name": "serp",
-  "displayName": "serp",
   "expo": {
     "sdkVersion": "17.0.0",
     "icon": "./Shared/images/Logo.png",
@@ -8,8 +6,8 @@
       "package": "com.soncattuong.serp"
     },
     "loading": {
-      "hideExponentText": false,
-      "backgroundImage": "./Shared/images/Logo.png"
+      "hideExponentText": true,
+      "backgroundImage": "./Server/public/images/screen.jpg"
     },
     "orientation": "portrait",
     "primaryColor": "#cccccc",
@@ -22,6 +20,14 @@
     "androidStatusBar": {
       "barStyle": "light-content",
       "backgroundColor": "#334393"
+    },
+    "name": "serp",
+    "slug": "serp",
+    "version": "0.0.1",
+    "isDetached": true,
+    "detach": {
+      "scheme": "expad92b93b61634a0aad431a250cc80214",
+      "androidExpoViewUrl": "https://s3.amazonaws.com/exp-exponent-view-code/android-v1.16.1-sdk17.0.0-87570a36-13ff-4017-9b89-6c9930b78572.tar.gz"
     }
   }
 }

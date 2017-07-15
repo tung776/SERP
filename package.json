@@ -10,7 +10,7 @@
     "web": "webpack  -help",
     "mobile": "react-native-scripts start",
     "test": "jest",
-    "build": "exp build:android",
+    "build:mobile": "exp build:android",
     "detach": "exp detach",
     "getLink": "exp build:status"
   },

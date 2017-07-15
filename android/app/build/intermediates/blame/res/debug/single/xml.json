@@ -1,14 +1,10 @@
 [
     {
-        "merged": "F:\\SERP\\Mobile\\android\\app\\build\\intermediates\\res\\merged\\debug\\xml\\preferences.xml",
-        "source": "F:\\SERP\\Mobile\\android\\app\\build\\intermediates\\exploded-aar\\com.facebook.react\\react-native\\0.44.0\\res\\xml\\preferences.xml"
-    },
-    {
         "merged": "F:\\SERP\\android\\app\\build\\intermediates\\res\\merged\\debug\\xml\\preferences.xml",
-        "source": "F:\\SERP\\android\\app\\build\\intermediates\\exploded-aar\\com.facebook.react\\react-native\\0.44.0\\res\\xml\\preferences.xml"
+        "source": "F:\\SERP\\android\\app\\build\\intermediates\\exploded-aar\\com.facebook.react\\react-native\\17.0.0\\res\\xml\\preferences.xml"
     },
     {
         "merged": "F:\\SERP\\android\\app\\build\\intermediates\\res\\merged\\debug\\xml\\provider_paths.xml",
-        "source": "F:\\SERP\\android\\app\\build\\intermediates\\exploded-aar\\serp\\react-native-image-picker\\unspecified\\res\\xml\\provider_paths.xml"
+        "source": "F:\\SERP\\android\\app\\build\\intermediates\\exploded-aar\\host.exp.exponent\\expoview\\17.0.0\\res\\xml\\provider_paths.xml"
     }
 ]
