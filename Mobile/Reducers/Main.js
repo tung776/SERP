@@ -5,6 +5,7 @@ import { View, Text, Image, TouchableOpacity, Button, Clipboard, Share, StyleShe
 import { Actions } from 'react-native-router-flux';
 import Header from './commons/Header';
 import Footer from './commons/Footer';
+
 import {takePhoto, takeImage, uploadImageAsync } from "../utils/uploadImage";
 import { URL } from '../../env';
 
@@ -60,10 +61,6 @@ class Home extends Component {
                     <Button
                         title="Chọn ảnh tải lên"
                         onPress={this.handleImagePicked}
-                    />
-                    <Button
-                        title="Categories"
-                        onPress={Actions.categories()}
                     />
                     {
                         this.state.imageUrl &&

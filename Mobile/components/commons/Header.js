@@ -15,16 +15,16 @@ class AppHeader extends Component {
                 }}>
                     <Image style={styles.logoStyle} source={require('../../../Shared/images/Logo.png')} />
                 </TouchableOpacity>
-                {this.children}
+                {this.props.children}
                 <Image style={styles.settingIcon} source={require('../../../Shared/images/icons/setting.png')} />
             </View>
         );
     }
 }
-const { height } = Dimensions.get('window');
+const { height } = Dimensions.get('window').height;
 const styles = {
     headerContainer: {
-        flex: 1,
+        height: height/12,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',

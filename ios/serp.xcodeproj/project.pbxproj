@@ -50,6 +50,7 @@
 		5FB27FC34F714A0985129002 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BCC504A35BBE464EA1EBDA80 /* Zocial.ttf */; };
 		AE933F09BF5A4E1CA53DCEBB /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 122BA302D89749C49BEC9116 /* libRNImagePicker.a */; };
 		237E74C990984B6AB107511B /* libRNFetchBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A861182BD03B407C93E0222D /* libRNFetchBlob.a */; };
+		76F50F5DAFA44858AFB8811F /* OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = 5F1A3A7AB5DF4DE0B782239A /* OFL.txt */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -287,6 +288,7 @@
 		122BA302D89749C49BEC9116 /* libRNImagePicker.a */ = {isa = PBXFileReference; name = "libRNImagePicker.a"; path = "libRNImagePicker.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		F1AA9A4B00C840C2A576BA3E /* RNFetchBlob.xcodeproj */ = {isa = PBXFileReference; name = "RNFetchBlob.xcodeproj"; path = "../node_modules/react-native-fetch-blob/ios/RNFetchBlob.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		A861182BD03B407C93E0222D /* libRNFetchBlob.a */ = {isa = PBXFileReference; name = "libRNFetchBlob.a"; path = "libRNFetchBlob.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		5F1A3A7AB5DF4DE0B782239A /* OFL.txt */ = {isa = PBXFileReference; name = "OFL.txt"; path = "../node_modules/native-base/Fonts/OFL.txt"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -537,6 +539,7 @@
 				F5F5DCC893DC4B0CB9691346 /* rubicon-icon-font.ttf */,
 				CB628223269241A49ED7C4AB /* SimpleLineIcons.ttf */,
 				BCC504A35BBE464EA1EBDA80 /* Zocial.ttf */,
+				5F1A3A7AB5DF4DE0B782239A /* OFL.txt */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -912,6 +915,7 @@
 				7508819350654905878846D1 /* rubicon-icon-font.ttf in Resources */,
 				A8A285951134457095006154 /* SimpleLineIcons.ttf in Resources */,
 				5FB27FC34F714A0985129002 /* Zocial.ttf in Resources */,
+				76F50F5DAFA44858AFB8811F /* OFL.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

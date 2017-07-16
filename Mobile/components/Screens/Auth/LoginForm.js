@@ -2,18 +2,18 @@ import React, { Component } from 'react';
 // import { Container, Content, Form, Item, Button, Text, Header, Body, Footer, Right, Left, Spinner, Input} from 'native-base';
 import { connect } from 'react-redux';
 import { Text, View, Image, TextInput, TouchableOpacity, Dimensions, Button } from 'react-native';
-import { Card, CardSection, Spinner } from './commons';
+import {  Spinner } from '../../commons/index';
 // import Expo from 'expo';
 import {
     emailChanged,
     passwordChanged,
     loginUser,
     LoginFormChanged
-} from '../actions';
+} from '../../../actions';
 
 import { Actions } from 'react-native-router-flux';
 import { AsyncStorage } from 'react-native';
-import { URL } from '../../env';
+import { URL } from '../../../../env';
 const height = Dimensions.get("window").height;
 
 class LoginForm extends Component {
@@ -73,19 +73,7 @@ class LoginForm extends Component {
 
 
         );
-        // return (
-        //     <TouchableOpacity onPress={this.onLoginPress.bind(this)} style={styles.LoginButtonStyle} >
-        //         <Text style={styles.LoginTextStyle}>Đăng Nhập</Text>
-        //     </TouchableOpacity>
 
-        // );
-        // return (
-        //     <Button
-        //         onPress={this.onLoginPress.bind(this)}
-        //     >
-        //         <Text>Login</Text>
-        //     </Button>
-        // );
     }
     render() {
         const { identifier, password, error } = this.props;
@@ -95,7 +83,7 @@ class LoginForm extends Component {
                 <View style={styles.logoContainer}>
                     <Image
                         style={styles.logoStyle}
-                        source={require('../../Shared/images/Logo.png')}
+                        source={require('../../../../Shared/images/Logo.png')}
                     />
                 </View>
 

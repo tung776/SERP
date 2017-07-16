@@ -55,6 +55,7 @@
     "react-native": "0.44.0",
     "react-native-communications": "^2.2.1",
     "react-native-drawer": "^2.3.0",
+    "react-native-popup-menu": "^0.8.0",
     "react-native-router-flux": "^3.41.0",
     "react-native-tab-navigator": "^0.3.3",
     "react-redux": "^5.0.5",
