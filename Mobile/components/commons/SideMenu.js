@@ -57,8 +57,16 @@ class SideMenu extends Component {
                     </View>
                     <View style={styles.buttonMenuContainer}>
                         <Button
-                            onPress={goHomePage}
+                            onPress={()=> Actions.categoryList()}
                             title="Nhóm Sản Phẩm"
+                            color="rgba(41, 128, 185,1.0)"
+                            accessibilityLabel="Learn more about this purple button"
+                        />
+                    </View>
+                    <View style={styles.buttonMenuContainer}>
+                        <Button
+                            onPress={()=> Actions.categoryNew() }
+                            title="Thêm Nhóm Sản Phẩm"
                             color="rgba(41, 128, 185,1.0)"
                             accessibilityLabel="Learn more about this purple button"
                         />

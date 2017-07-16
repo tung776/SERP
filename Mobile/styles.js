@@ -13,5 +13,9 @@ export default styles = {
     headTitle: {
         fontSize: 20,
         color: '#1abc9c'
+    },
+    footerTitleStyle: {
+        color: '#ecf0f1',
+        fontSize: 20
     }
 }

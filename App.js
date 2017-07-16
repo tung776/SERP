@@ -25,6 +25,7 @@ import { SetCurrentUser } from './Shared/actions/authCommon';
 import jwt from 'jwt-decode';
 import { AppBody, AppHeader, AppFooter } from './Mobile/components/commons';
 import { FontAwesome } from "@expo/vector-icons";
+import { Ionicons } from '@expo/vector-icons';
 // import CustomComponents from 'react-native-deprecated-custom-components';
 import Splash from './Mobile/components/Splash';
 
@@ -67,6 +68,7 @@ export default class serp extends Component {
 
       const fontAssets = cacheFonts([
         FontAwesome.font,
+        Ionicons.font
       ]);
 
       await Promise.all([

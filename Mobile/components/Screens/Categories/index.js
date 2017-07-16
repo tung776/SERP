@@ -1,64 +1,93 @@
 import React, { Component } from 'react';
-import {View, Text, ScrollView, Image} from 'react-native';
+import { View, Text, ScrollView, Image, Dimensions, TouchableOpacity } from 'react-native';
 import Header from '../../commons/Header';
 import Footer from '../../commons/Footer';
 import { Actions } from 'react-native-router-flux';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import stylesCommon from '../../../styles';
+import { Ionicons } from '@expo/vector-icons';
 
 class Categories extends Component {
-    state = {  }
+    state = {}
+    addNewGroupBtnPress () {
+        console.log("go here");
+        Actions.main();
+    }
+
     render() {
         return (
-            <View style = {styles.container}>
+            <View style={styles.container}>
                 <Header>
-                    <Text style = {styles.headTitle}>Nhóm Sản Phẩm</Text>
+                    <Text style={styles.headTitle}>Nhóm Sản Phẩm</Text>
                 </Header>
-                <View style = {styles.body}>
+                <View style={styles.body}>
                     <ScrollView>
-                        <View style = {styles.listItem}>
-                            <Image style = {styles.itemImage} source = {require( "../../../assets/images/BienSonPU.jpg")} />
-                            <Text>Sơn PU</Text>
+                        <View style={styles.listItem}>
+                            <Image style={styles.itemImage} source={require("../../../assets/images/BienSonPU.jpg")} />
+                            <Text style={styles.itemTitle}>Sơn PU</Text>
                         </View>
-                        <View style = {styles.listItem}>
-                            <Image style = {styles.itemImage} source = {require( "../../../assets/images/BienSon2k.jpg")} />
-                            <Text>Sơn 2K</Text>
+                        <View style={styles.listItem}>
+                            <Image style={styles.itemImage} source={require("../../../assets/images/BienSon2k.jpg")} />
+                            <Text style={styles.itemTitle}>Sơn 2K</Text>
                         </View>
-                        <View style = {styles.listItem}>
-                            <Image style = {styles.itemImage} source = {require( "../../../assets/images/BienSonKem.jpg")} />
-                            <Text>Sơn Kẽm</Text>
+                        <View style={styles.listItem}>
+                            <Image style={styles.itemImage} source={require("../../../assets/images/BienSonKem.jpg")} />
+                            <Text style={styles.itemTitle}>Sơn Kẽm</Text>
                         </View>
-                        <View style = {styles.listItem}>
-                            <Image style = {styles.itemImage} source = {require( "../../../assets/images/BienSonCN.jpg")} />
-                            <Text>Sơn Công Nghiệp</Text>
+                        <View style={styles.listItem}>
+                            <Image style={styles.itemImage} source={require("../../../assets/images/BienSonCN.jpg")} />
+                            <Text style={styles.itemTitle}>Sơn Công Nghiệp</Text>
                         </View>
-                        <View style = {styles.listItem}>
-                            <Image style = {styles.itemImage} source = {require( "../../../assets/images/BienSonNhom.jpg")} />
-                            <Text>Sơn Nhôm</Text>
+                        <View style={styles.listItem}>
+                            <Image style={styles.itemImage} source={require("../../../assets/images/BienSonNhom.jpg")} />
+                            <Text style={styles.itemTitle}>Sơn Nhôm</Text>
                         </View>
                     </ScrollView>
                 </View>
-                <Footer/>
+                <Footer>
+                    <TouchableOpacity style={styles.addNewGroupBtn} onPress={ ()=> { Actions.categoryNew() } }>
+                        <Ionicons name="ios-add-circle" size={32} color="#FFFFFF" />
+                        <Text style={{ alignSelf: "center", paddingLeft: 10, fontSize: 16, color: "#FFFFFF", fontWeight: "600" }}>Thêm Nhóm</Text>
+                    </TouchableOpacity>
+                </Footer>
             </View>
         );
     }
 }
+
+const widthScreen = Dimensions.get('window').width;
+const widthImage = widthScreen - 25;
 const styles = {
     container: stylesCommon.container,
     body: stylesCommon.body,
     headTitle: stylesCommon.headTitle,
     listItem: {
-        flexDirection: 'row',
+        // flexDirection: 'row',
         flex: 1,
         paddingTop: 2,
         paddingBottom: 2
     },
     itemImage: {
-        width: 100,
-        height: 125
+        width: widthImage,
+        height: (widthImage * 0.45)
+    },
+    itemTitle: {
+        fontSize: 20,
+        fontWeight: '500',
+        alignSelf: 'center',
+        paddingBottom: 5,
+        paddingTop: 5,
+    },
+    addNewGroupBtn: {
+        flexDirection: 'row',
+        backgroundColor: "#2ecc71",
+        padding: 3,
+        paddingRight: 15,
+        paddingLeft: 15,
+        borderRadius: 5,
     }
 }
 // const mapStateToProps(state, ownProps)=> {
 //     return state
 // }
-export default Categories;
+export default connect()(Categories);

@@ -7,7 +7,7 @@ class AppFooter extends Component {
     render() {
         return (
             <View style = {styles.footerContainer}>
-                <Text style = {styles.footerTitleStyle}>Footer</Text>
+                {this.props.children}
             </View>
         );
     }
@@ -23,10 +23,6 @@ const styles = {
         paddingRight: 10,
         paddingTop:5,
         paddingBottom: 5,
-    },
-    footerTitleStyle: {
-        color: '#ecf0f1',
-        fontSize: 20
     }
 }
 export default AppFooter;
