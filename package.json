@@ -18,6 +18,7 @@
   "dependencies": {
     "@expo/vector-icons": "^5.0.0",
     "axios": "^0.16.2",
+    "babel-plugin-transform-remove-console": "^6.8.4",
     "bcrypt": "^1.0.2",
     "bcrypt-nodejs": "^0.0.3",
     "bluebird": "^3.5.0",
