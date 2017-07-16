@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 // import { Container,Icon, Button,Content, Title, FooterTab, Text, Header, Body, Footer, Right, Left} from 'native-base';
-import { View, Text, Image, TouchableOpacity, Button, Clipboard, Share, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, Image, Button, StyleSheet, ActivityIndicator } from 'react-native';
 // import { Card, CardSection, Button } from './commons';
 import { Actions } from 'react-native-router-flux';
 import Header from './commons/Header';
 import Footer from './commons/Footer';
-import {takePhoto, takeImage, uploadImageAsync } from "../utils/uploadImage";
+import { takeImage, uploadImageAsync } from '../utils/uploadImage';
 import { URL } from '../../env';
 
 class Home extends Component {
@@ -17,7 +17,7 @@ class Home extends Component {
 
 
     handleImagePicked = async () => {
-        let uploadResponse, uploadResult;
+        // let uploadResponse, uploadResult;
         
         try {
             const pickerResult = await takeImage();
@@ -25,28 +25,23 @@ class Home extends Component {
             this.setState({ uploading: true });
 
             if (!pickerResult.cancelled) {
-                const apiUrl = URL + "/api/users/upload";
+                const apiUrl = `${URL}/api/users/upload`;
                 
                 uploadImageAsync(pickerResult.uri, apiUrl).then(
                     res => {
-                        console.log("res = ", res);
                         const url = URL + res.data.url;
                         this.setState({ imageUrl: url });
-                        console.log("state.imageUrl = ", this.state.imageUrl);
                     }
-                )
+                );
             }
         } catch (e) {
-            // console.log({ uploadResult });
-            console.log({ e });
-            alert("Tải ảnh lên máy chủ thất bại");
+            alert('Tải ảnh lên máy chủ thất bại');
         } finally {
             this.setState({ uploading: false });
         }
     }
 
     render() {
-        
         return (
             <View style={styles.container}>
                 <Header>
@@ -72,7 +67,6 @@ class Home extends Component {
                 </View>
 
 
-
                 <Footer />
             </View>
         );
@@ -96,16 +90,15 @@ class Home extends Component {
     }
 
     _maybeRenderImage = () => {
-
-
-        let { image } = this.state;
+        const { image } = this.state;
         if (!image) {
             return;
         }
-        console.log("begin render image");
-        console.log("image", image);
+        console.log('begin render image');
+        console.log('image', image);
         return (
-            <View style={{
+            <View
+style={{
                 marginTop: 30,
                 width: 250,
                 borderRadius: 3,
@@ -114,7 +107,8 @@ class Home extends Component {
                 shadowOpacity: 0.2,
                 shadowOffset: { width: 4, height: 4 },
                 shadowRadius: 5,
-            }}>
+            }}
+            >
                 <View style={{ borderTopRightRadius: 3, borderTopLeftRadius: 3, overflow: 'hidden' }}>
                     <Image
                         source={{ uri: image }}
@@ -125,13 +119,13 @@ class Home extends Component {
                 <Text
                     onPress={this._copyToClipboard}
                     onLongPress={this._share}
-                    style={{ paddingVertical: 10, paddingHorizontal: 10 }}>
+                    style={{ paddingVertical: 10, paddingHorizontal: 10 }}
+                >
                     {image}
                 </Text>
             </View>
         );
     }
-
 
 
 }
@@ -158,6 +152,6 @@ const styles = {
         fontWeight: '600',
         color: '#FFFFFF'
     }
-}
+};
 
 export default Home;

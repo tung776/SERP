@@ -7,20 +7,18 @@ import { connect } from 'react-redux';
 import stylesCommon from '../../../styles';
 import { Ionicons } from '@expo/vector-icons';
 // import {Button} from 'native-base';
-import { takePhoto, takeImage, uploadImageAsync } from "../../../utils/uploadImage";
+import { takeImage, uploadImageAsync } from '../../../utils/uploadImage';
 import { URL } from '../../../../env';
 
 class CategoryNew extends Component {
     state = {
-        NameCategory: "",
+        NameCategory: '',
         imageUrl: null,
         uploading: false
     }
 
     onNameCategoryChange(text) {
-        console.log(text);
         this.setState({ NameCategory: text });
-        console.log(this.state.NameCategory);
     }
 
     async onSelectImage() {
@@ -29,7 +27,6 @@ class CategoryNew extends Component {
         this.setState({ uploading: true });
 
         if (!pickerResult.cancelled) { 
-            console.log(pickerResult);
                 this.setState({ imageUrl: pickerResult.uri, uploading: false });
         }
     }
@@ -46,10 +43,10 @@ class CategoryNew extends Component {
                             <Text style={styles.label} >Tên Nhóm Sản Phẩm</Text>
                             <View style={styles.groupControl}>
                                 <TextInput
-                                    disableFullscreenUI={true}
+                                    disableFullscreenUI
                                     underlineColorAndroid={'transparent'}
                                     style={styles.textInput}
-                                    blurOnSubmit={true}
+                                    blurOnSubmit
                                     value={this.state.NameCategory}
                                     onChangeText={this.onNameCategoryChange.bind(this)}
                                     type="Text"
@@ -60,9 +57,9 @@ class CategoryNew extends Component {
                                     {this.error && <Text style={styles.errorStyle}>{this.error.identifier}</Text>}
                                 </Text>
                             </View>
-                            {this.state.imageUrl && <Image style = {styles.itemImage} source = {{uri: this.state.imageUrl}} />}
+                            {this.state.imageUrl && <Image style={styles.itemImage} source={{ uri: this.state.imageUrl }} />}
                             <View >
-                                <TouchableOpacity style={styles.Btn} onPress = {this.onSelectImage.bind(this)}>                                    
+                                <TouchableOpacity style={styles.Btn} onPress={this.onSelectImage.bind(this)}>                                    
                                     <Text style={styles.titleButton}>Chọn Ảnh</Text>
                                 </TouchableOpacity>
                             </View>
@@ -97,7 +94,7 @@ const styles = {
     },
     controlContainer: {
         padding: 5,
-        justifyContent: "center",
+        justifyContent: 'center',
     },
     groupControl: {
         borderRadius: 5,
@@ -106,7 +103,7 @@ const styles = {
         marginTop: 5,
         padding: 5,
         borderColor: 'rgba(41, 128, 185,1.0)',
-        backgroundColor: "#16a085"
+        backgroundColor: '#16a085'
     },
     textInput: {
         color: 'white',
@@ -133,7 +130,7 @@ const styles = {
     Btn: {
         flexDirection: 'row',
         justifyContent: 'center',
-        backgroundColor: "#f39c12",
+        backgroundColor: '#f39c12',
         padding: 3,
         paddingRight: 15,
         paddingLeft: 15,
@@ -146,7 +143,7 @@ const styles = {
         marginTop: 5
     },
 
-}
+};
 // const mapStateToProps(state, ownProps)=> {
 //     return state
 // }

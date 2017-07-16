@@ -1,14 +1,12 @@
-import NavigationDrawer from '../components/commons/NavigationDrawer';
-import requireAuth from '../utils/requireAuth';
+// import NavigationDrawer from '../components/commons/NavigationDrawer';
+// import requireAuth from '../utils/requireAuth';
 import LoginForm from '../components/Screens/Auth/LoginForm';
-import {Scene, Router, Actions} from 'react-native-router-flux';
+import { Scene } from 'react-native-router-flux';
 
-const AuthScene = () => {
-    return (
-        <Scene key = "auth">
-            <Scene key = "login" component = {LoginForm} title = "Please login" initial={true} />
+const AuthScene = () => (
+        <Scene key="auth">
+            <Scene key="login" component={LoginForm} title="Please login" initial />
         </Scene>
     );
-};
 
 export default AuthScene;

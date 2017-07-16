@@ -19,45 +19,41 @@ import {
     SIGNUP_USER_PENDING,
     SIGNUPFORM_CHANGED,
  } from './types';
-import {URL} from '../../env';
-import {LoginValidator} from '../validators';
-import {setAuthorizationToken} from '../utils/setAuthorizationToken';
-import {SignupValidator} from '../validators';
+import { URL } from '../../env';
+import { LoginValidator } from '../validators';
+import { setAuthorizationToken } from '../utils/setAuthorizationToken';
+import { SignupValidator } from '../validators';
 
-export const loginUser = (url, user, callback)=> {
-    console.log("user = ", user);
-    return (dispatch) => {
+export const loginUser = (url, user, callback) => (dispatch) => {
         dispatch({
             type: LOGIN_USER_PENDING
         });
 
-        const {errors, isValid} = LoginValidator(user);
-        if(!isValid) {
-            dispatch ({
+        const { errors, isValid } = LoginValidator(user);
+        if (!isValid) {
+            dispatch({
                 type: LOGIN_USER_FAIL,
                 payload: errors
-            })
+            });
         } else {
-            console.log("begin post data = ", `${URL}/api/users/login`);
             axios.post(url, user)
             .then(
                 res => {
-                    // console.log("res = ", res);
                     dispatch({
                         type: LOGIN_USER_SUCCESS,
                         payload: res.data
                     });
                     dispatch({
                         type: ADD_FLASH_MESSAGE,
-                        payload: { message: "Bạn đã đăng nhập thành công", TypeMessage: SUCCESS_MESSAGE }
+                        payload: { message: 'Bạn đã đăng nhập thành công', TypeMessage: SUCCESS_MESSAGE }
                     });
-                    const {token} = res.data;
+                    const { token } = res.data;
 
                     // localStorage.setItem('jwtToken', token);
                      
                     setAuthorizationToken(token);
 
-                    dispatch(SetCurrentUser( user ));
+                    dispatch(SetCurrentUser(user));
 
                     callback(token);
 
@@ -67,37 +63,31 @@ export const loginUser = (url, user, callback)=> {
             )
             .catch(
                 err => {
-                    console.log("err = ", err);
-                    if(err.response) {
+                    if (err.response) {
                         dispatch({
                             type: LOGIN_USER_FAIL,
                             payload: err.response.data.error
-                        })
+                        });
                         dispatch({
                             type: ADD_FLASH_MESSAGE,
-                            payload: { message: `Đăng nhập thất bại: ${err.response.data.error}`, TypeMessage: ERROR_MESSAGE}
-                        })
-                    }
-                    else {
+                            payload: { message: `Đăng nhập thất bại: ${err.response.data.error}`, TypeMessage: ERROR_MESSAGE }
+                        });
+                    } else {
                         dispatch({
                             type: LOGIN_USER_FAIL,
                             payload: err
-                        })
+                        });
                         dispatch({
                             type: ADD_FLASH_MESSAGE,
-                            payload: { message: `Đăng nhập thất bại: ${err}`, TypeMessage: ERROR_MESSAGE}
-                        })
+                            payload: { message: `Đăng nhập thất bại: ${err}`, TypeMessage: ERROR_MESSAGE }
+                        });
                     }
                 }
-            )
+            );
         }
-        
-    }
-}
+    };
 
-export const logout = (callback) => {
-    return dispatch => {
-        
+export const logout = (callback) => dispatch => {
         setAuthorizationToken(false);
         dispatch(SetCurrentUser({}));
         dispatch({
@@ -105,8 +95,7 @@ export const logout = (callback) => {
         });
 
         callback();
-    }
-}
+    };
 
 const loginUserSuccess = (dispatch, user, callback) => {
     dispatch({
@@ -116,67 +105,56 @@ const loginUserSuccess = (dispatch, user, callback) => {
 
     // Actions.main();
     callback();
-}
+};
 
 
-
-export const SetCurrentUser = (user) => {
-    return {
+export const SetCurrentUser = (user) => ({
         type: SET_CURRENT_USER,
         payload: user
-    }
-}
+    });
 
 
-export const emailChanged = (text)=> {
-    return {
+export const emailChanged = (text) => ({
         type: EMAIL_CHANGED,
         payload: text
-    }
-}
-export const passwordChanged = (text)=> {
-    return {
+    });
+export const passwordChanged = (text) => ({
         type: PASSWORD_CHANGED,
         payload: text
-    }
-}
+    });
 
-export const LoginFormChanged = ({prop, value}) => {
-    return {
+export const LoginFormChanged = ({ prop, value }) => ({
         type: LOGIN_FORM_CHANGED,
-        payload: {prop, value}
-    }
-}
+        payload: { prop, value }
+    });
 
 
-const loginUserFail = (dispatch, err)=> {
+const loginUserFail = (dispatch, err) => {
     dispatch({
         type: LOGIN_USER_FAIL,
         payload: `Lỗi đăng nhập: ${err}`
-    })
-}
+    });
+};
 
 //==================== Sign up ===========================================================================
 
-export const SignupFormChanged = ({prop, value}) => {
-    return {
+export const SignupFormChanged = ({ prop, value }) => ({
         type: SIGNUPFORM_CHANGED,
-        payload: {prop, value}
-    }
-}
+        payload: { prop, value }
+    });
 
-export const SignupFormSubmit = (url, user, callback) => {
+export const SignupFormSubmit = (url, user, callback) => 
     // console.log(user);
-     return (dispatch)=> {
+      (dispatch) => {
          dispatch({
              type: SIGNUP_USER_PENDING
          });
-         const {errors, isValid} = SignupValidator(user);
-        if(!isValid) {
-            dispatch ({
+         const { errors, isValid } = SignupValidator(user);
+        if (!isValid) {
+            dispatch({
                 type: SIGNUP_USER_FAIL,
                 payload: errors
-            })
+            });
         } else {
             axios.post(url, user)
             .then(
@@ -184,23 +162,21 @@ export const SignupFormSubmit = (url, user, callback) => {
                     dispatch({
                         type: SIGNUP_USER_SUCCESS,
                         payload: res.data
-                    })
+                    });
                     dispatch({
                         type: ADD_FLASH_MESSAGE,
-                        payload: { message: "Chúc mừng bạn đã tạo người dùng thành công", TypeMessage: SUCCESS_MESSAGE}
-                    })                 
+                        payload: { message: 'Chúc mừng bạn đã tạo người dùng thành công', TypeMessage: SUCCESS_MESSAGE }
+                    });                 
                     callback();                   
                 }
             )
             .catch(
-                err=> {
+                err => {
                     // console.log("err = ", err);
                     dispatch({
                         type: SIGNUP_USER_FAIL,
                         payload: err.response.data
-                    })
+                    });
             });
         }         
-     }
-     
-}
+     };

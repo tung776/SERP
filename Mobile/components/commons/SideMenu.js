@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, Button, Image, ScrollView } from 'react-native';
-import { Actions } from 'react-native-router-flux'
-import { Card, CardSection, } from './index';
+import { Actions } from 'react-native-router-flux';
+// import { Card, CardSection, } from './index';
 import { AsyncStorage } from 'react-native';
 import { connect } from 'react-redux';
 import { logout } from '../../actions';
@@ -27,7 +27,7 @@ class SideMenu extends Component {
             showIncomeOrder: false,
             showSaleReport: false,
             showSaleReportMenu: false,
-        })
+        });
     }
     logout(e) {
         e.preventDefault();
@@ -38,18 +38,18 @@ class SideMenu extends Component {
         });
     }
     render() {
-        const { containerStyle, textMenuStyle } = styles;
+        const { containerStyle } = styles;
         goHomePage = () => {
             Actions.Home();
-        }
+        };
         goSignin = () => {
             Actions.auth();
-        }
+        };
 
         return (
             <View style={containerStyle}>
                 <View>
-                    <Image style={styles.logoImage} source={require("../../../Shared/images/Logo.png")} />
+                    <Image style={styles.logoImage} source={require('../../../Shared/images/Logo.png')} />
                     {this.props.user && <Text style={styles.usernameStyle}>{this.props.user.username}</Text>}
                 </View>
                 <ScrollView>
@@ -129,11 +129,10 @@ class SideMenu extends Component {
                 </ScrollView>
             </View>
         );
-
     }
 
     renderAuthMenu() {
-        console.log("this.props ", this.props);
+        console.log('this.props ', this.props);
         const { isAuthenticated, user } = this.props;
         if (isAuthenticated) {
             return (
@@ -154,21 +153,21 @@ class SideMenu extends Component {
                 <View>
                     <View style={styles.buttonMenuContainer}>
                         <Button
-                            onPress={() =>{ Actions.categoryList(); this.resetMenu()}}
+                            onPress={() => { Actions.categoryList(); this.resetMenu() ;}}
                             title="Nhóm Sản Phẩm"
                             color="#d35400"
                         />
                     </View>
                     <View style={styles.buttonMenuContainer}>
                         <Button
-                            onPress={() => {Actions.categoryNew(); this.resetMenu()}}
+                            onPress={() => { Actions.categoryNew(); this.resetMenu() ;}}
                             title="Thêm Nhóm Sản Phẩm"
                             color="#d35400"
                         />
                     </View>
                     <View style={styles.buttonMenuContainer}>
                         <Button
-                            onPress={() => {Actions.ProductNew(); this.resetMenu()}}
+                            onPress={() => { Actions.ProductNew(); this.resetMenu() ;}}
                             title="Thêm Sản Phẩm"
                             color="#d35400"
                         />
@@ -181,7 +180,7 @@ class SideMenu extends Component {
                         />
                     </View>
                 </View>
-            )
+            );
         }
     }
     renderOdersMenu() {
@@ -210,7 +209,7 @@ class SideMenu extends Component {
                         />
                     </View>
                 </View>
-            )
+            );
         }
     }
     renderPhieuChiMenu() {
@@ -246,7 +245,7 @@ class SideMenu extends Component {
                         />
                     </View>
                 </View>
-            )
+            );
         }
     }
     renderCustomerMenu() {
@@ -275,7 +274,7 @@ class SideMenu extends Component {
                         />
                     </View>
                 </View>
-            )
+            );
         }
     }
     renderIncomeMenu() {
@@ -304,7 +303,7 @@ class SideMenu extends Component {
                         />
                     </View>
                 </View>
-            )
+            );
         }
     }
     renderSupplierMenu() {
@@ -333,7 +332,7 @@ class SideMenu extends Component {
                         />
                     </View>
                 </View>
-            )
+            );
         }
     }
     renderSaleReportMenu() {
@@ -362,7 +361,7 @@ class SideMenu extends Component {
                         />
                     </View>
                 </View>
-            )
+            );
         }
     }
 }
@@ -400,12 +399,12 @@ const styles = {
         borderRadius: 5,
         borderColor: '#bdc3c7'
     }
-}
+};
 const mapStateToProps = (state) => {
-    console.log("state ", state);
+    console.log('state ', state);
     const { isAuthenticated, user } = state.auth;
     return { isAuthenticated, user };
-}
+};
 export default connect(mapStateToProps, {
     logout,
 })(SideMenu);

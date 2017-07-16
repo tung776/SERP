@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView, Image, Dimensions, TouchableOpacity, TouchableWithoutFeedback, TextInput } from 'react-native';
+import { View, Text, ScrollView, Dimensions, TouchableOpacity, TouchableWithoutFeedback, TextInput } from 'react-native';
 import Header from '../../commons/Header';
 import Footer from '../../commons/Footer';
 import { Actions } from 'react-native-router-flux';
@@ -9,18 +9,18 @@ import { Ionicons } from '@expo/vector-icons';
 
 class Products extends Component {
     state = {
-        searchText: "",
+        searchText: '',
         error: null
     }
+    
+    onSearchInputChange(text) {
+        this.setState({ searchText: text });
+    }
+
     addNewGroupBtnPress() {
-        console.log("go here");
         Actions.main();
     }
-
-    onSearchInputChange(text) {
-        this.setState({ searchText: text })
-    }
-
+    
     render() {
         return (
             <View style={styles.container}>
@@ -31,12 +31,12 @@ class Products extends Component {
                     <ScrollView>                        
                         <View style={styles.InputContainer}>
                         <Text style={styles.searchTitle}>Tìm Kiếm Sản Phẩm</Text>
-                            <View style = {styles.groupControl} >
+                            <View style ={styles.groupControl} >
                                 <TextInput
-                                    disableFullscreenUI={true}
+                                    disableFullscreenUI
                                     underlineColorAndroid={'transparent'}
                                     style={styles.textInput}
-                                    blurOnSubmit={true}
+                                    blurOnSubmit
                                     value={this.state.searchText}
                                     onChangeText={this.onSearchInputChange.bind(this)}
                                     type="Text"
@@ -130,9 +130,9 @@ class Products extends Component {
                     </ScrollView>
                 </View>
                 <Footer>
-                    <TouchableOpacity style={styles.addNewGroupBtn} onPress={() => { Actions.ProductNew() }}>
+                    <TouchableOpacity style={styles.addNewGroupBtn} onPress={() => { Actions.ProductNew(); }}>
                         <Ionicons name="ios-add-circle" size={32} color="#FFFFFF" />
-                        <Text style={{ alignSelf: "center", paddingLeft: 10, fontSize: 16, color: "#FFFFFF", fontWeight: "600" }}>Thêm Sản Phẩm</Text>
+                        <Text style={{ alignSelf: 'center', paddingLeft: 10, fontSize: 16, color: '#FFFFFF', fontWeight: '600' }}>Thêm Sản Phẩm</Text>
                     </TouchableOpacity>
                 </Footer>
             </View>
@@ -140,8 +140,8 @@ class Products extends Component {
     }
 }
 
-const widthScreen = Dimensions.get('window').width;
-const widthImage = widthScreen - 30;
+// const widthScreen = Dimensions.get('window').width;
+// const widthImage = widthScreen - 30;
 const styles = {
     container: stylesCommon.container,
     body: stylesCommon.body,
@@ -177,7 +177,7 @@ const styles = {
     },
     addNewGroupBtn: {
         flexDirection: 'row',
-        backgroundColor: "#2ecc71",
+        backgroundColor: '#2ecc71',
         padding: 3,
         paddingRight: 15,
         paddingLeft: 15,
@@ -210,7 +210,7 @@ const styles = {
         color: 'rgba(231, 76, 60,1.0)',
         fontSize: 18
     },
-}
+};
 // const mapStateToProps(state, ownProps)=> {
 //     return state
 // }

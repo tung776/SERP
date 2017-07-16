@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { View } from 'react-native';
 
 const Card = (props) => (
-            <View style = {styles.containerStyle}>
+            <View style ={styles.containerStyle}>
                 {props.children}
             </View>
         );
@@ -23,4 +23,4 @@ const styles = {
     }
 };
 
-export {Card};
+export { Card };

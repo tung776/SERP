@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 // import { Container, Content, Form, Item, Button, Text, Header, Body, Footer, Right, Left, Spinner, Input} from 'native-base';
 import { connect } from 'react-redux';
-import { Text, View, Image, TextInput, TouchableOpacity, Dimensions, Button } from 'react-native';
-import {  Spinner } from '../../commons/index';
+import { Text, View, Image, TextInput, Dimensions, Button, AsyncStorage } from 'react-native';
+import { Spinner } from '../../commons/index';
 // import Expo from 'expo';
 import {
     emailChanged,
@@ -12,18 +12,18 @@ import {
 } from '../../../actions';
 
 import { Actions } from 'react-native-router-flux';
-import { AsyncStorage } from 'react-native';
 import { URL } from '../../../../env';
-const height = Dimensions.get("window").height;
+
+const height = Dimensions.get('window').height;
 
 class LoginForm extends Component {
 
 
     onIdentifierChange(text) {
-        this.props.LoginFormChanged({ prop: "identifier", value: text });
+        this.props.LoginFormChanged({ prop: 'identifier', value: text });
     }
     onPasswordChange(text) {
-        this.props.LoginFormChanged({ prop: "password", value: text });
+        this.props.LoginFormChanged({ prop: 'password', value: text });
     }
     onLoginPress(e) {
         e.preventDefault();
@@ -31,16 +31,16 @@ class LoginForm extends Component {
         // console.log(identifier, password);
 
         loginUser(`${URL}/api/users/login`, { identifier, password }, (token) => {
-            AsyncStorage.setItem('jwtToken', token)
+            AsyncStorage.setItem('jwtToken', token);
             Actions.drawer();
         });
     }
     renderMessage() {
         const { error, user } = this.props;
         if (error) {
-            console.log("err = ", error);
-            console.log("err.length = ", error.length);
-            let listError = [];
+            console.log('err = ', error);
+            console.log('err.length = ', error.length);
+            // const listError = [];
             if (error.identifier) {
                 return null;
             }
@@ -73,7 +73,6 @@ class LoginForm extends Component {
 
 
         );
-
     }
     render() {
         const { identifier, password, error } = this.props;
@@ -87,14 +86,14 @@ class LoginForm extends Component {
                     />
                 </View>
 
-                <View style = {styles.InputContainer}>
+                <View style={styles.InputContainer}>
                     <View style={styles.groupControl}>
                         <Text style={styles.label} >Email</Text>
                         <TextInput
-                            disableFullscreenUI = {true}
-                            underlineColorAndroid = {'transparent'}
+                            disableFullscreenUI
+                            underlineColorAndroid={'transparent'}
                             style={styles.textInput}
-                            blurOnSubmit={true}
+                            blurOnSubmit
                             value={identifier}
                             onChangeText={this.onIdentifierChange.bind(this)}
                             type="Text"
@@ -109,12 +108,12 @@ class LoginForm extends Component {
                     <View style={styles.groupControl}>
                         <Text style={styles.label} >Mật khẩu</Text>
                         <TextInput
-                            disableFullscreenUI = {true}
-                            underlineColorAndroid = {'transparent'}
+                            disableFullscreenUI
+                            underlineColorAndroid={'transparent'}
                             style={styles.textInput}
                             secureTextEntry
-                            blurOnSubmit={true}
-                            caretHidden={true}
+                            blurOnSubmit
+                            caretHidden
                             value={password}
                             onChangeText={this.onPasswordChange.bind(this)}
                             type="password"
@@ -189,7 +188,7 @@ const styles = {
         paddingRight: 10
     },
     
-}
+};
 
 
 const mapStateToProps = (state, ownProps) => {
@@ -200,7 +199,7 @@ const mapStateToProps = (state, ownProps) => {
         error,
         user,
         loading
-    }
+    };
 };
 
 export default connect(mapStateToProps, {

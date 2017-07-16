@@ -7,16 +7,17 @@ import { Actions } from 'react-native-router-flux';
 class AppHeader extends Component {
     state = {}
     render() {
-        const { headerStyle } = styles;
         return (
             <View style={styles.headerContainer}>
-                <TouchableOpacity onPress={() => {
+                <TouchableOpacity
+                    onPress={() => {
                     Actions.refresh({ key: 'drawer', open: value => !value });
-                }}>
-                    <Image style={styles.logoStyle} source={require('../../../Shared/images/Logo.png')} />
+                }}
+                >
+                    <Image style={styles.logoStyle} source={ require('../../../Shared/images/Logo.png')} />
                 </TouchableOpacity>
                 {this.props.children}
-                <Image style={styles.settingIcon} source={require('../../../Shared/images/icons/setting.png')} />
+                <Image style={styles.settingIcon} source={ require('../../../Shared/images/icons/setting.png')} />
             </View>
         );
     }
@@ -24,7 +25,7 @@ class AppHeader extends Component {
 const { height } = Dimensions.get('window').height;
 const styles = {
     headerContainer: {
-        height: height/12,
+        height: height / 12,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
@@ -44,5 +45,5 @@ const styles = {
         height: 30,
         padding: 5
     }
-}
+};
 export default AppHeader;

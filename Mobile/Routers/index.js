@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { Scene, Router, Actions } from 'react-native-router-flux';
+import React from 'react';
+import { Scene, Router } from 'react-native-router-flux';
 import Home from '../components/Home';
 import ChangeInfor from '../components/ChangeInfor';
 import Main from '../components/Main';
@@ -12,17 +12,18 @@ import CategoryEdit from '../components/Screens/Categories/CategoryEdit';
 import CategoryView from '../components/Screens/Categories/CategoryView';
 import Splash from '../components/Splash';
 import LoginForm from '../components/Screens/Auth/LoginForm';
-import CategoriesScene from './categoriesScene';
-import AuthScene from './authScene';
+// import CategoriesScene from './categoriesScene';
+// import AuthScene from './authScene';
 import CategoryNew from '../components/Screens/Categories/CategoryNew';
 import Products from '../components/Screens/Products';
-const RouterComponent = () => {
-    return (
+
+const RouterComponent = () => (
         <Router hideNavBar="true" sceneStyle={{ backgroundColor: '#F7F7F7' }} >
 
             <Scene key="drawer" component={requireAuth(NavigationDrawer)} open={false} >
 
-                <Scene key="main"
+                <Scene
+                    key="main"
                     animation='fade'
                 >
                     <Scene key="categoryList" component={Categories} title="Nhóm sản phẩm" />
@@ -42,11 +43,11 @@ const RouterComponent = () => {
 
             <Scene key="splash" component={Splash} />
             <Scene key="auth">
-                <Scene key="login" component={LoginForm} title="Please login" initial={true} />
+                <Scene key="login" component={LoginForm} title="Please login" initial />
             </Scene>
 
         </Router>
     );
-};
 
 export default RouterComponent
+;

@@ -1,17 +1,18 @@
 import React, { Component } from 'react';
-import {View, Text, Image} from 'react-native'
+import { View, Text, Image } from 'react-native';
 class Splash extends Component {
-    state = {  }
+    state = { }
     render() {
         return (
-            <View style = {styles.container}>
-                <View style = {styles.logoContainer} >
+            <View style={styles.container}>
+                <View style={styles.logoContainer} >
                     <Image
-                    style = {styles.logoStyle}
-                        source = {require('../../Shared/images/Logo.png') }/>
+                    style={styles.logoStyle}
+                        source={require('../../Shared/images/Logo.png')} 
+                    />
                 </View>
                 <View>
-                    <Text style = {styles.subTitleStyle} >Son Cat Tuong ERP</Text>
+                    <Text style={styles.subTitleStyle} >Son Cat Tuong ERP</Text>
                 </View>
             </View>
         );
@@ -35,12 +36,11 @@ const styles = {
         opacity: 0.7,
     },
     subTitleStyle: {
-        color: '#FFFFFF',
         fontSize: 16,
         fontWeight: '200',
         marginBottom: 20,
         color: 'rgba(255,255,255, 0.6)',
     }
-}
+};
 
 export default Splash;
