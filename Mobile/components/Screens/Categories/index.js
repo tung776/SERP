@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView, Image, Dimensions, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, Image, Dimensions, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import Header from '../../commons/Header';
 import Footer from '../../commons/Footer';
 import { Actions } from 'react-native-router-flux';
@@ -9,7 +9,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 class Categories extends Component {
     state = {}
-    addNewGroupBtnPress () {
+    addNewGroupBtnPress() {
         console.log("go here");
         Actions.main();
     }
@@ -22,30 +22,40 @@ class Categories extends Component {
                 </Header>
                 <View style={styles.body}>
                     <ScrollView>
-                        <View style={styles.listItem}>
-                            <Image style={styles.itemImage} source={require("../../../assets/images/BienSonPU.jpg")} />
-                            <Text style={styles.itemTitle}>Sơn PU</Text>
-                        </View>
-                        <View style={styles.listItem}>
-                            <Image style={styles.itemImage} source={require("../../../assets/images/BienSon2k.jpg")} />
+                        <TouchableWithoutFeedback  onPress={()=> Actions.Products()} >
+                            <View style={styles.listItem}>
+                                <Image style={styles.itemImage} source={require("../../../assets/images/BienSonPU.jpg")} />
+                                <Text style={styles.itemTitle}>Sơn PU</Text>
+                            </View>
+                        </TouchableWithoutFeedback>
+                        <TouchableWithoutFeedback>
+                            <View  style={styles.listItem}>
+                                <Image style={styles.itemImage} source={require("../../../assets/images/BienSon2k.jpg")} />
                             <Text style={styles.itemTitle}>Sơn 2K</Text>
-                        </View>
-                        <View style={styles.listItem}>
-                            <Image style={styles.itemImage} source={require("../../../assets/images/BienSonKem.jpg")} />
+                            </View>
+                        </TouchableWithoutFeedback>
+                        <TouchableWithoutFeedback >
+                            <View style={styles.listItem}>
+                                <Image style={styles.itemImage} source={require("../../../assets/images/BienSonKem.jpg")} />
                             <Text style={styles.itemTitle}>Sơn Kẽm</Text>
-                        </View>
-                        <View style={styles.listItem}>
-                            <Image style={styles.itemImage} source={require("../../../assets/images/BienSonCN.jpg")} />
+                            </View>
+                        </TouchableWithoutFeedback>
+                        <TouchableWithoutFeedback >
+                            <View style={styles.listItem}>
+                                <Image style={styles.itemImage} source={require("../../../assets/images/BienSonCN.jpg")} />
                             <Text style={styles.itemTitle}>Sơn Công Nghiệp</Text>
-                        </View>
-                        <View style={styles.listItem}>
-                            <Image style={styles.itemImage} source={require("../../../assets/images/BienSonNhom.jpg")} />
+                            </View>
+                        </TouchableWithoutFeedback>
+                        <TouchableWithoutFeedback >
+                            <View style={styles.listItem}>
+                                <Image style={styles.itemImage} source={require("../../../assets/images/BienSonNhom.jpg")} />
                             <Text style={styles.itemTitle}>Sơn Nhôm</Text>
-                        </View>
+                            </View>
+                        </TouchableWithoutFeedback>
                     </ScrollView>
                 </View>
                 <Footer>
-                    <TouchableOpacity style={styles.addNewGroupBtn} onPress={ ()=> { Actions.categoryNew() } }>
+                    <TouchableOpacity style={styles.addNewGroupBtn} onPress={() => { Actions.categoryNew() }}>
                         <Ionicons name="ios-add-circle" size={32} color="#FFFFFF" />
                         <Text style={{ alignSelf: "center", paddingLeft: 10, fontSize: 16, color: "#FFFFFF", fontWeight: "600" }}>Thêm Nhóm</Text>
                     </TouchableOpacity>
@@ -56,7 +66,7 @@ class Categories extends Component {
 }
 
 const widthScreen = Dimensions.get('window').width;
-const widthImage = widthScreen - 25;
+const widthImage = widthScreen - 30;
 const styles = {
     container: stylesCommon.container,
     body: stylesCommon.body,
@@ -65,11 +75,20 @@ const styles = {
         // flexDirection: 'row',
         flex: 1,
         paddingTop: 2,
-        paddingBottom: 2
+        paddingBottom: 2,
+        borderRadius: 10,
+        borderWidth: 2,
+        borderColor: '#FFFFFF',
+        marginTop: 5,
+        marginBottom: 5,
+        overflow: 'hidden',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     itemImage: {
         width: widthImage,
-        height: (widthImage * 0.45)
+        height: (widthImage * 0.45),
+        borderRadius: 8,
     },
     itemTitle: {
         fontSize: 20,

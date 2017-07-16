@@ -86,8 +86,8 @@ const styles = {
     container: stylesCommon.container,
     body: {
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center'
+        // alignItems: 'center',
+        // justifyContent: 'center'
     },
     headTitle: stylesCommon.headTitle,
     InputContainer: {
@@ -96,7 +96,8 @@ const styles = {
         marginRight: 10
     },
     controlContainer: {
-        padding: 5
+        padding: 5,
+        justifyContent: "center",
     },
     groupControl: {
         borderRadius: 5,
