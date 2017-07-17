@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { addFlashMessage, ERROR_MESSAGE } from '../actions';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import { Actions } from 'react-native-router-flux';
 
 export default function (ComposedComponent) {

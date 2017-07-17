@@ -2,17 +2,19 @@ import { Dimensions } from 'react-native';
 const height = Dimensions.get("window").height;
 export default styles = {
     container: {
-        flex: 1
+        flex: 1,
+        justifyContent: 'center'
     },
     body: {
         flex: 1,
-        backgroundColor: '#bdc3c7',
-        paddingLeft: 10,
-        paddingRight: 10
+        paddingLeft: 5,
+        paddingRight: 5,
+        backgroundColor: '#bdc3c7'
     },
     headTitle: {
         fontSize: 20,
-        color: '#1abc9c'
+        fontWeight: '600',
+        color: '#ecf0f1'
     },
     footerTitleStyle: {
         color: '#ecf0f1',

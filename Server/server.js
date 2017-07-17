@@ -36,6 +36,10 @@ appConfig(app);
 // app.use('/api/auth', AuthRoutes);
 import {UserRouters} from './routes/UserRouters';
 app.use('/api/users', UserRouters);
+
+import { CategoryRouter } from './routes/categoryRouters'
+app.use('/api/category' , CategoryRouter);
+
 import {RequestHandler} from'./requestHandler';
 app.use( RequestHandler);
 

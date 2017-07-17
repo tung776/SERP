@@ -17,3 +17,8 @@ export const ADD_FLASH_MESSAGE = 'ADD_FLASH_MESSAGE';
 export const SUCCESS_MESSAGE = 'SUCCESS_MESSAGE';
 export const ERROR_MESSAGE = 'ERROR_MESSAGE';
 export const WARNING_MESSAGE = 'WARNINGS_MESSAGE';
+//========================= CATEGORY ==================================================
+export const ADD_CATEGORY = 'ADD_CATEGORY';
+export const CATEGORY_PENDING = 'ADD_CATEGORY_PENDING';
+export const CATEGORY_CHANGE_FAIL = 'CATEGORY_CHANGE_FAIL';
+export const CATEGORY_CHANGE_SUCCESS = 'CATEGORY_CHANGE_SUCCESS';

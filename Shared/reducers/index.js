@@ -1,15 +1,17 @@
-import {combineReducers} from 'redux';
+import { combineReducers } from 'redux';
 import SignupFormReducer from './SignupFormReducer';
 import FlashMessageReducer from './flashMessageReducer';
 import LoginFormReducer from './LoginFormReducer';
 import AuthReducer from './authReducer';
+import categoryReducer from './categoryReducer';
 
 const reducers = combineReducers({
-    main: ()=> null ,
+    main: () => null,
     flashMessage: FlashMessageReducer,
     signupForm: SignupFormReducer,
     loginForm: LoginFormReducer,
-    auth: AuthReducer
+    auth: AuthReducer,
+    newCategory: categoryReducer,
 
 });
 export default reducers;

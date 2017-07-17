@@ -16,6 +16,8 @@ import LoginForm from '../components/Screens/Auth/LoginForm';
 // import AuthScene from './authScene';
 import CategoryNew from '../components/Screens/Categories/CategoryNew';
 import Products from '../components/Screens/Products';
+import ProductNew from '../components/Screens/Products/ProductNew';
+import ProductDetail from '../components/Screens/Products/ProductDetail';
 
 const RouterComponent = () => (
         <Router hideNavBar="true" sceneStyle={{ backgroundColor: '#F7F7F7' }} >
@@ -32,6 +34,8 @@ const RouterComponent = () => (
                     <Scene key="categoryNew" component={CategoryNew} title="Thêm sản phẩm" />
 
                      <Scene key="Products" component={Products} title="Danh sách sản phẩm" />
+                     <Scene key="ProductNew" component={ProductNew} title="Thêm Sản Phẩm" />
+                     <Scene key="ProductDetail" component={ProductDetail} title="Thêm Sản Phẩm" />
 
                     <Scene key="Main" component={requireAuth(Main)} title="Main" />
                     <Scene key="Home" component={Home} title="Home" />

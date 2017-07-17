@@ -24,31 +24,26 @@ class Categories extends Component {
                     <ScrollView>
                         <TouchableWithoutFeedback onPress={() => Actions.Products()} >
                             <View style={styles.listItem}>
-                                <Image style={styles.itemImage} source={require('../../../assets/images/BienSonPU.jpg')} />
                                 <Text style={styles.itemTitle}>Sơn PU</Text>
                             </View>
                         </TouchableWithoutFeedback>
                         <TouchableWithoutFeedback>
                             <View style={styles.listItem}>
-                                <Image style={styles.itemImage} source={require('../../../assets/images/BienSon2k.jpg')} />
                             <Text style={styles.itemTitle}>Sơn 2K</Text>
                             </View>
                         </TouchableWithoutFeedback>
                         <TouchableWithoutFeedback >
                             <View style={styles.listItem}>
-                                <Image style={styles.itemImage} source={require('../../../assets/images/BienSonKem.jpg')} />
                             <Text style={styles.itemTitle}>Sơn Kẽm</Text>
                             </View>
                         </TouchableWithoutFeedback>
                         <TouchableWithoutFeedback >
                             <View style={styles.listItem}>
-                                <Image style={styles.itemImage} source={require('../../../assets/images/BienSonCN.jpg')} />
                             <Text style={styles.itemTitle}>Sơn Công Nghiệp</Text>
                             </View>
                         </TouchableWithoutFeedback>
                         <TouchableWithoutFeedback >
                             <View style={styles.listItem}>
-                                <Image style={styles.itemImage} source={require('../../../assets/images/BienSonNhom.jpg')} />
                             <Text style={styles.itemTitle}>Sơn Nhôm</Text>
                             </View>
                         </TouchableWithoutFeedback>

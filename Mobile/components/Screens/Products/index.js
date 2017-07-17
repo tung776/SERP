@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView, Dimensions, TouchableOpacity, TouchableWithoutFeedback, TextInput } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, TouchableWithoutFeedback, TextInput } from 'react-native';
 import Header from '../../commons/Header';
 import Footer from '../../commons/Footer';
 import { Actions } from 'react-native-router-flux';
@@ -49,7 +49,7 @@ class Products extends Component {
                         <Text>
                             {this.state.error && <Text style={styles.errorStyle}>{this.state.error.identifier}</Text>}
                         </Text>
-                        <TouchableWithoutFeedback onPress={() => Actions.Products()} >
+                        <TouchableWithoutFeedback onPress={() => Actions.ProductDetail()} >
                             <View style={styles.listItem}>
                                 <Text style={styles.itemTitle}>Mờ 01 - 50 %</Text>
                                 <Ionicons name="ios-arrow-dropright" size={32} color="#16a085" />
@@ -189,6 +189,7 @@ const styles = {
         paddingLeft: 10,
         paddingRight: 10,
         paddingBottom: 10,
+        marginTop: 10,
         borderRadius: 5,
         backgroundColor: '#2980b9'
     },

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView, Image, Dimensions, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, Image, Dimensions, TouchableOpacity, TextInput } from 'react-native';
 import Header from '../../commons/Header';
 import Footer from '../../commons/Footer';
 import { Actions } from 'react-native-router-flux';
@@ -9,16 +9,17 @@ import { Ionicons } from '@expo/vector-icons';
 // import {Button} from 'native-base';
 import { takeImage, uploadImageAsync } from '../../../utils/uploadImage';
 import { URL } from '../../../../env';
+import { ADD_CATEGORY, ADD_CATEGORY_PENDING, 
+    CATEGORY_CHANGE_FAIL, CATEGORY_CHANGE_SUCCESS, 
+     } from '../../../actions';
+import { AddNewCategory } from '../../../actions/categoryActions';
 
 class CategoryNew extends Component {
     state = {
         NameCategory: '',
+        Description: '',
         imageUrl: null,
         uploading: false
-    }
-
-    onNameCategoryChange(text) {
-        this.setState({ NameCategory: text });
     }
 
     async onSelectImage() {
@@ -26,9 +27,13 @@ class CategoryNew extends Component {
 
         this.setState({ uploading: true });
 
-        if (!pickerResult.cancelled) { 
-                this.setState({ imageUrl: pickerResult.uri, uploading: false });
+        if (!pickerResult.cancelled) {
+            this.setState({ imageUrl: pickerResult.uri, uploading: false });
         }
+    }
+
+    onSavePress() {
+        this.props.AddNewCategory(this.state);
     }
 
     render() {
@@ -38,7 +43,7 @@ class CategoryNew extends Component {
                     <Text style={styles.headTitle}>Nhóm Sản Phẩm</Text>
                 </Header>
                 <View style={styles.body}>
-                    <ScrollView>
+                    <View style = {styles.card}>
                         <View style={styles.controlContainer}>
                             <Text style={styles.label} >Tên Nhóm Sản Phẩm</Text>
                             <View style={styles.groupControl}>
@@ -48,29 +53,64 @@ class CategoryNew extends Component {
                                     style={styles.textInput}
                                     blurOnSubmit
                                     value={this.state.NameCategory}
-                                    onChangeText={this.onNameCategoryChange.bind(this)}
+                                    onChangeText={text => this.setState({ NameCategory: text })}
                                     type="Text"
                                     name="nameCategory"
                                     placeholder="Điền tên nhóm sản phẩm:"
                                 />
                                 <Text>
-                                    {this.error && <Text style={styles.errorStyle}>{this.error.identifier}</Text>}
+                                    {this.error && <Text style={styles.errorStyle}>{this.error.NameCategory}</Text>}
                                 </Text>
+                            </View>
+
+                            <View style={styles.controlContainer}>
+                                <Text style={styles.label} >Mô tả</Text>
+                                <View style={styles.groupControl}>
+                                    <TextInput
+                                        multiline
+                                        numberOfLines={8}
+                                        disableFullscreenUI
+                                        underlineColorAndroid={'transparent'}
+                                        style={styles.textInput}
+                                        blurOnSubmit
+                                        value={this.state.Description}
+                                        onChangeText={text => this.setState({ Description: text })}
+                                        type="Text"
+                                        name="Description"
+                                        placeholder="Mô tả sản phẩm"
+                                    />
+                                    <Text>
+                                        {this.error && <Text style={styles.errorStyle}>{this.error.Description}</Text>}
+                                    </Text>
+                                </View>
                             </View>
                             {this.state.imageUrl && <Image style={styles.itemImage} source={{ uri: this.state.imageUrl }} />}
                             <View >
-                                <TouchableOpacity style={styles.Btn} onPress={this.onSelectImage.bind(this)}>                                    
+                                <TouchableOpacity style={styles.Btn} onPress={this.onSelectImage.bind(this)}>
                                     <Text style={styles.titleButton}>Chọn Ảnh</Text>
                                 </TouchableOpacity>
                             </View>
                         </View>
-                    </ScrollView>
+                    </View>
                 </View>
                 <Footer>
-                    <TouchableOpacity style={styles.Btn}>
-                        <Ionicons name="ios-add-circle" size={32} color="#FFFFFF" />
-                        <Text style={styles.titleButton}>Lưu</Text>
-                    </TouchableOpacity>
+                    <View style={styles.FooterGroupButton}>
+                        <TouchableOpacity 
+                            onPress = {this.onSavePress.bind(this)}
+                            style={[styles.Btn, styles.footerBtn]}
+                        >
+                            <Ionicons name="ios-checkmark-circle" size={25} color="#FFFFFF" />
+                            <Text style={styles.titleButton}>Lưu</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={[styles.Btn, styles.footerBtn]}>
+                            <Ionicons name="ios-close-circle-outline" size={25} color="#FFFFFF" />
+                            <Text style={styles.titleButton}>Hủy</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={[styles.Btn, styles.footerBtn]} onPress = {()=> Actions.Products()}>
+                            <Ionicons name="ios-folder-open-outline" size={25} color="#FFFFFF" />
+                            <Text style={styles.titleButton}>DS Sản Phẩm</Text>
+                        </TouchableOpacity>
+                    </View>
                 </Footer>
             </View>
         );
@@ -81,16 +121,20 @@ const widthScreen = Dimensions.get('window').width;
 const widthImage = widthScreen - 25;
 const styles = {
     container: stylesCommon.container,
-    body: {
-        flex: 1,
-        // alignItems: 'center',
-        // justifyContent: 'center'
-    },
+    body: stylesCommon.body,
     headTitle: stylesCommon.headTitle,
+    card: {
+        shadowColor: '#000000',
+        shadowOffset: { width: 1, height: 3 },
+        borderColor: '#FFFFFF',
+        borderWidth: 1,
+        borderRadius: 5,
+        shadowOpacity: 0.1,
+        marginTop: 5,
+        backgroundColor: '#FFFFFF'
+    },
     InputContainer: {
         paddingBottom: 30,
-        marginLeft: 10,
-        marginRight: 10
     },
     controlContainer: {
         padding: 5,
@@ -103,10 +147,10 @@ const styles = {
         marginTop: 5,
         padding: 5,
         borderColor: 'rgba(41, 128, 185,1.0)',
-        backgroundColor: '#16a085'
+        backgroundColor: '#ecf0f1'
     },
     textInput: {
-        color: 'white',
+        color: '#000000',
         fontSize: 16
     },
     errorStyle: {
@@ -119,9 +163,8 @@ const styles = {
         fontWeight: '500'
     },
     titleButton: {
-        fontSize: 20,
+        fontSize: 16,
         fontWeight: '500',
-        alignSelf: 'center',
         paddingBottom: 5,
         paddingTop: 5,
         paddingLeft: 10,
@@ -130,7 +173,8 @@ const styles = {
     Btn: {
         flexDirection: 'row',
         justifyContent: 'center',
-        backgroundColor: '#f39c12',
+        alignItems: 'center',
+        backgroundColor: '#27ae60',
         padding: 3,
         paddingRight: 15,
         paddingLeft: 15,
@@ -142,9 +186,19 @@ const styles = {
         marginBottom: 15,
         marginTop: 5
     },
-
+    footerBtn: {
+        marginRight: 3,
+        marginLeft: 3
+    },
+    FooterGroupButton: {
+        // flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    }
 };
 // const mapStateToProps(state, ownProps)=> {
 //     return state
 // }
-export default CategoryNew;
+export default connect(null, {
+    AddNewCategory
+})(CategoryNew);

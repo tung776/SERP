@@ -1,0 +1,9 @@
+{
+  "hostType": "lan",
+  "lanType": "ip",
+  "dev": false,
+  "strict": false,
+  "minify": true,
+  "urlType": "exp",
+  "urlRandomness": "q6-pik"
+}
