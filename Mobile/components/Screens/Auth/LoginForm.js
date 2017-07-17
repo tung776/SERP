@@ -28,7 +28,6 @@ class LoginForm extends Component {
     onLoginPress(e) {
         e.preventDefault();
         const { identifier, password, loginUser } = this.props;
-        // console.log(identifier, password);
 
         loginUser(`${URL}/api/users/login`, { identifier, password }, (token) => {
             AsyncStorage.setItem('jwtToken', token);
@@ -38,8 +37,6 @@ class LoginForm extends Component {
     renderMessage() {
         const { error, user } = this.props;
         if (error) {
-            console.log('err = ', error);
-            console.log('err.length = ', error.length);
             // const listError = [];
             if (error.identifier) {
                 return null;

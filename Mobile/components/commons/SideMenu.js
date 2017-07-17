@@ -132,7 +132,6 @@ class SideMenu extends Component {
     }
 
     renderAuthMenu() {
-        console.log('this.props ', this.props);
         const { isAuthenticated, user } = this.props;
         if (isAuthenticated) {
             return (
@@ -401,7 +400,6 @@ const styles = {
     }
 };
 const mapStateToProps = (state) => {
-    console.log('state ', state);
     const { isAuthenticated, user } = state.auth;
     return { isAuthenticated, user };
 };

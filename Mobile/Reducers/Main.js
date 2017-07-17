@@ -93,7 +93,7 @@ class Home extends Component {
         }
         return (
             <View
-style={{
+                style={{
                 marginTop: 30,
                 width: 250,
                 borderRadius: 3,

@@ -2,17 +2,13 @@
  * Sample React Native App
  * https://github.com/tung776/SERP
  */
-import 'whatwg-fetch';
-import type, { StackFrame } from 'parseErrorStack';
 import React, { Component } from 'react';
 import {
-  View, Text,
   StatusBar,
-  Navigator
+  Image
 } from 'react-native';
-import { Router } from 'react-native-router-flux';
 import { Provider } from 'react-redux';
-import ReduxThunk from 'redux-thunk'
+import ReduxThunk from 'redux-thunk';
 import reduxLogger from 'redux-logger';
 import { createStore, applyMiddleware, compose } from 'redux';
 import Routers from './Mobile/Routers';
@@ -23,114 +19,82 @@ import { AsyncStorage } from 'react-native';
 import { setAuthorizationToken } from './Shared/utils/setAuthorizationToken';
 import { SetCurrentUser } from './Shared/actions/authCommon';
 import jwt from 'jwt-decode';
-import { AppBody, AppHeader, AppFooter } from './Mobile/components/commons';
-import { FontAwesome } from "@expo/vector-icons";
+import { FontAwesome } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 // import CustomComponents from 'react-native-deprecated-custom-components';
 import Splash from './Mobile/components/Splash';
 
+console.log("__DEV__ = ", __DEV__);
 StatusBar.setHidden(true);
+__DEV__ = false;
 
 function cacheImages(images) {
   return images.map(image => {
     if (typeof image === 'string') {
       return Image.prefetch(image);
-    } else {
-      return Expo.Asset.fromModule(image).downloadAsync();
     }
+    return Expo.Asset.fromModule(image).downloadAsync();
   });
 }
 
 function cacheFonts(fonts) {
   return fonts.map(font => Expo.Font.loadAsync(font));
 }
+let store;
+if (__DEV__) {
+  store = createStore(Reducers, compose(
+    applyMiddleware(ReduxThunk, reduxLogger)));
+} else {
+  store = createStore(Reducers, compose(
+  applyMiddleware(ReduxThunk)));
+}
 
-const store = createStore(Reducers, compose(
-  applyMiddleware(ReduxThunk, reduxLogger)));
 
 export default class serp extends Component {
   state = { appIsReady: false }
 
-  // async _loadAssetsAsync() {
+  async componentWillMount() {
+    await Expo.Font.loadAsync({
+      Roboto: require('native-base/Fonts/Roboto.ttf'),
+      Roboto_medium: require('native-base/Fonts/Roboto_medium.ttf'),
+    });
 
+    const imageAssets = cacheImages([
+      require('./Shared/images/Logo.png')
+    ]);
 
-    //   this.setState({appIsReady: true});
-    // }
-    async componentWillMount() {
-      await Expo.Font.loadAsync({
-        'Roboto': require('native-base/Fonts/Roboto.ttf'),
-        'Roboto_medium': require('native-base/Fonts/Roboto_medium.ttf'),
-      });
+    const fontAssets = cacheFonts([
+      FontAwesome.font,
+      Ionicons.font
+    ]);
 
-      const imageAssets = cacheImages([
-        require('./Shared/images/Logo.png')
-      ]);
+    await Promise.all([
+      ...imageAssets,
+      ...fontAssets,
+    ]);
 
-      const fontAssets = cacheFonts([
-        FontAwesome.font,
-        Ionicons.font
-      ]);
+    const token = await AsyncStorage.getItem('jwtToken');
 
-      await Promise.all([
-        ...imageAssets,
-        ...fontAssets,
-      ]);
-
-      const token = await AsyncStorage.getItem('jwtToken')
-
-      if (token) {
-        console.log("token = ", token)
-        setAuthorizationToken(token);
-        store.dispatch(SetCurrentUser(jwt(token)));
-      }
-      console.log("loading assets completed!");
-
-      this.setState({ appIsReady: true });
+    if (token) {
+      setAuthorizationToken(token);
+      store.dispatch(SetCurrentUser(jwt(token)));
     }
 
-    // componentWillMount() {
-    //   AsyncStorage.getItem('jwtToken').then(
-    //     token => {
-    //       if (token) {
-    //         console.log("token = ", token)
-    //         setAuthorizationToken(token);
-    //         store.dispatch(SetCurrentUser(jwt(token)));
-    //       }
-    //       this.setState({ appIsReady: true });
-    //     }
-    //   )
-
-    // }
-
-    render() {
-
-
-
-      if (!this.state.appIsReady) {
-        return (
-          <Splash />
-        );
-      }
-
-      return (
-        <Provider store={store}>
-          <Routers />
-        </Provider>
-      );
-      //Tạm thời Navigator bị ngừng hỗ trợ nên tạm cài đặt CustomComponents
-      // return (
-      //   <Provider store = { store }>
-      //     <CustomComponents.Navigator
-      //       initialRoute = {{ name: 'MAIN' }}
-      //       renderScene = { (route, navigator) => {
-      //         switch(route.name) {
-      //           case 'MAIN': return <Main />
-      //           default: return <Main />
-      //         }
-      //       } }
-      //     />
-      //   </Provider>
-      // );
-    }
+    this.setState({ appIsReady: true });
   }
+
+  render() {
+    if (!this.state.appIsReady) {
+      return (
+        <Splash />
+      );
+    }
+
+    return (
+      <Provider store={store}>
+        <Routers />
+      </Provider>
+    );
+  }
+}
 

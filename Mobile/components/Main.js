@@ -94,8 +94,6 @@ class Home extends Component {
         if (!image) {
             return;
         }
-        console.log('begin render image');
-        console.log('image', image);
         return (
             <View
 style={{

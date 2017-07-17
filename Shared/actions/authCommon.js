@@ -144,7 +144,6 @@ export const SignupFormChanged = ({ prop, value }) => ({
     });
 
 export const SignupFormSubmit = (url, user, callback) => 
-    // console.log(user);
       (dispatch) => {
          dispatch({
              type: SIGNUP_USER_PENDING
@@ -172,7 +171,6 @@ export const SignupFormSubmit = (url, user, callback) =>
             )
             .catch(
                 err => {
-                    // console.log("err = ", err);
                     dispatch({
                         type: SIGNUP_USER_FAIL,
                         payload: err.response.data
