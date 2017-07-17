@@ -7,7 +7,7 @@
     },
     "loading": {
       "hideExponentText": true,
-      "backgroundImage": "./Server/public/images/screen.jpg"
+      "backgroundImage": "./Shared/images/Logo.png"
     },
     "orientation": "portrait",
     "primaryColor": "#cccccc",

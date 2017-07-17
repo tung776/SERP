@@ -24,9 +24,9 @@ import { Ionicons } from '@expo/vector-icons';
 // import CustomComponents from 'react-native-deprecated-custom-components';
 import Splash from './Mobile/components/Splash';
 
-console.log("__DEV__ = ", __DEV__);
+// console.log("__DEV__ = ", __DEV__);
 StatusBar.setHidden(true);
-__DEV__ = false;
+// __DEV__ = false;
 
 function cacheImages(images) {
   return images.map(image => {
@@ -76,6 +76,7 @@ export default class serp extends Component {
     const token = await AsyncStorage.getItem('jwtToken');
 
     if (token) {
+      if (__DEV__) console.log('token = ', token);
       setAuthorizationToken(token);
       store.dispatch(SetCurrentUser(jwt(token)));
     }
