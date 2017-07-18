@@ -6,7 +6,7 @@ import { AsyncStorage } from 'react-native';
 import { connect } from 'react-redux';
 import { logout } from '../../actions';
 
-class SideMenu extends Component {
+class SideMenu extends React.Component {
     state = {
         showOrderMenu: false,
         showPhieuChiMenu: false,

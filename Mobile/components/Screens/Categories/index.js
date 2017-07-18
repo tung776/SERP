@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import stylesCommon from '../../../styles';
 import { Ionicons } from '@expo/vector-icons';
 
-class Categories extends Component {
+class Categories extends React.Component {
     state = {}
     addNewGroupBtnPress() {
         Actions.main();

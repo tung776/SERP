@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import stylesCommon from '../../../styles';
 import { Ionicons } from '@expo/vector-icons';
 
-class CategoryView extends Component {
+class CategoryView extends React.Component {
     state = { }
     render() {
         return (

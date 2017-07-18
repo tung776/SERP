@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 
-class Authentication extends Component {
+class Authentication extends React.Component {
     state = { }
     render() {
         return (

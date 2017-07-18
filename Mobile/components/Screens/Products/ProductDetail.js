@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import stylesCommon from '../../../styles';
 import { Ionicons } from '@expo/vector-icons';
 
-class ProductNew extends Component {
+class ProductNew extends React.Component {
     state = {
         ProductName: '',
         MinStock: '',

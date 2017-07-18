@@ -31,19 +31,15 @@ export const AddNewCategory = (category, uri) => async (dispatch) => {
             type: `image/${fileType}`,            
         });
 
-        formData.append('category[NameCategory]', category.NameCategory);
-        formData.append('category[Description]', category.Description);
+        formData.append('category', JSON.stringify(category));
+        // formData.append('Description', category.Description);
         console.log("formData = ", formData);
-        // const token = await AsyncStorage.getItem('jwtToken');
-        // console.log("token ", token);
         const options = {
             headers: {
-                // Accept: 'application/json',
-                'Content-Type': 'multipart/form-data',
+                Accept: 'application/json',
+                // 'Content-Type': 'multipart/form-data',
             },
         };
-
-        // return axios.post(apiUrl, formData, options);
 
         axios.post(apiUrl, formData).then(
             res => {

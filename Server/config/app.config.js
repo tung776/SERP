@@ -24,11 +24,11 @@ export const config = function(app){
 /**
  * webpack middleware for dev
  */
-    console.log("env = ", process.env.APP_ENV);
+    // console.log("env = ", process.env.APP_ENV);
     if(process.env.APP_ENV == 'development') {
-        console.log("enabled webpack");
+        // console.log("enabled webpack");
         
-        console.log("public path = ", webpackConfig.output);
+        // console.log("public path = ", webpackConfig.output);
         const complier = webpack(webpackConfig);
         app.use(webpackMiddleware(complier, {
             hot:true,

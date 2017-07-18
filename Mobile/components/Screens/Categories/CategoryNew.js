@@ -14,7 +14,7 @@ import { ADD_CATEGORY, ADD_CATEGORY_PENDING,
      } from '../../../actions';
 import { AddNewCategory } from '../../../actions/categoryActions';
 
-class CategoryNew extends Component {
+class CategoryNew extends React.Component {
     state = {
         NameCategory: '',
         Description: '',

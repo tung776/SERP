@@ -4,7 +4,7 @@ import { View, Text, Dimensions, TouchableOpacity, Image } from 'react-native';
 import { Button } from './index';
 import { Actions } from 'react-native-router-flux';
 
-class AppHeader extends Component {
+class AppHeader extends React.Component {
     state = {}
     render() {
         return (

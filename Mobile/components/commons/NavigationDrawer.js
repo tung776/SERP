@@ -3,7 +3,7 @@ import Drawer from 'react-native-drawer';
 import SideMenu from './SideMenu';
 import { Actions, DefaultRenderer } from 'react-native-router-flux';
 
-export default class NavigationDrawer extends Component {
+export default class NavigationDrawer extends React.Component {
     render() {
         const state = this.props.navigationState;
         const children = state.children;

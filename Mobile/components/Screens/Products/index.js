@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import stylesCommon from '../../../styles';
 import { Ionicons } from '@expo/vector-icons';
 
-class Products extends Component {
+class Products extends React.Component {
     state = {
         searchText: '',
         error: null
