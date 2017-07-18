@@ -6,8 +6,9 @@ import {
 import { URL } from '../../env';
 import axios from 'axios';
 import { NewCategoryValidator } from '../validators';
+import { AsyncStorage } from 'react-native';
 
-export const AddNewCategory = (category) => (dispatch) => {
+export const AddNewCategory = (category, uri) => async (dispatch) => {
     dispatch({
         type: CATEGORY_PENDING
     });
@@ -19,7 +20,32 @@ export const AddNewCategory = (category) => (dispatch) => {
         });
     } else {
         const apiUrl = `${URL}/api/category/new`;
-        axios.post(apiUrl, category).then(
+        const formData = new FormData();
+        const uriParts = uri.split('.');
+        const fileType = uriParts[uriParts.length - 1];
+        console.log(apiUrl, uriParts, fileType)
+        formData.append('categoryImage', {
+            uri,
+            name: `category.${fileType}`,
+            filename: `category.${fileType}`,
+            type: `image/${fileType}`,            
+        });
+
+        formData.append('category[NameCategory]', category.NameCategory);
+        formData.append('category[Description]', category.Description);
+        console.log("formData = ", formData);
+        // const token = await AsyncStorage.getItem('jwtToken');
+        // console.log("token ", token);
+        const options = {
+            headers: {
+                // Accept: 'application/json',
+                'Content-Type': 'multipart/form-data',
+            },
+        };
+
+        // return axios.post(apiUrl, formData, options);
+
+        axios.post(apiUrl, formData).then(
             res => {
                 dispatch({
                     type: CATEGORY_CHANGE_SUCCESS,
@@ -32,6 +58,7 @@ export const AddNewCategory = (category) => (dispatch) => {
             }
         ).catch(
             err => {
+                console.log(err);
                 if (err.response) {
                     dispatch({
                         type: CATEGORY_CHANGE_FAIL,

@@ -33,7 +33,7 @@ class CategoryNew extends Component {
     }
 
     onSavePress() {
-        this.props.AddNewCategory(this.state);
+        this.props.AddNewCategory(this.state, this.state.imageUrl);
     }
 
     render() {
