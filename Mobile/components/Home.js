@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import React from 'react';
 import TabNavigator from 'react-native-tab-navigator';
 import { Text, View, Image } from 'react-native';
 import Dashboard from './Dashboard';
 import Profile from './Profile';
 import Header from './commons/Header';
 import { addNoteIcon } from '../../Shared/images/index';
-class Main extends Component {
+class Main React.Component {
     state = {
         selectedTab: 'Hoa_Don'
     }

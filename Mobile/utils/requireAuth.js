@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { addFlashMessage, ERROR_MESSAGE } from '../actions';
 // import PropTypes from 'prop-types';
 import { Actions } from 'react-native-router-flux';
 
 export default function (ComposedComponent) {
-    class Authenticate extends Component {
+    class Authenticate React.Component {
         state = { }
 
         componentWillMount() {

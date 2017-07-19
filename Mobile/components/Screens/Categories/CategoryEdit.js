@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { View, Text } from 'react-native';
 import Header from '../../commons/Header';
 import Footer from '../../commons/Footer';
 import { connect } from 'react-redux';
 import stylesCommon from '../../../styles';
 
-class CategoryEdit extends Component {
+class CategoryEdit React.Component {
     state = { }
     render() {
         return (

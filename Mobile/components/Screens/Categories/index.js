@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import Reactfrom 'react';
 import { View, Text, ScrollView, Image, Dimensions, 
     TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import Header from '../../commons/Header';
@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import stylesCommon from '../../../styles';
 import { Ionicons } from '@expo/vector-icons';
 
-class Categories extends Component {
+class Categories React.Component {
     state = {}
     addNewGroupBtnPress() {
         Actions.main();

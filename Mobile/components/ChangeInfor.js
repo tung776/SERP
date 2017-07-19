@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { View, Text } from 'react-native';
-class ChangeInfor extends Component {
+class ChangeInfor React.Component {
     state = { }
     render() {
         return (

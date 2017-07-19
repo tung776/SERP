@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { View, Text, ScrollView, TextInput, TouchableOpacity } from 'react-native';
 import Header from '../../commons/Header';
 import Footer from '../../commons/Footer';
@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import stylesCommon from '../../../styles';
 import { Ionicons } from '@expo/vector-icons';
 
-class ProductNew extends Component {
+class ProductNew React.Component {
     state = {
         ProductName: '',
         MinStock: '',

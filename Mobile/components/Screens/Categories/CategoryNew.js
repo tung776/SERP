@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { View, Text, Image, Dimensions, TouchableOpacity, TextInput } from 'react-native';
 import Header from '../../commons/Header';
 import Footer from '../../commons/Footer';
@@ -14,7 +14,7 @@ import { ADD_CATEGORY, ADD_CATEGORY_PENDING,
      } from '../../../actions';
 import { AddNewCategory } from '../../../actions/categoryActions';
 
-class CategoryNew extends Component {
+class CategoryNew React.Component {
     state = {
         NameCategory: '',
         Description: '',

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 // import { Container,Icon, Button,Content, Title, FooterTab, Text, Header, Body, Footer, Right, Left} from 'native-base';
 import { View, Text, Image, Button, StyleSheet, ActivityIndicator } from 'react-native';
 // import { Card, CardSection, Button } from './commons';
@@ -9,7 +9,7 @@ import Footer from './commons/Footer';
 import { takeImage, uploadImageAsync } from '../utils/uploadImage';
 import { URL } from '../../env';
 
-class Home extends Component {
+class Home React.Component {
     state = {
         uploading: false,
         image: null,

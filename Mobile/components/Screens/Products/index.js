@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity, TouchableWithoutFeedback, TextInput } from 'react-native';
 import Header from '../../commons/Header';
 import Footer from '../../commons/Footer';
@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import stylesCommon from '../../../styles';
 import { Ionicons } from '@expo/vector-icons';
 
-class Products extends Component {
+class Products React.Component {
     state = {
         searchText: '',
         error: null

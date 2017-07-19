@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { View, Text, Button, Image, ScrollView } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 // import { Card, CardSection, } from './index';
@@ -6,7 +6,7 @@ import { AsyncStorage } from 'react-native';
 import { connect } from 'react-redux';
 import { logout } from '../../actions';
 
-class SideMenu extends Component {
+class SideMenu React.Component {
     state = {
         showOrderMenu: false,
         showPhieuChiMenu: false,
