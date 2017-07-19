@@ -1,3 +1,4 @@
+
 import compression from 'compression'
 import morgan from 'morgan';
 import bodyParser from 'body-parser';
@@ -9,26 +10,19 @@ import expressSession from 'express-session';
 // import expressFlash from 'express-flash';
 import passport from 'passport';
 import expressValidator from "express-validator";
-const connectMongo = require('connect-mongo')(expressSession);
+// const connectMongo = require('connect-mongo')(expressSession);
 import path from 'path';
 import webpack from 'webpack';
 import webpackMiddleware from 'webpack-dev-middleware';
 import webpackHotMiddleware from 'webpack-hot-middleware';
-import webpackConfig from '../webpack.config.dev.js'
-
-import { connectString } from './database.config';
+import webpackConfig from '../webpack.config.dev.js';
 
 export const config = function(app){
-
  
 /**
  * webpack middleware for dev
  */
-    // console.log("env = ", process.env.APP_ENV);
     if(process.env.APP_ENV == 'development') {
-        // console.log("enabled webpack");
-        
-        // console.log("public path = ", webpackConfig.output);
         const complier = webpack(webpackConfig);
         app.use(webpackMiddleware(complier, {
             hot:true,
@@ -56,7 +50,7 @@ export const config = function(app){
         secret: "son cat tuong serp",
         resave: true,
         saveUninitialized: true,
-        store: new connectMongo({url: connectString, autoReconnect: true})//Tham khảo tại: https://github.com/jdesboeufs/connect-mongo
+        // store: new connectMongo({url: connectString, autoReconnect: true})//Tham khảo tại: https://github.com/jdesboeufs/connect-mongo
         
     }));
     // app.use(expressFlash());
@@ -64,6 +58,7 @@ export const config = function(app){
     app.use(passport.session()); //middleware sử dụng kịch bản Passport , sử dụng session lấy thông tin user rồi gắn vào req.user.
     app.use(expressValidator());
     
-    console.log(path.resolve('Server/views'));
     app.set('views', path.resolve('Server/views'));
+     
+    
 };

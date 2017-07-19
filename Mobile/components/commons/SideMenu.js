@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { View, Text, Button, Image, ScrollView } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 // import { Card, CardSection, } from './index';

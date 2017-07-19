@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import TabNavigator from 'react-native-tab-navigator';
 import { Text, View, Image } from 'react-native';
 import Dashboard from './Dashboard';

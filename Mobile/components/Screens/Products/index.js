@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity, TouchableWithoutFeedback, TextInput } from 'react-native';
 import Header from '../../commons/Header';
 import Footer from '../../commons/Footer';

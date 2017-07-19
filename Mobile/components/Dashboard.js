@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {View, Text} from 'react-native';
 import { Actions } from 'react-native-router-flux';
 // import { Card, CardSection, Button } from './commons';

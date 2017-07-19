@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { View, Text, Image, Dimensions, TouchableOpacity, TextInput } from 'react-native';
 import Header from '../../commons/Header';
 import Footer from '../../commons/Footer';
@@ -16,7 +16,7 @@ import { AddNewCategory } from '../../../actions/categoryActions';
 
 class CategoryNew extends React.Component {
     state = {
-        NameCategory: '',
+        Name: '',
         Description: '',
         imageUrl: null,
         uploading: false
@@ -52,14 +52,14 @@ class CategoryNew extends React.Component {
                                     underlineColorAndroid={'transparent'}
                                     style={styles.textInput}
                                     blurOnSubmit
-                                    value={this.state.NameCategory}
-                                    onChangeText={text => this.setState({ NameCategory: text })}
+                                    value={this.state.Name}
+                                    onChangeText={text => this.setState({ Name: text })}
                                     type="Text"
-                                    name="nameCategory"
+                                    name="Name"
                                     placeholder="Điền tên nhóm sản phẩm:"
                                 />
                                 <Text>
-                                    {this.error && <Text style={styles.errorStyle}>{this.error.NameCategory}</Text>}
+                                    {this.error && <Text style={styles.errorStyle}>{this.error.Name}</Text>}
                                 </Text>
                             </View>
 

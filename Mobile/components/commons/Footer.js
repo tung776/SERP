@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 // import { Container,Icon, Button,Content, Title, FooterTab, Text, Header, Body, Footer, Right, Left} from 'native-base';
 import { View, Dimensions } from 'react-native';
 const height = Dimensions.get('window').height;

@@ -23,7 +23,6 @@ export const AddNewCategory = (category, uri) => async (dispatch) => {
         const formData = new FormData();
         const uriParts = uri.split('.');
         const fileType = uriParts[uriParts.length - 1];
-        console.log(apiUrl, uriParts, fileType)
         formData.append('categoryImage', {
             uri,
             name: `category.${fileType}`,
@@ -32,12 +31,9 @@ export const AddNewCategory = (category, uri) => async (dispatch) => {
         });
 
         formData.append('category', JSON.stringify(category));
-        // formData.append('Description', category.Description);
-        console.log("formData = ", formData);
         const options = {
             headers: {
                 Accept: 'application/json',
-                // 'Content-Type': 'multipart/form-data',
             },
         };
 
@@ -54,7 +50,6 @@ export const AddNewCategory = (category, uri) => async (dispatch) => {
             }
         ).catch(
             err => {
-                console.log(err);
                 if (err.response) {
                     dispatch({
                         type: CATEGORY_CHANGE_FAIL,

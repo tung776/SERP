@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 // import { Container, Content, Form, Item, Button, Text, Header, Body, Footer, Right, Left, Spinner, Input} from 'native-base';
 import { connect } from 'react-redux';
 import { Text, View, Image, TextInput, Dimensions, Button, AsyncStorage } from 'react-native';

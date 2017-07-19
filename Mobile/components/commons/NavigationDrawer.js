@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Drawer from 'react-native-drawer';
 import SideMenu from './SideMenu';
 import { Actions, DefaultRenderer } from 'react-native-router-flux';
