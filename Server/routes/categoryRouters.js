@@ -7,7 +7,6 @@ const CategoryRouter = Router();
 
 const storage = multer.diskStorage({
   destination(req, file, cb) {
-   
     cb(null, './Server/public/images/categories');
   },
   filename(req, file, cb) {
@@ -17,18 +16,8 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-CategoryRouter.post('/new', /*upload.single('categoryImage'), */ (req, res) => {
-   req.on('data', data => console.log("data = ", data));
-    req.on('category', cate => console.log("category = ", cate));
-    console.log("category = ", req.get('category'));
-    console.log( req.body);
-    console.log( req.category);
-    console.log( req.Description);
-  // const { NameCategory, Description } = req.body;
-  
-  console.log('req.file.filename = ', req.file);
-  console.log('req.file = ', req.file);
-  console.log()
+CategoryRouter.post('/new', upload.single('categoryImage'), (req, res) => {
+  const { Name, Description } = JSON.parse(req.body.category)
   const url = `/images/category/${req.file.filename}`;
   res.status(200).json({ url, filename: req.file.filename });
 });

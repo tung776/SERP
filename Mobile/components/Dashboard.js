@@ -3,7 +3,7 @@ import {View, Text} from 'react-native';
 import { Actions } from 'react-native-router-flux';
 // import { Card, CardSection, Button } from './commons';
 
-class Dashboard React.Component {
+class Dashboard extends React.Component {
     state = {  }
     render() {
         return (

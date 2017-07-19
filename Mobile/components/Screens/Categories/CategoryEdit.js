@@ -5,7 +5,7 @@ import Footer from '../../commons/Footer';
 import { connect } from 'react-redux';
 import stylesCommon from '../../../styles';
 
-class CategoryEdit React.Component {
+class CategoryEdit extends React.Component {
     state = { }
     render() {
         return (

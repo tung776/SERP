@@ -5,7 +5,7 @@ import { addFlashMessage, ERROR_MESSAGE } from '../actions';
 import { Actions } from 'react-native-router-flux';
 
 export default function (ComposedComponent) {
-    class Authenticate React.Component {
+    class Authenticate extends React.Component {
         state = { }
 
         componentWillMount() {

@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, Text} from 'react-native';
-class OrderHistory React.Component {
+class OrderHistory extends React.Component {
     state = {  }
     render() {
         return (

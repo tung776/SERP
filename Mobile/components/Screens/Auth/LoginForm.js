@@ -16,7 +16,7 @@ import { URL } from '../../../../env';
 
 const height = Dimensions.get('window').height;
 
-class LoginForm React.Component {
+class LoginForm extends React.Component {
 
 
     onIdentifierChange(text) {

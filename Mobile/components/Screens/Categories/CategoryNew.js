@@ -14,9 +14,9 @@ import { ADD_CATEGORY, ADD_CATEGORY_PENDING,
      } from '../../../actions';
 import { AddNewCategory } from '../../../actions/categoryActions';
 
-class CategoryNew React.Component {
+class CategoryNew extends React.Component {
     state = {
-        NameCategory: '',
+        Name: '',
         Description: '',
         imageUrl: null,
         uploading: false
@@ -52,14 +52,14 @@ class CategoryNew React.Component {
                                     underlineColorAndroid={'transparent'}
                                     style={styles.textInput}
                                     blurOnSubmit
-                                    value={this.state.NameCategory}
-                                    onChangeText={text => this.setState({ NameCategory: text })}
+                                    value={this.state.Name}
+                                    onChangeText={text => this.setState({ Name: text })}
                                     type="Text"
-                                    name="nameCategory"
+                                    name="Name"
                                     placeholder="Điền tên nhóm sản phẩm:"
                                 />
                                 <Text>
-                                    {this.error && <Text style={styles.errorStyle}>{this.error.NameCategory}</Text>}
+                                    {this.error && <Text style={styles.errorStyle}>{this.error.Name}</Text>}
                                 </Text>
                             </View>
 

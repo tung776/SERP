@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, Image } from 'react-native';
-class Splash React.Component {
+class Splash extends React.Component {
     state = { }
     render() {
         return (

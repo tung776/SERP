@@ -5,7 +5,7 @@ import Dashboard from './Dashboard';
 import Profile from './Profile';
 import Header from './commons/Header';
 import { addNoteIcon } from '../../Shared/images/index';
-class Main React.Component {
+class Main extends React.Component {
     state = {
         selectedTab: 'Hoa_Don'
     }

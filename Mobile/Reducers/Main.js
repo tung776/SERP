@@ -9,7 +9,7 @@ import Footer from './commons/Footer';
 import { takeImage, uploadImageAsync } from '../utils/uploadImage';
 import { URL } from '../../env';
 
-class Home React.Component {
+class Home extends React.Component {
     state = {
         uploading: false,
         image: null,

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text , View} from 'react-native';
 
-class Profile React.Component {
+class Profile extends React.Component {
     state = {  }
     render() {
         return (
