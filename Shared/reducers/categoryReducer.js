@@ -1,5 +1,5 @@
 const INITIAL_STATE = {
-    NameCategory: '',
+    Name: '',
     Description: '',
     loading: false,
     error: ''
@@ -11,12 +11,14 @@ export default (state = INITIAL_STATE, action) => {
         case CATEGORY_PENDING :
             return { ...state, loading: true, error: '' };
         case ADD_CATEGORY:
-            return { ...state, NameCategory: action.payload.NameCategory, Description: action.payload.Description };
+            return { ...state, Name: action.payload.Name, Description: action.payload.Description };
         case CATEGORY_CHANGE_FAIL:
             return { ...state, error: action.payload, loading: false };
         case CATEGORY_CHANGE_SUCCESS:
             // console.log(action.payload);
-            return { ...state, user: action.payload.user, error: '', loading: false };
+            return { ...state, Name: action.payload.Name,
+                Description: action.payload.Description,
+                error: '', loading: false };
         default:
             return state;
     }

@@ -18,6 +18,7 @@ const upload = multer({ storage });
 
 CategoryRouter.post('/new', upload.single('categoryImage'), (req, res) => {
   const { Name, Description } = JSON.parse(req.body.category)
+  // console.log(Name, Description);
   const url = `/images/category/${req.file.filename}`;
   res.status(200).json({ url, filename: req.file.filename });
 });
