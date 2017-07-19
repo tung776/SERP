@@ -1,5 +1,5 @@
 import {
-    ADD_CATEGORY, CATEGORY_PENDING,
+    ADD_CATEGORY, CATEGORY_PENDING, CATEGORY_CHANGE,
     CATEGORY_CHANGE_FAIL, CATEGORY_CHANGE_SUCCESS,
     ADD_FLASH_MESSAGE, SUCCESS_MESSAGE, ERROR_MESSAGE
 } from './index';
@@ -8,7 +8,13 @@ import axios from 'axios';
 import { NewCategoryValidator } from '../validators';
 import { AsyncStorage } from 'react-native';
 
-export const AddNewCategory = (category, uri) => async (dispatch) => {
+export const CategoryChange = ({  prop, value })=> ({
+    type: CATEGORY_CHANGE,
+    payload: { prop, value }
+});
+
+export const AddNewCategory = (category) => async (dispatch) => {
+    // console.log("categoru =", category);
     dispatch({
         type: CATEGORY_PENDING
     });
@@ -18,13 +24,16 @@ export const AddNewCategory = (category, uri) => async (dispatch) => {
             type: CATEGORY_CHANGE_FAIL,
             payload: errors
         });
+        alert(`Lưu dữ liệu thất bại: ${errors}` );
     } else {
         const apiUrl = `${URL}/api/category/new`;
         const formData = new FormData();
-        const uriParts = uri.split('.');
+        // console.log("ImageUrl = ", category.ImageUrl);
+
+        const uriParts = category.ImageUrl.split('.');
         const fileType = uriParts[uriParts.length - 1];
         formData.append('categoryImage', {
-            uri,
+            uri: category.ImageUrl,
             name: `category.${fileType}`,
             filename: `category.${fileType}`,
             type: `image/${fileType}`,            
@@ -39,6 +48,7 @@ export const AddNewCategory = (category, uri) => async (dispatch) => {
 
         axios.post(apiUrl, formData).then(
             res => {
+                // console.log("data = ", data);
                 dispatch({
                     type: CATEGORY_CHANGE_SUCCESS,
                     payload: res.data
@@ -47,9 +57,11 @@ export const AddNewCategory = (category, uri) => async (dispatch) => {
                     type: ADD_FLASH_MESSAGE,
                     payload: { message: 'Bạn đã tạo nhóm sản phẩm thành công', TypeMessage: SUCCESS_MESSAGE }
                 });
+                alert("Bạn đã lưu dữ liệu thành công");
             }
         ).catch(
             err => {
+                console.log("error: ", err);
                 if (err.response) {
                     dispatch({
                         type: CATEGORY_CHANGE_FAIL,
@@ -69,6 +81,7 @@ export const AddNewCategory = (category, uri) => async (dispatch) => {
                         payload: { message: `Tạo nhóm sản phẩm thất bại: ${err}`, TypeMessage: ERROR_MESSAGE }
                     });
                 }
+                alert(`Lưu dữ liệu thất bại: ${err}`);
             }
             );
     }

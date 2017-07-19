@@ -18,16 +18,16 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 CategoryRouter.post('/new', upload.single('categoryImage'), (req, res) => {
-  const url = `/images/category/${req.file.filename}`;
-  const { Name, Description } = JSON.parse(req.body.category)
+  const ImageUrl = `/images/category/${req.file.filename}`;
+  const { Name, Description } = JSON.parse(req.body.category);
   const { isValid, errors } = NewCategoryValidator(JSON.parse(req.body.category));
   if(isValid) {
-    CategoryModel.forge({ Name, Description}, {hasTimestamps: true})
+    CategoryModel.forge({ Name, Description, ImageUrl}, {hasTimestamps: true})
     .save()
     .then(
       data => {
         console.log('data', data);
-        res.json({success: true, category: data, url: url});
+        res.json({success: true, category: data});
       }
     )
     .catch(

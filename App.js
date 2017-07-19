@@ -40,15 +40,15 @@ function cacheFonts(fonts) {
   return fonts.map(font => Expo.Font.loadAsync(font));
 }
 let store;
-// if (__DEV__) {
-//   store = createStore(Reducers, compose(
-//     applyMiddleware(ReduxThunk, reduxLogger)));
-// } else {
-//   store = createStore(Reducers, compose(
-//   applyMiddleware(ReduxThunk)));
-// }
-store = createStore(Reducers, compose(
+if (__DEV__) {
+  store = createStore(Reducers, compose(
+    applyMiddleware(ReduxThunk, reduxLogger)));
+} else {
+  store = createStore(Reducers, compose(
   applyMiddleware(ReduxThunk)));
+}
+// store = createStore(Reducers, compose(
+//   applyMiddleware(ReduxThunk)));
 
 export default class serp extends React.Component {
   state = { appIsReady: false }

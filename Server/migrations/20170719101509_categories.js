@@ -4,7 +4,7 @@ exports.up = function (knex, Promise) {
       table.increments();
       table.string('Name').notNullable().unique();
       table.string('Description');
-      
+      table.string('ImageUrl')
       table.timestamps();
   })
 };

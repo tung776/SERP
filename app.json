@@ -6,10 +6,10 @@
       "package": "com.soncattuong.serp"
     },
     "loading": {
+      "icon": "./Shared/images/Logo.png",
       "hideExponentText": true,
-      "backgroundImage": "./Shared/images/Logo.png"
+      "backgroundImage": "./Shared/images/background.png"
     },
-    "orientation": "portrait",
     "primaryColor": "#cccccc",
     "packagerOpts": {
       "assetExts": [
