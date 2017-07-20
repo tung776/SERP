@@ -141,29 +141,7 @@ class CategoryNew extends React.Component {
                     </View>
                 </View>
                 <Footer>
-<<<<<<< HEAD
                     {this.renderButton()}
-=======
-                    <View style={styles.FooterGroupButton}>
-                        <TouchableOpacity 
-                            onPress = {this.onSavePress.bind(this)}
-                            style={[styles.Btn, styles.footerBtn]}
-                        >
-                            <Ionicons name="ios-checkmark-circle" size={25} color="#FFFFFF" />
-                            <Text style={styles.titleButton}>Lưu</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity 
-                            onPress = { Actions.pop() }
-                            style={[styles.Btn, styles.footerBtn]}>
-                            <Ionicons name="ios-close-circle-outline" size={25} color="#FFFFFF" />
-                            <Text style={styles.titleButton}>Hủy</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={[styles.Btn, styles.footerBtn]} onPress = {()=> Actions.Products()}>
-                            <Ionicons name="ios-folder-open-outline" size={25} color="#FFFFFF" />
-                            <Text style={styles.titleButton}>DS Sản Phẩm</Text>
-                        </TouchableOpacity>
-                    </View>
->>>>>>> origin/master
                 </Footer>
             </View>
         );
