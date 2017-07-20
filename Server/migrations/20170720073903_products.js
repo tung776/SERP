@@ -1,65 +1,65 @@
 
 exports.up = function (knex, Promise) {
-    return knex.schema.createTableIfNotExists('roles', function (table) {
+    return knex.schema.createTableIfNotExists('roles', (table) => {
         table.increments();
-        table.string("name").notNullable().unique();
-        table.string("description");
+        table.string('name').notNullable().unique();
+        table.string('description');
         table.timestamps();
     })
-        .createTableIfNotExists("departments", function(table){
-            table.increments();
-            table.string("name").notNullable().unique();
-            table.string("description");
-            table.timestamps();
-        })
-        .createTableIfNotExists('banks', function(table) {
-            table.increments();
-            table.string('accountNumber').unique().notNullable();
-            table.string('bankName').notNullable();
-        })
-        .createTableIfNotExists("companies", function(table) {
-            table.increments();
-            table.string("name").notNullable().unique();
-            table.string("englishName");
-            table.string("address").notNullable();
-            table.string("taxtCode").unique();
-            table.integer('bankId').references('id').inTable('banks');
-            table.string("phone");
-            table.string("email");
-            table.string("website");
-            table.string("logoUrl");
-            table.string("director");
-            table.timestamps();
-        })
-        .createTableIfNotExists("units", function(table) {
-            table.increments();
-            table.string("name").unique().notNullable();
-            table.string("rate").notNullable();
-        })
-        .createTableIfNotExists("warehouses", function(table) {
-            table.increments();
-            table.string("name").unique().notNullable();
-            table.string("description");
-            table.string("address");
-        })
-        .createTableIfNotExists("customerGroups", function(table) {
-            table.increments();
-            table.string("name").notNullable().unique();
-            table.string("description");
-            table.timestamps();
-        })
-        .createTableIfNotExists('supplierGroups', function(table) {
-            table.increments();
-            table.string('name').unique().notNullable();
-            table.string('description')
-        })
-        .createTableIfNotExists('categories', function (table) {
+        .createTableIfNotExists('departments', (table) =>  {
             table.increments();
             table.string('name').notNullable().unique();
             table.string('description');
             table.timestamps();
         })
-        .createTableIfNotExists('users', function (table) {
+        .createTableIfNotExists('banks', (table) => {
+            table.increments();
+            table.string('accountNumber').unique().notNullable();
+            table.string('bankName').notNullable();
+        })
+        .createTableIfNotExists('companies', (table) => {
+            table.increments();
+            table.string('name').notNullable().unique();
+            table.string('englishName');
+            table.string('address').notNullable();
+            table.string('taxtCode').unique();
+            table.integer('bankId').references('id').inTable('banks');
+            table.string('phone');
+            table.string('email');
+            table.string('website');
+            table.string('logoUrl');
+            table.string('director');
+            table.timestamps();
+        })
+        .createTableIfNotExists('units', (table) => {
+            table.increments();
+            table.string('name').unique().notNullable();
+            table.string('rate').notNullable();
+        })
+        .createTableIfNotExists('warehouses', (table) => {
+            table.increments();
+            table.string('name').unique().notNullable();
+            table.string('description');
+            table.string('address');
+        })
+        .createTableIfNotExists('customerGroups', (table) => {
+            table.increments();
+            table.string('name').notNullable().unique();
+            table.string('description');
+            table.timestamps();
+        })
+        .createTableIfNotExists('supplierGroups', (table) => {
+            table.increments();
+            table.string('name').unique().notNullable();
+            table.string('description');
+        })
+        .createTableIfNotExists('categories', (table) => {
+            table.increments();
+            table.string('name').notNullable().unique();
+            table.string('description');
+            table.timestamps();
+        })
+        .createTableIfNotExists('users', (table) => {
             table.increments();
             table.string('username').unique();
             table.string('email').unique();
@@ -68,15 +68,15 @@ exports.up = function (knex, Promise) {
             table.string('lastName').notNullable();
             table.string('phone').notNullable();
             table.string('address');
-            table.integer('roleId').notNullable().references("id").inTable("roles");
-            table.integer('departmentId').notNullable().references("id").inTable("departments");
+            table.integer('roleId').notNullable().references('id').inTable('roles');
+            table.integer('departmentId').notNullable().references('id').inTable('departments');
             table.string('gender').notNullable();
             table.string('rememberToken');
             table.timestamps();
         })        
-        .createTableIfNotExists("customers", function(table) {
+        .createTableIfNotExists('customers', (table) => {
             table.increments();
-            table.integer("customerGroupId").notNullable().references("id").inTable("customerGroups");
+            table.integer('customerGroupId').notNullable().references('id').inTable('customerGroups');
             table.string('name').unique().notNullable();
             table.integer('bankId').references('id').inTable('banks');
             table.integer('companyId').references('id').inTable('companies');
@@ -87,7 +87,7 @@ exports.up = function (knex, Promise) {
             table.integer('overdue'); //Số ngày nợ cho phép, vượt quá sẽ bị hệ thống liệt kê trong ds đòi nợ
             table.float('excessDebt'); //Nợ vượt mức cho phép
         })
-        .createTableIfNotExists('debtCustomers', function(table) {
+        .createTableIfNotExists('debtCustomers', (table) => {
             /*
             Mỗi hóa đơn, phiêu thu đều phải tham chiếu tới bảng này
             Mỗi khi phát sinh giao dịch, thì sẽ phát sinh 1 dòng phản ảnh công nợ hiện tại
@@ -106,19 +106,18 @@ exports.up = function (knex, Promise) {
             table.float('plus').defaultTo(0);
             table.timestamps();
         })
-        .createTableIfNotExists('paymentCustomers', function(table) {
+        .createTableIfNotExists('paymentCustomers', (table) => {
             table.increments();
             table.integer('debtCustomerId').references('id').inTable('debtCustomers');
             table.integer('customerId').references('id').inTable('customers');
             table.date('createdDate').notNullable();
             table.string('title');
-            table.date('createdDate').notNullable();
             table.string('description');
             table.float('amount').defaultTo(0);
         })
-        .createTableIfNotExists("suppliers", function(table) {
+        .createTableIfNotExists('suppliers', (table) => {
             table.increments();
-            table.integer("supplierGroupId").notNullable().references("id").inTable("supplierGroups");
+            table.integer('supplierGroupId').notNullable().references('id').inTable('supplierGroups');
             table.string('name').unique().notNullable();
             table.integer('bankId').references('id').inTable('banks');
             table.integer('companyId').references('id').inTable('companies');
@@ -127,10 +126,9 @@ exports.up = function (knex, Promise) {
             table.string('phone');
             table.string('email');
             table.integer('overdue'); //Số ngày nợ cho phép, vượt quá sẽ bị hệ thống liệt kê trong ds trả nợ
-            table.float('excessDebt') //Nợ vượt mức cho phép
-            
+            table.float('excessDebt'); //Nợ vượt mức cho phép
         })
-        .createTableIfNotExists('debtSuppliers', function(table) {
+        .createTableIfNotExists('debtSuppliers', (table) => {
             /*
             Mỗi hóa đơn, phiêu chi đều phải tham chiếu tới bảng này
             Mỗi khi phát sinh giao dịch, thì sẽ phát sinh 1 dòng phản ảnh công nợ hiện tại
@@ -149,7 +147,7 @@ exports.up = function (knex, Promise) {
             table.float('plus').defaultTo(0);
             table.timestamps();
         })
-        .createTableIfNotExists('paymentSuppliers', function(table) {
+        .createTableIfNotExists('paymentSuppliers', (table) => {
             table.increments();
             table.integer('debtSupplierId').references('id').inTable('debtSuppliers');
             table.integer('supplierId').references('id').inTable('suppliers');
@@ -158,12 +156,12 @@ exports.up = function (knex, Promise) {
             table.string('description');
             table.float('amount').defaultTo(0);
         })
-        .createTableIfNotExists('typeCargoes', function(table) {
+        .createTableIfNotExists('typeCargoes', (table) => {
             //Định nghĩa loại hàng hóa là sản phẩm hay là nguyên liệu
             table.increments();
             table.string('name');
         })
-        .createTableIfNotExists('products', function(table) {
+        .createTableIfNotExists('products', (table) => {
             table.increments();
             table.integer('categoryId').references('id').inTable('categories');
             table.integer('unitId').references('id').inTable('units');
@@ -177,11 +175,11 @@ exports.up = function (knex, Promise) {
             table.float('minQuantity');//Lượng tồn kho tối thiểu,
             table.boolean('isAvaiable').defaultTo(true);// Hàng có sẵn trong kho không
         })
-        .createTableIfNotExists('orderTypes', function(table) {
+        .createTableIfNotExists('orderTypes', (table) => {
             table.increments();
             table.string('name').notNullable();
         })
-        .createTableIfNotExists('saleOrders', function(table) {
+        .createTableIfNotExists('saleOrders', (table) => {
             /*
             mỗi hóa đơn sẽ có thể có hoặc không phát sinh phiếu thu 
             (paymentCustomers). Nếu khách hàng
@@ -200,22 +198,22 @@ exports.up = function (knex, Promise) {
             table.integer('paymentCustomerId').nullable().references('id').inTable('paymentCustomers');
             table.integer('debtCustomerId').notNullable().references('id').inTable('debtCustomers');
             table.integer('orderTypeId').notNullable().references('id').inTable('orderTypes');
-            table.string('note').defaultTo(0);;
-            table.float('total').defaultTo(0);;
-            table.float('vat').defaultTo(0);;
+            table.string('note').defaultTo(0);
+            table.float('total').defaultTo(0);
+            table.float('vat').defaultTo(0);
             table.float('totalIncludeVat').defaultTo(0);
         })
-        .createTableIfNotExists('saleOderDetails', function(table) {
+        .createTableIfNotExists('saleOderDetails', (table) => {
             table.increments();
             table.integer('saleOrderId').notNullable().references('id').inTable('saleOrders');
             table.integer('productId').notNullable().unique().references('id').inTable('products');
             table.integer('unitId').notNullable().references('id').inTable('units');
-            table.integer('warehorseId').notNullable().references('id').inTable('warehouses');
+            table.integer('warehourseId').notNullable().references('id').inTable('warehouses');
             table.float('quantity').defaultTo(0);
             table.float('price').defaultTo(0);
             table.float('total').defaultTo(0);            
         })
-        .createTableIfNotExists('purchaseOrders', function(table) {
+        .createTableIfNotExists('purchaseOrders', (table) => {
             /*
             mỗi hóa đơn sẽ có thể có hoặc không phát sinh phiếu thu 
             (paymentCustomers). Nếu khách hàng
@@ -234,116 +232,115 @@ exports.up = function (knex, Promise) {
             table.integer('paymentSupplierId').nullable().references('id').inTable('paymentSuppliers');
             table.integer('debtSupplierId').notNullable().references('id').inTable('debtSuppliers');
             table.integer('orderTypeId').notNullable().references('id').inTable('orderTypes');
-            table.string('note').defaultTo(0);;
-            table.float('total').defaultTo(0);;
-            table.float('vat').defaultTo(0);;
+            table.string('note').defaultTo(0);
+            table.float('total').defaultTo(0);
+            table.float('vat').defaultTo(0);
             table.float('totalIncludeVat').defaultTo(0);
         })
-        .createTableIfNotExists('purchaseOrderDetails', function(table) {
+        .createTableIfNotExists('purchaseOrderDetails', (table) => {
             table.increments();
             table.integer('purchaseOrderId').notNullable().references('id').inTable('purchaseOrders');
             table.integer('productId').notNullable().unique().references('id').inTable('products');
             table.integer('unitId').notNullable().references('id').inTable('units');
-            table.integer('warehorseId').notNullable().references('id').inTable('warehouses');
+            table.integer('warehourseId').notNullable().references('id').inTable('warehouses');
             table.float('quantity').defaultTo(0);
             table.float('price').defaultTo(0);
             table.float('total').defaultTo(0);            
         })
-        .createTableIfNotExists('formulationTypes', function(table) {
+        .createTableIfNotExists('formulationTypes', (table) => {
             table.increments();
             table.string('name');
         })
-        .createTableIfNotExists('formulations', function(table) {
+        .createTableIfNotExists('formulations', (table) => {
             table.increments();
             table.integer('userId').references('id').inTable('users');
             table.integer('formulationTypeId').references('id').inTable('formulationTypes');
-            table.integer('producId').references('id'). inTable('products');
-            table.integer('warehourseId').references('id').inTable('warehourses');
+            table.integer('producId').references('id').inTable('products');
+            table.integer('warehourseId').references('id').inTable('warehouses');
             table.integer('unitId').references('id').inTable('units');
             table.float('quantity').defaultTo(0);
             table.boolean('isActive').defaultTo(false);
             table.string('note');
             table.timestamps();
         })
-        .createTableIfNotExists('formulationDetails', function(table) {
+        .createTableIfNotExists('formulationDetails', (table) => {
             table.increments();
             table.integer('formulationId').references('id').inTable('formulations');
             table.integer('productId').references('id').inTable('products');
             table.integer('unitId').references('id').inTable('units');
-            table.integer('warehourseId').references('id').inTable('warehourses');
+            table.integer('warehourseId').references('id').inTable('warehouses');
             table.float('quantity').defaultTo(0);
             table.timestamps();
         })
-        .createTableIfNotExists('billOfMaterials', function(table) {
+        .createTableIfNotExists('billOfMaterials', (table) => {
             table.increments();
             table.integer('userId').references('id').inTable('users');
-            table.integer('producId').references('id'). inTable('products');
-            table.integer('warehourseId').references('id').inTable('warehourses');
+            table.integer('producId').references('id').inTable('products');
+            table.integer('warehourseId').references('id').inTable('warehouses');
             table.integer('unitId').references('id').inTable('units');
             table.float('quantity').defaultTo(0);
             table.boolean('isActive').defaultTo(false);
             table.string('note');
             table.timestamps();
         })
-        .createTableIfNotExists('billOfMaterialDetails', function(table) {
+        .createTableIfNotExists('billOfMaterialDetails', (table) => {
             table.increments();
             table.integer('billOfMaterialId').references('id').inTable('billOfMaterials');
             table.integer('productId').references('id').inTable('products');
             table.integer('unitId').references('id').inTable('units');
-            table.integer('warehourseId').references('id').inTable('warehourses');
+            table.integer('warehourseId').references('id').inTable('warehouses');
             table.float('quantity').defaultTo(0);
             table.timestamps();
         })
-        .createTableIfNotExists('movingProducts', function(table) {
+        .createTableIfNotExists('movingProducts', (table) => {
             table.increments();
             table.integer('userId').references('id').inTable('users');
             table.string('note');
             table.timestamps();
         })
-        .createTableIfNotExists('movingProductDetail', function(table) {
+        .createTableIfNotExists('movingProductDetail', (table) => {
             table.increments();
             table.integer('movingProductId').references('id').inTable('movingProducts');
-            table.integer('fromWarehourseId').notNullable().references('id').inTable('warehourses');
-            table.integer('toWarehourseId').notNullable().references('id').inTable('warehourses');
+            table.integer('fromWarehourseId').notNullable().references('id').inTable('warehouses');
+            table.integer('toWarehourseId').notNullable().references('id').inTable('warehouses');
             table.integer('unitId').references('id').inTable('units');
-            table.integer('productId').references('id').inTable('products')
+            table.integer('productId').references('id').inTable('products');
             table.float('quantity').defaultTo(0);            
         })
-        .createTableIfNotExists('costPrices', function(table) {
+        .createTableIfNotExists('costPrices', (table) => {
             table.increments();
             table.integer('userId').references('id').inTable('users');
             table.string('note');
             table.timestamps();
         })
-        .createTableIfNotExists('costPriceDetails', function(table) {
+        .createTableIfNotExists('costPriceDetails', (table) => {
             table.increments();
             table.integer('costPriceId').references('id').inTable('costPrices');
             table.integer('productId').references('id').inTable('products');
             table.integer('unitId').references('id').inTable('units');
             table.float('quantity').defaultTo(0);
             table.float('costAverage').defaultTo(0);
+        })        
+        .createTableIfNotExists('receipts', (table) => {
+            //Phiếu thu
+            table.increments();            
+            table.integer('userId').references('id').inTable('users');
+            table.float('amount').defaultTo(0);
+            table.timestamps();
         })
-        .createTableIfNotExists('receiptTypes', function(table) {
+        .createTableIfNotExists('payTypes', (table) => {
             //Loại Phiếu thu
             table.increments();
             table.string('name').notNullable();
         })
-        .createTableIfNotExists('receipts', function(table) {
-            //Phiếu thu
-            table.increments();
-            table.integer('receiptTypeId').references('id').inTable('receiptTypes');
-            table.integer('userId').references('id').inTable('users');
-            table.float('amount').defaultTo(0);
-            table.timestamps();
-        })
-        .createTableIfNotExists('pays', function(table) {
+        .createTableIfNotExists('pays', (table) => {
             //Phiếu thu
             table.increments();
             table.integer('userId').references('id').inTable('users');
+            table.integer('payTypeId').references('id').inTable('payTypes');
             table.float('amount').defaultTo(0);
             table.timestamps();
-        })
-
+        });
 };
 
 exports.down = function (knex, Promise) {
@@ -379,7 +376,7 @@ exports.down = function (knex, Promise) {
         .dropTableIfExists('movingProductDetail')
         .dropTableIfExists('costPrices')
         .dropTableIfExists('costPriceDetails')
-        .dropTableIfExists('receiptTypes')
+        .dropTableIfExists('payTypes')
         .dropTableIfExists('receipts')
         .dropTableIfExists('pays');
 };
