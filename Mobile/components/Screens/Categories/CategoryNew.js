@@ -102,7 +102,9 @@ class CategoryNew extends React.Component {
                             <Ionicons name="ios-checkmark-circle" size={25} color="#FFFFFF" />
                             <Text style={styles.titleButton}>Lưu</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={[styles.Btn, styles.footerBtn]}>
+                        <TouchableOpacity 
+                            onPress = { Actions.pop() }
+                            style={[styles.Btn, styles.footerBtn]}>
                             <Ionicons name="ios-close-circle-outline" size={25} color="#FFFFFF" />
                             <Text style={styles.titleButton}>Hủy</Text>
                         </TouchableOpacity>
