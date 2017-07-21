@@ -6,6 +6,17 @@ exports.up = function (knex, Promise) {
         table.string('description');
         table.timestamps();
     })
+        .createTableIfNotExists('permisions', (table) =>  {
+            table.increments();
+            table.string('name').notNullable().unique();
+            table.string('description');
+        })
+        .createTableIfNotExists('permisionsRoles', (table) =>  {
+            table.increments();
+            table.integer("roleId").references('id').inTable('roles');
+            table.integer("permisionId").references('id').inTable('permisions');
+            table.timestamps();
+        })
         .createTableIfNotExists('departments', (table) =>  {
             table.increments();
             table.string('name').notNullable().unique();
@@ -34,7 +45,7 @@ exports.up = function (knex, Promise) {
         .createTableIfNotExists('units', (table) => {
             table.increments();
             table.string('name').unique().notNullable();
-            table.string('rate').notNullable();
+            table.float('rate').notNullable();
         })
         .createTableIfNotExists('warehouses', (table) => {
             table.increments();
@@ -345,6 +356,8 @@ exports.up = function (knex, Promise) {
 
 exports.down = function (knex, Promise) {
     return knex.schema.dropTableIfExists('roles')
+        .dropTableIfExists('permisions')
+        .dropTableIfExists('permisionsRoles')
         .dropTableIfExists('departments')
         .dropTableIfExists('banks')
         .dropTableIfExists('companies')
