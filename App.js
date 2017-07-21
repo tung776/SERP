@@ -2,9 +2,10 @@
  * Sample React Native App
  * https://github.com/tung776/SERP
  */
-import React, { Component } from 'react';
+import React from 'react';
 import {
   StatusBar,
+  AsyncStorage,
   Image
 } from 'react-native';
 import { Provider } from 'react-redux';
@@ -13,15 +14,15 @@ import reduxLogger from 'redux-logger';
 import { createStore, applyMiddleware, compose } from 'redux';
 import Routers from './Mobile/Routers';
 import Reducers from './Mobile/Reducers';
-import Expo from 'expo';
+import Expo, { SQLite } from 'expo';
 // import {Spinner} from './Mobile/components/commons/Spinner';
-import { AsyncStorage } from 'react-native';
 import { setAuthorizationToken } from './Shared/utils/setAuthorizationToken';
 import { SetCurrentUser } from './Shared/actions/authCommon';
 import jwt from 'jwt-decode';
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
 // import CustomComponents from 'react-native-deprecated-custom-components';
 import Splash from './Mobile/components/Splash';
+import createDatabaseSqlite from './Mobile/databse/createNewDatabase';
 
 // console.log("__DEV__ = ", __DEV__);
 StatusBar.setHidden(true);
@@ -45,7 +46,7 @@ if (__DEV__) {
     applyMiddleware(ReduxThunk, reduxLogger)));
 } else {
   store = createStore(Reducers, compose(
-  applyMiddleware(ReduxThunk)));
+    applyMiddleware(ReduxThunk)));
 }
 // store = createStore(Reducers, compose(
 //   applyMiddleware(ReduxThunk)));
@@ -79,6 +80,7 @@ export default class serp extends React.Component {
       if (__DEV__) console.log('token = ', token);
       setAuthorizationToken(token);
       store.dispatch(SetCurrentUser(jwt(token)));
+      createDatabaseSqlite();
     }
 
     this.setState({ appIsReady: true });
@@ -97,5 +99,7 @@ export default class serp extends React.Component {
       </Provider>
     );
   }
+  //Tạo bảng dữ liệu trong sqlite
+  
 }
 

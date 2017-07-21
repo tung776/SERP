@@ -13,14 +13,15 @@ exports.up = function (knex, Promise) {
         .createTableIfNotExists('dataVersions', (table) => {
             table.increments();
             table.integer('menus').notNullable().defaultTo(1);
+            table.integer('userMenus').notNullable().defaultTo(1);
             table.integer('roles').notNullable().defaultTo(1);
-            table.integer('permisions').notNullable().defaultTo(1);
-            table.integer('permisionRoles').notNullable().defaultTo(1);
+            table.integer('units').notNullable().defaultTo(1);
+            table.integer('warehouses').notNullable().defaultTo(1);
             table.integer('categories').notNullable().defaultTo(1);
             table.integer('products').notNullable().defaultTo(1);
             table.integer('units').notNullable().defaultTo(1);
+            table.integer('customerGroups').notNullable().defaultTo(1);
             table.integer('customers').notNullable().defaultTo(1);
-            table.integer('suppliers').notNullable().defaultTo(1);
         });
 };
 
