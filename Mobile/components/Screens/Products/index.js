@@ -12,7 +12,7 @@ class Products extends React.Component {
         searchText: '',
         error: null
     }
-    
+
     onSearchInputChange(text) {
         this.setState({ searchText: text });
     }
@@ -20,7 +20,7 @@ class Products extends React.Component {
     addNewGroupBtnPress() {
         Actions.main();
     }
-    
+
     render() {
         return (
             <View style={styles.container}>
@@ -28,22 +28,23 @@ class Products extends React.Component {
                     <Text style={styles.headTitle}>Danh Sách Sản Phẩm</Text>
                 </Header>
                 <View style={styles.body}>
-                    <ScrollView>                        
+                    <ScrollView>
                         <View style={styles.InputContainer}>
-                        <Text style={styles.searchTitle}>Tìm Kiếm Sản Phẩm</Text>
-                            <View style ={styles.groupControl} >
+                            <View style={styles.groupControl} >
                                 <TextInput
                                     disableFullscreenUI
                                     underlineColorAndroid={'transparent'}
-                                    style={styles.textInput}
+                                    style={styles.searchInput}
                                     blurOnSubmit
                                     value={this.state.searchText}
                                     onChangeText={this.onSearchInputChange.bind(this)}
                                     type="Text"
                                     name="search"
-                                    placeholder="Điền tên sản phẩm bạn muốn tìm :"
+                                    placeholder="Tìm sản phẩm :"
                                 />
-                                <Ionicons name="ios-search" size={32} color="#16a085" />
+                                <TouchableOpacity>
+                                    <Ionicons name="ios-search" size={32} color="#16a085" />
+                                </TouchableOpacity>
                             </View>
                         </View>
                         <Text>
@@ -153,7 +154,7 @@ const styles = {
         paddingBottom: 2,
         paddingRight: 10,
         borderRadius: 10,
-        borderWidth: 2,
+        borderWidth: 1,
         borderColor: '#FFFFFF',
         marginTop: 2,
         marginBottom: 2,
@@ -197,15 +198,11 @@ const styles = {
         flex: 1,
         flexDirection: 'row',
         justifyContent: 'space-between',
-        borderRadius: 5,
-        borderWidth: 1,
-        marginBottom: 10,
-        padding: 5,
-        borderColor: '#FFFFFF'
     },
-    textInput: {
+    searchInput: {
         flex: 1,
-        color: 'white'
+        color: 'white',
+        fontSize: 16
     },
     errorStyle: {
         color: 'rgba(231, 76, 60,1.0)',
