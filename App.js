@@ -12,17 +12,17 @@ import { Provider } from 'react-redux';
 import ReduxThunk from 'redux-thunk';
 import reduxLogger from 'redux-logger';
 import { createStore, applyMiddleware, compose } from 'redux';
-import Routers from './Mobile/Routers';
-import Reducers from './Mobile/Reducers';
 import Expo, { SQLite } from 'expo';
 // import {Spinner} from './Mobile/components/commons/Spinner';
-import { setAuthorizationToken } from './Shared/utils/setAuthorizationToken';
-import { SetCurrentUser } from './Shared/actions/authCommon';
 import jwt from 'jwt-decode';
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
 // import CustomComponents from 'react-native-deprecated-custom-components';
 import Splash from './Mobile/components/Splash';
-import createDatabaseSqlite from './Mobile/database/createNewDatabase';
+import { createDatabaseSqlite, checkDataVersion } from './Mobile/database/createNewDatabase';
+import { setAuthorizationToken } from './Shared/utils/setAuthorizationToken';
+import { SetCurrentUser } from './Shared/actions/authCommon';
+import Routers from './Mobile/Routers';
+import Reducers from './Mobile/Reducers';
 
 // console.log("__DEV__ = ", __DEV__);
 StatusBar.setHidden(true);
@@ -77,10 +77,12 @@ export default class serp extends React.Component {
     const token = await AsyncStorage.getItem('jwtToken');
 
     if (token) {
+      const user = jwt(token);
       if (__DEV__) console.log('token = ', token);
       setAuthorizationToken(token);
-      store.dispatch(SetCurrentUser(jwt(token)));
-      createDatabaseSqlite();
+      store.dispatch(SetCurrentUser(user));
+      await createDatabaseSqlite();
+      await checkDataVersion(user.id);
     }
 
     this.setState({ appIsReady: true });
