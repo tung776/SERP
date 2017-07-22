@@ -19,9 +19,9 @@ export default () => {
            userMenus int, 
            roles int,
            categories int,
-           products int,
            units int,
            warehouses int,
+           products int,
            customerGroups int,
            customers int
           );`
@@ -40,20 +40,21 @@ export default () => {
            menuId integer,
            userId integer
           );`
+      )      
+      .executeSql(
+      `create table if not exists
+         roles (
+           id integer primary key not null,
+           name text,
+           description text
+          );`
       )
       .executeSql(
       `create table if not exists
-         users (
+         categories (
            id integer primary key not null,
-           username text,
-           email text,
-           firstName text,
-           lastName text,
-           phone text,
-           address text,
-           roleId text,
-           departmentId text,
-           gender text
+           name text,
+           description text
           );`
       )
       .executeSql(
@@ -71,14 +72,6 @@ export default () => {
            name text,
            description text,
            address text
-          );`
-      )
-      .executeSql(
-      `create table if not exists
-         roles (
-           id integer primary key not null,
-           name text,
-           description text
           );`
       )
       .executeSql(

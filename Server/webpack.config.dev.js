@@ -17,7 +17,7 @@ module.exports = {
         loaders: [
             {
                 test:/\.js$/,
-                exclude: /node_modules/,
+                exclude: [/node_modules/, /Mobile/, /android/,/ios/],
                 loaders: ['react-hot-loader', 'babel-loader'],
                 // include: path.join(__dirname, 'src'),
                 // query: {

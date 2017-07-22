@@ -22,7 +22,7 @@ import jwt from 'jwt-decode';
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
 // import CustomComponents from 'react-native-deprecated-custom-components';
 import Splash from './Mobile/components/Splash';
-import createDatabaseSqlite from './Mobile/databse/createNewDatabase';
+import createDatabaseSqlite from './Mobile/database/createNewDatabase';
 
 // console.log("__DEV__ = ", __DEV__);
 StatusBar.setHidden(true);

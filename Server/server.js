@@ -34,6 +34,9 @@ appConfig(app);
 //=========
 // app.use('/', IndexRouter);
 // app.use('/api/auth', AuthRoutes);
+import dataRoutes from './routes/dataRouters';
+app.use('/api/data', dataRoutes);
+
 import {UserRouters} from './routes/UserRouters';
 app.use('/api/users', UserRouters);
 
