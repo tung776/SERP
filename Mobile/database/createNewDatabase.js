@@ -1,6 +1,7 @@
 import { SQLite } from 'expo';
 import axios from 'axios';
 import { URL } from '../../env';
+import SqlService from './sqliteService';
 
 const db = SQLite.openDatabase({ name: 'SERP.db' });
 
@@ -12,21 +13,11 @@ const db = SQLite.openDatabase({ name: 'SERP.db' });
  chứ không trả về toàn bộ dữ liệu
  */
 export const createDatabaseSqlite = () => {
-  db.transaction(tx => {
-    tx.executeSql(
-      `create table if not exists
-         dataVersions (
-           id integer primary key not null,
-           menus int, 
-           userMenus int, 
-           roles int,
-           categories int,
-           units int,
-           warehouses int,
-           products int,
-           customerGroups int,
-           customers int
-          );
+  debugger;
+  SqlService.query(
+
+
+    `
           create table if not exists
          menus (
            id integer primary key not null,
@@ -99,76 +90,113 @@ export const createDatabaseSqlite = () => {
            minQuantity real
           );
           `
-    );
+
+  ).then(function (res) {
+    debugger;
+    console.log(res);
   });
 };
 
 export const getCurrentDataVersion = () => {
-  db.transaction(tx => {
-    tx.executeSql(
-      'select * from dataVersions;',
-      [],
-      (_, { rows: { _array } }) => {
-        console.log("array = ", _array);
-        debugger;
-        return _array;
-      }
-    );
-  });
+  return SqlService.query(' SELECT * FROM dataVersions')
+  // db.transaction(tx => {
+  //   tx.executeSql(
+  //     'select * from dataVersions;',
+  //     [],
+  //     (_, { rows: { _array } }) => {
+  //       console.log("array = ", _array);
+  //       debugger;
+  //       return _array;
+  //     }
+  //   );
+  // });
 };
 
 export const createNewDataVersion = (data) => {
-  db.transaction(
-    tx => {
-      console.log('begin transaction, data = ', data);
-      debugger;
-      tx.executeSql(`insert into dataVersions (
-        id = ${data.id}, menus = ${data.menusVersion}, userMenus = ${data.userMenusVersion}, categories = ${data.categoriesVersion},
-        roles = ${data.rolesVersion}, units = ${data.unitsVersion}, warehouses = ${data.warehousesVersion},
-        products = ${data.productsVersion}, customerGroups = ${data.customerGroupsVersion}, customers = ${data.customersVersion}`); 
+  try {
+    return SqlService.insert("dataVersionsdfgdfh", [
+      "id", "menus", "userMenus", "categories", "roles", "units", "warehouses", "products", "customerGroups", "customers"
+    ], [
+        data.id, data.menusVersion, data.userMenusVersion, data.categoriesVersion,
+        data.rolesVersion, data.unitsVersion, data.warehousesVersion, data.productsVersion,
+        data.customersVersion
+      ])
+      
+  }
+  catch (err) {
+    return err;
+  }
+  // db.transaction(
+  //   tx => {
+  //     console.log('begin transaction, data = ', data);
+  //     debugger;
+  //     tx.executeSql(`insert into dataVersions (
+  //       id = ${data.id}, menus = ${data.menusVersion}, userMenus = ${data.userMenusVersion}, categories = ${data.categoriesVersion},
+  //       roles = ${data.rolesVersion}, units = ${data.unitsVersion}, warehouses = ${data.warehousesVersion},
+  //       products = ${data.productsVersion}, customerGroups = ${data.customerGroupsVersion}, customers = ${data.customersVersion}`); 
 
-      tx.executeSql('select * from dataVersions', [], (_, { rows }) =>
-          console.log(JSON.stringify(rows))
-        );     
-    },
-    null,
-    () => true
-  );
+  //     tx.executeSql('select * from dataVersions', [], (_, { rows }) =>
+  //         console.log(JSON.stringify(rows))
+  //       );     
+  //   },
+  //   null,
+  //   () => true
+  // );
 };
 
 export const checkDataVersion = async (userId) => {
-  let currentVersion = await getCurrentDataVersion();
-  console.log("currentVersion = ", currentVersion);
-  if (!currentVersion) currentVersion = { id: 0, menus: 0, userMenus: 0, roles: 0, units: 0, warehouses: 0, categories: 0, products: 0, customerGroups: 0, customers: 0 };
-  const { id, menus, userMenus, roles, units, warehouses, categories,
-    products, customerGroups, customers } = currentVersion;
+  try {
+    let currentVersion = await getCurrentDataVersion();
+    console.log("currentVersion = ", currentVersion);
+    if (!currentVersion) currentVersion = { id: 0, menus: 0, userMenus: 0, roles: 0, units: 0, warehouses: 0, categories: 0, products: 0, customerGroups: 0, customers: 0 };
+    const { id, menus, userMenus, roles, units, warehouses, categories,
+      products, customerGroups, customers } = currentVersion;
 
-  // if (!id) id = 0;
-  // if (!menus) menus = 0;
-  // if (!userMenus) userMenus = 0;
-  // if (!roles) roles = 0;
-  // if (!units) units = 0;
-  // if (!warehouses) warehouses = 0;
-  // if (!products) products = 0;
-  // if (!customerGroups) customerGroups = 0;
-  // if (!customers) customers = 0;
-  const data = await axios.post(`${URL}/api/data/checkDataVersion`, {
-    id,
-    menus,
-    userMenus,
-    roles,
-    units,
-    warehouses,
-    products,
-    categories,
-    customerGroups,
-    customers,
-    userId
-  });
-  console.log('data = ', data);
-  let result;
-  if (data.data.id !== id) { 
-    result = await createNewDataVersion(data.data);
+    // if (!id) id = 0;
+    // if (!menus) menus = 0;
+    // if (!userMenus) userMenus = 0;
+    // if (!roles) roles = 0;
+    // if (!units) units = 0;
+    // if (!warehouses) warehouses = 0;
+    // if (!products) products = 0;
+    // if (!customerGroups) customerGroups = 0;
+    // if (!customers) customers = 0;
+    const data = await axios.post(`${URL}/api/data/checkDataVersion`, {
+      id,
+      menus,
+      userMenus,
+      roles,
+      units,
+      warehouses,
+      products,
+      categories,
+      customerGroups,
+      customers,
+      userId
+    });
+    console.log('data = ', data);
+    
+    if (data.data.id !== id) {
+      console.log("begin create new data version");
+      createNewDataVersion(data.data)
+      .then(
+        respon => {
+          debugger;
+          console.log("success");
+          console.log("respon = ", respon)
+        }
+      )
+      .catch(
+        err=> {
+          debugger;
+          console.log(err)
+        }
+      )
+      
+    }
+    
   }
-  console.log('result = ', result);
+  catch (err) {
+    console.log(err);
+  }
 };
