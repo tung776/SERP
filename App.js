@@ -23,10 +23,11 @@ import { setAuthorizationToken } from './Shared/utils/setAuthorizationToken';
 import { SetCurrentUser } from './Shared/actions/authCommon';
 import Routers from './Mobile/Routers';
 import Reducers from './Mobile/Reducers';
-const db = SQLite.openDatabase({ name: 'SERP.db' });
+// const db = SQLite.openDatabase({ name: 'SERP3.db' });
 // console.log("__DEV__ = ", __DEV__);
 StatusBar.setHidden(true);
 // __DEV__ = false;
+import SqlService from './Mobile/database/sqliteService';
 
 function cacheImages(images) {
   return images.map(image => {
@@ -81,14 +82,18 @@ export default class serp extends React.Component {
       if (__DEV__) console.log('token = ', token);
       setAuthorizationToken(token);
       store.dispatch(SetCurrentUser(user));
-      await createDatabaseSqlite();
+      // await createDatabaseSqlite();
       debugger;
-      db.transaction(tx => {
-        tx.executeSql(
-          `SELECT * FROM sqlite_master WHERE type='table';`,
-          null,
-          (_, { rows: { _array } }) => console.log("tables = ",_array))
-      });
+      SqlService.select('sqlite_master', '*').then(
+        data => console.log(data)
+      );
+      // db.transaction(tx => {
+      //   tx.executeSql(
+      //     `SELECT * FROM sqlite_master WHERE type='table';`,
+      //     null,
+      //     (_, { rows: { _array } }) => console.log("tables = ",_array))
+      // });
+
       // db.transaction(tx => {
       //   tx.executeSql(
       //     `SELECT * FROM dataVersions;`,
@@ -96,7 +101,7 @@ export default class serp extends React.Component {
       //     (_, { rows: { _array } }) => console.log("dataVersions = ",_array))
       // });
       
-      checkDataVersion(user.id);
+      // checkDataVersion(user.id);
     }
 
     this.setState({ appIsReady: true });

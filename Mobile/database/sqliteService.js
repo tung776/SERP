@@ -2,7 +2,7 @@ import { SQLite } from 'expo';
 
 class SqlService {
 
-	db = SQLite.openDatabase("SERP.db", "1.0", "SERP Database", 200000);
+	db = SQLite.openDatabase("SERP.db", "1.1", "SERP Database", 200000);
 
 	async execute(sql, value, type) {
 		type = type || "array";
