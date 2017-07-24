@@ -23,7 +23,7 @@ import { setAuthorizationToken } from './Shared/utils/setAuthorizationToken';
 import { SetCurrentUser } from './Shared/actions/authCommon';
 import Routers from './Mobile/Routers';
 import Reducers from './Mobile/Reducers';
-
+const db = SQLite.openDatabase({ name: 'SERP.db' });
 // console.log("__DEV__ = ", __DEV__);
 StatusBar.setHidden(true);
 // __DEV__ = false;
@@ -82,7 +82,21 @@ export default class serp extends React.Component {
       setAuthorizationToken(token);
       store.dispatch(SetCurrentUser(user));
       await createDatabaseSqlite();
-      await checkDataVersion(user.id);
+      debugger;
+      db.transaction(tx => {
+        tx.executeSql(
+          `SELECT * FROM sqlite_master WHERE type='table';`,
+          null,
+          (_, { rows: { _array } }) => console.log("tables = ",_array))
+      });
+      // db.transaction(tx => {
+      //   tx.executeSql(
+      //     `SELECT * FROM dataVersions;`,
+      //     null,
+      //     (_, { rows: { _array } }) => console.log("dataVersions = ",_array))
+      // });
+      
+      checkDataVersion(user.id);
     }
 
     this.setState({ appIsReady: true });
@@ -102,6 +116,6 @@ export default class serp extends React.Component {
     );
   }
   //Tạo bảng dữ liệu trong sqlite
-  
+
 }
 

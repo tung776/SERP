@@ -12,49 +12,48 @@ const db = SQLite.openDatabase({ name: 'SERP.db' });
  lên server, server sẽ kiểm tra dữ liệu đã mới dc cập nhật chưa, Server chỉ trả về tập dữ liệu cần thiết 
  chứ không trả về toàn bộ dữ liệu
  */
-export const createDatabaseSqlite = () => {
-  debugger;
-  SqlService.query(
+export const createDatabaseSqlite = async () => {
 
-
-    `
-          create table if not exists
+  db.transaction(tx => {
+    tx.executeSql(
+      `create table if not exists
          menus (
            id integer primary key not null,
            name text
-          );
-          create table if not exists
+          );`);
+    tx.executeSql(`create table if not exists
          userMenus (
            id integer primary key not null,
            menuId integer,
            userId integer
-          );
-          create table if not exists
+          );`);
+
+    tx.executeSql(`create table if not exists
          roles (
            id integer primary key not null,
            name text,
            description text
-          );
-          create table if not exists
+          );`);
+    tx.executeSql(`create table if not exists
          categories (
            id integer primary key not null,
            name text,
            description text
-          );
-          create table if not exists
+          );`);
+    tx.executeSql(`create table if not exists
          units (
            id integer primary key not null,
            name text,
            rate real
-          );
-          create table if not exists
+          );`);
+    tx.executeSql(`create table if not exists
          warehouses (
            id integer primary key not null,
            name text,
            description text,
            address text
-          );
-          create table if not exists
+          );`);
+    tx.executeSql(`create table if not exists
          products (
            id integer primary key not null,
            categoryId integer,
@@ -68,14 +67,14 @@ export const createDatabaseSqlite = () => {
            salePrice real,
            minQuantity real,
            isAvaiable integer
-          );
-          create table if not exists
+          );`);
+    tx.executeSql(`create table if not exists
          customerGroups (
            id integer primary key not null,
            name text,
            description text
-          );
-          create table if not exists
+          );`);
+    tx.executeSql(`create table if not exists
          customers (
            id integer primary key not null,
            customerGroupId integer,
@@ -88,40 +87,63 @@ export const createDatabaseSqlite = () => {
            email text,
            overdue integer,
            minQuantity real
-          );
-          `
+          );`);
+  })
 
-  ).then(function (res) {
-    debugger;
-    console.log(res);
-  });
+
+  // ).then(function (res) {
+  //   debugger;
+  //   console.log(res);
+  // });
 };
 
 export const getCurrentDataVersion = () => {
-  return SqlService.query(' SELECT * FROM dataVersions')
-  // db.transaction(tx => {
-  //   tx.executeSql(
-  //     'select * from dataVersions;',
-  //     [],
-  //     (_, { rows: { _array } }) => {
-  //       console.log("array = ", _array);
-  //       debugger;
-  //       return _array;
-  //     }
-  //   );
-  // });
+  db.transaction(tx => {
+    tx.executeSql(
+      'SELECT * FROM dataVersions;',
+      [],
+      (_, { rows: { _array } }) => {
+        console.log("CurrentDataVersion = ", _array);
+        debugger;
+        return _array;
+      }
+    );
+  });
 };
 
 export const createNewDataVersion = (data) => {
   try {
-    return SqlService.insert("dataVersionsdfgdfh", [
-      "id", "menus", "userMenus", "categories", "roles", "units", "warehouses", "products", "customerGroups", "customers"
-    ], [
-        data.id, data.menusVersion, data.userMenusVersion, data.categoriesVersion,
-        data.rolesVersion, data.unitsVersion, data.warehousesVersion, data.productsVersion,
-        data.customersVersion
-      ])
-      
+    // return SqlService.insert("dataVersionsdfgdfh", [
+    //   "id", "menus", "userMenus", "categories", "roles", "units", "warehouses", "products", "customerGroups", "customers"
+    // ], [
+    //     data.id, data.menusVersion, data.userMenusVersion, data.categoriesVersion,
+    //     data.rolesVersion, data.unitsVersion, data.warehousesVersion, data.productsVersion,
+    //     data.customersVersion
+    //   ])
+    debugger;
+    db.transaction(tx => {
+      // debugger;
+      tx.executeSql(
+        `INSERT INTO dataVersions (
+          id, menus, userMenus, categories, roles, units, warehouses, 
+          products, customerGroups, customers
+        ) VALUES(
+          ?, ?, ?,?, ?, ?,?, ?, ?, ?
+        )`,
+        [
+          data.id, data.menusVersion, data.userMenusVersion, data.categoriesVersion,
+          data.rolesVersion, data.unitsVersion, data.warehousesVersion, data.productsVersion,
+          data.customersVersion
+        ]);
+      tx.executeSql(
+        `SELECT * FROM dataVersions`,
+        [],
+        (_, { rows: { _array } }) => {
+          debugger;
+          console.log("CurrentDataVersion dataVersions = ", _array);
+        })
+    });
+
   }
   catch (err) {
     return err;
@@ -146,8 +168,8 @@ export const createNewDataVersion = (data) => {
 
 export const checkDataVersion = async (userId) => {
   try {
-    let currentVersion = await getCurrentDataVersion();
-    console.log("currentVersion = ", currentVersion);
+    let currentVersion = getCurrentDataVersion();
+    console.log("currentVersion = ", JSON.stringify(currentVersion));
     if (!currentVersion) currentVersion = { id: 0, menus: 0, userMenus: 0, roles: 0, units: 0, warehouses: 0, categories: 0, products: 0, customerGroups: 0, customers: 0 };
     const { id, menus, userMenus, roles, units, warehouses, categories,
       products, customerGroups, customers } = currentVersion;
@@ -175,26 +197,24 @@ export const checkDataVersion = async (userId) => {
       userId
     });
     console.log('data = ', data);
-    
+
     if (data.data.id !== id) {
       console.log("begin create new data version");
-      createNewDataVersion(data.data)
-      .then(
-        respon => {
-          debugger;
-          console.log("success");
-          console.log("respon = ", respon)
-        }
-      )
-      .catch(
-        err=> {
-          debugger;
-          console.log(err)
-        }
-      )
-      
+      createNewDataVersion({
+        id: data.data.id,
+         menus: data.data.menus,
+        userMenus: data.data.userMenusVersion,
+        roles: data.data.rolesVersion,
+        units: data.data.unitsVersion,
+        warehouses: data.data.warehousesVersion,
+        products: data.data.productsVersion,
+        categories: data.data.categoriesVersion,
+        customerGroups: data.data.customerGroups,
+        customers: data.data.customersVersion,
+        userId: userId
+      });
     }
-    
+
   }
   catch (err) {
     console.log(err);

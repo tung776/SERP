@@ -17,7 +17,7 @@ dataRoutes.post('/checkDataVersion', async function (req, res) {
         let shouldUpdate = {};
         const maxId = await Knex('dataVersions').max('id');
         const dataVersion = await Knex.select().from('dataVersions').where('id', maxId[0].max);
-        // console.log("dataversion = ", JSON.stringify(dataVersion));
+        console.log("dataversion = ", JSON.stringify(dataVersion));
         shouldUpdate.id = dataVersion[0].id;
         if( dataVersion[0].menus !== menus) {
             shouldUpdate.menus = dataVersion[0].menus;
