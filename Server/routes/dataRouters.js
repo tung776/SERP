@@ -27,7 +27,7 @@ dataRoutes.post('/checkDataVersion', async function (req, res) {
             const menusData = await Knex('userMenus')
                 .where('userId', userId)
                 .innerJoin('menus', 'userMenus.menuId', 'menus.id')
-                .select('menuId', 'name');
+                .select('userId','menuId', 'name');
                 shouldUpdate.userMenus = menusData;
                 shouldUpdate.userMenusVersion = dataVersion[0].userMenus;
 

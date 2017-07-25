@@ -3,7 +3,6 @@ import axios from 'axios';
 import { URL } from '../../env';
 import SqlService from './sqliteService';
 
-// import { db } from './sqliteService';
 
 /*
  Hệ thống sẽ tạo ra các bảng sqlite chứa các dữ liệu thường xuyên sử dụng nhất nhằm tăng
@@ -21,7 +20,6 @@ export const createDatabaseSqlite = async () => {
           );`);
   await SqlService.query(`create table if not exists
          userMenus (
-           id integer primary key not null,
            menuId integer,
            userId integer
           );`);
@@ -102,10 +100,6 @@ export const createDatabaseSqlite = async () => {
 
 
 
-  // ).then(function (res) {
-  //   debugger;
-  //   console.log(res);
-  // });
 };
 
 export const getCurrentDataVersion = async () => {
@@ -113,110 +107,132 @@ export const getCurrentDataVersion = async () => {
     'SELECT * FROM dataVersions;');
 };
 
-export const createNewDataVersion = (data) => {
+export const updateOrInsertDataVersion = async (data) => {
   debugger;
-  // return SqlService.insert("dataVersionsdfgdfh", [
-  //   "id", "menus", "userMenus", "categories", "roles", "units", "warehouses", "products", "customerGroups", "customers"
-  // ], [
-  //     data.id, data.menusVersion, data.userMenusVersion, data.categoriesVersion,
-  //     data.rolesVersion, data.unitsVersion, data.warehousesVersion, data.productsVersion,
-  //     data.customersVersion
-  //   ])
-  // debugger;
-  SqlService.insert('dataVersions', ['id', 'menus', 'userMenus', 'categories', 'roles', 'units', 'warehouses',
-    'products', 'customerGroups', 'customers'], [data.id, data.menusVersion, data.userMenusVersion, data.categoriesVersion,
-    data.rolesVersion, data.unitsVersion, data.warehousesVersion, data.productsVersion,
-    data.customersVersion]);
 
-
-  // debugger;
-  // tx.executeSql(
-  //   `INSERT INTO dataVersions (
-  //     id, menus, userMenus, categories, roles, units, warehouses, 
-  //     products, customerGroups, customers
-  //   ) VALUES(
-  //     ?, ?, ?,?, ?, ?,?, ?, ?, ?
-  //   )`,
-  //   [
-  //     data.id, data.menusVersion, data.userMenusVersion, data.categoriesVersion,
-  //     data.rolesVersion, data.unitsVersion, data.warehousesVersion, data.productsVersion,
-  //     data.customersVersion
-  //   ]);
-  data.userMenus.forEach((item) => {
-    SqlService.insert('userMenus', ['menuId', 'name'], [item.menuId, item.name]);
-  }, this);
-  data.categories.forEach((item) => {
-    SqlService.insert('categories', ['id', 'name', 'description'], [item.id, item.name, item.description]);
-  }, this);
-  data.units.forEach((item) => {
-    SqlService.insert('units', ['id', 'name', 'rate'], [item.id, item.name, item.rate]);
-  }, this);
-  data.warehouses.forEach((item) => {
-    SqlService.insert('warehouses', ['id', 'name', 'description', 'address'], [item.id, item.name, item.description, item.address]);
-  }, this);
-  data.customers.forEach((item) => {
-    SqlService.insert('customers', [
-      'id', 'customerGroupId',
-      'name', 'bankId', 'companyId', 'address',
-      'imageUrl', 'phone', 'email', 'overdue', 'excessDebt'
-    ], [item.id, item.customerGroupId, item.name, item.bankId, item.companyId, item.address,
-    item.imageUrl, item.phone, item.email, item.overdue, item.excessDebt
+  avaiabledDataVersion = await SqlService.select('dataVersions', '*', `id = ${data.id}`);
+  if (avaiabledDataVersion.length > 0) {
+    await SqlService.insert('dataVersions', [
+      'id', 'menus', 'userMenus', 'categories', 'roles', 'units', 'warehouses',
+      'products', 'customerGroups', 'customers'
+    ], [
+        data.id, data.menusVersion, data.userMenusVersion, data.categoriesVersion,
+        data.rolesVersion, data.unitsVersion, data.warehousesVersion, data.productsVersion,
+        data.customersVersion
       ]);
-  }, this);
-  data.products.forEach((item) => {
-    SqlService.insert('products', [
-      'id', 'categoryId', 'unitId', 'typeCargoId', 'name', 'description',
-      'imageUrl', 'isPublic', 'purchasePrice', 'salePrice', 'minQuantity', 'isAvaiable'
-    ], [item.id, item.customerGroupId, item.unitId, item.typeCargoId, item.name, item.description,
-    item.imageUrl, item.imageUrl, item.isPublic, item.purchasePrice, item.salePrice, item.minQuantity, item.isAvaiable]);
-  }, this);
-  data.customerGroups.forEach((item) => {
-    SqlService.insert('customerGroups', ['id', 'name', 'description'], [item.id, item.name, item.description]);
+  } else {
+    await SqlService.update('dataVersions', [
+      'menus', 'userMenus', 'categories', 'roles', 'units', 'warehouses',
+      'products', 'customerGroups', 'customers'
+    ], [
+        data.menusVersion, data.userMenusVersion, data.categoriesVersion,
+        data.rolesVersion, data.unitsVersion, data.warehousesVersion, data.productsVersion,
+        data.customersVersion
+      ], `id = ${data.id}`);
+  }
+
+  data.userMenus.forEach(async (item) => {
+    debugger;
+    avaiabledData = await SqlService.select('userMenus', '*', `userId = ${item.userId}, menuId = ${item.menuId}`);
+    if (avaiabledData.length > 0) {
+      await SqlService.insert('userMenus', ['userId', 'menuId', 'name'], [item.userId, item.menuId, item.name]);
+    } else {
+      await SqlService.update('userMenus', ['userId', 'menuId', 'name'], [item.menuId, item.name], `userId = ${item.userId}, menuId = ${item.menuId}`);
+    }
   }, this);
 
-  // tx.executeSql(
-  //   'SELECT * FROM dataVersions',
-  //   [],
-  //   (_, { rows: { _array } }) => {
-  //     debugger;
-  //     console.log('CurrentDataVersion dataVersions = ', _array);
-  //   });
+  data.categories.forEach(async (item) => {
+    debugger;
+    avaiabledData = await SqlService.select('categories', '*', `id = ${item.id}`);
+    if (avaiabledData.length > 0) {
+      await SqlService.insert('categories', ['id', 'name', 'description'],
+        [item.id, item.name, item.description]);
+    } else {
+      await SqlService.update('categories', ['name', 'description'],
+        [item.name, item.description], `id = ${item.id}`);
+    }
+  }, this);
 
-  // db.transaction(
-  //   tx => {
-  //     console.log('begin transaction, data = ', data);
-  //     debugger;
-  //     tx.executeSql(`insert into dataVersions (
-  //       id = ${data.id}, menus = ${data.menusVersion}, userMenus = ${data.userMenusVersion}, categories = ${data.categoriesVersion},
-  //       roles = ${data.rolesVersion}, units = ${data.unitsVersion}, warehouses = ${data.warehousesVersion},
-  //       products = ${data.productsVersion}, customerGroups = ${data.customerGroupsVersion}, customers = ${data.customersVersion}`); 
+  data.units.forEach(async (item) => {
+    debugger;
+    avaiabledData = await SqlService.select('units', '*', `id = ${item.id}`);
+    if (avaiabledData.length > 0) {
+      await SqlService.insert('units', ['id', 'name', 'rate'],
+        [item.id, item.name, item.rate]);
+    } else {
+      await SqlService.update('units', ['name', 'rate'],
+        [item.name, item.rate], `id = ${item.id}`);
+    }
+  }, this);
 
-  //     tx.executeSql('select * from dataVersions', [], (_, { rows }) =>
-  //         console.log(JSON.stringify(rows))
-  //       );     
-  //   },
-  //   null,
-  //   () => true
-  // );
+  data.warehouses.forEach(async (item) => {
+    debugger;
+    avaiabledData = await SqlService.select('warehouses', '*', `id = ${item.id}`);
+    if (avaiabledData.length > 0) {
+      await SqlService.insert('warehouses', ['id', 'name', 'description', 'address'],
+        [item.id, item.name, item.description, item.address]);
+    } else {
+      await SqlService.update('warehouses', ['name', 'description', 'address'],
+        [item.name, item.description, item.address], `id = ${item.id}`);
+    }
+  }, this);
+
+  data.customers.forEach(async (item) => {
+    debugger;
+    avaiabledData = await SqlService.select('customers', '*', `id = ${item.id}`);
+    if (avaiabledData.length > 0) {
+      await SqlService.insert('customers', [
+        'id', 'customerGroupId',
+        'name', 'bankId', 'companyId', 'address',
+        'imageUrl', 'phone', 'email', 'overdue', 'excessDebt'
+      ], [
+          item.id, item.customerGroupId, item.name, item.bankId, item.companyId, item.address,
+          item.imageUrl, item.phone, item.email, item.overdue, item.excessDebt
+        ]);
+    } else {
+      await SqlService.update('customers', [
+        'customerGroupId',
+        'name', 'bankId', 'companyId', 'address',
+        'imageUrl', 'phone', 'email', 'overdue', 'excessDebt'
+      ], [
+          item.customerGroupId, item.name, item.bankId, item.companyId, item.address,
+          item.imageUrl, item.phone, item.email, item.overdue, item.excessDebt
+        ], `id = ${item.id}`);
+    }
+  }, this);
+
+  data.products.forEach(async (item) => {
+    debugger;
+    avaiabledData = await SqlService.select('products', '*', `id = ${item.id}`);
+    if (avaiabledData.length > 0) {
+      await SqlService.insert('products', [
+        'id', 'categoryId', 'unitId', 'typeCargoId', 'name', 'description',
+        'imageUrl', 'isPublic', 'purchasePrice', 'salePrice', 'minQuantity', 'isAvaiable'
+      ], [
+          item.id, item.categoryId, item.unitId, item.typeCargoId, item.name, item.description,
+          item.imageUrl, item.imageUrl, item.isPublic, item.purchasePrice, item.salePrice, item.minQuantity, item.isAvaiable
+        ]);
+    } else {
+      await SqlService.update('products', [
+        'categoryId', 'unitId', 'typeCargoId', 'name', 'description',
+        'imageUrl', 'isPublic', 'purchasePrice', 'salePrice', 'minQuantity', 'isAvaiable'
+      ], [
+          item.categoryId, item.unitId, item.typeCargoId, item.name, item.description,
+          item.imageUrl, item.imageUrl, item.isPublic, item.purchasePrice, item.salePrice, item.minQuantity, item.isAvaiable
+        ], `id = ${item.id}`);
+    }
+  }, this);
+
 };
 
 export const checkDataVersion = async (userId) => {
   try {
-    let currentVersion = getCurrentDataVersion();
+    let currentVersion = await getCurrentDataVersion();
     console.log('currentVersion = ', JSON.stringify(currentVersion));
     if (!currentVersion) currentVersion = { id: 0, menus: 0, userMenus: 0, roles: 0, units: 0, warehouses: 0, categories: 0, products: 0, customerGroups: 0, customers: 0 };
     const { id, menus, userMenus, roles, units, warehouses, categories,
       products, customerGroups, customers } = currentVersion;
 
-    // if (!id) id = 0;
-    // if (!menus) menus = 0;
-    // if (!userMenus) userMenus = 0;
-    // if (!roles) roles = 0;
-    // if (!units) units = 0;
-    // if (!warehouses) warehouses = 0;
-    // if (!products) products = 0;
-    // if (!customerGroups) customerGroups = 0;
-    // if (!customers) customers = 0;
     const data = await axios.post(`${URL}/api/data/checkDataVersion`, {
       id,
       menus,
@@ -232,10 +248,23 @@ export const checkDataVersion = async (userId) => {
     });
     console.log('data = ', data);
 
-    if (data.data.id !== id) {
-      console.log('begin create new data version');
-      createNewDataVersion(data.data);
-    }
+
+    console.log('begin create new data version');
+    await updateOrInsertDataVersion(data.data);
+    getCurrentDataVersion().then(
+      newData =>
+        console.log("dataversion after updateOrInsert =", newData)
+    );
+    SqlService.select('userMenus', '*').then(
+      result => console.log("userMenus = ", result)
+    );
+    SqlService.select('units', '*').then(
+      result => console.log("units = ", result)
+    );
+    SqlService.select('categories', '*').then(
+      result => console.log("categories = ", result)
+    );
+
   } catch (err) {
     console.log(err);
   }

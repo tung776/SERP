@@ -88,9 +88,9 @@ exports.up = function (knex, Promise) {
         .createTableIfNotExists('customers', (table) => {
             table.increments();
             table.integer('customerGroupId').notNullable().references('id').inTable('customerGroups');
-            table.string('name').unique().notNullable();
             table.integer('bankId').references('id').inTable('banks');
             table.integer('companyId').references('id').inTable('companies');
+            table.string('name').unique().notNullable();
             table.string('address');
             table.string('imageUrl');
             table.string('phone');
