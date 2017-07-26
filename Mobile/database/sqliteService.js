@@ -2,7 +2,7 @@ import { SQLite } from 'expo';
 
 class SqlService {
 
-	db = SQLite.openDatabase("SERP.db", "1.1", "SERP Database", 200000);
+	db = SQLite.openDatabase("SERP1.1.db", "1.1", "SERP Database", 200000);
 
 	async execute(sql, value, type) {
 		type = type || "array";
@@ -61,7 +61,7 @@ class SqlService {
 	}
 
 	insert(table, row, values) {
-		debugger;
+		// debugger;
 		var sql = 'INSERT INTO ' + table + ' (';
 		for (var i = 0; i < row.length; i++) sql += row[i] + ",";
 		sql = sql.slice(0, sql.length - 1);
