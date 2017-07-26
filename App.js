@@ -83,8 +83,8 @@ export default class serp extends React.Component {
       setAuthorizationToken(token);
       store.dispatch(SetCurrentUser(user));
       // debugger;
-      const slqMaster = await SqlService.select('sqlite_master', '*');
-      console.log("sqlMaster = ", slqMaster);
+      // const slqMaster = await SqlService.select('sqlite_master', '*');
+      // console.log("sqlMaster = ", slqMaster);
       
       await createDatabaseSqlite();
       await checkDataVersion(user.id);

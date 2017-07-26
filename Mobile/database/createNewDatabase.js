@@ -98,9 +98,7 @@ export const createDatabaseSqlite = async () => {
           );`);
 };
 
-export const getCurrentDataVersion = async () => {
-  return await SqlService.select('dataVersions', '*');
-};
+export const getCurrentDataVersion = async () => await SqlService.select('dataVersions', '*');
 
 export const updateOrInsertDataVersion = async (data) => {
   const avaiabledDataVersion = await SqlService.select('dataVersions', '*', `id = ${data.id}`);
@@ -111,14 +109,14 @@ export const updateOrInsertDataVersion = async (data) => {
         data.customersVersion, data.customerGroupsVersion
       ];
   if (avaiabledDataVersion.length == 0) {
-    console.log("go insert");
+    // console.log("go insert");
     SqlService.insert('dataVersions', [
       'id', 'menus', 'userMenus', 'categories', 'roles', 'units', 'warehouses',
       'products', 'customerGroups', 'customers'
     ], newDataVersion);
   } else {
-    console.log('go update');
-    console.log(JSON.stringify(avaiabledDataVersion));
+    // console.log('go update');
+    // console.log(JSON.stringify(avaiabledDataVersion));
 
     SqlService.update('dataVersions', [
       'menus', 'userMenus', 'categories', 'roles', 'units', 'warehouses',
@@ -132,12 +130,12 @@ export const updateOrInsertDataVersion = async (data) => {
 
   data.userMenus.forEach(async (item) => {
     const avaiabledData = await SqlService.select('userMenus', '*', `userId = ${item.userId} AND menuId = ${item.menuId}`);
-    console.log("avaiableUserMenus",JSON.stringify(avaiabledData));
+    // console.log("avaiableUserMenus",JSON.stringify(avaiabledData));
     if (avaiabledData.length == 0) {
-      console.log('go insert userMenus');
+      // console.log('go insert userMenus');
       SqlService.insert('userMenus', ['userId', 'menuId', 'name'], [item.userId, item.menuId, item.name]);
     } else {
-      console.log('go update userMenus');
+      // console.log('go update userMenus');
       SqlService.update('userMenus', ['userId', 'menuId', 'name'], [item.menuId, item.name], `userId = ${item.userId} AND menuId = ${item.menuId}`);
     }
   }, this);
@@ -157,11 +155,11 @@ export const updateOrInsertDataVersion = async (data) => {
     const avaiabledData = await SqlService.select('units', '*', `id = ${item.id}`);
     // console.log('avaiabledData in units', avaiabledData)
     if (avaiabledData.length == 0) {
-      console.log("go insert units");
+      // console.log("go insert units");
       SqlService.insert('units', ['id', 'name', 'rate'],
         [item.id, item.name, item.rate]);
     } else {
-      console.log("go update units");
+      // console.log("go update units");
       SqlService.update('units', ['name', 'rate'],
         [item.name, item.rate], `id = ${item.id}`);
     }
@@ -170,11 +168,11 @@ export const updateOrInsertDataVersion = async (data) => {
     const avaiabledData = await SqlService.select('roles', '*', `id = ${item.id}`);
     // console.log('avaiabledData in units', avaiabledData)
     if (avaiabledData.length == 0) {
-      console.log("go insert roles");
+      // console.log("go insert roles");
       SqlService.insert('roles', ['id', 'name'],
         [item.id, item.name]);
     } else {
-      console.log("go update roles");
+      // console.log("go update roles");
       SqlService.update('roles', ['name'],
         [item.name], `id = ${item.id}`);
     }
@@ -234,11 +232,10 @@ export const updateOrInsertDataVersion = async (data) => {
         ], `id = ${item.id}`);
     }
   }, this);
-
 };
 
 export const checkDataVersion = async (userId) => {
-  console.log("go checkDataVersion");
+  // console.log("go checkDataVersion");
 
   try {
     await SqlService.select('dataVersions', '*').then(
@@ -260,7 +257,7 @@ export const checkDataVersion = async (userId) => {
           customers,
           userId
         });
-        console.log('data = ', data);
+        // console.log('data = ', data);
 
         await updateOrInsertDataVersion(data.data);
         // await getCurrentDataVersion().then(
@@ -277,14 +274,11 @@ export const checkDataVersion = async (userId) => {
         //   result => console.log("roles = ", result)
         // );
         SqlService.select('categories', '*').then(
-          result => console.log("categories = ", result)
+          result => console.log('categories = ', result)
         );
       }
-    )
+    );
     // console.log("currentVersion = ", currentVersion);
-
-
-
   } catch (err) {
     console.log(err);
   }
