@@ -6,7 +6,8 @@ import { AsyncStorage } from 'react-native';
 import { connect } from 'react-redux';
 import { logout } from '../../actions';
 import { loadMenusData } from '../../actions/index';
-import {Spinner} from './Spinner';
+import { Spinner } from './Spinner';
+import { getActionForMenus, HOME_ACT, CATEGORY_LIST_ACT, AUTH_ACT } from '../../actions/typeActionRouter';
 
 class SideMenu extends React.Component {
     state = {
@@ -24,7 +25,9 @@ class SideMenu extends React.Component {
         this.renderMenuItems = this.renderMenuItems.bind(this);
     }
     componentWillMount() {
-        this.props.loadMenusData();
+        if (!this.props.loaded) {
+            this.props.loadMenusData();
+        }
     }
     resetMenu() {
         this.setState({
@@ -47,38 +50,44 @@ class SideMenu extends React.Component {
         });
     }
     getChildItems(parentId, data) {
-        let child = data.forEarch((item) => {
-            if(item.parentId == parentId) return item;
+        const child = data.map((item) => {
+            // debugger;
+            if (item.parentId == parentId) {
+                return (
+                    <Button
+                        onPress={() => { Actions.categoryList(); }}
+                        title= { item.name }
+                        color="#d35400"
+                    />
+                );
+            }
         });
-        console.log("child = ", child);
         return child;
     }
     renderMenuItems(menuItems) {
-        console.log(menuItems);
-        let parentMenu = menuItems.forEarch((item)=> {
-            console.log(item);
-            if(!item.parentId) return item;
-        })
-        console.log("parentMenus = ", parentMenu);
-        parentMenu.forEarch((parent) => {
-            const childrent = getChildItems(parent.id, menuItems);
-            console.log("childrent = ", childrent);
-        })
+        const parentMenu = menuItems.filter((item) => {
+            if (item.parentId === "null") {
+                return item;
+            }
+        });
+        parentMenu.map((parent) => {
+            const childrent = this.getChildItems(parent.menuId, menuItems);
+
+        });
     }
     render() {
-
         const { containerStyle } = styles;
         goHomePage = () => {
-            Actions.Home();
+            console.log("begin to get actions for menus");
+            getActionForMenus(HOME_ACT);
         };
         goSignin = () => {
             Actions.auth();
         };
 
         if (this.props.loaded) {
-            this.renderMenuItems(this.props.menuItems);
 
-            console.log("this.props.menuItems = ", this.props.menuItems);
+            this.renderMenuItems(this.props.menuItems);
             return (
                 <View style={containerStyle}>
                     <View>
@@ -162,21 +171,19 @@ class SideMenu extends React.Component {
                     </ScrollView>
                 </View>
             );
-        } else {
-            return (
-                <View style={containerStyle}>
-                    <View>
-                        <Image style={styles.logoImage} source={require('../../../Shared/images/Logo.png')} />
-                        {this.props.user && <Text style={styles.usernameStyle}>{this.props.user.username}</Text>}
-                    </View>
-                    <ScrollView>                       
-                        <Spinner />
-                        {this.renderAuthMenu()}
-                    </ScrollView>
-                </View>
-            );
         }
-
+        return (
+            <View style={containerStyle}>
+                <View>
+                    <Image style={styles.logoImage} source={require('../../../Shared/images/Logo.png')} />
+                    {this.props.user && <Text style={styles.usernameStyle}>{this.props.user.username}</Text>}
+                </View>
+                <ScrollView>
+                    <Spinner />
+                    {this.renderAuthMenu()}
+                </ScrollView>
+            </View>
+        );
     }
 
     renderAuthMenu() {

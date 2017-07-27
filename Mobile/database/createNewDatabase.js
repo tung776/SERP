@@ -11,11 +11,27 @@ import SqlService from './sqliteService';
  lên server, server sẽ kiểm tra dữ liệu đã mới dc cập nhật chưa, Server chỉ trả về tập dữ liệu cần thiết 
  chứ không trả về toàn bộ dữ liệu
  */
+export const resetDatabase = async () => {
+  SqlService.query(
+    'drop table if exists menus;');
+  SqlService.query(
+    'drop table if exists userMenus;');
+  SqlService.query(
+    'drop table if exists roles;');
+  SqlService.query(
+    'drop table if exists units;');
+  SqlService.query(
+    'drop table if exists warehouses;');
+  SqlService.query(
+    'drop table if exists products;');
+  SqlService.query(
+    'drop table if exists customerGroups;');
+  SqlService.query(
+    'drop table if exists customers;');
+};
+
 export const createDatabaseSqlite = async () => {
-  // SqlService.query(
-  //   `drop table if exists menus;`);
-  // SqlService.query(
-  //   `drop table if exists userMenus;`);
+  // resetDatabase();
 
   SqlService.query(
     `create table if not exists
@@ -111,10 +127,10 @@ export const updateOrInsertDataVersion = async (data) => {
   const avaiabledDataVersion = await SqlService.select('dataVersions', '*', `id = ${data.id}`);
 
   const newDataVersion = [
-        data.id, data.menusVersion, data.userMenusVersion, data.categoriesVersion,
-        data.rolesVersion, data.unitsVersion, data.warehousesVersion, data.productsVersion,
-        data.customersVersion, data.customerGroupsVersion
-      ];
+    data.id, data.menusVersion, data.userMenusVersion, data.categoriesVersion,
+    data.rolesVersion, data.unitsVersion, data.warehousesVersion, data.productsVersion,
+    data.customerGroupsVersion, data.customersVersion
+  ];
   if (avaiabledDataVersion.length == 0) {
     // console.log("go insert");
     SqlService.insert('dataVersions', [
@@ -131,7 +147,7 @@ export const updateOrInsertDataVersion = async (data) => {
     ], [
         data.menusVersion, data.userMenusVersion, data.categoriesVersion,
         data.rolesVersion, data.unitsVersion, data.warehousesVersion, data.productsVersion,
-        data.customersVersion
+        data.customersVersion, data.customersVersion
       ], `id = ${data.id}`);
   }
 
@@ -143,7 +159,7 @@ export const updateOrInsertDataVersion = async (data) => {
       SqlService.insert('userMenus', ['userId', 'menuId', 'name', 'parentId'], [item.userId, item.menuId, item.name, item.parentId]);
     } else {
       // console.log('go update userMenus');
-      SqlService.update('userMenus', ['userId', 'menuId', 'name', 'parentId'], [item.menuId, item.name, item.parentId], `userId = ${item.userId} AND menuId = ${item.menuId}`);
+      SqlService.update('userMenus', ['userId', 'menuId', 'name', 'parentId'], [item.userId, item.menuId, item.name, item.parentId], `userId = ${item.userId} AND menuId = ${item.menuId}`);
     }
   }, this);
 
