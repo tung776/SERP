@@ -8,14 +8,14 @@ export const loadMenusData = () => async (dispatch) => {
     dispatch({
         type: MENU_LOADING
     });
-    const userMenus = await SqlService.select('userMenus', '*').then(
-        result => console.log('userMenus = ', result)
+    SqlService.select('userMenus', '*').then(
+        result => {
+            dispatch({
+                type: MENU_LOADED,
+                payload: result
+            });
+        }
     );
 
-    console.log('userMenus = ', userMenus);
 
-    dispatch({
-        type: MENU_LOADED,
-        payload: userMenus
-    });
 };

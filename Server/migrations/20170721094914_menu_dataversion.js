@@ -354,7 +354,8 @@ exports.up = function (knex, Promise) {
         })
         .createTableIfNotExists('menus', (table) => {
             table.increments();
-            table.string('name').notNullable().unique();
+            table.string('name').notNullable();
+            table.string('parentId').nullable();
             table.timestamps();
         })
         .createTableIfNotExists('userMenus', (table) => {

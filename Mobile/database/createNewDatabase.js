@@ -12,16 +12,23 @@ import SqlService from './sqliteService';
  chứ không trả về toàn bộ dữ liệu
  */
 export const createDatabaseSqlite = async () => {
+  // SqlService.query(
+  //   `drop table if exists menus;`);
+  // SqlService.query(
+  //   `drop table if exists userMenus;`);
+
   SqlService.query(
     `create table if not exists
          menus (
            id integer primary key not null,
-           name text
+           name text,
+           parentId integer
           );`);
   SqlService.query(`create table if not exists
          userMenus (
            menuId integer,
            userId integer,
+           parentId,
            name text
           );`);
   SqlService.query(`create table if not exists
@@ -133,10 +140,10 @@ export const updateOrInsertDataVersion = async (data) => {
     // console.log("avaiableUserMenus",JSON.stringify(avaiabledData));
     if (avaiabledData.length == 0) {
       // console.log('go insert userMenus');
-      SqlService.insert('userMenus', ['userId', 'menuId', 'name'], [item.userId, item.menuId, item.name]);
+      SqlService.insert('userMenus', ['userId', 'menuId', 'name', 'parentId'], [item.userId, item.menuId, item.name, item.parentId]);
     } else {
       // console.log('go update userMenus');
-      SqlService.update('userMenus', ['userId', 'menuId', 'name'], [item.menuId, item.name], `userId = ${item.userId} AND menuId = ${item.menuId}`);
+      SqlService.update('userMenus', ['userId', 'menuId', 'name', 'parentId'], [item.menuId, item.name, item.parentId], `userId = ${item.userId} AND menuId = ${item.menuId}`);
     }
   }, this);
 

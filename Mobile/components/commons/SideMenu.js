@@ -5,6 +5,8 @@ import { Actions } from 'react-native-router-flux';
 import { AsyncStorage } from 'react-native';
 import { connect } from 'react-redux';
 import { logout } from '../../actions';
+import { loadMenusData } from '../../actions/index';
+import {Spinner} from './Spinner';
 
 class SideMenu extends React.Component {
     state = {
@@ -16,6 +18,13 @@ class SideMenu extends React.Component {
         showIncomeOrder: false,
         showSaleReport: false,
         showSaleReportMenu: false,
+    }
+    constructor(props) {
+        super(props);
+        this.renderMenuItems = this.renderMenuItems.bind(this);
+    }
+    componentWillMount() {
+        this.props.loadMenusData();
     }
     resetMenu() {
         this.setState({
@@ -37,7 +46,27 @@ class SideMenu extends React.Component {
             });
         });
     }
+    getChildItems(parentId, data) {
+        let child = data.forEarch((item) => {
+            if(item.parentId == parentId) return item;
+        });
+        console.log("child = ", child);
+        return child;
+    }
+    renderMenuItems(menuItems) {
+        console.log(menuItems);
+        let parentMenu = menuItems.forEarch((item)=> {
+            console.log(item);
+            if(!item.parentId) return item;
+        })
+        console.log("parentMenus = ", parentMenu);
+        parentMenu.forEarch((parent) => {
+            const childrent = getChildItems(parent.id, menuItems);
+            console.log("childrent = ", childrent);
+        })
+    }
     render() {
+
         const { containerStyle } = styles;
         goHomePage = () => {
             Actions.Home();
@@ -46,89 +75,108 @@ class SideMenu extends React.Component {
             Actions.auth();
         };
 
-        return (
-            <View style={containerStyle}>
-                <View>
-                    <Image style={styles.logoImage} source={require('../../../Shared/images/Logo.png')} />
-                    {this.props.user && <Text style={styles.usernameStyle}>{this.props.user.username}</Text>}
-                </View>
-                <ScrollView>
-                    <View style={styles.buttonMenuContainer}>
-                        <Button
-                            onPress={goHomePage}
-                            title="Trang Chủ"
-                            color="#841584"
-                            accessibilityLabel="Learn more about this purple button"
-                        />
-                    </View>
-                    <View style={styles.commonButton}>
-                        <Button
-                            onPress={() => this.setState({ showProductMenu: !this.state.showProductMenu })}
-                            title="Sản Phẩm"
-                            color="#2c3e50"
-                            accessibilityLabel="Learn more about this purple button"
-                        />
-                    </View>
-                    {this.renderCategoryMenu()}
-                    <View style={styles.commonButton}>
-                        <Button
-                            onPress={() => this.setState({ showOrderMenu: !this.state.showOrderMenu })}
-                            title="Hóa Đơn Bán"
-                            color="#2c3e50"
-                            accessibilityLabel="Learn more about this purple button"
-                        />
-                    </View>
-                    {this.renderOdersMenu()}
-                    <View style={styles.commonButton}>
-                        <Button
-                            onPress={() => this.setState({ showPhieuChiMenu: !this.state.showPhieuChiMenu })}
-                            title="Phiếu Chi"
-                            color="#2c3e50"
-                            accessibilityLabel="Learn more about this purple button"
-                        />
-                    </View>
-                    {this.renderPhieuChiMenu()}
-                    <View style={styles.commonButton}>
-                        <Button
-                            onPress={() => this.setState({ showCustomerMenu: !this.state.showCustomerMenu })}
-                            title="Khách Hàng"
-                            color="#2c3e50"
-                            accessibilityLabel="Learn more about this purple button"
-                        />
-                    </View>
-                    {this.renderCustomerMenu()}
-                    <View style={styles.commonButton}>
-                        <Button
-                            onPress={() => this.setState({ showIncomeOrder: !this.state.showIncomeOrder })}
-                            title="Hóa Đơn Nhập"
-                            color="#2c3e50"
-                            accessibilityLabel="Learn more about this purple button"
-                        />
-                    </View>
-                    {this.renderIncomeMenu()}
-                    <View style={styles.commonButton}>
-                        <Button
-                            onPress={() => this.setState({ showSupplierMenu: !this.state.showSupplierMenu })}
-                            title="Nhà Cung Cấp"
-                            color="#2c3e50"
-                            accessibilityLabel="Learn more about this purple button"
-                        />
-                    </View>
-                    {this.renderSupplierMenu()}
-                    <View style={styles.commonButton}>
-                        <Button
-                            onPress={() => this.setState({ showSaleReportMenu: !this.state.showSaleReportMenu })}
-                            title="Báo Cáo Kinh Doanh"
-                            color="#2c3e50"
-                            accessibilityLabel="Learn more about this purple button"
-                        />
-                    </View>
-                    {this.renderSaleReportMenu()}
+        if (this.props.loaded) {
+            this.renderMenuItems(this.props.menuItems);
 
-                    {this.renderAuthMenu()}
-                </ScrollView>
-            </View>
-        );
+            console.log("this.props.menuItems = ", this.props.menuItems);
+            return (
+                <View style={containerStyle}>
+                    <View>
+                        <Image style={styles.logoImage} source={require('../../../Shared/images/Logo.png')} />
+                        {this.props.user && <Text style={styles.usernameStyle}>{this.props.user.username}</Text>}
+                    </View>
+                    <ScrollView>
+                        <View style={styles.buttonMenuContainer}>
+                            <Button
+                                onPress={goHomePage}
+                                title="Trang Chủ"
+                                color="#841584"
+                                accessibilityLabel="Learn more about this purple button"
+                            />
+                        </View>
+                        <View style={styles.commonButton}>
+                            <Button
+                                onPress={() => this.setState({ showProductMenu: !this.state.showProductMenu })}
+                                title="Sản Phẩm"
+                                color="#2c3e50"
+                                accessibilityLabel="Learn more about this purple button"
+                            />
+                        </View>
+                        {this.renderCategoryMenu()}
+                        <View style={styles.commonButton}>
+                            <Button
+                                onPress={() => this.setState({ showOrderMenu: !this.state.showOrderMenu })}
+                                title="Hóa Đơn Bán"
+                                color="#2c3e50"
+                                accessibilityLabel="Learn more about this purple button"
+                            />
+                        </View>
+                        {this.renderOdersMenu()}
+                        <View style={styles.commonButton}>
+                            <Button
+                                onPress={() => this.setState({ showPhieuChiMenu: !this.state.showPhieuChiMenu })}
+                                title="Phiếu Chi"
+                                color="#2c3e50"
+                                accessibilityLabel="Learn more about this purple button"
+                            />
+                        </View>
+                        {this.renderPhieuChiMenu()}
+                        <View style={styles.commonButton}>
+                            <Button
+                                onPress={() => this.setState({ showCustomerMenu: !this.state.showCustomerMenu })}
+                                title="Khách Hàng"
+                                color="#2c3e50"
+                                accessibilityLabel="Learn more about this purple button"
+                            />
+                        </View>
+                        {this.renderCustomerMenu()}
+                        <View style={styles.commonButton}>
+                            <Button
+                                onPress={() => this.setState({ showIncomeOrder: !this.state.showIncomeOrder })}
+                                title="Hóa Đơn Nhập"
+                                color="#2c3e50"
+                                accessibilityLabel="Learn more about this purple button"
+                            />
+                        </View>
+                        {this.renderIncomeMenu()}
+                        <View style={styles.commonButton}>
+                            <Button
+                                onPress={() => this.setState({ showSupplierMenu: !this.state.showSupplierMenu })}
+                                title="Nhà Cung Cấp"
+                                color="#2c3e50"
+                                accessibilityLabel="Learn more about this purple button"
+                            />
+                        </View>
+                        {this.renderSupplierMenu()}
+                        <View style={styles.commonButton}>
+                            <Button
+                                onPress={() => this.setState({ showSaleReportMenu: !this.state.showSaleReportMenu })}
+                                title="Báo Cáo Kinh Doanh"
+                                color="#2c3e50"
+                                accessibilityLabel="Learn more about this purple button"
+                            />
+                        </View>
+                        {this.renderSaleReportMenu()}
+
+                        {this.renderAuthMenu()}
+                    </ScrollView>
+                </View>
+            );
+        } else {
+            return (
+                <View style={containerStyle}>
+                    <View>
+                        <Image style={styles.logoImage} source={require('../../../Shared/images/Logo.png')} />
+                        {this.props.user && <Text style={styles.usernameStyle}>{this.props.user.username}</Text>}
+                    </View>
+                    <ScrollView>                       
+                        <Spinner />
+                        {this.renderAuthMenu()}
+                    </ScrollView>
+                </View>
+            );
+        }
+
     }
 
     renderAuthMenu() {
@@ -152,21 +200,21 @@ class SideMenu extends React.Component {
                 <View>
                     <View style={styles.buttonMenuContainer}>
                         <Button
-                            onPress={() => { Actions.categoryList(); this.resetMenu() ;}}
+                            onPress={() => { Actions.categoryList(); this.resetMenu(); }}
                             title="Nhóm Sản Phẩm"
                             color="#d35400"
                         />
                     </View>
                     <View style={styles.buttonMenuContainer}>
                         <Button
-                            onPress={() => { Actions.categoryNew(); this.resetMenu() ;}}
+                            onPress={() => { Actions.categoryNew(); this.resetMenu(); }}
                             title="Thêm Nhóm Sản Phẩm"
                             color="#d35400"
                         />
                     </View>
                     <View style={styles.buttonMenuContainer}>
                         <Button
-                            onPress={() => { Actions.ProductNew(); this.resetMenu() ;}}
+                            onPress={() => { Actions.ProductNew(); this.resetMenu(); }}
                             title="Thêm Sản Phẩm"
                             color="#d35400"
                         />
@@ -239,7 +287,7 @@ class SideMenu extends React.Component {
                     <View style={styles.buttonMenuContainer}>
                         <Button
                             onPress={() => Actions.categoryNew()}
-                            title="Chi Khách"
+                            title="Chi Khác"
                             color="#d35400"
                         />
                     </View>
@@ -401,169 +449,10 @@ const styles = {
 };
 const mapStateToProps = (state) => {
     const { isAuthenticated, user } = state.auth;
-    return { isAuthenticated, user };
+    const { menuItems, loaded, loading } = state.userMenus;
+    return { isAuthenticated, user, menuItems, loaded, loading };
 };
 export default connect(mapStateToProps, {
     logout,
+    loadMenusData,
 })(SideMenu);
-
-// <View style={styles.buttonMenuContainer}>
-//     <Button
-//         onPress={goHomePage}
-//         title="Trang Chủ"
-//         color="#841584"
-//         accessibilityLabel="Learn more about this purple button"
-//     />
-// </View>
-//     <View style={styles.buttonMenuContainer}>
-//         <Button
-//             onPress={goHomePage}
-//             title="Lập Hóa Đơn Bán"
-//             color="#d35400"
-//             accessibilityLabel="Learn more about this purple button"
-//         />
-//     </View>
-//     <View style={styles.buttonMenuContainer}>
-//         <Button
-//             onPress={goHomePage}
-//             title="Tìm Kiếm Sản Phẩm"
-//             color="rgba(41, 128, 185,1.0)"
-//             accessibilityLabel="Learn more about this purple button"
-//         />
-//     </View>
-//     <View style={styles.buttonMenuContainer}>
-//         <Button
-//             onPress={() => Actions.categoryList()}
-//             title="Nhóm Sản Phẩm"
-//             color="rgba(41, 128, 185,1.0)"
-//             accessibilityLabel="Learn more about this purple button"
-//         />
-//     </View>
-//     <View style={styles.buttonMenuContainer}>
-//         <Button
-//             onPress={() => Actions.categoryNew()}
-//             title="Thêm Nhóm Sản Phẩm"
-//             color="rgba(41, 128, 185,1.0)"
-//             accessibilityLabel="Learn more about this purple button"
-//         />
-//     </View>
-//     <View style={styles.buttonMenuContainer}>
-//         <Button
-//             onPress={goHomePage}
-//             title="Thêm Sản Phẩm"
-//             color="#d35400"
-//             accessibilityLabel="Learn more about this purple button"
-//         />
-//     </View>
-//     <View style={styles.buttonMenuContainer}>
-//         <Button
-//             onPress={goHomePage}
-//             title="Lập Hóa Đơn Mua"
-//             color="#d35400"
-//             accessibilityLabel="Learn more about this purple button"
-//         />
-//     </View>
-//     <View style={styles.buttonMenuContainer}>
-//         <Button
-//             onPress={goHomePage}
-//             title="Lập Phiếu Chi"
-//             color="rgba(41, 128, 185,1.0)"
-//             accessibilityLabel="Learn more about this purple button"
-//         />
-//     </View>
-//     <View style={styles.buttonMenuContainer}>
-//         <Button
-//             onPress={goHomePage}
-//             title="Lập Phiếu Thu"
-//             color="rgba(41, 128, 185,1.0)"
-//             accessibilityLabel="Learn more about this purple button"
-//         />
-//     </View>
-//     <View style={styles.buttonMenuContainer}>
-//         <Button
-//             onPress={goHomePage}
-//             title="Theo Dõi Công Nợ"
-//             color="#d35400"
-//             accessibilityLabel="Learn more about this purple button"
-//         />
-//     </View>
-//     <View style={styles.buttonMenuContainer}>
-//         <Button
-//             onPress={goHomePage}
-//             title="Theo dõi Thu-Chi"
-//             color="rgba(41, 128, 185,1.0)"
-//             accessibilityLabel="Learn more about this purple button"
-//         />
-//     </View>
-//     <View style={styles.buttonMenuContainer}>
-//         <Button
-//             onPress={goHomePage}
-//             title="Danh Sách Khách Hàng"
-//             color="rgba(41, 128, 185,1.0)"
-//             accessibilityLabel="Learn more about this purple button"
-//         />
-//     </View>
-//     <View style={styles.buttonMenuContainer}>
-//         <Button
-//             onPress={goHomePage}
-//             title="Danh Sách Nhà Cung cấp"
-//             color="rgba(41, 128, 185,1.0)"
-//             accessibilityLabel="Learn more about this purple button"
-//         />
-//     </View>
-//     <View style={styles.buttonMenuContainer}>
-//         <Button
-//             onPress={goHomePage}
-//             title="Lập Lệnh Sản Xuất"
-//             color="rgba(41, 128, 185,1.0)"
-//             accessibilityLabel="Learn more about this purple button"
-//         />
-//     </View>
-//     <View style={styles.buttonMenuContainer}>
-//         <Button
-//             onPress={goHomePage}
-//             title="Lập Lệnh Công Thức Nghiên Cứu"
-//             color="rgba(41, 128, 185,1.0)"
-//             accessibilityLabel="Learn more about this purple button"
-//         />
-//     </View>
-//     <View style={styles.buttonMenuContainer}>
-//         <Button
-//             onPress={goHomePage}
-//             title="Báo Cáo Tồn Kho"
-//             color="rgba(41, 128, 185,1.0)"
-//             accessibilityLabel="Learn more about this purple button"
-//         />
-//     </View>
-//     <View style={styles.buttonMenuContainer}>
-//         <Button
-//             onPress={goHomePage}
-//             title="Báo Cáo Lợi Nhuận"
-//             color="rgba(41, 128, 185,1.0)"
-//             accessibilityLabel="Learn more about this purple button"
-//         />
-//     </View>
-//     <View style={styles.buttonMenuContainer}>
-//         <Button
-//             onPress={goHomePage}
-//             title="Báo Cáo Doanh Thu"
-//             color="rgba(41, 128, 185,1.0)"
-//             accessibilityLabel="Learn more about this purple button"
-//         />
-//     </View>
-//     <View style={styles.buttonMenuContainer}>
-//         <Button
-//             onPress={goSignin}
-//             title="Đăng Nhập"
-//             color="rgba(39, 174, 96,1.0)"
-//             accessibilityLabel="Learn more about this purple button"
-//         />
-//     </View>
-    // <View style={styles.buttonMenuContainer}>
-    //     <Button
-    //         onPress={this.logout.bind(this)}
-    //         title="Thoát"
-    //         color="rgba(39, 174, 96,1.0)"
-    //         accessibilityLabel=".."
-    //     />
-    // </View>

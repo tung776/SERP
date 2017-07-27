@@ -1,7 +1,7 @@
 /node_modules
 /Server/public/images/categories
 bundle.js
-*/env.js
+env.js
 npm-debug.log
 .DS_Store
 # IntelliJ
