@@ -23,11 +23,13 @@ import { setAuthorizationToken } from './Shared/utils/setAuthorizationToken';
 import { SetCurrentUser } from './Shared/actions/authCommon';
 import Routers from './Mobile/Routers';
 import Reducers from './Mobile/Reducers';
+import { loadMenusData } from './Mobile/actions/menuAction';
+import SqlService from './Mobile/database/sqliteService';
+
 // const db = SQLite.openDatabase({ name: 'SERP3.db' });
 // console.log("__DEV__ = ", __DEV__);
 StatusBar.setHidden(true);
 // __DEV__ = false;
-import SqlService from './Mobile/database/sqliteService';
 
 function cacheImages(images) {
   return images.map(image => {

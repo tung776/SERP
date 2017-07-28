@@ -1,13 +1,12 @@
 import React from 'react';
-import { View, Text, Button, Image, ScrollView } from 'react-native';
+import { View, Text, Button, Image, ScrollView, AsyncStorage } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 // import { Card, CardSection, } from './index';
-import { AsyncStorage } from 'react-native';
 import { connect } from 'react-redux';
 import { logout } from '../../actions';
 import { loadMenusData } from '../../actions/index';
 import { Spinner } from './Spinner';
-import { getActionForMenus, HOME_ACT, CATEGORY_LIST_ACT, AUTH_ACT } from '../../actions/typeActionRouter';
+import { getActionForMenus, HOME_ACT } from '../../actions/typeActionRouter';
 
 class SideMenu extends React.Component {
     state = {
@@ -33,14 +32,7 @@ class SideMenu extends React.Component {
         }
     }
     
-    logout(e) {
-        e.preventDefault();
-        this.props.logout(() => {
-            AsyncStorage.removeItem('jwtToken').then(() => {
-                Actions.auth();
-            });
-        });
-    }
+    
     getChildItems(parentId, data) {
         const child = data.map((item) => {
             if (item.parentId == parentId) {
@@ -87,10 +79,17 @@ class SideMenu extends React.Component {
         }, this);
         return (
             <View>
-                <Text>here</Text>
                 {renderedMenus}
             </View>
         );
+    }
+    logout(e) {
+        e.preventDefault();
+        this.props.logout(() => {
+            AsyncStorage.removeItem('jwtToken').then(() => {
+                Actions.auth();
+            });
+        });
     }
     render() {
         const { containerStyle } = styles;

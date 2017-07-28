@@ -2,7 +2,7 @@ var bcrypt = require('bcrypt');
 
 exports.seed = function (knex, Promise) {
   const password_hash = bcrypt.hashSync('tung1982', 10);
-  return knex('users').del()
+  return knex('users')
     .then(function () {
       // Inserts seed entries
       return knex('users').insert([

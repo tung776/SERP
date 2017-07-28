@@ -67,7 +67,7 @@ exports.up = function (knex, Promise) {
         .createTableIfNotExists('categories', (table) => {
             table.increments();
             table.string('name').notNullable().unique();
-            table.string('description');
+            table.text('description');
             table.timestamps();
         })
         .createTableIfNotExists('users', (table) => {
@@ -178,7 +178,7 @@ exports.up = function (knex, Promise) {
             table.integer('unitId').references('id').inTable('units');
             table.integer('typeCargoId').references('id').inTable('typeCargoes');
             table.string('name').unique().notNullable();
-            table.string('description');
+            table.text('description');
             table.string('imageUrl');
             table.boolean('isPublic').defaultTo(false);
             table.float('purchasePrice');

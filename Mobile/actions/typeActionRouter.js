@@ -5,7 +5,7 @@ export const PRODUCTS_ACT = 2;
 export const CATEGORY_ACT = 3;
 export const NEW_CATEGORY_ACT = 4;
 export const SEARCH_CATEGORY_ACT = 5;
-export const CATEGORY_LIST_ACT = 6;
+export const PRODUCT_LIST_ACT = 6;
 export const NEW_CARGO_TYPE_ACT = 7;
 export const LIST_CARGO_TYPE_ACT = 8;
 export const REPORT_INVENTORY_ACT = 9;
@@ -79,7 +79,6 @@ export const MENU_ACT = 66;
 
 export const NEW_PRODUCT_ACT = 66;
 export const SESRCH_PRODUCT_ACT = 67;
-export const PRODUCT_LIST_ACT = 68;
 
 export const getActionForMenus = (menu) => {
     switch (menu) {
@@ -88,13 +87,13 @@ export const getActionForMenus = (menu) => {
         case PRODUCTS_ACT:
             return null;
         case CATEGORY_ACT:
-            return null;
+            return Actions.categoryList();
         case NEW_CATEGORY_ACT:
             return Actions.categoryNew();
         case SEARCH_CATEGORY_ACT:
             return Actions.categorySearch();
-        case CATEGORY_LIST_ACT:
-            return Actions.categoryList();
+        case PRODUCT_LIST_ACT:
+            return Actions.productList();
         case NEW_CARGO_TYPE_ACT:
             return Actions.cargoNew();
         case LIST_CARGO_TYPE_ACT:
@@ -112,8 +111,6 @@ export const getActionForMenus = (menu) => {
             return Actions.ProductNew();
         case SESRCH_PRODUCT_ACT:
             return Actions.searchProduct();
-        case PRODUCT_LIST_ACT:
-            return Actions.productList();
 
 
         case SALE_ORDER_ACT:
