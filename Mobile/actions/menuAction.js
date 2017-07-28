@@ -10,6 +10,7 @@ export const loadMenusData = () => async (dispatch) => {
     });
     SqlService.select('userMenus', '*').then(
         result => {
+            // console.log("menus loaded = ",result);
             dispatch({
                 type: MENU_LOADED,
                 payload: result

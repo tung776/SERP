@@ -19,6 +19,7 @@ class SideMenu extends React.Component {
         showIncomeOrder: false,
         showSaleReport: false,
         showSaleReportMenu: false,
+        collaped: null,
     }
     constructor(props) {
         super(props);
@@ -51,29 +52,58 @@ class SideMenu extends React.Component {
     }
     getChildItems(parentId, data) {
         const child = data.map((item) => {
-            // debugger;
             if (item.parentId == parentId) {
                 return (
                     <Button
-                        onPress={() => { Actions.categoryList(); }}
-                        title= { item.name }
+                        onPress={() => { getActionForMenus(item.id); }}
+                        title={item.name}
                         color="#d35400"
                     />
                 );
             }
         });
+        debugger;
         return child;
     }
-    renderMenuItems(menuItems) {
+    renderMenuItems() {
+        // console.log("go renderMenuItems");
+        const menuItems = this.props.menuItems;
         const parentMenu = menuItems.filter((item) => {
-            if (item.parentId === "null") {
+            console.log("item.parentId", item.parentId);
+            if (item.parentId == "null") {
                 return item;
             }
         });
-        parentMenu.map((parent) => {
-            const childrent = this.getChildItems(parent.menuId, menuItems);
-
-        });
+        
+        console.log("parentMenu = ", parentMenu)
+        const renderedMenus =  parentMenu.map((parent) => {
+            console.log('go to map parent menu');
+            debugger;
+            this.setState({ ...collaped, [parent.id]: false });
+            console.log("this.state/collaped = ", this.state.collaped);
+            
+            return (
+                <View>
+                    <Button
+                        onPress={() => {
+                            this.setState({ ...collaped, [parent.id]: ![parent.id] })
+                        }}
+                        title= { parent.name }
+                        color="#841584"
+                    />
+                    {()=>{
+                        if(this.state.collaped[parent.id]) return this.getChildItems(parent.menuId, menuItems);
+                    }}
+                </View>
+            );
+        }, this);
+        console.log("renderedMenus = ",renderedMenus);
+        return (
+            <View>
+                <Text>here</Text>
+                {renderedMenus}
+            </View>
+        )
     }
     render() {
         const { containerStyle } = styles;
@@ -86,8 +116,8 @@ class SideMenu extends React.Component {
         };
 
         if (this.props.loaded) {
-
-            this.renderMenuItems(this.props.menuItems);
+            
+            // this.renderMenuItems(this.props.menuItems);
             return (
                 <View style={containerStyle}>
                     <View>
@@ -95,77 +125,7 @@ class SideMenu extends React.Component {
                         {this.props.user && <Text style={styles.usernameStyle}>{this.props.user.username}</Text>}
                     </View>
                     <ScrollView>
-                        <View style={styles.buttonMenuContainer}>
-                            <Button
-                                onPress={goHomePage}
-                                title="Trang Chủ"
-                                color="#841584"
-                                accessibilityLabel="Learn more about this purple button"
-                            />
-                        </View>
-                        <View style={styles.commonButton}>
-                            <Button
-                                onPress={() => this.setState({ showProductMenu: !this.state.showProductMenu })}
-                                title="Sản Phẩm"
-                                color="#2c3e50"
-                                accessibilityLabel="Learn more about this purple button"
-                            />
-                        </View>
-                        {this.renderCategoryMenu()}
-                        <View style={styles.commonButton}>
-                            <Button
-                                onPress={() => this.setState({ showOrderMenu: !this.state.showOrderMenu })}
-                                title="Hóa Đơn Bán"
-                                color="#2c3e50"
-                                accessibilityLabel="Learn more about this purple button"
-                            />
-                        </View>
-                        {this.renderOdersMenu()}
-                        <View style={styles.commonButton}>
-                            <Button
-                                onPress={() => this.setState({ showPhieuChiMenu: !this.state.showPhieuChiMenu })}
-                                title="Phiếu Chi"
-                                color="#2c3e50"
-                                accessibilityLabel="Learn more about this purple button"
-                            />
-                        </View>
-                        {this.renderPhieuChiMenu()}
-                        <View style={styles.commonButton}>
-                            <Button
-                                onPress={() => this.setState({ showCustomerMenu: !this.state.showCustomerMenu })}
-                                title="Khách Hàng"
-                                color="#2c3e50"
-                                accessibilityLabel="Learn more about this purple button"
-                            />
-                        </View>
-                        {this.renderCustomerMenu()}
-                        <View style={styles.commonButton}>
-                            <Button
-                                onPress={() => this.setState({ showIncomeOrder: !this.state.showIncomeOrder })}
-                                title="Hóa Đơn Nhập"
-                                color="#2c3e50"
-                                accessibilityLabel="Learn more about this purple button"
-                            />
-                        </View>
-                        {this.renderIncomeMenu()}
-                        <View style={styles.commonButton}>
-                            <Button
-                                onPress={() => this.setState({ showSupplierMenu: !this.state.showSupplierMenu })}
-                                title="Nhà Cung Cấp"
-                                color="#2c3e50"
-                                accessibilityLabel="Learn more about this purple button"
-                            />
-                        </View>
-                        {this.renderSupplierMenu()}
-                        <View style={styles.commonButton}>
-                            <Button
-                                onPress={() => this.setState({ showSaleReportMenu: !this.state.showSaleReportMenu })}
-                                title="Báo Cáo Kinh Doanh"
-                                color="#2c3e50"
-                                accessibilityLabel="Learn more about this purple button"
-                            />
-                        </View>
-                        {this.renderSaleReportMenu()}
+                        { this.renderMenuItems() }                        
 
                         {this.renderAuthMenu()}
                     </ScrollView>

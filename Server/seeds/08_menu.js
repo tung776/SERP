@@ -68,7 +68,7 @@ exports.seed = function (knex, Promise) {
         { id: 52, name: 'Thêm phòng Ban', parentId: 51 },
         { id: 53, name: 'Tìm Phòng Ban', parentId: 51 },
         { id: 54, name: 'Thêm Người Dùng', parentId: 51 },
-        { id: 55, name: 'Tìm Kiếm', parentId: 51 },
+        { id: 55, name: 'Tìm Kiếm Người dùng', parentId: 51 },
         { id: 56, name: 'Thuyển Chuyển Công Tác', parentId: 51 },
         { id: 57, name: 'Phân Quyền', parentId: 51 },
 

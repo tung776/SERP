@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import stylesCommon from '../../../styles';
 import { Ionicons } from '@expo/vector-icons';
 
-class CategoryView extends React.Component {
+class CategorySearch extends React.Component {
     state = { }
     render() {
         return (
@@ -16,7 +16,7 @@ class CategoryView extends React.Component {
                     <Text style={styles.headTitle}>Nhóm Sản Phẩm</Text>
                 </Header>
                 <View style={styles.body}>
-                    <Text>CategoryView</Text>
+                    <Text>categorySearch</Text>
                 </View>
                 <Footer>
                     <TouchableOpacity style={styles.addNewGroupBtn} onPress={() => { Actions.categoryNew(); }}>
@@ -40,4 +40,4 @@ const styles = {
 // const mapStateToProps(state, ownProps)=> {
 //     return state
 // }
-export default connect(null, {})(CategoryView);
+export default connect(null, {})(CategorySearch);

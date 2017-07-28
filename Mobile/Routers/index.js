@@ -9,49 +9,114 @@ import NavigationDrawer from '../components/commons/NavigationDrawer';
 import requireAuth from '../utils/requireAuth';
 import Categories from '../components/Screens/Categories';
 import CategoryEdit from '../components/Screens/Categories/CategoryEdit';
-import CategoryView from '../components/Screens/Categories/CategoryView';
+import CategorySearch from '../components/Screens/Categories/categorySearch';
+import CategoryNew from '../components/Screens/Categories/CategoryNew';
 import Splash from '../components/Splash';
 import LoginForm from '../components/Screens/Auth/LoginForm';
 // import CategoriesScene from './categoriesScene';
 // import AuthScene from './authScene';
-import CategoryNew from '../components/Screens/Categories/CategoryNew';
-import Products from '../components/Screens/Products';
+import ProductList from '../components/Screens/Products';
 import ProductNew from '../components/Screens/Products/ProductNew';
 import ProductDetail from '../components/Screens/Products/ProductDetail';
+import ComminSoon from '../components/commons/CommingSoon';
 
 const RouterComponent = () => (
-        <Router hideNavBar="true" sceneStyle={{ backgroundColor: '#F7F7F7' }} >
+    <Router hideNavBar="true" sceneStyle={{ backgroundColor: '#F7F7F7' }} >
 
-            <Scene key="drawer" component={requireAuth(NavigationDrawer)} open={false} >
+        <Scene key="drawer" component={requireAuth(NavigationDrawer)} open={false} >
 
-                <Scene
-                    key="main"
-                    animation='fade'
-                >
-                    <Scene key="categoryList" component={Categories} title="Nhóm sản phẩm" />
-                    <Scene key="categoryEdit" component={CategoryEdit} title="Sửa nhóm sản phẩm" />
-                    <Scene key="categoryView" component={CategoryView} title="Xem sản phẩm" />
-                    <Scene key="categoryNew" component={CategoryNew} title="Thêm sản phẩm" />
+            <Scene
+                key="main"
+                animation='fade'
+            >
+                <Scene key="Home" component={Home} title="Home" />
+                <Scene key="categoryNew" component={CategoryNew} title="Thêm sản phẩm" />
+                <Scene key="categorySearch" component={CategorySearch} title="Xem sản phẩm" />
+                <Scene key="categoryList" component={Categories} title="Nhóm sản phẩm" />
+                <Scene key="categoryEdit" component={CategoryEdit} title="Sửa nhóm sản phẩm" />
+                <Scene key="cargoNew" component={ComminSoon} title="Thêm loại hàng hóa" />
+                <Scene key="cargoList" component={ComminSoon} title="..." />
+                <Scene key="reportInventory" component={ComminSoon} title="..." />
+                <Scene key="adviceProductMustImport" component={ComminSoon} title="..." />
+                <Scene key="reportSaleByProduct" component={ComminSoon} title="..." />
+                <Scene key="adviceProductMustProcedure" component={ComminSoon} title="..." />
 
-                     <Scene key="Products" component={Products} title="Danh sách sản phẩm" />
-                     <Scene key="ProductNew" component={ProductNew} title="Thêm Sản Phẩm" />
-                     <Scene key="ProductDetail" component={ProductDetail} title="Thêm Sản Phẩm" />
+                <Scene key="ProductNew" component={ProductNew} title="Thêm Sản Phẩm" />
+                <Scene key="searchProduct" component={ComminSoon} title="tim sản phẩm" />
+                <Scene key="productList" component={ProductList} title="Danh sách sản phẩm" />
+                <Scene key="ProductDetail" component={ProductDetail} title="Thêm Sản Phẩm" />
 
-                    <Scene key="Main" component={requireAuth(Main)} title="Main" />
-                    <Scene key="Home" component={Home} title="Home" />
-                    <Scene key="ChangeInfor" component={ChangeInfor} title="ChangeInfor" />
-                    <Scene key="Authentication" component={Authentication} title="Authentication" />
-                    <Scene key="OrderHistory" component={OrderHistory} title="OrderHistory" />
-                </Scene>
+                <Scene key="newSaleOrder" component={ComminSoon} title="..." />
+                <Scene key="saleOrderReturnning" component={ComminSoon} title="..." />
+                <Scene key="searchSaleOrder" component={ComminSoon} title="..." />
+                <Scene key="newOrderType" component={ComminSoon} title="..." />
+
+                <Scene key="newCustomer" component={ComminSoon} title="..." />
+                <Scene key="customerList" component={ComminSoon} title="..." />
+                <Scene key="customerDebt" component={ComminSoon} title="..." />
+                <Scene key="reportSaleByCustomer" component={ComminSoon} title="..." />
+
+                <Scene key="newReceipt" component={ComminSoon} title="..." />
+                <Scene key="newSalaryReceipt" component={ComminSoon} title="..." />
+                <Scene key="newRentalWarehouseReceipt" component={ComminSoon} title="..." />
+                <Scene key="newInterestingReceipt" component={ComminSoon} title="..." />
+                <Scene key="newOtherReceipt" component={ComminSoon} title="..." />
+
+                <Scene key="newSupplierOrder" component={ComminSoon} title="..." />
+                <Scene key="newSupplierOrderReturnning" component={ComminSoon} title="..." />
+                <Scene key="searchSupplierOrder" component={ComminSoon} title="..." />
+                <Scene key="reportSupplierOrder" component={ComminSoon} title="..." />
+
+                <Scene key="searchSupplier" component={ComminSoon} title="..." />
+                <Scene key="newSupplier" component={ComminSoon} title="..." />
+                <Scene key="supplierDept" component={ComminSoon} title="..." />
+                <Scene key="reportSaleBySupplier" component={ComminSoon} title="..." />
+
+                <Scene key="newResearch" component={ComminSoon} title="..." />
+                <Scene key="reportCostTemp" component={ComminSoon} title="..." />
+                <Scene key="searchResearch" component={ComminSoon} title="..." />
+                <Scene key="transferResearch" component={ComminSoon} title="..." />
+                <Scene key="reportResearch" component={ComminSoon} title="..." />
+                <Scene key="generalReportResearch" component={ComminSoon} title="..." />
+
+                <Scene key="newCommandProduction" component={ComminSoon} title="..." />
+                <Scene key="searchCommandProduction" component={ComminSoon} title="..." />
+                <Scene key="newRecycleCommand" component={ComminSoon} title="..." />
+                <Scene key="generalReportProduction" component={ComminSoon} title="..." />
+
+                <Scene key="newDepartment" component={ComminSoon} title="..." />
+                <Scene key="searchDepartment" component={ComminSoon} title="..." />
+                <Scene key="newuser" component={ComminSoon} title="..." />
+                <Scene key="searchUser" component={ComminSoon} title="..." />
+                <Scene key="jobTransfer" component={ComminSoon} title="..." />
+                <Scene key="permittion" component={ComminSoon} title="..." />
+
+                <Scene key="reportSaleOrder" component={ComminSoon} title="..." />
+                <Scene key="reportTempIncome" component={ComminSoon} title="..." />
+                <Scene key="reportNetIncome" component={ComminSoon} title="..." />
+                <Scene key="reportCost" component={ComminSoon} title="..." />
+                <Scene key="reportProducttionCost" component={ComminSoon} title="..." />
+
+                <Scene key="changeCompanyInfor" component={ComminSoon} title="..." />
+                <Scene key="changeMenuPermition" component={ComminSoon} title="..." />
+                
+
+
+
+                <Scene key="Main" component={requireAuth(Main)} title="Main" />
+                <Scene key="ChangeInfor" component={ChangeInfor} title="ChangeInfor" />
+                <Scene key="Authentication" component={Authentication} title="Authentication" />
+                <Scene key="OrderHistory" component={OrderHistory} title="OrderHistory" />
             </Scene>
+        </Scene>
 
-            <Scene key="splash" component={Splash} />
-            <Scene key="auth">
-                <Scene key="login" component={LoginForm} title="Please login" initial />
-            </Scene>
+        <Scene key="splash" component={Splash} />
+        <Scene key="auth">
+            <Scene key="login" component={LoginForm} title="Please login" initial />
+        </Scene>
 
-        </Router>
-    );
+    </Router>
+);
 
 export default RouterComponent
-;
+    ;

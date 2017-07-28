@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import stylesCommon from '../../../styles';
 import { Ionicons } from '@expo/vector-icons';
 
-class Products extends React.Component {
+class ProductList extends React.Component {
     state = {
         searchText: '',
         error: null
@@ -212,4 +212,4 @@ const styles = {
 // const mapStateToProps(state, ownProps)=> {
 //     return state
 // }
-export default connect()(Products);
+export default connect()(ProductList);

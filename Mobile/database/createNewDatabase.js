@@ -32,6 +32,8 @@ export const resetDatabase = async () => {
 
 export const createDatabaseSqlite = async () => {
   // resetDatabase();
+  // SqlService.query(
+  //   'drop table if exists dataVersions;');
 
   SqlService.query(
     `create table if not exists
@@ -150,6 +152,7 @@ export const updateOrInsertDataVersion = async (data) => {
         data.customersVersion, data.customersVersion
       ], `id = ${data.id}`);
   }
+  console.log("data.userMenus = ", data.userMenus);
 
   data.userMenus.forEach(async (item) => {
     const avaiabledData = await SqlService.select('userMenus', '*', `userId = ${item.userId} AND menuId = ${item.menuId}`);
@@ -287,9 +290,9 @@ export const checkDataVersion = async (userId) => {
         //   newData =>
         //     console.log("dataversion after updateOrInsert =", newData)
         // );
-        // SqlService.select('userMenus', '*').then(
-        //   result => console.log("userMenus = ", result)
-        // );
+        SqlService.select('userMenus', '*').then(
+          result => console.log("userMenus = ", result)
+        );
         // SqlService.select('units', '*').then(
         //   result => console.log("units = ", result)
         // );
