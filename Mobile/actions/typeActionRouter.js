@@ -77,6 +77,10 @@ export const SYSTEM_ACT = 64;
 export const COMPANY_INFOR_ACT = 65;
 export const MENU_ACT = 66;
 
+export const NEW_PRODUCT_ACT = 66;
+export const SESRCH_PRODUCT_ACT = 67;
+export const PRODUCT_LIST_ACT = 68;
+
 export const getActionForMenus = (menu) => {
     switch (menu) {
         case HOME_ACT:

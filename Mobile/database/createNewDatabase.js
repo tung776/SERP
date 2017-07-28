@@ -143,14 +143,14 @@ export const updateOrInsertDataVersion = async (data) => {
     // console.log('go update');
     // console.log(JSON.stringify(avaiabledDataVersion));
 
-    SqlService.update('dataVersions', [
-      'menus', 'userMenus', 'categories', 'roles', 'units', 'warehouses',
-      'products', 'customerGroups', 'customers'
-    ], [
-        data.menusVersion, data.userMenusVersion, data.categoriesVersion,
-        data.rolesVersion, data.unitsVersion, data.warehousesVersion, data.productsVersion,
-        data.customersVersion, data.customersVersion
-      ], `id = ${data.id}`);
+    // SqlService.update('dataVersions', [
+    //   'menus', 'userMenus', 'categories', 'roles', 'units', 'warehouses',
+    //   'products', 'customerGroups', 'customers'
+    // ], [
+    //     data.menusVersion, data.userMenusVersion, data.categoriesVersion,
+    //     data.rolesVersion, data.unitsVersion, data.warehousesVersion, data.productsVersion,
+    //     data.customersVersion, data.customersVersion
+    //   ], `id = ${data.id}`);
   }
   console.log("data.userMenus = ", data.userMenus);
 
@@ -162,18 +162,18 @@ export const updateOrInsertDataVersion = async (data) => {
       SqlService.insert('userMenus', ['userId', 'menuId', 'name', 'parentId'], [item.userId, item.menuId, item.name, item.parentId]);
     } else {
       // console.log('go update userMenus');
-      SqlService.update('userMenus', ['userId', 'menuId', 'name', 'parentId'], [item.userId, item.menuId, item.name, item.parentId], `userId = ${item.userId} AND menuId = ${item.menuId}`);
+      // SqlService.update('userMenus', ['name', 'parentId'], [item.name, item.parentId], `userId = ${item.userId} AND menuId = ${item.menuId}`);
     }
   }, this);
 
   data.categories.forEach(async (item) => {
     const avaiabledData = await SqlService.select('categories', '*', `id = ${item.id}`);
-    if (avaiabledData.length == 1) {
+    if (avaiabledData.length == 0) {
       SqlService.insert('categories', ['id', 'name', 'description'],
         [item.id, item.name, item.description]);
     } else {
-      SqlService.update('categories', ['name', 'description'],
-        [item.name, item.description], `id = ${item.id}`);
+      // SqlService.update('categories', ['name', 'description'],
+      //   [item.name, item.description], `id = ${item.id}`);
     }
   }, this);
 
@@ -186,8 +186,8 @@ export const updateOrInsertDataVersion = async (data) => {
         [item.id, item.name, item.rate]);
     } else {
       // console.log("go update units");
-      SqlService.update('units', ['name', 'rate'],
-        [item.name, item.rate], `id = ${item.id}`);
+      // SqlService.update('units', ['name', 'rate'],
+      //   [item.name, item.rate], `id = ${item.id}`);
     }
   }, this);
   data.roles.forEach(async (item) => {
@@ -199,19 +199,19 @@ export const updateOrInsertDataVersion = async (data) => {
         [item.id, item.name]);
     } else {
       // console.log("go update roles");
-      SqlService.update('roles', ['name'],
-        [item.name], `id = ${item.id}`);
+      // SqlService.update('roles', ['name'],
+      //   [item.name], `id = ${item.id}`);
     }
   }, this);
 
   data.warehouses.forEach(async (item) => {
     const avaiabledData = await SqlService.select('warehouses', '*', `id = ${item.id}`);
-    if (avaiabledData.length == 1) {
+    if (avaiabledData.length == 0) {
       SqlService.insert('warehouses', ['id', 'name', 'description', 'address'],
         [item.id, item.name, item.description, item.address]);
     } else {
-      SqlService.update('warehouses', ['name', 'description', 'address'],
-        [item.name, item.description, item.address], `id = ${item.id}`);
+      // SqlService.update('warehouses', ['name', 'description', 'address'],
+      //   [item.name, item.description, item.address], `id = ${item.id}`);
     }
   }, this);
 
@@ -227,14 +227,14 @@ export const updateOrInsertDataVersion = async (data) => {
           item.imageUrl, item.phone, item.email, item.overdue, item.excessDebt
         ]);
     } else {
-      SqlService.update('customers', [
-        'customerGroupId',
-        'name', 'bankId', 'companyId', 'address',
-        'imageUrl', 'phone', 'email', 'overdue', 'excessDebt'
-      ], [
-          item.customerGroupId, item.name, item.bankId, item.companyId, item.address,
-          item.imageUrl, item.phone, item.email, item.overdue, item.excessDebt
-        ], `id = ${item.id}`);
+      // SqlService.update('customers', [
+      //   'customerGroupId',
+      //   'name', 'bankId', 'companyId', 'address',
+      //   'imageUrl', 'phone', 'email', 'overdue', 'excessDebt'
+      // ], [
+      //     item.customerGroupId, item.name, item.bankId, item.companyId, item.address,
+      //     item.imageUrl, item.phone, item.email, item.overdue, item.excessDebt
+      //   ], `id = ${item.id}`);
     }
   }, this);
 
@@ -249,13 +249,13 @@ export const updateOrInsertDataVersion = async (data) => {
           item.imageUrl, item.imageUrl, item.isPublic, item.purchasePrice, item.salePrice, item.minQuantity, item.isAvaiable
         ]);
     } else {
-      SqlService.update('products', [
-        'categoryId', 'unitId', 'typeCargoId', 'name', 'description',
-        'imageUrl', 'isPublic', 'purchasePrice', 'salePrice', 'minQuantity', 'isAvaiable'
-      ], [
-          item.categoryId, item.unitId, item.typeCargoId, item.name, item.description,
-          item.imageUrl, item.imageUrl, item.isPublic, item.purchasePrice, item.salePrice, item.minQuantity, item.isAvaiable
-        ], `id = ${item.id}`);
+      // SqlService.update('products', [
+      //   'categoryId', 'unitId', 'typeCargoId', 'name', 'description',
+      //   'imageUrl', 'isPublic', 'purchasePrice', 'salePrice', 'minQuantity', 'isAvaiable'
+      // ], [
+      //     item.categoryId, item.unitId, item.typeCargoId, item.name, item.description,
+      //     item.imageUrl, item.imageUrl, item.isPublic, item.purchasePrice, item.salePrice, item.minQuantity, item.isAvaiable
+      //   ], `id = ${item.id}`);
     }
   }, this);
 };

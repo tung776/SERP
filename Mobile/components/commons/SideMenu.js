@@ -11,15 +11,7 @@ import { getActionForMenus, HOME_ACT, CATEGORY_LIST_ACT, AUTH_ACT } from '../../
 
 class SideMenu extends React.Component {
     state = {
-        showOrderMenu: false,
-        showPhieuChiMenu: false,
-        showProductMenu: false,
-        showCustomerMenu: false,
-        showSupplierMenu: false,
-        showIncomeOrder: false,
-        showSaleReport: false,
-        showSaleReportMenu: false,
-        collaped: null,
+        collaped: [],
     }
     constructor(props) {
         super(props);
@@ -30,18 +22,17 @@ class SideMenu extends React.Component {
             this.props.loadMenusData();
         }
     }
-    resetMenu() {
-        this.setState({
-            showOrderMenu: false,
-            showPhieuChiMenu: false,
-            showProductMenu: false,
-            showCustomerMenu: false,
-            showSupplierMenu: false,
-            showIncomeOrder: false,
-            showSaleReport: false,
-            showSaleReportMenu: false,
-        });
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.menuItems && nextProps.menuItems.length > 0) {
+            nextProps.menuItems.forEach((menu) => {
+                if (menu.parentId == 'null') {
+                    this.state.collaped[menu.menuId] = false;
+                    this.setState({ collaped: this.state.collaped });
+                }
+            });
+        }
     }
+    
     logout(e) {
         e.preventDefault();
         this.props.logout(() => {
@@ -55,60 +46,56 @@ class SideMenu extends React.Component {
             if (item.parentId == parentId) {
                 return (
                     <Button
-                        onPress={() => { getActionForMenus(item.id); }}
+                        key={item.menuId}
+                        onPress={() => { 
+                            console.log(`menu ${item.name} clicked id = ${item.menuId}`);
+                            getActionForMenus(item.menuId); 
+                        }}
                         title={item.name}
-                        color="#d35400"
+                        color="#34495e"
                     />
                 );
             }
         });
-        debugger;
         return child;
     }
     renderMenuItems() {
-        // console.log("go renderMenuItems");
         const menuItems = this.props.menuItems;
         const parentMenu = menuItems.filter((item) => {
-            console.log("item.parentId", item.parentId);
-            if (item.parentId == "null") {
+            if (item.parentId == 'null') {
                 return item;
             }
         });
-        
-        console.log("parentMenu = ", parentMenu)
-        const renderedMenus =  parentMenu.map((parent) => {
-            console.log('go to map parent menu');
-            debugger;
-            this.setState({ ...collaped, [parent.id]: false });
-            console.log("this.state/collaped = ", this.state.collaped);
-            
+
+        const renderedMenus = parentMenu.map((parent) => {
+
             return (
-                <View>
+                <View key={parent.menuId} style={styles.commonButton}>
                     <Button
                         onPress={() => {
-                            this.setState({ ...collaped, [parent.id]: ![parent.id] })
+                            this.state.collaped[parent.menuId] = !this.state.collaped[parent.menuId];
+                            this.setState({ collaped: this.state.collaped });
+                            console.log(`${parent.name} pressed, this.state.collaped = `, this.state.collaped[parent.menuId]);
                         }}
-                        title= { parent.name }
-                        color="#841584"
+                        title={parent.name}
                     />
-                    {()=>{
-                        if(this.state.collaped[parent.id]) return this.getChildItems(parent.menuId, menuItems);
-                    }}
+                    {
+                        this.state.collaped[parent.menuId] && this.getChildItems(parent.menuId, this.props.menuItems)
+                    }
                 </View>
             );
         }, this);
-        console.log("renderedMenus = ",renderedMenus);
         return (
             <View>
                 <Text>here</Text>
                 {renderedMenus}
             </View>
-        )
+        );
     }
     render() {
         const { containerStyle } = styles;
         goHomePage = () => {
-            console.log("begin to get actions for menus");
+            console.log('begin to get actions for menus');
             getActionForMenus(HOME_ACT);
         };
         goSignin = () => {
@@ -116,7 +103,6 @@ class SideMenu extends React.Component {
         };
 
         if (this.props.loaded) {
-            
             // this.renderMenuItems(this.props.menuItems);
             return (
                 <View style={containerStyle}>
@@ -125,7 +111,7 @@ class SideMenu extends React.Component {
                         {this.props.user && <Text style={styles.usernameStyle}>{this.props.user.username}</Text>}
                     </View>
                     <ScrollView>
-                        { this.renderMenuItems() }                        
+                        {this.renderMenuItems()}
 
                         {this.renderAuthMenu()}
                     </ScrollView>
@@ -161,223 +147,7 @@ class SideMenu extends React.Component {
             );
         }
     }
-    renderCategoryMenu() {
-        if (this.state.showProductMenu) {
-            return (
-                <View>
-                    <View style={styles.buttonMenuContainer}>
-                        <Button
-                            onPress={() => { Actions.categoryList(); this.resetMenu(); }}
-                            title="Nhóm Sản Phẩm"
-                            color="#d35400"
-                        />
-                    </View>
-                    <View style={styles.buttonMenuContainer}>
-                        <Button
-                            onPress={() => { Actions.categoryNew(); this.resetMenu(); }}
-                            title="Thêm Nhóm Sản Phẩm"
-                            color="#d35400"
-                        />
-                    </View>
-                    <View style={styles.buttonMenuContainer}>
-                        <Button
-                            onPress={() => { Actions.ProductNew(); this.resetMenu(); }}
-                            title="Thêm Sản Phẩm"
-                            color="#d35400"
-                        />
-                    </View>
-                    <View style={styles.buttonMenuContainer}>
-                        <Button
-                            onPress={() => Actions.Products()}
-                            title="Danh Sách Sản Phẩm"
-                            color="#d35400"
-                        />
-                    </View>
-                </View>
-            );
-        }
-    }
-    renderOdersMenu() {
-        if (this.state.showOrderMenu) {
-            return (
-                <View>
-                    <View style={styles.buttonMenuContainer}>
-                        <Button
-                            onPress={() => Actions.categoryList()}
-                            title="Lập Hóa Đơn"
-                            color="#d35400"
-                        />
-                    </View>
-                    <View style={styles.buttonMenuContainer}>
-                        <Button
-                            onPress={() => Actions.categoryList()}
-                            title="Khách Hàng Trả Lại"
-                            color="#d35400"
-                        />
-                    </View>
-                    <View style={styles.buttonMenuContainer}>
-                        <Button
-                            onPress={() => Actions.categoryNew()}
-                            title="Tìm Hóa Đơn"
-                            color="#d35400"
-                        />
-                    </View>
-                </View>
-            );
-        }
-    }
-    renderPhieuChiMenu() {
-        if (this.state.showPhieuChiMenu) {
-            return (
-                <View>
-                    <View style={styles.buttonMenuContainer}>
-                        <Button
-                            onPress={() => Actions.categoryList()}
-                            title="Chi Lương"
-                            color="#d35400"
-                        />
-                    </View>
-                    <View style={styles.buttonMenuContainer}>
-                        <Button
-                            onPress={() => Actions.categoryList()}
-                            title="Chi Thuê Mặt Bằng"
-                            color="#d35400"
-                        />
-                    </View>
-                    <View style={styles.buttonMenuContainer}>
-                        <Button
-                            onPress={() => Actions.categoryNew()}
-                            title="Chi Lãi Vay"
-                            color="#d35400"
-                        />
-                    </View>
-                    <View style={styles.buttonMenuContainer}>
-                        <Button
-                            onPress={() => Actions.categoryNew()}
-                            title="Chi Khác"
-                            color="#d35400"
-                        />
-                    </View>
-                </View>
-            );
-        }
-    }
-    renderCustomerMenu() {
-        if (this.state.showCustomerMenu) {
-            return (
-                <View>
-                    <View style={styles.buttonMenuContainer}>
-                        <Button
-                            onPress={() => Actions.CustomerNew()}
-                            title="Thêm Khách Hàng"
-                            color="#d35400"
-                        />
-                    </View>
-                    <View style={styles.buttonMenuContainer}>
-                        <Button
-                            onPress={() => Actions.CustomerNew()}
-                            title="Công Nợ Khách Hàng"
-                            color="#d35400"
-                        />
-                    </View>
-                    <View style={styles.buttonMenuContainer}>
-                        <Button
-                            onPress={() => Actions.CustomerList()}
-                            title="Danh Sách Khách Hàng"
-                            color="#d35400"
-                        />
-                    </View>
-                </View>
-            );
-        }
-    }
-    renderIncomeMenu() {
-        if (this.state.showIncomeOrder) {
-            return (
-                <View>
-                    <View style={styles.buttonMenuContainer}>
-                        <Button
-                            onPress={() => Actions.ImcomeOrderNew()}
-                            title="Thêm Hóa Đơn Nhập"
-                            color="#d35400"
-                        />
-                    </View>
-                    <View style={styles.buttonMenuContainer}>
-                        <Button
-                            onPress={() => Actions.ImcomeOrderNew()}
-                            title="Trả Lại Nhà Cung Cấp"
-                            color="#d35400"
-                        />
-                    </View>
-                    <View style={styles.buttonMenuContainer}>
-                        <Button
-                            onPress={() => Actions.IncomeOrders()}
-                            title="Tìm Hóa Đơn Nhập"
-                            color="#d35400"
-                        />
-                    </View>
-                </View>
-            );
-        }
-    }
-    renderSupplierMenu() {
-        if (this.state.showSupplierMenu) {
-            return (
-                <View>
-                    <View style={styles.buttonMenuContainer}>
-                        <Button
-                            onPress={() => Actions.SupplierList()}
-                            title="Tìm Nhà Cung Cấp"
-                            color="#d35400"
-                        />
-                    </View>
-                    <View style={styles.buttonMenuContainer}>
-                        <Button
-                            onPress={() => Actions.SupplierNew()}
-                            title="Thêm Nhà Cung Cấp"
-                            color="#d35400"
-                        />
-                    </View>
-                    <View style={styles.buttonMenuContainer}>
-                        <Button
-                            onPress={() => Actions.SupplierNew()}
-                            title="Công Nợ Nhà Cung Cấp"
-                            color="#d35400"
-                        />
-                    </View>
-                </View>
-            );
-        }
-    }
-    renderSaleReportMenu() {
-        if (this.state.showSaleReportMenu) {
-            return (
-                <View>
-                    <View style={styles.buttonMenuContainer}>
-                        <Button
-                            onPress={() => Actions.SupplierList()}
-                            title="Báo Cáo Doanh Số"
-                            color="#d35400"
-                        />
-                    </View>
-                    <View style={styles.buttonMenuContainer}>
-                        <Button
-                            onPress={() => Actions.SupplierNew()}
-                            title="Báo Cáo Lợi Nhuận Tạm Tính"
-                            color="#d35400"
-                        />
-                    </View>
-                    <View style={styles.buttonMenuContainer}>
-                        <Button
-                            onPress={() => Actions.SupplierNew()}
-                            title="Báo Cáo Lợi Nhuận Thuần"
-                            color="#d35400"
-                        />
-                    </View>
-                </View>
-            );
-        }
-    }
+    
 }
 
 const styles = {
@@ -414,6 +184,7 @@ const styles = {
         borderColor: '#bdc3c7'
     }
 };
+
 const mapStateToProps = (state) => {
     const { isAuthenticated, user } = state.auth;
     const { menuItems, loaded, loading } = state.userMenus;

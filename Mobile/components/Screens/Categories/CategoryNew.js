@@ -66,7 +66,7 @@ class CategoryNew extends React.Component {
                 </TouchableOpacity>
                 <TouchableOpacity
                     disabled={this.props.loading}
-                    style={[styles.Btn, styles.footerBtn]} onPress={() => Actions.Products()}>
+                    style={[styles.Btn, styles.footerBtn]} onPress={() => Actions.productList()}>
                     <Ionicons name="ios-folder-open-outline" size={25} color="#FFFFFF" />
                     <Text style={styles.titleButton}>DS Sản Phẩm</Text>
                 </TouchableOpacity>
