@@ -134,62 +134,77 @@ export const updateOrInsertDataVersion = async (data) => {
     data.customerGroupsVersion, data.customersVersion
   ];
   if (avaiabledDataVersion.length == 0) {
-    // console.log("go insert");
     SqlService.insert('dataVersions', [
       'id', 'menus', 'userMenus', 'categories', 'roles', 'units', 'warehouses',
       'products', 'customerGroups', 'customers'
     ], newDataVersion);
   } else {
-    // console.log('go update');
-    // console.log(JSON.stringify(avaiabledDataVersion));
-
-    // SqlService.update('dataVersions', [
-    //   'menus', 'userMenus', 'categories', 'roles', 'units', 'warehouses',
-    //   'products', 'customerGroups', 'customers'
-    // ], [
-    //     data.menusVersion, data.userMenusVersion, data.categoriesVersion,
-    //     data.rolesVersion, data.unitsVersion, data.warehousesVersion, data.productsVersion,
-    //     data.customersVersion, data.customersVersion
-    //   ], `id = ${data.id}`);
+    SqlService.query(
+      `UPDATE dataVersions 
+        SET menus = '${data.menusVersion}',
+         userMenus = '${data.userMenusVersion}',
+         categories = '${data.categoriesVersion}',
+         roles = '${data.rolesVersion}',
+         units = '${data.unitsVersion}',
+         warehouses = '${data.warehousesVersion}',
+         products = '${data.productsVersion}',
+         customerGroups = '${data.customerGroupsVersion}',
+         customers = '${data.customersVersion}'
+         WHERE id = ${data.id};`
+    );
   }
-  // console.log("data.userMenus = ", data.userMenus);
 
-  data.userMenus.forEach(async (item) => {
-    const avaiabledData = await SqlService.select('userMenus', '*', `userId = ${item.userId} AND menuId = ${item.menuId}`);
-    // console.log("avaiableUserMenus",JSON.stringify(avaiabledData));
-    if (avaiabledData.length == 0) {
-      // console.log('go insert userMenus');
-      SqlService.insert('userMenus', ['userId', 'menuId', 'name', 'parentId'], [item.userId, item.menuId, item.name, item.parentId]);
-    } else {
-      // console.log('go update userMenus');
-      // SqlService.update('userMenus', ['name', 'parentId'], [item.name, item.parentId], `userId = ${item.userId} AND menuId = ${item.menuId}`);
-    }
-  }, this);
-  console.log("categories from server= ", data.categories);
+    data.userMenus.forEach(async (item) => {
+      const avaiabledData = await SqlService.select('userMenus', '*', `userId = ${item.userId} AND menuId = ${item.menuId}`);
+      // console.log("avaiableUserMenus",JSON.stringify(avaiabledData));
+      if (avaiabledData.length == 0) {
+        // console.log('go insert userMenus');
+        SqlService.insert('userMenus', ['userId', 'menuId', 'name', 'parentId'], [item.userId, item.menuId, item.name, item.parentId]);
+      } else {
+        SqlService.query(
+          'drop table if exists userMenus;');
+        SqlService.query(`create table if not exists
+         userMenus (
+           menuId integer,
+           userId integer,
+           parentId,
+           name text
+          );`);
+        SqlService.insert('userMenus', ['userId', 'menuId', 'name', 'parentId'], [item.userId, item.menuId, item.name, item.parentId]);
+      }
+    }, this);
+  
+
   data.categories.forEach(async (item) => {
     const avaiabledData = await SqlService.select('categories', '*', `id = ${item.id}`);
     if (avaiabledData.length == 0) {
       SqlService.insert('categories', ['id', 'name', 'description'],
         [item.id, item.name, item.description]);
     } else {
-      SqlService.query(`UPDATE categories SET name = '${item.name}', description = '${item.description}' WHERE id = ${item.id};`);
-
+      SqlService.query(
+        `UPDATE categories 
+        SET name = '${item.name}',
+        description = '${item.description}' 
+        WHERE id = ${item.id};`
+      );
     }
   }, this);
 
   data.units.forEach(async (item) => {
     const avaiabledData = await SqlService.select('units', '*', `id = ${item.id}`);
-    // console.log('avaiabledData in units', avaiabledData)
     if (avaiabledData.length == 0) {
-      // console.log("go insert units");
       SqlService.insert('units', ['id', 'name', 'rate'],
         [item.id, item.name, item.rate]);
     } else {
-      // console.log("go update units");
-      // SqlService.update('units', ['name', 'rate'],
-      //   [item.name, item.rate], `id = ${item.id}`);
+      SqlService.query(
+        `UPDATE units 
+        SET name = '${item.name}',
+         rate = '${item.rate}'
+         WHERE id = ${item.id};`
+      );
     }
   }, this);
+
   data.roles.forEach(async (item) => {
     const avaiabledData = await SqlService.select('roles', '*', `id = ${item.id}`);
     // console.log('avaiabledData in units', avaiabledData)
@@ -246,7 +261,7 @@ export const updateOrInsertDataVersion = async (data) => {
         'imageUrl', 'isPublic', 'purchasePrice', 'salePrice', 'minQuantity', 'isAvaiable'
       ], [
           item.id, item.categoryId, item.unitId, item.typeCargoId, item.name, item.description,
-          item.imageUrl,  item.isPublic, item.purchasePrice, item.salePrice, item.minQuantity, item.isAvaiable
+          item.imageUrl, item.isPublic, item.purchasePrice, item.salePrice, item.minQuantity, item.isAvaiable
         ]);
     } else {
       SqlService.query(
@@ -263,15 +278,7 @@ export const updateOrInsertDataVersion = async (data) => {
          minQuantity = '${item.minQuantity}',
          isAvaiable = '${item.isAvaiable}'
          WHERE id = ${item.id};`
-        );
-
-      // SqlService.update('products', [
-      //   'categoryId', 'unitId', 'typeCargoId', 'name', 'description',
-      //   'imageUrl', 'isPublic', 'purchasePrice', 'salePrice', 'minQuantity', 'isAvaiable'
-      // ], [
-      //     item.categoryId, item.unitId, item.typeCargoId, item.name, item.description,
-      //     item.imageUrl, item.imageUrl, item.isPublic, item.purchasePrice, item.salePrice, item.minQuantity, item.isAvaiable
-      //   ], `id = ${item.id}`);
+      );
     }
   }, this);
 };
