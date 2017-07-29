@@ -1,8 +1,9 @@
-import express, { Router } from 'express';
+import { Router } from 'express';
 import { NewCategoryValidator } from '../../Shared/validators/index';
-import Validator from 'validator';
 import multer from 'multer';
 import CategoryModel from '../models/CategoryModel';
+import Knex from '../config/knex';
+import dataversionHelper from '../helpers/saveNewDataversion';
 
 const CategoryRouter = Router();
 
@@ -18,16 +19,21 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 CategoryRouter.post('/new', upload.single('categoryImage'), (req, res) => {
+  debugger;
   const ImageUrl = `/images/category/${req.file.filename}`;
   const { Name, Description } = JSON.parse(req.body.category);
   const { isValid, errors } = NewCategoryValidator(JSON.parse(req.body.category));
-  if(isValid) {
-    CategoryModel.forge({ Name, Description, ImageUrl}, {hasTimestamps: true})
-    .save()
+  if (isValid) {
+    Knex('categories').insert({ name: Name, description: Description, imageUrl: ImageUrl })    
     .then(
-      data => {
+      async (data) => {
         console.log('data', data);
-        res.json({success: true, category: data});
+        const newDataversion = await dataversionHelper();
+        res.json({
+          success: true, 
+          category: data, 
+          dataversion: newDataversion 
+        });
       }
     )
     .catch(

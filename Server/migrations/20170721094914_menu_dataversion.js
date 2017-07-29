@@ -68,6 +68,7 @@ exports.up = function (knex, Promise) {
             table.increments();
             table.string('name').notNullable().unique();
             table.text('description');
+            table.string('imageUrl').nullable();
             table.timestamps();
         })
         .createTableIfNotExists('users', (table) => {
