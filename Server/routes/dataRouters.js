@@ -37,7 +37,7 @@ dataRoutes.post('/checkDataVersion', async function (req, res) {
             shouldUpdate.rolesVersion = dataVersion[0].roles;
         }
         if(dataVersion[0].categories !== categories) {
-            shouldUpdate.categories = await Knex.select().from('warehouses');
+            shouldUpdate.categories = await Knex.select().from('categories');
             shouldUpdate.categoriesVersion = dataVersion[0].categories;
         }
         if(dataVersion[0].units !== units) {
@@ -45,7 +45,7 @@ dataRoutes.post('/checkDataVersion', async function (req, res) {
             shouldUpdate.unitsVersion = dataVersion[0].units;
         }
         if(dataVersion[0].warehouses !== warehouses) {
-            shouldUpdate.warehouses = await Knex.select().from('categories');
+            shouldUpdate.warehouses = await Knex.select().from('warehouses');
             shouldUpdate.warehousesVersion = dataVersion[0].warehouses;
         }
         if(dataVersion[0].products !== products) {

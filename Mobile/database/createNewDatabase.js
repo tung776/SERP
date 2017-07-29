@@ -2,7 +2,7 @@ import { SQLite } from 'expo';
 import axios from 'axios';
 import { URL } from '../../env';
 import SqlService from './sqliteService';
-
+import { loadMenusData } from '../actions/menuAction';
 
 /*
  Hệ thống sẽ tạo ra các bảng sqlite chứa các dữ liệu thường xuyên sử dụng nhất nhằm tăng
@@ -152,7 +152,7 @@ export const updateOrInsertDataVersion = async (data) => {
     //     data.customersVersion, data.customersVersion
     //   ], `id = ${data.id}`);
   }
-  console.log("data.userMenus = ", data.userMenus);
+  // console.log("data.userMenus = ", data.userMenus);
 
   data.userMenus.forEach(async (item) => {
     const avaiabledData = await SqlService.select('userMenus', '*', `userId = ${item.userId} AND menuId = ${item.menuId}`);
@@ -165,15 +165,15 @@ export const updateOrInsertDataVersion = async (data) => {
       // SqlService.update('userMenus', ['name', 'parentId'], [item.name, item.parentId], `userId = ${item.userId} AND menuId = ${item.menuId}`);
     }
   }, this);
-
+  console.log("categories from server= ", data.categories);
   data.categories.forEach(async (item) => {
     const avaiabledData = await SqlService.select('categories', '*', `id = ${item.id}`);
     if (avaiabledData.length == 0) {
       SqlService.insert('categories', ['id', 'name', 'description'],
         [item.id, item.name, item.description]);
     } else {
-      // SqlService.update('categories', ['name', 'description'],
-      //   [item.name, item.description], `id = ${item.id}`);
+      SqlService.query(`UPDATE categories SET name = '${item.name}', description = '${item.description}' WHERE id = ${item.id};`);
+
     }
   }, this);
 
@@ -246,9 +246,25 @@ export const updateOrInsertDataVersion = async (data) => {
         'imageUrl', 'isPublic', 'purchasePrice', 'salePrice', 'minQuantity', 'isAvaiable'
       ], [
           item.id, item.categoryId, item.unitId, item.typeCargoId, item.name, item.description,
-          item.imageUrl, item.imageUrl, item.isPublic, item.purchasePrice, item.salePrice, item.minQuantity, item.isAvaiable
+          item.imageUrl,  item.isPublic, item.purchasePrice, item.salePrice, item.minQuantity, item.isAvaiable
         ]);
     } else {
+      SqlService.query(
+        `UPDATE products 
+        SET categoryId = '${item.categoryId}',
+         unitId = '${item.unitId}',
+         typeCargoId = '${item.typeCargoId}',
+         name = '${item.name}',
+         description = '${item.description}',
+         isPublic = '${item.isPublic}',
+         imageUrl = '${item.imageUrl}',
+         purchasePrice = '${item.purchasePrice}',
+         salePrice = '${item.salePrice}',
+         minQuantity = '${item.minQuantity}',
+         isAvaiable = '${item.isAvaiable}'
+         WHERE id = ${item.id};`
+        );
+
       // SqlService.update('products', [
       //   'categoryId', 'unitId', 'typeCargoId', 'name', 'description',
       //   'imageUrl', 'isPublic', 'purchasePrice', 'salePrice', 'minQuantity', 'isAvaiable'
@@ -260,7 +276,7 @@ export const updateOrInsertDataVersion = async (data) => {
   }, this);
 };
 
-export const checkDataVersion = async (userId) => {
+export const checkDataVersion = async (userId, store) => {
   // console.log("go checkDataVersion");
 
   try {
@@ -286,13 +302,16 @@ export const checkDataVersion = async (userId) => {
         // console.log('data = ', data);
 
         await updateOrInsertDataVersion(data.data);
+        console.log('begin dispatch menuActions');
+        store.dispatch(loadMenusData());
+
         // await getCurrentDataVersion().then(
         //   newData =>
         //     console.log("dataversion after updateOrInsert =", newData)
         // );
-        SqlService.select('userMenus', '*').then(
-          result => console.log("userMenus = ", result)
-        );
+        // SqlService.select('userMenus', '*').then(
+        //   result => console.log("userMenus = ", result)
+        // );
         // SqlService.select('units', '*').then(
         //   result => console.log("units = ", result)
         // );
@@ -304,7 +323,6 @@ export const checkDataVersion = async (userId) => {
         );
       }
     );
-    // console.log("currentVersion = ", currentVersion);
   } catch (err) {
     console.log(err);
   }

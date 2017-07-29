@@ -89,7 +89,9 @@ export default class serp extends React.Component {
       // console.log("sqlMaster = ", slqMaster);
       
       await createDatabaseSqlite();
-      await checkDataVersion(user.id);
+      await checkDataVersion(user.id, store);
+
+      
     }
 
     this.setState({ appIsReady: true });

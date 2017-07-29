@@ -1,6 +1,6 @@
 import {
-    ADD_CATEGORY, CATEGORY_PENDING, CATEGORY_CHANGE_FAIL,
-    CATEGORY_CHANGE_SUCCESS, CATEGORY_CHANGE, CATEGORY_LOADED_SQLITE
+    ADD_PRODUCT, PRODUCT_PENDING, PRODUCT_CHANGE_FAIL,
+    PRODUCT_CHANGE_SUCCESS, PRODUCT_CHANGE, PRODUCT_LOADED_SQLITE
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -10,21 +10,21 @@ const INITIAL_STATE = {
     loading: false,
     loaded: false,
     error: '',
-    categories:[]
+    products:[]
     // uploading: false
 };
 
 export default (state = INITIAL_STATE, action) => {
     switch (action.type) {
-        case CATEGORY_PENDING:
+        case PRODUCT_PENDING:
             return { ...state, loading: true, error: '' };
-        case CATEGORY_CHANGE:
+        case PRODUCT_CHANGE:
             // console.log(action.payload)
             return { ...state, [action.payload.prop]: action.payload.value };
-        case CATEGORY_LOADED_SQLITE:
+        case PRODUCT_LOADED_SQLITE:
             // console.log(action.payload)
-            return { ...state, categories: action.payload, loaded: true, loading: false };
-        case ADD_CATEGORY:
+            return { ...state, products: action.payload, loaded: true, loading: false };
+        case ADD_PRODUCT:
             return {
                 ...state,
                 Name: action.payload.Name,
@@ -33,9 +33,9 @@ export default (state = INITIAL_STATE, action) => {
                 error: '',
                 loading: false,
             };
-        case CATEGORY_CHANGE_FAIL:
+        case PRODUCT_CHANGE_FAIL:
             return { ...state, error: action.payload, loading: false };
-        case CATEGORY_CHANGE_SUCCESS:
+        case PRODUCT_CHANGE_SUCCESS:
             // console.log(action.payload);
             return {
                 ...state,

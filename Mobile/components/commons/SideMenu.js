@@ -16,11 +16,7 @@ class SideMenu extends React.Component {
         super(props);
         this.renderMenuItems = this.renderMenuItems.bind(this);
     }
-    componentWillMount() {
-        if (!this.props.loaded) {
-            this.props.loadMenusData();
-        }
-    }
+    
     componentWillReceiveProps(nextProps) {
         if (nextProps.menuItems && nextProps.menuItems.length > 0) {
             nextProps.menuItems.forEach((menu) => {

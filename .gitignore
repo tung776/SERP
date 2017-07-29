@@ -1,9 +1,10 @@
 /node_modules
 /Server/public/images/categories
 bundle.js
-env.js
 npm-debug.log
 .DS_Store
 # IntelliJ
 *.iml
 /.idea
+env.js
+.expo/packager-info.json

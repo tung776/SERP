@@ -17,6 +17,4 @@ export const loadMenusData = () => async (dispatch) => {
             });
         }
     );
-
-
 };

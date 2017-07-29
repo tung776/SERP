@@ -6,13 +6,45 @@ import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import stylesCommon from '../../../styles';
 import { Ionicons } from '@expo/vector-icons';
-
+import { loadProductsDataFromSqlite } from '../../../actions/productActions';
+import {Spinner} from '../../commons/Spinner';
 class ProductList extends React.Component {
     state = {
         searchText: '',
         error: null
     }
-
+    componentWillMount() {
+        if (!this.props.loaded) {
+            this.props.loadProductsDataFromSqlite();
+        }
+    }
+    renderProductsItem() {
+        if (this.props.loaded) {
+            const { products } = this.props;
+            const productsRedered = products.map((item) => {
+                return (
+                    <TouchableWithoutFeedback key={item.id} onPress={() => {
+                        console.log(`id = ${item.id} name = ${item.name} cliked`)
+                        Actions.ProductDetail({product: item})
+                    }} >
+                        <View style={styles.listItem}>
+                            <Text style={styles.itemTitle}>{item.name}</Text>
+                            <Ionicons name="ios-arrow-dropright" size={32} color="#16a085" />
+                        </View>
+                    </TouchableWithoutFeedback>
+                );
+            }, this);
+            return (
+                <View>
+                    {productsRedered}
+                </View>
+            );
+        } else {
+            return (
+                <Spinner />
+            )
+        }
+    }
     onSearchInputChange(text) {
         this.setState({ searchText: text });
     }
@@ -50,84 +82,7 @@ class ProductList extends React.Component {
                         <Text>
                             {this.state.error && <Text style={styles.errorStyle}>{this.state.error.identifier}</Text>}
                         </Text>
-                        <TouchableWithoutFeedback onPress={() => Actions.ProductDetail()} >
-                            <View style={styles.listItem}>
-                                <Text style={styles.itemTitle}>Mờ 01 - 50 %</Text>
-                                <Ionicons name="ios-arrow-dropright" size={32} color="#16a085" />
-                            </View>
-                        </TouchableWithoutFeedback>
-                        <TouchableWithoutFeedback>
-                            <View style={styles.listItem}>
-                                <Text style={styles.itemTitle}>Mờ 01 - 75 %</Text>
-                                <Ionicons name="ios-arrow-dropright" size={32} color="#16a085" />
-                            </View>
-                        </TouchableWithoutFeedback>
-                        <TouchableWithoutFeedback >
-                            <View style={styles.listItem}>
-                                <Text style={styles.itemTitle}>Mờ 01 - 100 %</Text>
-                                <Ionicons name="ios-arrow-dropright" size={32} color="#16a085" />
-                            </View>
-                        </TouchableWithoutFeedback>
-                        <TouchableWithoutFeedback >
-                            <View style={styles.listItem}>
-                                <Text style={styles.itemTitle}>Mờ 02 - 30 %</Text>
-                                <Ionicons name="ios-arrow-dropright" size={32} color="#16a085" />
-                            </View>
-                        </TouchableWithoutFeedback>
-                        <TouchableWithoutFeedback >
-                            <View style={styles.listItem}>
-                                <Text style={styles.itemTitle}>Lót PU - 02</Text>
-                                <Ionicons name="ios-arrow-dropright" size={32} color="#16a085" />
-                            </View>
-                        </TouchableWithoutFeedback>
-                        <TouchableWithoutFeedback >
-                            <View style={styles.listItem}>
-                                <Text style={styles.itemTitle}>Lót PU - 05</Text>
-                                <Ionicons name="ios-arrow-dropright" size={32} color="#16a085" />
-                            </View>
-                        </TouchableWithoutFeedback>
-                        <TouchableWithoutFeedback >
-                            <View style={styles.listItem}>
-                                <Text style={styles.itemTitle}>Lót PU - 08</Text>
-                                <Ionicons name="ios-arrow-dropright" size={32} color="#16a085" />
-                            </View>
-                        </TouchableWithoutFeedback>
-                        <TouchableWithoutFeedback >
-                            <View style={styles.listItem}>
-                                <Text style={styles.itemTitle}>Lót NC - 02</Text>
-                                <Ionicons name="ios-arrow-dropright" size={32} color="#16a085" />
-                            </View>
-                        </TouchableWithoutFeedback>
-                        <TouchableWithoutFeedback >
-                            <View style={styles.listItem}>
-                                <Text style={styles.itemTitle}>Lót NC - 05</Text>
-                                <Ionicons name="ios-arrow-dropright" size={32} color="#16a085" />
-                            </View>
-                        </TouchableWithoutFeedback>
-                        <TouchableWithoutFeedback >
-                            <View style={styles.listItem}>
-                                <Text style={styles.itemTitle}>Lót NC - 08</Text>
-                                <Ionicons name="ios-arrow-dropright" size={32} color="#16a085" />
-                            </View>
-                        </TouchableWithoutFeedback>
-                        <TouchableWithoutFeedback >
-                            <View style={styles.listItem}>
-                                <Text style={styles.itemTitle}>Cứng 75%</Text>
-                                <Ionicons name="ios-arrow-dropright" size={32} color="#16a085" />
-                            </View>
-                        </TouchableWithoutFeedback>
-                        <TouchableWithoutFeedback >
-                            <View style={styles.listItem}>
-                                <Text style={styles.itemTitle}>Cứng 65%</Text>
-                                <Ionicons name="ios-arrow-dropright" size={32} color="#16a085" />
-                            </View>
-                        </TouchableWithoutFeedback>
-                        <TouchableWithoutFeedback >
-                            <View style={styles.listItem}>
-                                <Text style={styles.itemTitle}>Cứng 404</Text>
-                                <Ionicons name="ios-arrow-dropright" size={32} color="#16a085" />
-                            </View>
-                        </TouchableWithoutFeedback>
+                        {this.renderProductsItem()}
                     </ScrollView>
                 </View>
                 <Footer>
@@ -209,7 +164,10 @@ const styles = {
         fontSize: 18
     },
 };
-// const mapStateToProps(state, ownProps)=> {
-//     return state
-// }
-export default connect()(ProductList);
+const mapStateToProps = (state, ownProps) => {
+    const { loading, loaded, products } = state.products;
+    return { loading, loaded, products }
+}
+export default connect(mapStateToProps, {
+    loadProductsDataFromSqlite
+})(ProductList);

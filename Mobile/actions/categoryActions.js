@@ -1,12 +1,28 @@
 import {
     ADD_CATEGORY, CATEGORY_PENDING, CATEGORY_CHANGE,
     CATEGORY_CHANGE_FAIL, CATEGORY_CHANGE_SUCCESS,
-    ADD_FLASH_MESSAGE, SUCCESS_MESSAGE, ERROR_MESSAGE
+    ADD_FLASH_MESSAGE, SUCCESS_MESSAGE, ERROR_MESSAGE, CATEGORY_LOADED_SQLITE
 } from './index';
 import { URL } from '../../env';
 import axios from 'axios';
 import { NewCategoryValidator } from '../validators';
 import { AsyncStorage } from 'react-native';
+
+import SqlService from '../database/sqliteService';
+
+export const loadCategoriesDataFromSqlite = () => async (dispatch) => {
+    dispatch({
+        type: CATEGORY_PENDING
+    });
+    SqlService.select('categories', '*').then(
+        result => {
+            dispatch({
+                type: CATEGORY_LOADED_SQLITE,
+                payload: result
+            });
+        }
+    );
+};
 
 export const CategoryChange = ({  prop, value })=> ({
     type: CATEGORY_CHANGE,

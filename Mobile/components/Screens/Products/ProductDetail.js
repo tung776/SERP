@@ -5,6 +5,7 @@ import Footer from '../../commons/Footer';
 import { connect } from 'react-redux';
 import stylesCommon from '../../../styles';
 import { Ionicons } from '@expo/vector-icons';
+import { Actions } from 'react-native-router-flux';
 
 class ProductNew extends React.Component {
     state = {
@@ -13,117 +14,54 @@ class ProductNew extends React.Component {
         Price: ''
     }
     render() {
+        console.log("this.props.product = ", this.props.product)
+        const {product} = this.props;
         return (
             <View style={styles.container}>
                 <Header>
-                    <Text style={styles.headTitle} >Thêm mới Sản Phẩm</Text>
+                    <Text style={styles.headTitle} >Chi Tiết Sản Phẩm</Text>
                 </Header>
                 <View style={styles.body}>
                     <ScrollView>
                         <View style={styles.controlContainer}>
                             <Text style={styles.label} >Tên Sản Phẩm</Text>
                             <View style={styles.groupControl}>
-                                <TextInput
-                                    disableFullscreenUI
-                                    underlineColorAndroid={'transparent'}
-                                    style={styles.textInput}
-                                    blurOnSubmit
-                                    value={this.state.ProductName}
-                                    onChangeText={text => this.setState({ ProductName: text })}
-                                    type="Text"
-                                    name="ProductName"
-                                    placeholder="Điền tên sản phẩm:"
-                                />
-                                <Text>
-                                    {this.error && <Text style={styles.errorStyle}>{this.error.ProductName}</Text>}
-                                </Text>
+                                <Text>{product.name}</Text>
                             </View>
                         </View>
                         <View style={styles.controlContainer}>
                             <Text style={styles.label} >Giá Bán</Text>
                             <View style={styles.groupControl}>
-                                <TextInput
-                                    disableFullscreenUI
-                                    underlineColorAndroid={'transparent'}
-                                    style={styles.textInput}
-                                    blurOnSubmit
-                                    value={this.state.Price}
-                                    onChangeText={text => this.setState({ Price: text })}
-                                    type="Text"
-                                    name="Price"
-                                    placeholder="Điền giá Bán"
-                                />
-                                <Text>
-                                    {this.error && <Text style={styles.errorStyle}>{this.error.Price}</Text>}
-                                </Text>
+                                <Text>{product.salePrice}</Text>
                             </View>
                         </View>
                         <View style={styles.controlContainer}>
                             <Text style={styles.label} >Tồn Tối Thiểu</Text>
                             <View style={styles.groupControl}>
-                                <TextInput
-                                    disableFullscreenUI
-                                    underlineColorAndroid={'transparent'}
-                                    style={styles.textInput}
-                                    blurOnSubmit
-                                    value={this.state.MinStock}
-                                    onChangeText={text => this.setState({ MinStock: text })}
-                                    type="Text"
-                                    name="MinStock"
-                                    placeholder="Tồn kho tối thiểu"
-                                />
-                                <Text>
-                                    {this.error && <Text style={styles.errorStyle}>{this.error.MinStock}</Text>}
-                                </Text>
+                                <Text>{product.minQuantity}</Text>
                             </View>
                         </View>
                         <View style={styles.controlContainer}>
                             <Text style={styles.label} >Nhóm Sản Phẩm</Text>
                             <View style={styles.groupControl}>
-                                <TextInput
-                                    disableFullscreenUI
-                                    underlineColorAndroid={'transparent'}
-                                    style={styles.textInput}
-                                    blurOnSubmit
-                                    value={this.state.CategoryName}
-                                    onChangeText={text => this.setState({ CategoryName: text })}
-                                    type="Text"
-                                    name="CategoryName"
-                                    placeholder="Nhóm Sản Phẩm"
-                                />
-                                <Text>
-                                    {this.error && <Text style={styles.errorStyle}>{this.error.CategoryName}</Text>}
-                                </Text>
+                                <Text>{product.categoryId}</Text>
                             </View>
                         </View>
                         <View style={styles.controlContainer}>
                             <Text style={styles.label} >Mô tả</Text>
                             <View style={styles.groupControl}>
-                                <TextInput
-                                    multiline={true}
-                                    numberOfLines={10}
-                                    disableFullscreenUI
-                                    underlineColorAndroid={'transparent'}
-                                    style={styles.textInput}
-                                    blurOnSubmit
-                                    value={this.state.Descrition}
-                                    onChangeText={text => this.setState({ Descrition: text })}
-                                    type="Text"
-                                    name="Descrition"
-                                    placeholder="Mô tả sản phẩm"
-                                />
-                                <Text>
-                                    {this.error && <Text style={styles.errorStyle}>{this.error.Descrition}</Text>}
-                                </Text>
+                                <Text>{product.description}</Text>
                             </View>
                         </View>
                     </ScrollView>
                 </View>
                 <Footer>
                     <View >
-                        <TouchableOpacity style={styles.Btn} >
+                        <TouchableOpacity
+                        onPress = { ()=> Actions.pop() }
+                         style={styles.Btn} >
                             <Ionicons name="ios-checkmark-circle" size={25} color="#FFFFFF" />
-                            <Text style={styles.titleButton}>Lưu</Text>
+                            <Text style={styles.titleButton}>Quay Lại</Text>
                         </TouchableOpacity>
                     </View>
                 </Footer>

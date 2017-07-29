@@ -1,19 +1,46 @@
 import React from 'react';
-import { View, Text, ScrollView, Image, Dimensions, 
-    TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
+import {
+    View, Text, ScrollView, Image, Dimensions,
+    TouchableOpacity, TouchableWithoutFeedback
+} from 'react-native';
 import Header from '../../commons/Header';
 import Footer from '../../commons/Footer';
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import stylesCommon from '../../../styles';
 import { Ionicons } from '@expo/vector-icons';
+import { loadCategoriesDataFromSqlite } from '../../../actions/categoryActions';
 
 class Categories extends React.Component {
     state = {}
     addNewGroupBtnPress() {
         Actions.main();
     }
-
+    componentWillMount() {
+        if (!this.props.loaded) {
+            this.props.loadCategoriesDataFromSqlite();
+        }
+    }
+    renderCategoriesItem() {
+        const { categories } = this.props;
+        const categoriesRendered = categories.map((item) => {
+            return (
+                <TouchableWithoutFeedback key={item.id} onPress={() =>{ 
+                    console.log(`id = ${item.id} name = ${item.name} cliked`)
+                    Actions.productList() 
+                }} >
+                    <View style={styles.listItem}>
+                        <Text style={styles.itemTitle}>{item.name}</Text>
+                    </View>
+                </TouchableWithoutFeedback>
+            );
+        }, this);
+        return (
+            <View>
+                {categoriesRendered}
+            </View>
+        );
+    }
     render() {
         return (
             <View style={styles.container}>
@@ -22,31 +49,7 @@ class Categories extends React.Component {
                 </Header>
                 <View style={styles.body}>
                     <ScrollView>
-                        <TouchableWithoutFeedback onPress={() => Actions.Products()} >
-                            <View style={styles.listItem}>
-                                <Text style={styles.itemTitle}>Sơn PU</Text>
-                            </View>
-                        </TouchableWithoutFeedback>
-                        <TouchableWithoutFeedback>
-                            <View style={styles.listItem}>
-                            <Text style={styles.itemTitle}>Sơn 2K</Text>
-                            </View>
-                        </TouchableWithoutFeedback>
-                        <TouchableWithoutFeedback >
-                            <View style={styles.listItem}>
-                            <Text style={styles.itemTitle}>Sơn Kẽm</Text>
-                            </View>
-                        </TouchableWithoutFeedback>
-                        <TouchableWithoutFeedback >
-                            <View style={styles.listItem}>
-                            <Text style={styles.itemTitle}>Sơn Công Nghiệp</Text>
-                            </View>
-                        </TouchableWithoutFeedback>
-                        <TouchableWithoutFeedback >
-                            <View style={styles.listItem}>
-                            <Text style={styles.itemTitle}>Sơn Nhôm</Text>
-                            </View>
-                        </TouchableWithoutFeedback>
+                        {this.renderCategoriesItem()}
                     </ScrollView>
                 </View>
                 <Footer>
@@ -101,7 +104,10 @@ const styles = {
         borderRadius: 5,
     }
 };
-// const mapStateToProps(state, ownProps)=> {
-//     return state
-// }
-export default connect()(Categories);
+const mapStateToProps = (state, ownProps) => {
+    const { loading, loaded, categories } = state.categories;
+    return { loading, loaded, categories }
+}
+export default connect(mapStateToProps, {
+    loadCategoriesDataFromSqlite
+})(Categories);
