@@ -1,5 +1,5 @@
 /node_modules
-/Server/public/images/categories
+/Server/public/images/category
 bundle.js
 npm-debug.log
 .DS_Store
