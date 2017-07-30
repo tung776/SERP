@@ -25,6 +25,7 @@ export default (state = INITIAL_STATE, action) => {
             // console.log(action.payload)
             return { ...state, categories: action.payload, loaded: true, loading: false };
         case ADD_CATEGORY:
+            debugger;
             return {
                 ...state,
                 Name: action.payload.Name,

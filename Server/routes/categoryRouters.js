@@ -19,7 +19,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-CategoryRouter.post('/new', upload.single('categoryImage'), async (req, res) => { 
+CategoryRouter.post('/new', upload.single('categoryImage'), async (req, res) => {
   let ImageUrl = '';
   if (req.file) {
     ImageUrl = `/images/category/${req.file.filename}`;
@@ -31,7 +31,6 @@ CategoryRouter.post('/new', upload.single('categoryImage'), async (req, res) => 
     let newDataversion;
     let data;
     try {
-
       Knex.transaction(async (t) => {
         try {
           const dataVersion = await Knex('dataVersions').where('id', 1);
@@ -46,7 +45,7 @@ CategoryRouter.post('/new', upload.single('categoryImage'), async (req, res) => 
             .whereRaw('id = 1')
             .update({
               id: 1, menus, userMenus, roles, categories, units, warehouses, products, customers, customerGroups
-            });            
+            });
         } catch (e) {
           t.rollback();
           console.log(e);
@@ -63,6 +62,14 @@ CategoryRouter.post('/new', upload.single('categoryImage'), async (req, res) => 
         )
         .catch(
         e => {
+          //Lưu dữ liệu thất bại, vì vậy cần phải xóa file rác
+          if (req.file) {
+            const dir = path.resolve('Server/public');
+            const filePath = path.resolve(dir + ImageUrl);
+            if (fs.existsSync(filePath)) {
+              fs.unlinkSync(filePath);
+            }
+          }
           res.status(400).json({ success: false, error: e });
         }
         );
@@ -72,7 +79,7 @@ CategoryRouter.post('/new', upload.single('categoryImage'), async (req, res) => 
     }
   }
 });
-CategoryRouter.post('/update', upload.single('categoryImage'), async (req, res) => { 
+CategoryRouter.post('/update', upload.single('categoryImage'), async (req, res) => {
   let ImageUrl = '';
   if (req.file) {
     ImageUrl = `/images/category/${req.file.filename}`;
@@ -91,11 +98,11 @@ CategoryRouter.post('/update', upload.single('categoryImage'), async (req, res) 
           let { menus, userMenus, roles, categories, units, warehouses, products, customers, customerGroups } = dataVersion[0];
           categories++;
           const oldCategory = await t('categories').where('id', Id);
-          
+
           let oldImage;
-          if(oldCategory.length > 0) {
+          if (oldCategory.length > 0) {
             oldImage = oldCategory[0].imageUrl;
-          } 
+          }
           data = await t('categories')
             .returning('*')
             .whereRaw(`id = ${Id}`)
@@ -110,11 +117,10 @@ CategoryRouter.post('/update', upload.single('categoryImage'), async (req, res) 
 
           //Xóa ảnh cũ
           const dir = path.resolve('Server/public');
-          const filePath = path.resolve(dir + oldImage); 
-          if(fs.existsSync(filePath)) {
+          const filePath = path.resolve(dir + oldImage);
+          if (fs.existsSync(filePath)) {
             fs.unlinkSync(filePath);
           }
-
         } catch (e) {
           t.rollback();
           console.log(e);
@@ -140,4 +146,36 @@ CategoryRouter.post('/update', upload.single('categoryImage'), async (req, res) 
     }
   }
 });
+
+CategoryRouter.post('/delete', async (req, res) => {
+  const { Id } = req.body;
+
+  Knex.transaction(async (t) => {
+    try {
+      const products = await t('products').where('categoryId', Id);
+      if (products) {
+        throw new Error('Bạn cần xóa toàn bộ các sản phẩm thuộc nhóm sản phẩm này trước khi xóa nhóm sản phẩm');
+      }
+
+      const oldImage = await t('categories').where('id', Id).select('imageUrl');
+      const dir = path.resolve('Server/public');
+      const filePath = path.resolve(dir + oldImage);
+
+      t('categories')
+        .whereRaw(`id = ${Id}`)
+        .del();
+
+      
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+    } catch (e) {
+      t.rollback();
+      res.status(400).json({ success: false, error: e });
+    }
+  }).catch(
+      e => console.log(`Error: ${e}`)
+    );
+});
+
 export { CategoryRouter };

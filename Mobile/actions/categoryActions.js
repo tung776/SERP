@@ -24,7 +24,7 @@ export const loadCategoriesDataFromSqlite = () => async (dispatch) => {
     );
 };
 
-export const CategoryChange = ({  prop, value })=> ({
+export const CategoryChange = ({ prop, value }) => ({
     type: CATEGORY_CHANGE,
     payload: { prop, value }
 });
@@ -40,7 +40,7 @@ export const AddNewCategory = (category) => async (dispatch) => {
             type: CATEGORY_CHANGE_FAIL,
             payload: errors
         });
-        alert(`Lưu dữ liệu thất bại: ${errors}` );
+        alert(`Lưu dữ liệu thất bại: ${errors}`);
     } else {
         const apiUrl = `${URL}/api/category/new`;
         const formData = new FormData();
@@ -52,7 +52,7 @@ export const AddNewCategory = (category) => async (dispatch) => {
             uri: category.ImageUrl,
             name: `category.${fileType}`,
             filename: `category.${fileType}`,
-            type: `image/${fileType}`,            
+            type: `image/${fileType}`,
         });
 
         formData.append('category', JSON.stringify(category));
@@ -64,10 +64,20 @@ export const AddNewCategory = (category) => async (dispatch) => {
 
         axios.post(apiUrl, formData).then(
             res => {
+                debugger;
                 // console.log("data = ", data);
+                SqlService.insert('categories', ['id', 'name', 'description'],
+                    [res.data.category.id, res.data.category.name, res.data.category.description]);
+
+                SqlService.query(
+                    `UPDATE dataVersions 
+                    SET categories = '${res.data.dataversion.categories}',                    
+                    WHERE id = ${res.data.dataversion.id};`
+                );
+
                 dispatch({
                     type: CATEGORY_CHANGE_SUCCESS,
-                    payload: res.data
+                    payload: res.data.category
                 });
                 dispatch({
                     type: ADD_FLASH_MESSAGE,
