@@ -6,7 +6,6 @@ exports.seed = function (knex, Promise) {
       // Inserts seed entries
       return knex('dataVersions').insert([
         {
-            id: 1, 
             menus: 1, 
             userMenus: 1,
             roles: 1,

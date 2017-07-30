@@ -18,34 +18,48 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-CategoryRouter.post('/new', upload.single('categoryImage'), (req, res) => {
+CategoryRouter.post('/new', upload.single('categoryImage'), async (req, res) => {
   debugger;
   const ImageUrl = `/images/category/${req.file.filename}`;
   const { Name, Description } = JSON.parse(req.body.category);
   const { isValid, errors } = NewCategoryValidator(JSON.parse(req.body.category));
   if (isValid) {
-    Knex('categories').insert({ name: Name, description: Description, imageUrl: ImageUrl })    
-    .then(
-      async (data) => {
-        console.log('data', data);
-        const newDataversion = await dataversionHelper();
-        res.json({
-          success: true, 
-          category: data, 
-          dataversion: newDataversion 
-        });
-      }
-    )
-    .catch(
-      err=> {
-        console.log(err);
-        res.status(400).json({success: false, error: err});
-      }
-    )
+    let newDataversion, data;
+    try {
+      // var t = Knex.transaction();
+      Knex.transaction(async(t)=> {
+        try {
+          data = await Knex('categories')
+            .transacting(t)
+            .returning('*')
+            .insert({ name: Name, description: Description, imageUrl: ImageUrl })
+          newDataversion = dataversionHelper('categories', t)
+
+          t.commit();
+          
+        }
+        catch (e) {
+          t.rollback();
+          console.log(e);
+          res.status(400).json({ success: false, error: e });
+        }
+      }).then(
+        ()=> {
+          res.json({
+            success: true,
+            category: data,
+            dataversion: newDataversion
+          });
+        }
+      )
+      .catch(e => console.log(e));
+      //end transaction
+
+    }
+    catch (e) {
+      //It failed
+    }
+
   }
-  
-  // console.log(Name, Description);
-  
-  // res.status(200).json({ url, filename: req.file.filename });
 });
 export { CategoryRouter };

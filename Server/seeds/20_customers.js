@@ -6,7 +6,6 @@ exports.seed = function (knex, Promise) {
             // Inserts seed entries
             return knex('customers').insert([
                 {
-                    id: 1,
                     customerGroupId: 6,
                     bankId: null,
                     companyId: null,

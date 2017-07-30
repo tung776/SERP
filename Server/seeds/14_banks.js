@@ -6,7 +6,6 @@ exports.seed = function (knex, Promise) {
             // Inserts seed entries
             return knex('banks').insert([
                 {
-                    id: 1,
                     accountNumber: '320 120 100 2867',
                     bankName: `Ngân hàng nông nghiệp thành phố Nam Định`
                 },

@@ -1,8 +1,8 @@
 import Knex from '../config/knex';
 
-export default async (typeVersion) => {
-    const maxId = await Knex('dataVersions').max('id');
-    const dataVersion = await Knex.select().from('dataVersions').where('id', maxId[0].max);
+export default async (typeVersion, t) => {
+    debugger;
+    const dataVersion = await Knex.select().from('dataVersions').where('id', 1);
     let { menus, userMenus, roles, categories, units, warehouses, products, customers, customerGroups } = dataVersion[0];
 
     switch (typeVersion) {
@@ -37,7 +37,11 @@ export default async (typeVersion) => {
             break;
     }
     
-    return Knex('dataVersions').insert({
-        menus, userMenus, roles, categories, units, warehouses, products, customers, customerGroups
+    return Knex('dataVersions')
+    .transacting(t)
+    .returning('*')
+    .whereRaw(`id = 1`)
+    .update({
+        id: -21, menus, userMenus, roles, categories, units, warehouses, products, customers, customerGroups
     });
 };

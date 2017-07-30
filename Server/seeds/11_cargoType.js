@@ -6,11 +6,9 @@ exports.seed = function (knex, Promise) {
       // Inserts seed entries
       return knex('typeCargoes').insert([
         {
-          id: 1,
           name: 'Nguyên Liệu'
         },
         {
-          id: 2,
           name: 'Thành Phẩm'
         },
       ]);

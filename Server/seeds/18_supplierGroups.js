@@ -6,7 +6,6 @@ exports.seed = function (knex, Promise) {
             // Inserts seed entries
             return knex('supplierGroups').insert([
                 {
-                    id: 1,
                     name: 'Nhà cung cấp Nguyên Liệu',
                     description: `Nhà cung cấp nguyên liệu sản xuất`
                 },

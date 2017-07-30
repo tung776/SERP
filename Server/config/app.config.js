@@ -22,7 +22,7 @@ export const config = function(app){
 /**
  * webpack middleware for dev
  */
-debugger;
+// debugger;
     if(process.env.APP_ENV == 'development') {
         const complier = webpack(webpackConfig);
         app.use(webpackMiddleware(complier, {
