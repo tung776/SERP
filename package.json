@@ -5,6 +5,7 @@
   "scripts": {
     "start:mobile": "node node_modules/react-native/local-cli/cli.js start",
     "server": "cross-env APP_ENV=development nodemon --watch server Server/index.js",
+    "debug:server": "cross-env APP_ENV=development nodemon --debug-brk server Server/index.js",
     "server:prod": "cross-env APP_ENV=production node Server/index.js",
     "webpack": "webpack -p --config Server/webpack.config.js --profile",
     "web": "webpack  -help",
