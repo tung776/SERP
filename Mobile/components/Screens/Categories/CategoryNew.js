@@ -6,7 +6,6 @@ import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import stylesCommon from '../../../styles';
 import { Ionicons } from '@expo/vector-icons';
-// import {Button} from 'native-base';
 import { takeImage, uploadImageAsync } from '../../../utils/uploadImage';
 import { URL } from '../../../../env';
 import {

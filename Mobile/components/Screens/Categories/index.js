@@ -27,7 +27,7 @@ class Categories extends React.Component {
             return (
                 <TouchableWithoutFeedback key={item.id} onPress={() =>{ 
                     console.log(`id = ${item.id} name = ${item.name} cliked`)
-                    Actions.productList() 
+                    Actions.categoryEdit({ category: item }) 
                 }} >
                     <View style={styles.listItem}>
                         <Text style={styles.itemTitle}>{item.name}</Text>

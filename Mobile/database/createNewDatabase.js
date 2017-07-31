@@ -180,9 +180,9 @@ export const updateOrInsertDataVersion = async (data) => {
       } else {
          SqlService.query(
           `UPDATE categories 
-        SET name = '${item.name}',
-        description = '${item.description}' 
-        WHERE id = ${item.id};`
+          SET name = '${item.name}',
+          description = '${item.description}' 
+          WHERE id = ${item.id};`
         );
       }
     }, this);
