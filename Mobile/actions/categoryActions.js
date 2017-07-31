@@ -14,7 +14,7 @@ export const loadCategoriesDataFromSqlite = () => async (dispatch) => {
     dispatch({
         type: CATEGORY_PENDING
     });
-    SqlService.select('categories', '*').then(
+    await SqlService.select('categories', '*').then(
         result => {
             dispatch({
                 type: CATEGORY_LOADED_SQLITE,
@@ -63,22 +63,31 @@ export const AddNewCategory = (category) => async (dispatch) => {
         };
 
         axios.post(apiUrl, formData).then(
-            res => {
+            (res) => {
                 debugger;
                 // console.log("data = ", data);
-                SqlService.insert('categories', ['id', 'name', 'description'],
-                    [res.data.category.id, res.data.category.name, res.data.category.description]);
-
                 SqlService.query(
                     `UPDATE dataVersions 
-                    SET categories = '${res.data.dataversion.categories}',                    
-                    WHERE id = ${res.data.dataversion.id};`
+                    SET categories = '${res.data.dataversion[0].categories}',                    
+                    WHERE id = 1;`
+                );
+                SqlService.insert('categories', ['id', 'name', 'description'],
+                    [res.data.category[0].id, res.data.category[0].name, res.data.category[0].description])
+
+
+                SqlService.select('categories', '*').then(
+                    result => {
+                        dispatch({
+                            type: CATEGORY_LOADED_SQLITE,
+                            payload: result
+                        });
+                    }
                 );
 
                 dispatch({
-                    type: CATEGORY_CHANGE_SUCCESS,
-                    payload: res.data.category
-                });
+                        type: CATEGORY_CHANGE_SUCCESS,
+                        payload: res.data.category[0]
+                    });
                 dispatch({
                     type: ADD_FLASH_MESSAGE,
                     payload: { message: 'Bạn đã tạo nhóm sản phẩm thành công', TypeMessage: SUCCESS_MESSAGE }

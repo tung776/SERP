@@ -8,7 +8,7 @@ dataRoutes.post('/checkDataVersion', async function (req, res) {
         categories, units, warehouses,
         products, customerGroups, customers, userId
      } = req.body;
-    
+    console.log("req.body", req.body);
     try {
         let shouldUpdate = {};
         const maxId = await Knex('dataVersions').max('id');
@@ -60,7 +60,7 @@ dataRoutes.post('/checkDataVersion', async function (req, res) {
             shouldUpdate.customerGroupsVersion = dataVersion[0].customerGroups;
 
         }
-        // console.log('shouldUpdate = ', shouldUpdate);
+        console.log('shouldUpdate = ', shouldUpdate);
         res.status(200).json(shouldUpdate);
     }
     catch(err) {
