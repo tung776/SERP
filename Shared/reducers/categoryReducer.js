@@ -7,6 +7,7 @@ const INITIAL_STATE = {
     Name: '',
     Description: '',
     ImageUrl: '',
+    Id: '',
     loading: false,
     loaded: false,
     error: '',

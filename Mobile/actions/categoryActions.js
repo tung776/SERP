@@ -14,7 +14,7 @@ export const loadCategoriesDataFromSqlite = () => async (dispatch) => {
     dispatch({
         type: CATEGORY_PENDING
     });
-    await SqlService.select('categories', '*').then(
+     SqlService.select('categories', '*').then(
         result => {
             dispatch({
                 type: CATEGORY_LOADED_SQLITE,
@@ -113,12 +113,12 @@ export const CategoryUpdate = (category) => async (dispatch) => {
 
         const uriParts = category.ImageUrl.split('.');
         const fileType = uriParts[uriParts.length - 1];
-        formData.append('categoryImage', {
-            uri: category.ImageUrl,
-            name: `category.${fileType}`,
-            filename: `category.${fileType}`,
-            type: `image/${fileType}`,
-        });
+        // formData.append('categoryImage', {
+        //     uri: category.ImageUrl,
+        //     name: `category.${fileType}`,
+        //     filename: `category.${fileType}`,
+        //     type: `image/${fileType}`,
+        // });
 
         formData.append('category', JSON.stringify(category));
         const options = {
@@ -141,7 +141,7 @@ export const CategoryUpdate = (category) => async (dispatch) => {
                     SET name = '${res.data.category[0].name}',
                     description = '${res.data.category[0].description}' 
                     WHERE id = ${res.data.category[0].id};`
-                )
+                );
 
                 SqlService.select('categories', '*').then(
                     result => {

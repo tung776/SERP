@@ -23,6 +23,8 @@ export const resetDatabase = async () => {
    SqlService.query(
     'drop table if exists warehouses;');
    SqlService.query(
+    'drop table if exists categories;');
+   SqlService.query(
     'drop table if exists products;');
    SqlService.query(
     'drop table if exists customerGroups;');
@@ -31,9 +33,9 @@ export const resetDatabase = async () => {
 };
 
 export const createDatabaseSqlite = async () => {
-  //  resetDatabase();
-  //  SqlService.query(
-  //   'drop table if exists dataVersions;');
+   resetDatabase();
+   SqlService.query(
+    'drop table if exists dataVersions;');
 
    SqlService.query(
     `create table if not exists
@@ -58,7 +60,8 @@ export const createDatabaseSqlite = async () => {
          categories (
            id integer primary key not null,
            name text,
-           description text
+           description text,
+           imageUrl text
           );`);
    SqlService.query(`create table if not exists
          units (
@@ -173,15 +176,17 @@ export const updateOrInsertDataVersion = async (data) => {
 
   if (data.categories) {
     data.categories.forEach(async (item) => {
+      // console.log("categories item = ", item);
       const avaiabledData = await SqlService.select('categories', '*', `id = ${item.id}`);
       if (avaiabledData.length == 0) {
-         SqlService.insert('categories', ['id', 'name', 'description'],
-          [item.id, item.name, item.description]);
+         SqlService.insert('categories', ['id', 'name', 'description', 'imageUrl'],
+          [item.id, item.name, item.description, item.imageUrl]);
       } else {
          SqlService.query(
           `UPDATE categories 
           SET name = '${item.name}',
-          description = '${item.description}' 
+          description = '${item.description}' ,
+          imageUrl = ${item.imageUrl}
           WHERE id = ${item.id};`
         );
       }

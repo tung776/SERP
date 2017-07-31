@@ -13,6 +13,8 @@ const storage = multer.diskStorage({
     cb(null, './Server/public/images/category');
   },
   filename(req, file, cb) {
+    console.log("file", file);
+    console.log("category = ", req.body);
     const extent = file.originalname.slice(file.originalname.length - 4, file.originalname.length);
     cb(null, `${file.fieldname}-${Date.now()}${extent}`);
   }
@@ -80,10 +82,18 @@ CategoryRouter.post('/new', upload.single('categoryImage'), async (req, res) => 
   }
 });
 CategoryRouter.post('/update', upload.single('categoryImage'), async (req, res) => {
+  console.log("go here");
+  console.log("file = ", req.file);
   let ImageUrl = '';
   if (req.file) {
     ImageUrl = `/images/category/${req.file.filename}`;
   }
+  if (!req.body.category) {
+    throw new Error('Không tìm thấy nhóm sản phẩm');
+  }
+
+  console.log("req.body.category = ", req.body.category);
+
   const { Id, Name, Description } = JSON.parse(req.body.category);
   const { isValid, errors } = NewCategoryValidator(JSON.parse(req.body.category));
 
@@ -103,23 +113,28 @@ CategoryRouter.post('/update', upload.single('categoryImage'), async (req, res) 
           if (oldCategory.length > 0) {
             oldImage = oldCategory[0].imageUrl;
           }
-          data = await t('categories')
-            .returning('*')
-            .whereRaw(`id = ${Id}`)
-            .update({ name: Name, description: Description, imageUrl: ImageUrl });
-
           newDataversion = await t('dataVersions')
             .returning('*')
             .whereRaw('id = 1')
             .update({
               id: 1, menus, userMenus, roles, categories, units, warehouses, products, customers, customerGroups
             });
-
-          //Xóa ảnh cũ
-          const dir = path.resolve('Server/public');
-          const filePath = path.resolve(dir + oldImage);
-          if (fs.existsSync(filePath)) {
-            fs.unlinkSync(filePath);
+          if (ImageUrl !== '') {
+            data = await t('categories')
+              .returning('*')
+              .whereRaw(`id = ${Id}`)
+              .update({ name: Name, description: Description, imageUrl: ImageUrl });
+            //Xóa ảnh cũ
+            const dir = path.resolve('Server/public');
+            const filePath = path.resolve(dir + oldImage);
+            if (fs.existsSync(filePath)) {
+              fs.unlinkSync(filePath);
+            }
+          } else {
+            data = await t('categories')
+              .returning('*')
+              .whereRaw(`id = ${Id}`)
+              .update({ name: Name, description: Description });
           }
         } catch (e) {
           t.rollback();
@@ -142,7 +157,7 @@ CategoryRouter.post('/update', upload.single('categoryImage'), async (req, res) 
         );
       //end transaction
     } catch (e) {
-      //It failed
+      res.status(400).json({ success: false, error: e });
     }
   }
 });
@@ -165,7 +180,7 @@ CategoryRouter.post('/delete', async (req, res) => {
         .whereRaw(`id = ${Id}`)
         .del();
 
-      
+
       if (fs.existsSync(filePath)) {
         fs.unlinkSync(filePath);
       }
@@ -174,7 +189,7 @@ CategoryRouter.post('/delete', async (req, res) => {
       res.status(400).json({ success: false, error: e });
     }
   }).catch(
-      e => console.log(`Error: ${e}`)
+    e => console.log(`Error: ${e}`)
     );
 });
 

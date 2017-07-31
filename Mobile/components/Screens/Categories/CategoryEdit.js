@@ -13,7 +13,6 @@ import {
     CATEGORY_CHANGE_FAIL, CATEGORY_CHANGE_SUCCESS,
 } from '../../../actions';
 import { CategoryUpdate, CategoryChange, CategoryDelete } from '../../../actions/categoryActions';
-import { AppLoading } from 'expo';
 import { Spinner } from '../../commons/Spinner';
 
 class CategoryEdit extends React.Component {
@@ -24,13 +23,17 @@ class CategoryEdit extends React.Component {
         uploading: false
     }
 
-    componentWillReceiveProps(nextProps) {
+    constructor(nextProps) {
+        super(nextProps);
+        console.log(nextProps);
         debugger;
-        const { Name, Description, ImageUrl} = nextProps.category;
-        CategoryChange({ prop: "Name", value: Name });
-        CategoryChange({ prop: "Description", value: Description });
-        CategoryChange({ prop: "ImageUrl", value: ImageUrl });
+        const { id, name, description, imageUrl } = nextProps.category;
+        nextProps.CategoryChange({ prop: 'Name', value: name });
+        nextProps.CategoryChange({ prop: 'Description', value: description });
+        nextProps.CategoryChange({ prop: 'ImageUrl', value: imageUrl });
+        nextProps.CategoryChange({ prop: 'Id', value: id });
     }
+
 
     async onSelectImage() {
         const pickerResult = await takeImage();
@@ -38,16 +41,16 @@ class CategoryEdit extends React.Component {
         this.setState({ uploading: true });
 
         if (!pickerResult.cancelled) {
-            this.props.CategoryChange({ prop: "ImageUrl", value: pickerResult.uri });
+            this.props.CategoryChange({ prop: 'ImageUrl', value: pickerResult.uri });
             console.log(pickerResult.uri);
             this.setState({ ImageUrl: pickerResult.uri, uploading: false });
         }
     }
 
     onSavePress() {
-        const { error, Name, Description, ImageUrl, AddNewCategory, loading } = this.props;
+        const { error, Name, Description, ImageUrl, CategoryUpdate, loading } = this.props;
         // console.log({ Name, Description, ImageUrl });
-        AddNewCategory({ Name, Description, ImageUrl });
+        CategoryUpdate({ Name, Description, ImageUrl });
     }
 
     renderButton() {
@@ -68,30 +71,37 @@ class CategoryEdit extends React.Component {
                 </TouchableOpacity>
                 <TouchableOpacity
                     disabled={this.props.loading}
-                    style={[styles.Btn, styles.footerBtn]} onPress={() => Actions.productList()}>
+                    style={[styles.Btn, styles.footerBtn]} onPress={() => Actions.productList()}
+                >
                     <Ionicons name="ios-folder-open-outline" size={25} color="#FFFFFF" />
                     <Text style={styles.titleButton}>DS Sản Phẩm</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    onPress = {()=> this.props.CategoryDelete(this.props.category.id)}
+                    onPress={() => this.props.CategoryDelete(this.props.category.id)}
                     disabled={this.props.loading}
-                    style={[styles.Btn, styles.footerBtn]}>
+                    style={[styles.Btn, styles.footerBtn]}
+                >
                     <Ionicons name="ios-close-circle-outline" size={25} color="#FFFFFF" />
                     <Text style={styles.titleButton}>Xóa</Text>
                 </TouchableOpacity>
             </View>
-        )
+        );
     }
     renderImage() {
 
         if (this.props.ImageUrl) {
             // console.log("this.props.ImageUrl ", this.props.ImageUrl)
+            if (this.props.ImageUrl.indexOf(`${URL}`) < 0) {
+                return (<Image style={styles.itemImage} source={{ uri: `${URL}/${this.props.ImageUrl}` }} />);
+            }
             return (<Image style={styles.itemImage} source={{ uri: this.props.ImageUrl }} />);
         }
         return null;
     }
 
     render() {
+        debugger;
+        console.log(this.props);
         const { error, Name, Description, ImageUrl, loading, CategoryChange } = this.props;
         return (
             <View style={styles.container}>
@@ -109,7 +119,7 @@ class CategoryEdit extends React.Component {
                                     style={styles.textInput}
                                     blurOnSubmit
                                     value={Name}
-                                    onChangeText={text => CategoryChange({ prop: "Name", value: text })}
+                                    onChangeText={text => CategoryChange({ prop: 'Name', value: text })}
                                     type="Text"
                                     name="Name"
                                     placeholder="Điền tên nhóm sản phẩm:"
@@ -129,7 +139,7 @@ class CategoryEdit extends React.Component {
                                         style={styles.textInput}
                                         blurOnSubmit
                                         value={Description}
-                                        onChangeText={text => CategoryChange({ prop: "Description", value: text })}
+                                        onChangeText={text => CategoryChange({ prop: 'Description', value: text })}
                                         type="Text"
                                         name="Description"
                                         placeholder="Mô tả sản phẩm"
@@ -141,9 +151,9 @@ class CategoryEdit extends React.Component {
                             <View >
                                 {
                                     this.props.loading ? <Spinner size='small' /> :
-                                    <TouchableOpacity style={styles.Btn} onPress={this.onSelectImage.bind(this)}>
-                                    <Text style={styles.titleButton}>Chọn Ảnh</Text>
-                                </TouchableOpacity>}
+                                        <TouchableOpacity style={styles.Btn} onPress={this.onSelectImage.bind(this)}>
+                                            <Text style={styles.titleButton}>Chọn Ảnh</Text>
+                                        </TouchableOpacity>}
                             </View>
                         </View>
                     </View>
@@ -235,9 +245,9 @@ const styles = {
     }
 };
 const mapStateToProps = (state, ownProps) => {
-    const { Name, Description, ImageUrl, loading } = state.newCategory;
-    return { Name, Description, ImageUrl, loading }
-}
+    const { Id, Name, Description, ImageUrl, loading } = state.newCategory;
+    return { Id, Name, Description, ImageUrl, loading };
+};
 export default connect(mapStateToProps, {
     CategoryChange,
     CategoryUpdate,
