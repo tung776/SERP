@@ -17,9 +17,10 @@ class Categories extends React.Component {
         Actions.main();
     }
     componentWillMount() {
-        if (!this.props.loaded) {
+        // if (!this.props.loaded) {
+            console.log("begin load data from sqlite!")
             this.props.loadCategoriesDataFromSqlite();
-        }
+        // }
     }
     renderCategoriesItem() {
         const { categories } = this.props;

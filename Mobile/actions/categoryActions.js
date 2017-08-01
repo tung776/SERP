@@ -14,7 +14,7 @@ export const loadCategoriesDataFromSqlite = () => async (dispatch) => {
     dispatch({
         type: CATEGORY_PENDING
     });
-     SqlService.select('categories', '*').then(
+    SqlService.select('categories', '*').then(
         result => {
             dispatch({
                 type: CATEGORY_LOADED_SQLITE,
@@ -95,7 +95,7 @@ export const CategoryDelete = (categoryId) => async (dispatch) => {
         );
 }
 
-export const CategoryUpdate = (category) => async (dispatch) => {
+export const CategoryUpdate = (category, isImageChanged) => async (dispatch) => {
     dispatch({
         type: CATEGORY_PENDING
     });
@@ -111,14 +111,17 @@ export const CategoryUpdate = (category) => async (dispatch) => {
         const formData = new FormData();
         // console.log("ImageUrl = ", category.ImageUrl);
 
-        const uriParts = category.ImageUrl.split('.');
-        const fileType = uriParts[uriParts.length - 1];
-        // formData.append('categoryImage', {
-        //     uri: category.ImageUrl,
-        //     name: `category.${fileType}`,
-        //     filename: `category.${fileType}`,
-        //     type: `image/${fileType}`,
-        // });
+        if (isImageChanged) {
+            const uriParts = category.ImageUrl.split('.');
+            const fileType = uriParts[uriParts.length - 1];
+
+            formData.append('categoryImage', {
+                uri: category.ImageUrl,
+                name: `category.${fileType}`,
+                filename: `category.${fileType}`,
+                type: `image/${fileType}`,
+            });
+        }
 
         formData.append('category', JSON.stringify(category));
         const options = {
@@ -130,27 +133,41 @@ export const CategoryUpdate = (category) => async (dispatch) => {
         axios.post(apiUrl, formData).then(
             (res) => {
                 debugger;
-                // console.log("data = ", data);
+                console.log("data = ", res);
                 SqlService.query(
                     `UPDATE dataVersions 
                     SET categories = '${res.data.dataversion[0].categories}',                    
                     WHERE id = 1;`
                 );
+                console.log('res.data.category[0] =', res.data.category[0]);
+                console.log('res.data.category[0].name =', res.data.category[0].name);
+                console.log('res.data.category[0].description =', res.data.category[0].description);
+                console.log('res.data.category[0].imageUrl =', res.data.category[0].imageUrl);
+               
                 SqlService.query(
                     `UPDATE categories 
-                    SET name = '${res.data.category[0].name}',
-                    description = '${res.data.category[0].description}' 
+                    SET name = ${res.data.category[0].name},
+                    description = ${res.data.category[0].description},
+                    imageUrl = ${res.data.category[0].imageUrl},
                     WHERE id = ${res.data.category[0].id};`
+
+                ).then(
+                    () => {
+                        console.log("update success");
+                        SqlService.select('categories', '*').then(
+                            result => {
+                                console.log("data loaded from sqlite: ", result);
+                                dispatch({
+                                    type: CATEGORY_LOADED_SQLITE,
+                                    payload: result
+                                });
+                            }
+                        );
+                    }
+                ). catch(                     
+                    ()=> console.log("update error!!!!!!!!!!!!!: ")
                 );
 
-                SqlService.select('categories', '*').then(
-                    result => {
-                        dispatch({
-                            type: CATEGORY_LOADED_SQLITE,
-                            payload: result
-                        });
-                    }
-                );
 
                 dispatch({
                     type: CATEGORY_CHANGE_SUCCESS,
@@ -232,8 +249,13 @@ export const AddNewCategory = (category) => async (dispatch) => {
                     SET categories = '${res.data.dataversion[0].categories}',                    
                     WHERE id = 1;`
                 );
-                SqlService.insert('categories', ['id', 'name', 'description'],
-                    [res.data.category[0].id, res.data.category[0].name, res.data.category[0].description])
+                SqlService.insert('categories', [
+                    'id', 'name', 'description, imageUrl'],
+                    [
+                        res.data.category[0].id,
+                        res.data.category[0].name,
+                        res.data.category[0].description,
+                        res.data.category[0].imageUrl])
 
 
                 SqlService.select('categories', '*').then(
