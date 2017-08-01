@@ -18,29 +18,35 @@ class Categories extends React.Component {
     }
     componentWillMount() {
         // if (!this.props.loaded) {
-            console.log("begin load data from sqlite!")
-            this.props.loadCategoriesDataFromSqlite();
+        console.log("begin load data from sqlite!")
+        this.props.loadCategoriesDataFromSqlite();
         // }
     }
     renderCategoriesItem() {
         const { categories } = this.props;
-        const categoriesRendered = categories.map((item) => {
+        if (categories) {
+            const categoriesRendered = categories.map((item) => {
+                return (
+                    <TouchableWithoutFeedback key={item.id} onPress={() => {
+                        console.log(`id = ${item.id} name = ${item.name} cliked`)
+                        Actions.categoryEdit({ category: item })
+                    }} >
+                        <View style={styles.listItem}>
+                            <Text style={styles.itemTitle}>{item.name}</Text>
+                        </View>
+                    </TouchableWithoutFeedback>
+                );
+            }, this);
             return (
-                <TouchableWithoutFeedback key={item.id} onPress={() =>{ 
-                    console.log(`id = ${item.id} name = ${item.name} cliked`)
-                    Actions.categoryEdit({ category: item }) 
-                }} >
-                    <View style={styles.listItem}>
-                        <Text style={styles.itemTitle}>{item.name}</Text>
-                    </View>
-                </TouchableWithoutFeedback>
+                <View>
+                    {categoriesRendered}
+                </View>
             );
-        }, this);
-        return (
-            <View>
-                {categoriesRendered}
-            </View>
-        );
+        } else {
+            return (
+                <View></View>
+            );
+        }
     }
     render() {
         return (

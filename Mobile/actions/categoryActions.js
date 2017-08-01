@@ -7,8 +7,9 @@ import { URL } from '../../env';
 import axios from 'axios';
 import { NewCategoryValidator } from '../validators';
 import { AsyncStorage } from 'react-native';
-
+import { SQLite } from 'expo';
 import SqlService from '../database/sqliteService';
+const db = SQLite.openDatabase("SERP1.1.0.db", "1.1", "SERP Database", 200000);
 
 export const loadCategoriesDataFromSqlite = () => async (dispatch) => {
     dispatch({
@@ -41,13 +42,13 @@ export const CategoryDelete = (categoryId) => async (dispatch) => {
             debugger;
             SqlService.query(
                 `UPDATE dataVersions 
-                    SET categories = '${res.data.dataversion[0].categories}',                    
+                    SET categories = ${res.data.dataversion[0].categories},                    
                     WHERE id = 1;`
             );
             SqlService.query(
                 `DELETE categories 
                 WHERE id = ${categoryId};`
-            )
+            );
 
             SqlService.select('categories', '*').then(
                 result => {
@@ -66,11 +67,11 @@ export const CategoryDelete = (categoryId) => async (dispatch) => {
                 type: ADD_FLASH_MESSAGE,
                 payload: { message: 'Bạn đã tạo nhóm sản phẩm thành công', TypeMessage: SUCCESS_MESSAGE }
             });
-            alert("Bạn đã lưu dữ liệu thành công");
+            alert('Bạn đã lưu dữ liệu thành công');
         }
     ).catch(
         err => {
-            console.log("error: ", err);
+            console.log('error: ', err);
             if (err.response) {
                 dispatch({
                     type: CATEGORY_CHANGE_FAIL,
@@ -93,7 +94,7 @@ export const CategoryDelete = (categoryId) => async (dispatch) => {
             alert(`Lưu dữ liệu thất bại: ${err}`);
         }
         );
-}
+};
 
 export const CategoryUpdate = (category, isImageChanged) => async (dispatch) => {
     dispatch({
@@ -133,40 +134,71 @@ export const CategoryUpdate = (category, isImageChanged) => async (dispatch) => 
         axios.post(apiUrl, formData).then(
             (res) => {
                 debugger;
-                console.log("data = ", res);
-                SqlService.query(
-                    `UPDATE dataVersions 
-                    SET categories = '${res.data.dataversion[0].categories}',                    
-                    WHERE id = 1;`
-                );
-                console.log('res.data.category[0] =', res.data.category[0]);
-                console.log('res.data.category[0].name =', res.data.category[0].name);
-                console.log('res.data.category[0].description =', res.data.category[0].description);
-                console.log('res.data.category[0].imageUrl =', res.data.category[0].imageUrl);
-               
-                SqlService.query(
-                    `UPDATE categories 
-                    SET name = ${res.data.category[0].name},
-                    description = ${res.data.category[0].description},
-                    imageUrl = ${res.data.category[0].imageUrl},
-                    WHERE id = ${res.data.category[0].id};`
+                console.log('data = ', res);
 
-                ).then(
-                    () => {
-                        console.log("update success");
-                        SqlService.select('categories', '*').then(
-                            result => {
-                                console.log("data loaded from sqlite: ", result);
-                                dispatch({
-                                    type: CATEGORY_LOADED_SQLITE,
-                                    payload: result
-                                });
-                            }
-                        );
-                    }
-                ). catch(                     
-                    ()=> console.log("update error!!!!!!!!!!!!!: ")
-                );
+                try {
+                    db.transaction(
+                        tx => {
+                            tx.executeSql(`
+                            update dataVersions 
+                            set categories = ${res.data.dataversion[0].categories} 
+                            where id = 1`,
+                                null,
+                                () => {
+                                    console.log('success')
+                                },
+                                (e) => {
+                                    console.log('lỗi update dataVersions = ', e)
+                                }
+                            );
+                            tx.executeSql(`
+                            update categories 
+                            set name = '${res.data.category[0].name}',
+                            description = '${res.data.category[0].description}',
+                            imageUrl = '${res.data.category[0].imageUrl}' 
+                            where id = ${res.data.category[0].id}
+                            `,
+                                null,
+                                () => {
+                                    console.log('success')
+                                },
+                                (e) => {
+                                    console.log('lỗi update categories = ', e)
+                                }
+                            );
+                            tx.executeSql(`select * from categories`,
+                                null,
+                                (_, { rows: { _array } }) => {
+                                    console.log("result from sqlite _ = ", _);
+                                    console.log("result from sqlite _array = ", _array);
+                                    // console.log("result from sqlite = ", result);
+                                    dispatch({
+                                        type: CATEGORY_LOADED_SQLITE,
+                                        payload: _array
+                                    });
+                                },
+                                (e) => {
+                                    console.log('error = ', e)
+                                }
+                            );
+                        },
+                        (e) => console.log('error ?????', e),
+                        console.log('success ????')
+                    );
+                }
+                catch (e) {
+                    console.log(e);
+                }
+
+                // SqlService.select('categories', '*').then(
+                //     result => {
+                //         console.log('data loaded from sqlite: ', result);
+                //         dispatch({
+                //             type: CATEGORY_LOADED_SQLITE,
+                //             payload: result
+                //         });
+                //     }
+                // );
 
 
                 dispatch({
@@ -177,11 +209,11 @@ export const CategoryUpdate = (category, isImageChanged) => async (dispatch) => 
                     type: ADD_FLASH_MESSAGE,
                     payload: { message: 'Bạn đã tạo nhóm sản phẩm thành công', TypeMessage: SUCCESS_MESSAGE }
                 });
-                alert("Bạn đã lưu dữ liệu thành công");
+                alert('Bạn đã lưu dữ liệu thành công');
             }
         ).catch(
             err => {
-                console.log("error: ", err);
+                console.log('error: ', err);
                 if (err.response) {
                     dispatch({
                         type: CATEGORY_CHANGE_FAIL,
@@ -205,7 +237,7 @@ export const CategoryUpdate = (category, isImageChanged) => async (dispatch) => 
             }
             );
     }
-}
+};
 
 export const AddNewCategory = (category) => async (dispatch) => {
     // console.log("categoru =", category);
@@ -255,7 +287,7 @@ export const AddNewCategory = (category) => async (dispatch) => {
                         res.data.category[0].id,
                         res.data.category[0].name,
                         res.data.category[0].description,
-                        res.data.category[0].imageUrl])
+                        res.data.category[0].imageUrl]);
 
 
                 SqlService.select('categories', '*').then(
@@ -275,11 +307,11 @@ export const AddNewCategory = (category) => async (dispatch) => {
                     type: ADD_FLASH_MESSAGE,
                     payload: { message: 'Bạn đã tạo nhóm sản phẩm thành công', TypeMessage: SUCCESS_MESSAGE }
                 });
-                alert("Bạn đã lưu dữ liệu thành công");
+                alert('Bạn đã lưu dữ liệu thành công');
             }
         ).catch(
             err => {
-                console.log("error: ", err);
+                console.log('error: ', err);
                 if (err.response) {
                     dispatch({
                         type: CATEGORY_CHANGE_FAIL,
@@ -303,5 +335,4 @@ export const AddNewCategory = (category) => async (dispatch) => {
             }
             );
     }
-
-}
+};
