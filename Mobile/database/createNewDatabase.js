@@ -3,8 +3,8 @@ import axios from 'axios';
 import { URL } from '../../env';
 import SqlService from './sqliteService';
 import { loadMenusData } from '../actions/menuAction';
+import db from './sqliteConfig';
 
-const db = SQLite.openDatabase("SERP1.1.0.db", "1.1", "SERP Database", 200000);
 /*
  Hệ thống sẽ tạo ra các bảng sqlite chứa các dữ liệu thường xuyên sử dụng nhất nhằm tăng
  trải nghiệm của người dùng đối với phẩn mềm

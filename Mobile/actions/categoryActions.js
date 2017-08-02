@@ -10,8 +10,8 @@ import { NewCategoryValidator } from '../validators';
 import { AsyncStorage } from 'react-native';
 import { SQLite } from 'expo';
 import SqlService from '../database/sqliteService';
-const db = SQLite.openDatabase("SERP1.1.0.db", "1.1", "SERP Database", 200000);
 import { Actions } from 'react-native-router-flux';
+import db from '../database/sqliteConfig';
 
 export const loadCategoriesDataFromSqlite = () => async (dispatch) => {
     dispatch({

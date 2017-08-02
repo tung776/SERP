@@ -13,14 +13,11 @@ import { loadCategoriesDataFromSqlite } from '../../../actions/categoryActions';
 
 class Categories extends React.Component {
     state = {}
+    componentWillMount() {
+        this.props.loadCategoriesDataFromSqlite();
+    }
     addNewGroupBtnPress() {
         Actions.main();
-    }
-    componentWillMount() {
-        // if (!this.props.loaded) {
-        console.log("begin load data from sqlite!")
-        this.props.loadCategoriesDataFromSqlite();
-        // }
     }
     renderCategoriesItem() {
         const { categories } = this.props;

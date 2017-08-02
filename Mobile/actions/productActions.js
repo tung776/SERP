@@ -4,6 +4,7 @@ import { NewCategoryValidator } from '../validators';
 import { AsyncStorage } from 'react-native';
 import SqlService from '../database/sqliteService';
 import { PRODUCT_LOADED_SQLITE, PRODUCT_PENDING } from './index';
+import db from '../database/sqliteConfig';
 
 export const loadProductsDataFromSqlite = () => async (dispatch) => {
     dispatch({
