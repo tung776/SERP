@@ -195,7 +195,7 @@ export const CategoryUpdate = (category, isImageChanged) => async (dispatch) => 
                 catch (e) {
                     console.log(e);
                 }
-
+                Actions.categoryList();
                 dispatch({
                     type: CATEGORY_CHANGE_SUCCESS,
                     payload: res.data.category[0]

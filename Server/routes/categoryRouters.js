@@ -13,8 +13,6 @@ const storage = multer.diskStorage({
     cb(null, './Server/public/images/category');
   },
   filename(req, file, cb) {
-    console.log("file", file);
-    console.log("category = ", req.body);
     const extent = file.originalname.slice(file.originalname.length - 4, file.originalname.length);
     cb(null, `${file.fieldname}-${Date.now()}${extent}`);
   }
@@ -22,7 +20,6 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 CategoryRouter.post('/new', upload.single('categoryImage'), async (req, res) => {
-  debugger;
   let ImageUrl = '';
   if (req.file) {
     ImageUrl = `/images/category/${req.file.filename}`;
@@ -83,8 +80,6 @@ CategoryRouter.post('/new', upload.single('categoryImage'), async (req, res) => 
   }
 });
 CategoryRouter.post('/update', upload.single('categoryImage'), async (req, res) => {
-  console.log("go here");
-  console.log("file = ", req.file);
   let ImageUrl = '';
   if (req.file) {
     ImageUrl = `/images/category/${req.file.filename}`;
@@ -92,8 +87,6 @@ CategoryRouter.post('/update', upload.single('categoryImage'), async (req, res) 
   if (!req.body.category) {
     throw new Error('Không tìm thấy nhóm sản phẩm');
   }
-
-  console.log("req.body.category = ", req.body.category);
 
   const { Id, Name, Description } = JSON.parse(req.body.category);
   const { isValid, errors } = NewCategoryValidator(JSON.parse(req.body.category));
@@ -164,13 +157,11 @@ CategoryRouter.post('/update', upload.single('categoryImage'), async (req, res) 
 });
 
 CategoryRouter.post('/delete', async (req, res) => {
-  debugger;
+  
   const { Id } = req.body;
   let newDataversion;
-  console.log('req.body = ', req.body)
   Knex.transaction(async (t) => {
     try {
-      debugger;
       const productsOnCategory = await Knex('products')
         .debug(true)
         .where(`categoryId`, Id)
@@ -180,9 +171,7 @@ CategoryRouter.post('/delete', async (req, res) => {
       if (productsOnCategory[0]) {
         throw new Error('Bạn cần xóa toàn bộ các sản phẩm thuộc nhóm sản phẩm này trước khi xóa nhóm sản phẩm');
       }
-      debugger;
       const dataVersion = await Knex('dataVersions').where('id', 1);
-      console.log("dataversion = ", dataVersion);
 
       let { menus, userMenus, roles, categories, units, warehouses, products, customers, customerGroups } = dataVersion[0];
       categories++;
@@ -195,9 +184,7 @@ CategoryRouter.post('/delete', async (req, res) => {
         .catch(function (error) {
           console.error(error);
         });
-      console.log('newDataversion = ', newDataversion);
 
-      debugger;
 
       const oldCategories = await Knex('categories')
         .debug(true)
@@ -205,7 +192,6 @@ CategoryRouter.post('/delete', async (req, res) => {
         .catch(function (error) {
           console.error("oldcategories error ", error);
         });
-      console.log('old categories = ', oldCategories);
       await Knex('categories')
         .transacting(t)
         .debug(true)
@@ -214,7 +200,6 @@ CategoryRouter.post('/delete', async (req, res) => {
         .catch(function (error) {
           console.error("delete category error: ", error);
         });
-      debugger;
       const oldImage = await t('categories')
         .debug(true)
         .returning('imageUrl')
@@ -222,23 +207,13 @@ CategoryRouter.post('/delete', async (req, res) => {
         .catch(function (error) {
           console.error("get image error ", error);
         });
-      debugger;
       if (oldImage[0] && oldImage.length > 0) {
-        console.log("oldImage = ", oldImage[0].imageUrl);
-
         const dir = path.resolve('Server/public');
         const filePath = path.resolve(dir + oldImage[0].imageUrl);
-        console.log("filepath = ", filePath);
-
-        debugger;
         if (fs.existsSync(filePath)) {
-
           fs.unlinkSync(filePath);
-          console.log('delete image success!');
-          debugger;
         }
       }
-      debugger;
     } catch (e) {
       t.rollback();
       res.status(400).json({ success: false, error: e });
