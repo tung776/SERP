@@ -12,76 +12,95 @@ const db = SQLite.openDatabase("SERP1.1.0.db", "1.1", "SERP Database", 200000);
  lên server, server sẽ kiểm tra dữ liệu đã mới dc cập nhật chưa, Server chỉ trả về tập dữ liệu cần thiết 
  chứ không trả về toàn bộ dữ liệu
  */
-export const resetDatabase = async () => {
-  SqlService.query(
+export const resetDatabase = (tx) => {
+  tx.executeSql(
     'drop table if exists menus;');
-  SqlService.query(
+  tx.executeSql(
     'drop table if exists userMenus;');
-  SqlService.query(
+  tx.executeSql(
     'drop table if exists roles;');
-  SqlService.query(
+  tx.executeSql(
     'drop table if exists units;');
-  SqlService.query(
+  tx.executeSql(
     'drop table if exists warehouses;');
-  SqlService.query(
+  tx.executeSql(
     'drop table if exists categories;');
-  SqlService.query(
+  tx.executeSql(
     'drop table if exists products;');
-  SqlService.query(
+  tx.executeSql(
     'drop table if exists customerGroups;');
-  SqlService.query(
+  tx.executeSql(
     'drop table if exists customers;');
+  tx.executeSql(
+    'drop table if exists dataVersions;');
 };
 
 export const createDatabaseSqlite = async () => {
-  resetDatabase();
-  SqlService.query(
-    'drop table if exists dataVersions;');
-  // db.transaction(
-  //   tx => {
-  //     tx.executeSql('delete from dataVersions where id = 1');
-  //   }
-  // )
-  SqlService.query(
-    `create table if not exists
+  console.log("go create table");
+  // SqlService.query(
+  //   'drop table if exists dataVersions;');
+  db.transaction(
+    tx => {
+      resetDatabase(tx);
+      console.log("begin transactions");
+      // tx.executeSql('delete from dataVersions where id = 1');
+      tx.executeSql(`create table if not exists
          menus (
            id integer primary key not null,
            name text,
            parentId integer
-          );`);
-  SqlService.query(`create table if not exists
+          );`, null,
+          e=> console.log('menus success ??', e),
+          e => console.log('menus error: ', e)
+      );
+      tx.executeSql(`create table if not exists
          userMenus (
            menuId integer,
            userId integer,
            parentId,
            name text
-          );`);
-  SqlService.query(`create table if not exists
+          );`, null,  
+          e=> console.log('userMenus success ??', e),
+          e => console.log('userMenus error: ', e)
+      );
+      tx.executeSql(`create table if not exists
          roles (
            id integer primary key not null,
            name text
-          );`);
-  SqlService.query(`create table if not exists
+          );`, null, 
+           e=> console.log('roles success ??', e),
+          e => console.log('roles error: ', e)
+      );
+      tx.executeSql(`create table if not exists
          categories (
            id integer primary key not null,
            name text,
            description text,
            imageUrl text
-          );`);
-  SqlService.query(`create table if not exists
+          );`, null, 
+           e=> console.log('categories success ??', e),
+          e => console.log('categories error: ', e)
+      );
+      tx.executeSql(`create table if not exists
          units (
            id integer primary key not null,
            name text,
            rate real
-          );`);
-  SqlService.query(`create table if not exists
+          );`, null,  
+          e=> console.log('units success ??', e),
+          e => console.log('units error: ', e)
+      );
+      tx.executeSql(`create table if not exists
          warehouses (
            id integer primary key not null,
            name text,
            description text,
            address text
-          );`);
-  SqlService.query(`create table if not exists
+          );`, null, 
+           e=> console.log('warehouses success ??', e),
+          e => console.log('warehouses error: ', e)
+      );
+      tx.executeSql(`create table if not exists
          products (
            id integer primary key not null,
            categoryId integer,
@@ -95,14 +114,20 @@ export const createDatabaseSqlite = async () => {
            salePrice real,
            minQuantity real,
            isAvaiable integer
-          );`);
-  SqlService.query(`create table if not exists
+          );`, null, 
+           e=> console.log('products success ??', e),
+          e => console.log('products error: ', e)
+      );
+      tx.executeSql(`create table if not exists
          customerGroups (
            id integer primary key not null,
            name text,
            description text
-          );`);
-  SqlService.query(`create table if not exists
+          );`, null,
+           e=> console.log('customerGroups success ??', e),
+          e => console.log('customerGroups error: ', e)
+      );
+      tx.executeSql(`create table if not exists
          customers (
            id integer primary key not null,
            customerGroupId integer,
@@ -115,8 +140,11 @@ export const createDatabaseSqlite = async () => {
            email text,
            overdue integer,
            minQuantity real
-          );`);
-  SqlService.query(`create table if not exists
+          );`, null,
+           e=> console.log('customers success ??', e),
+          e => console.log('customers error: ', e)
+      );
+      tx.executeSql(`create table if not exists
          dataVersions (
            id integer primary key not null,
            menus integer,
@@ -128,12 +156,22 @@ export const createDatabaseSqlite = async () => {
            products integer,
            customerGroups integer,
            customers integer
-          );`);
+          );`, null, 
+           e=> console.log('dataVersions success ??', e),
+          e => console.log('dataVersions error: ', e)
+      );
+    },
+    e => console.log("lỗi tạo các bảng dữ liệu 1 ", e),
+    () => console.log("success ", )
+
+  )
 };
 
 export const getCurrentDataVersion = async () => await SqlService.select('dataVersions', '*');
 
 export const updateOrInsertDataVersion = async (data) => {
+  // debugger;
+  console.log('begin update data');
   const avaiabledDataVersion = await SqlService.select('dataVersions', '*', `id = ${data.id}`);
 
   const newDataVersion = [
@@ -142,194 +180,239 @@ export const updateOrInsertDataVersion = async (data) => {
     data.customerGroupsVersion, data.customersVersion
   ];
   if (avaiabledDataVersion.length == 0) {
-    SqlService.insert('dataVersions', [
-      'id', 'menus', 'userMenus', 'categories', 'roles', 'units', 'warehouses',
-      'products', 'customerGroups', 'customers'
-    ], newDataVersion);
+    db.transaction(
+      tx => {
+        tx.executeSql(`
+          insert into dataVersions 
+            ('id', 'menus', 'userMenus', 'categories', 'roles', 'units', 'warehouses',
+            'products', 'customerGroups', 'customers') 
+            values (
+             ' ${data.id}',
+              '${data.menusVersion}', 
+              '${data.userMenusVersion}', 
+             ' ${data.categoriesVersion}', 
+              '${data.rolesVersion}', 
+              '${data.unitsVersion}', 
+              '${data.warehousesVersion}', 
+              '${data.productsVersion}', 
+              '${data.customerGroupsVersion}', 
+              '${data.customersVersion}')
+        `);
+      },
+      (e) => console.log("lỗi lưu dataVersions sqlite: ", e),
+      () => console.log('insert dataversion success')
+    );
   } else {
     console.log("avaiabledDataVersion.length", avaiabledDataVersion.length);
+    let sql = 'UPDATE dataVersions SET ';
+    if(data.menusVersion) 
+      sql += `menus = '${data.menusVersion}' `
+    if(data.userMenusVersion) 
+      sql += `userMenus = '${data.userMenusVersion}' `
+    if(data.categoriesVersion) 
+      sql += `categories = '${data.categoriesVersion}' `
+    if(data.rolesVersion) 
+      sql += `roles = '${data.rolesVersion}' `
+    if(data.unitsVersion) 
+      sql += `units = '${data.unitsVersion}' `
+    if(data.warehousesVersion) 
+      sql += `warehouses = '${data.warehousesVersion}' `
+    if(data.productsVersion) 
+      sql += `products = '${data.productsVersion}' `
+    if(data.customerGroupsVersion) 
+      sql += `customerGroups = '${data.customerGroupsVersion}' `
+    if(data.customersVersion) 
+      sql += `customers = '${data.customersVersion}' `
+    sql += `WHERE id = ${data.id};`
 
     db.transaction(
-      tx.executeSql(
-        `UPDATE dataVersions 
-        SET menus = '${data.menusVersion}',
-         userMenus = '${data.userMenusVersion}',
-         categories = '${data.categoriesVersion}',
-         roles = '${data.rolesVersion}',
-         units = '${data.unitsVersion}',
-         warehouses = '${data.warehousesVersion}',
-         products = '${data.productsVersion}',
-         customerGroups = '${data.customerGroupsVersion}',
-         customers = '${data.customersVersion}'
-         WHERE id = ${data.id};`
-      )
+      tx => {
+        tx.executeSql(
+          sql
+        );
+      },
+      (e) => console.log("lỗi lưu dataVersions sqlite: ", e),
+      () => console.log('update dataversion success')
     )
   }
-if (data.userMenus && data.userMenus.length > 0) {
-  console.log("remove old userMenus table")
-  SqlService.query(
-    'drop table if exists userMenus;');
-  console.log("re-create userMenus table")
-  SqlService.query(`create table if not exists
+  if (data.userMenus && data.userMenus.length > 0) {
+    console.log("remove old userMenus table");
+    db.transaction(
+      tx => {
+        tx.executeSql(`drop table if exists userMenus;`);
+        tx.executeSql(`create table if not exists
          userMenus (
            menuId integer,
            userId integer,
            parentId,
            name text
           );`);
-  console.log("insert menus")
-  data.userMenus.forEach(async (item) => {
-    SqlService.insert('userMenus', ['userId', 'menuId', 'name', 'parentId'], [item.userId, item.menuId, item.name, item.parentId]);
-  }, this);
-}
-
-if (data.categories) {
-  data.categories.forEach(async (item) => {
-    // console.log("categories item = ", item);
-    const avaiabledData = await SqlService.select('categories', '*', `id = ${item.id}`);
-    if (avaiabledData.length == 0) {
-      SqlService.insert('categories', ['id', 'name', 'description', 'imageUrl'],
-        [item.id, item.name, item.description, item.imageUrl]);
-    } else {
-      db.transaction(
-        tx => {
+        data.userMenus.forEach(async (item) => {
           tx.executeSql(`
-          update categories 
-          set name = ${item.name},
-          description = ${item.description},
-          imageUrl = ${item.imageUrl}
-          where id = ${item.id} 
-          `)
-        },
-        null,
-        console.log("error when update category")
-      );
-    }
-  }, this);
-}
-
-if (data.units) {
-  data.units.forEach(async (item) => {
-    const avaiabledData = await SqlService.select('units', '*', `id = ${item.id}`);
-    if (avaiabledData.length == 0) {
-      SqlService.insert('units', ['id', 'name', 'rate'],
-        [item.id, item.name, item.rate]);
-    } else {
-      db.transaction(
-        tx => {
-          tx.executeSql(`
-          update units 
-          set name = ${item.name},
-          rate = ${item.rate}
-          where id = ${item.id} 
-          `)
-        },
-        null,
-        console.log("error when update units")
-      );
-    }
-  }, this);
-}
-if (data.roles) {
-  data.roles.forEach(async (item) => {
-    const avaiabledData = await SqlService.select('roles', '*', `id = ${item.id}`);
-    // console.log('avaiabledData in units', avaiabledData)
-    if (avaiabledData.length == 0) {
-      // console.log("go insert roles");
-      SqlService.insert('roles', ['id', 'name'],
-        [item.id, item.name]);
-    } else {
-      db.transaction(
-        tx => {
-          tx.executeSql(`
-          update roles 
-          set name = ${item.name} 
-          where id = ${item.id} 
+            insert into userMenus 
+              (userId, menuId, name, parentId) 
+              values (
+                ${item.userId},
+                ${item.menuId}, 
+                '${item.name}', 
+                '${item.parentId}'
+              )
           `);
-        },
-        null,
-        console.log("error when update roles")
-      );      
-    }
-  }, this);
-}
+        }, this);
+      },
+      (e) => console.log("lỗi lưu menuUser sqlite: ", e),
+      null
+    );
 
-if (data.warehouses) {
-  data.warehouses.forEach(async (item) => {
-    const avaiabledData = await SqlService.select('warehouses', '*', `id = ${item.id}`);
-    if (avaiabledData.length == 0) {
-      SqlService.insert('warehouses', ['id', 'name', 'description', 'address'],
-        [item.id, item.name, item.description, item.address]);
-    } else {
-      db.transaction(
-        tx => {
-          tx.executeSql(`
-          update warehouses 
-          set name = ${item.name},
-          description = ${item.description},
-          address = ${item.address}
-          where id = ${item.id} 
-          `);
-        },
-        null,
-        console.log("error when update warehouses")
-      );
-    }
-  }, this);
-}
+  }
 
-if (data.customers) {
-  data.customers.forEach(async (item) => {
-    const avaiabledData = await SqlService.select('customers', '*', `id = ${item.id}`);
-    if (avaiabledData.length == 0) {
-      SqlService.insert('customers', [
-        'id', 'customerGroupId',
-        'name', 'bankId', 'companyId', 'address',
-        'imageUrl', 'phone', 'email', 'overdue', 'excessDebt'
-      ], [
-          item.id, item.customerGroupId, item.name, item.bankId, item.companyId, item.address,
-          item.imageUrl, item.phone, item.email, item.overdue, item.excessDebt
-        ]);
-    } else {
-      db.transaction(
-        tx => {
-          tx.executeSql(`
-          update customers 
-          set name = ${item.name},
-          customerGroupId = ${item.customerGroupId},
-          bankId = ${item.bankId},
-          companyId = ${item.companyId},
-          address = ${item.address},
-          imageUrl = ${item.imageUrl},
-          phone = ${item.phone},
-          email = ${item.email},
-          overdue = ${item.overdue},
-          excessDebt = ${item.excessDebt} 
-          where id = ${item.id} 
-          `);
-        },
-        null,
-        console.log("error when update customers")
-      );
-    }
-  }, this);
-}
+  if (data.categories) {
+    data.categories.forEach(async (item) => {
+      // console.log("categories item = ", item);
+      const avaiabledData = await SqlService.select('categories', '*', `id = ${item.id}`);
+      if (avaiabledData.length == 0) {
+        SqlService.insert('categories', ['id', 'name', 'description', 'imageUrl'],
+          [item.id, item.name, item.description, item.imageUrl]);
+      } else {
+        db.transaction(
+          tx => {
+            tx.executeSql(`
+              update categories 
+              set name = ${item.name},
+              description = ${item.description},
+              imageUrl = ${item.imageUrl}
+              where id = ${item.id} 
+              `)
+          },
+          null,
+          console.log("error when update category")
+        );
+      }
+    }, this);
+  }
 
-if (data.products) {
-  data.products.forEach(async (item) => {
-    const avaiabledData = await SqlService.select('products', '*', `id = ${item.id}`);
-    if (avaiabledData.length == 0) {
-      SqlService.insert('products', [
-        'id', 'categoryId', 'unitId', 'typeCargoId', 'name', 'description',
-        'imageUrl', 'isPublic', 'purchasePrice', 'salePrice', 'minQuantity', 'isAvaiable'
-      ], [
-          item.id, item.categoryId, item.unitId, item.typeCargoId, item.name, item.description,
-          item.imageUrl, item.isPublic, item.purchasePrice, item.salePrice, item.minQuantity, item.isAvaiable
-        ]);
-    } else {
-      db.transaction(
-        tx => {
-          tx.executeSql(`
+  if (data.units) {
+    data.units.forEach(async (item) => {
+      const avaiabledData = await SqlService.select('units', '*', `id = ${item.id}`);
+      if (avaiabledData.length == 0) {
+        SqlService.insert('units', ['id', 'name', 'rate'],
+          [item.id, item.name, item.rate]);
+      } else {
+        db.transaction(
+          tx => {
+            tx.executeSql(`
+              update units 
+              set name = ${item.name},
+              rate = ${item.rate}
+              where id = ${item.id} 
+              `)
+          },
+          null,
+          console.log("error when update units")
+        );
+      }
+    }, this);
+  }
+  if (data.roles) {
+    data.roles.forEach(async (item) => {
+      const avaiabledData = await SqlService.select('roles', '*', `id = ${item.id}`);
+      // console.log('avaiabledData in units', avaiabledData)
+      if (avaiabledData.length == 0) {
+        // console.log("go insert roles");
+        SqlService.insert('roles', ['id', 'name'],
+          [item.id, item.name]);
+      } else {
+        db.transaction(
+          tx => {
+            tx.executeSql(`
+              update roles 
+              set name = ${item.name} 
+              where id = ${item.id} 
+              `);
+          },
+          null,
+          console.log("error when update roles")
+        );
+      }
+    }, this);
+  }
+
+  if (data.warehouses) {
+    data.warehouses.forEach(async (item) => {
+      const avaiabledData = await SqlService.select('warehouses', '*', `id = ${item.id}`);
+      if (avaiabledData.length == 0) {
+        SqlService.insert('warehouses', ['id', 'name', 'description', 'address'],
+          [item.id, item.name, item.description, item.address]);
+      } else {
+        db.transaction(
+          tx => {
+            tx.executeSql(`
+              update warehouses 
+              set name = ${item.name},
+              description = ${item.description},
+              address = ${item.address}
+              where id = ${item.id} 
+              `);
+          },
+          null,
+          console.log("error when update warehouses")
+        );
+      }
+    }, this);
+  }
+
+  if (data.customers) {
+    data.customers.forEach(async (item) => {
+      const avaiabledData = await SqlService.select('customers', '*', `id = ${item.id}`);
+      if (avaiabledData.length == 0) {
+        SqlService.insert('customers', [
+          'id', 'customerGroupId',
+          'name', 'bankId', 'companyId', 'address',
+          'imageUrl', 'phone', 'email', 'overdue', 'excessDebt'
+        ], [
+            item.id, item.customerGroupId, item.name, item.bankId, item.companyId, item.address,
+            item.imageUrl, item.phone, item.email, item.overdue, item.excessDebt
+          ]);
+      } else {
+        db.transaction(
+          tx => {
+            tx.executeSql(`
+              update customers 
+              set name = ${item.name},
+              customerGroupId = ${item.customerGroupId},
+              bankId = ${item.bankId},
+              companyId = ${item.companyId},
+              address = ${item.address},
+              imageUrl = ${item.imageUrl},
+              phone = ${item.phone},
+              email = ${item.email},
+              overdue = ${item.overdue},
+              excessDebt = ${item.excessDebt} 
+              where id = ${item.id} 
+              `);
+          },
+          null,
+          console.log("error when update customers")
+        );
+      }
+    }, this);
+  }
+
+  if (data.products) {
+    data.products.forEach(async (item) => {
+      const avaiabledData = await SqlService.select('products', '*', `id = ${item.id}`);
+      if (avaiabledData.length == 0) {
+        SqlService.insert('products', [
+          'id', 'categoryId', 'unitId', 'typeCargoId', 'name', 'description',
+          'imageUrl', 'isPublic', 'purchasePrice', 'salePrice', 'minQuantity', 'isAvaiable'
+        ], [
+            item.id, item.categoryId, item.unitId, item.typeCargoId, item.name, item.description,
+            item.imageUrl, item.isPublic, item.purchasePrice, item.salePrice, item.minQuantity, item.isAvaiable
+          ]);
+      } else {
+        db.transaction(
+          tx => {
+            tx.executeSql(`
           update products 
           set categoryId = ${item.categoryId},
           unitId = ${item.unitId},
@@ -344,13 +427,13 @@ if (data.products) {
           isAvaiable = ${item.isAvaiable}
           where id = ${item.id} 
           `);
-        },
-        null,
-        console.log("error when update products")
-      );
-    }
-  }, this);
-}
+          },
+          null,
+          console.log("error when update products")
+        );
+      }
+    }, this);
+  }
 };
 
 export const checkDataVersion = async (userId, store) => {

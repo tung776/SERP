@@ -164,31 +164,70 @@ CategoryRouter.post('/update', upload.single('categoryImage'), async (req, res) 
 
 CategoryRouter.post('/delete', async (req, res) => {
   const { Id } = req.body;
-
+  let newDataversion;
+  console.log('req.body = ', req.body)
   Knex.transaction(async (t) => {
     try {
-      const products = await t('products').where('categoryId', Id);
-      if (products) {
+      // debugger;
+      const productsOnCategory = await Knex('products')
+        .debug(true)
+        .where(`categoryId`, Id)
+        .catch(function (error) {
+          console.error("productsOnCategory error ",error);
+        });
+      if (productsOnCategory[0]) {
         throw new Error('Bạn cần xóa toàn bộ các sản phẩm thuộc nhóm sản phẩm này trước khi xóa nhóm sản phẩm');
       }
-
-      const oldImage = await t('categories').where('id', Id).select('imageUrl');
+      const dataVersion = await Knex('dataVersions').where('id', 1);
+      let { menus, userMenus, roles, categories, units, warehouses, products, customers, customerGroups } = dataVersion[0];
+      categories++;
+      newDataversion = await t('dataVersions')
+        .returning('*')
+        .whereRaw('id = 1')
+        .update({
+          id: 1, menus, userMenus, roles, categories, units, warehouses, products, customers, customerGroups
+        })
+        .catch(function (error) {
+          console.error(error);
+        });
+      console.log('contenute')
+      const oldImage = await t('categories')
+        .debug(true)
+        .returning('imageUrl')
+        .where('id', Id)
+        .catch(function (error) {
+          console.error("get image error ", error);
+        });
+      console.log("oldImage = ", oldImage[0].imageUrl);
       const dir = path.resolve('Server/public');
-      const filePath = path.resolve(dir + oldImage);
+      const filePath = path.resolve(dir + oldImage[0].imageUrl);
+      console.log("filepath = ", filePath);
 
       t('categories')
+        .debug(true)
         .whereRaw(`id = ${Id}`)
-        .del();
+        .del()
+        .catch(function (error) {
+          console.error("delete category error: ", error);
+        });
 
+      if (fs.existsSync(filePath)) {        
 
-      if (fs.existsSync(filePath)) {
         fs.unlinkSync(filePath);
+        console.log('delete image success!');
       }
     } catch (e) {
       t.rollback();
       res.status(400).json({ success: false, error: e });
     }
-  }).catch(
+  }).then(
+    () => {
+      res.json({
+        success: true,
+        dataversion: newDataversion
+      });
+    }
+    ).catch(
     e => console.log(`Error: ${e}`)
     );
 });
