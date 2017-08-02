@@ -172,7 +172,7 @@ export const getCurrentDataVersion = async () => await SqlService.select('dataVe
 export const updateOrInsertDataVersion = async (data) => {
   // debugger;
   console.log('begin update data');
-  const avaiabledDataVersion = await SqlService.select('dataVersions', '*', `id = ${data.id}`);
+  const avaiabledDataVersion = await SqlService.select('dataVersions', '*', `id = '${data.id}'`);
 
   const newDataVersion = [
     data.id, data.menusVersion, data.userMenusVersion, data.categoriesVersion,
@@ -187,11 +187,11 @@ export const updateOrInsertDataVersion = async (data) => {
             ('id', 'menus', 'userMenus', 'categories', 'roles', 'units', 'warehouses',
             'products', 'customerGroups', 'customers') 
             values (
-             ' ${data.id}',
+              '${data.id}',
               '${data.menusVersion}', 
               '${data.userMenusVersion}', 
-             ' ${data.categoriesVersion}', 
-              '${data.rolesVersion}', 
+              '${data.categoriesVersion}', 
+             ' ${data.rolesVersion}', 
               '${data.unitsVersion}', 
               '${data.warehousesVersion}', 
               '${data.productsVersion}', 
@@ -252,8 +252,8 @@ export const updateOrInsertDataVersion = async (data) => {
             insert into userMenus 
               (userId, menuId, name, parentId) 
               values (
-                ${item.userId},
-                ${item.menuId}, 
+               ' ${item.userId}',
+                '${item.menuId}', 
                 '${item.name}', 
                 '${item.parentId}'
               )
@@ -278,10 +278,10 @@ export const updateOrInsertDataVersion = async (data) => {
           tx => {
             tx.executeSql(`
               update categories 
-              set name = ${item.name},
-              description = ${item.description},
-              imageUrl = ${item.imageUrl}
-              where id = ${item.id} 
+              set name = '${item.name}',
+              description = '${item.description}',
+              imageUrl = '${item.imageUrl}'
+              where id = '${item.id} '
               `)
           },
           null,
@@ -302,9 +302,9 @@ export const updateOrInsertDataVersion = async (data) => {
           tx => {
             tx.executeSql(`
               update units 
-              set name = ${item.name},
-              rate = ${item.rate}
-              where id = ${item.id} 
+              set name = '${item.name}',
+              rate = '${item.rate}'
+              where id = '${item.id}' 
               `)
           },
           null,
@@ -315,7 +315,7 @@ export const updateOrInsertDataVersion = async (data) => {
   }
   if (data.roles) {
     data.roles.forEach(async (item) => {
-      const avaiabledData = await SqlService.select('roles', '*', `id = ${item.id}`);
+      const avaiabledData = await SqlService.select('roles', '*', `id = '${item.id}'`);
       // console.log('avaiabledData in units', avaiabledData)
       if (avaiabledData.length == 0) {
         // console.log("go insert roles");
@@ -326,8 +326,8 @@ export const updateOrInsertDataVersion = async (data) => {
           tx => {
             tx.executeSql(`
               update roles 
-              set name = ${item.name} 
-              where id = ${item.id} 
+              set name = '${item.name}' 
+              where id = '${item.id}' 
               `);
           },
           null,
@@ -339,7 +339,7 @@ export const updateOrInsertDataVersion = async (data) => {
 
   if (data.warehouses) {
     data.warehouses.forEach(async (item) => {
-      const avaiabledData = await SqlService.select('warehouses', '*', `id = ${item.id}`);
+      const avaiabledData = await SqlService.select('warehouses', '*', `id = '${item.id}'`);
       if (avaiabledData.length == 0) {
         SqlService.insert('warehouses', ['id', 'name', 'description', 'address'],
           [item.id, item.name, item.description, item.address]);
@@ -348,10 +348,10 @@ export const updateOrInsertDataVersion = async (data) => {
           tx => {
             tx.executeSql(`
               update warehouses 
-              set name = ${item.name},
-              description = ${item.description},
-              address = ${item.address}
-              where id = ${item.id} 
+              set name = '${item.name}',
+              description = '${item.description}',
+              address =' ${item.address}'
+              where id = '${item.id}' 
               `);
           },
           null,
@@ -363,7 +363,7 @@ export const updateOrInsertDataVersion = async (data) => {
 
   if (data.customers) {
     data.customers.forEach(async (item) => {
-      const avaiabledData = await SqlService.select('customers', '*', `id = ${item.id}`);
+      const avaiabledData = await SqlService.select('customers', '*', `id = '${item.id}'`);
       if (avaiabledData.length == 0) {
         SqlService.insert('customers', [
           'id', 'customerGroupId',
@@ -378,17 +378,17 @@ export const updateOrInsertDataVersion = async (data) => {
           tx => {
             tx.executeSql(`
               update customers 
-              set name = ${item.name},
-              customerGroupId = ${item.customerGroupId},
-              bankId = ${item.bankId},
-              companyId = ${item.companyId},
-              address = ${item.address},
-              imageUrl = ${item.imageUrl},
-              phone = ${item.phone},
-              email = ${item.email},
-              overdue = ${item.overdue},
-              excessDebt = ${item.excessDebt} 
-              where id = ${item.id} 
+              set name = '${item.name}',
+              customerGroupId = '${item.customerGroupId}',
+              bankId = '${item.bankId}',
+              companyId = '${item.companyId}',
+              address = '${item.address}',
+              imageUrl = '${item.imageUrl}',
+              phone = '${item.phone}',
+              email = '${item.email}',
+              overdue = '${item.overdue}',
+              excessDebt = '${item.excessDebt}' 
+              where id = '${item.id}' 
               `);
           },
           null,
@@ -400,7 +400,7 @@ export const updateOrInsertDataVersion = async (data) => {
 
   if (data.products) {
     data.products.forEach(async (item) => {
-      const avaiabledData = await SqlService.select('products', '*', `id = ${item.id}`);
+      const avaiabledData = await SqlService.select('products', '*', `id = '${item.id}'`);
       if (avaiabledData.length == 0) {
         SqlService.insert('products', [
           'id', 'categoryId', 'unitId', 'typeCargoId', 'name', 'description',
@@ -414,18 +414,18 @@ export const updateOrInsertDataVersion = async (data) => {
           tx => {
             tx.executeSql(`
           update products 
-          set categoryId = ${item.categoryId},
-          unitId = ${item.unitId},
-          typeCargoId = ${item.typeCargoId},
-          name = ${item.name},
-          description = ${item.description},
-          isPublic = ${item.isPublic},
-          imageUrl = ${item.imageUrl},
-          purchasePrice = ${item.purchasePrice},
-          salePrice = ${item.salePrice},
-          minQuantity = ${item.minQuantity},
-          isAvaiable = ${item.isAvaiable}
-          where id = ${item.id} 
+          set categoryId = '${item.categoryId}',
+          unitId = '${item.unitId}',
+          typeCargoId = '${item.typeCargoId}',
+          name =' ${item.name}',
+          description = '${item.description}',
+          isPublic = '${item.isPublic}',
+          imageUrl = '${item.imageUrl}',
+          purchasePrice = '${item.purchasePrice}',
+          salePrice = '${item.salePrice}',
+          minQuantity = '${item.minQuantity}',
+          isAvaiable = '${item.isAvaiable}'
+          where id = '${item.id}' 
           `);
           },
           null,

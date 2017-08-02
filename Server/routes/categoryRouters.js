@@ -22,6 +22,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 CategoryRouter.post('/new', upload.single('categoryImage'), async (req, res) => {
+  debugger;
   let ImageUrl = '';
   if (req.file) {
     ImageUrl = `/images/category/${req.file.filename}`;
@@ -163,22 +164,26 @@ CategoryRouter.post('/update', upload.single('categoryImage'), async (req, res) 
 });
 
 CategoryRouter.post('/delete', async (req, res) => {
+  debugger;
   const { Id } = req.body;
   let newDataversion;
   console.log('req.body = ', req.body)
   Knex.transaction(async (t) => {
     try {
-      // debugger;
+      debugger;
       const productsOnCategory = await Knex('products')
         .debug(true)
         .where(`categoryId`, Id)
         .catch(function (error) {
-          console.error("productsOnCategory error ",error);
+          console.error("productsOnCategory error ", error);
         });
       if (productsOnCategory[0]) {
         throw new Error('Bạn cần xóa toàn bộ các sản phẩm thuộc nhóm sản phẩm này trước khi xóa nhóm sản phẩm');
       }
+      debugger;
       const dataVersion = await Knex('dataVersions').where('id', 1);
+      console.log("dataversion = ", dataVersion);
+
       let { menus, userMenus, roles, categories, units, warehouses, products, customers, customerGroups } = dataVersion[0];
       categories++;
       newDataversion = await t('dataVersions')
@@ -190,7 +195,26 @@ CategoryRouter.post('/delete', async (req, res) => {
         .catch(function (error) {
           console.error(error);
         });
-      console.log('contenute')
+      console.log('newDataversion = ', newDataversion);
+
+      debugger;
+
+      const oldCategories = await Knex('categories')
+        .debug(true)
+        .where({ id: Id })
+        .catch(function (error) {
+          console.error("oldcategories error ", error);
+        });
+      console.log('old categories = ', oldCategories);
+      await Knex('categories')
+        .transacting(t)
+        .debug(true)
+        .where({ id: Id })
+        .del()
+        .catch(function (error) {
+          console.error("delete category error: ", error);
+        });
+      debugger;
       const oldImage = await t('categories')
         .debug(true)
         .returning('imageUrl')
@@ -198,24 +222,23 @@ CategoryRouter.post('/delete', async (req, res) => {
         .catch(function (error) {
           console.error("get image error ", error);
         });
-      console.log("oldImage = ", oldImage[0].imageUrl);
-      const dir = path.resolve('Server/public');
-      const filePath = path.resolve(dir + oldImage[0].imageUrl);
-      console.log("filepath = ", filePath);
+      debugger;
+      if (oldImage[0] && oldImage.length > 0) {
+        console.log("oldImage = ", oldImage[0].imageUrl);
 
-      t('categories')
-        .debug(true)
-        .whereRaw(`id = ${Id}`)
-        .del()
-        .catch(function (error) {
-          console.error("delete category error: ", error);
-        });
+        const dir = path.resolve('Server/public');
+        const filePath = path.resolve(dir + oldImage[0].imageUrl);
+        console.log("filepath = ", filePath);
 
-      if (fs.existsSync(filePath)) {        
+        debugger;
+        if (fs.existsSync(filePath)) {
 
-        fs.unlinkSync(filePath);
-        console.log('delete image success!');
+          fs.unlinkSync(filePath);
+          console.log('delete image success!');
+          debugger;
+        }
       }
+      debugger;
     } catch (e) {
       t.rollback();
       res.status(400).json({ success: false, error: e });

@@ -1,6 +1,7 @@
 import {
     ADD_CATEGORY, CATEGORY_PENDING, CATEGORY_CHANGE_FAIL,
-    CATEGORY_CHANGE_SUCCESS, CATEGORY_CHANGE, CATEGORY_LOADED_SQLITE
+    CATEGORY_CHANGE_SUCCESS, CATEGORY_CHANGE, 
+    CATEGORY_LOADED_SQLITE, CATEGORY_DELETE_SUCCESS
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -44,6 +45,12 @@ export default (state = INITIAL_STATE, action) => {
                 Name: action.payload.Name,
                 Description: action.payload.Description,
                 ImageUrl: action.payload.Image,
+                error: '',
+                loading: false,
+            };
+        case CATEGORY_DELETE_SUCCESS:
+            return {
+                ...state,               
                 error: '',
                 loading: false,
             };

@@ -1,7 +1,8 @@
 import {
     ADD_CATEGORY, CATEGORY_PENDING, CATEGORY_CHANGE,
     CATEGORY_CHANGE_FAIL, CATEGORY_CHANGE_SUCCESS,
-    ADD_FLASH_MESSAGE, SUCCESS_MESSAGE, ERROR_MESSAGE, CATEGORY_LOADED_SQLITE
+    ADD_FLASH_MESSAGE, SUCCESS_MESSAGE, ERROR_MESSAGE, 
+    CATEGORY_LOADED_SQLITE, CATEGORY_DELETE_SUCCESS
 } from './index';
 import { URL } from '../../env';
 import axios from 'axios';
@@ -10,6 +11,7 @@ import { AsyncStorage } from 'react-native';
 import { SQLite } from 'expo';
 import SqlService from '../database/sqliteService';
 const db = SQLite.openDatabase("SERP1.1.0.db", "1.1", "SERP Database", 200000);
+import { Actions } from 'react-native-router-flux';
 
 export const loadCategoriesDataFromSqlite = () => async (dispatch) => {
     dispatch({
@@ -45,12 +47,12 @@ export const CategoryDelete = (categoryId) => async (dispatch) => {
                 tx => {
                     tx.executeSql(`
                         UPDATE dataVersions 
-                        SET categories = ${res.data.dataversion[0].categories},                    
-                        WHERE id = 1;
+                        SET categories = '${res.data.dataversion[0].categories}'                  
+                        WHERE id = '1';
                     `);
                     tx.executeSql(
-                        `DELETE categories 
-                        WHERE id = ${categoryId};`
+                        `DELETE FROM categories 
+                        WHERE id = '${categoryId}';`
                     )
                     tx.executeSql(`select * from categories`,
                         null,
@@ -68,10 +70,9 @@ export const CategoryDelete = (categoryId) => async (dispatch) => {
                 err => console.log('Đã có lỗi: ', err),
                 null
             );
-
+            Actions.categoryList();
             dispatch({
-                type: CATEGORY_CHANGE_SUCCESS,
-                payload: res.data.category[0]
+                type: CATEGORY_DELETE_SUCCESS
             });
             dispatch({
                 type: ADD_FLASH_MESSAGE,
@@ -247,15 +248,17 @@ export const AddNewCategory = (category) => async (dispatch) => {
     } else {
         const apiUrl = `${URL}/api/category/new`;
         const formData = new FormData();
-
-        const uriParts = category.ImageUrl.split('.');
-        const fileType = uriParts[uriParts.length - 1];
-        formData.append('categoryImage', {
-            uri: category.ImageUrl,
-            name: `category.${fileType}`,
-            filename: `category.${fileType}`,
-            type: `image/${fileType}`,
-        });
+        console.log('category.ImageUrl = ', category.ImageUrl);
+        if (category.ImageUrl != '' && category.ImageUrl != undefined) {
+            const uriParts = category.ImageUrl.split('.');
+            const fileType = uriParts[uriParts.length - 1];
+            formData.append('categoryImage', {
+                uri: category.ImageUrl,
+                name: `category.${fileType}`,
+                filename: `category.${fileType}`,
+                type: `image/${fileType}`,
+            });
+        }
 
         formData.append('category', JSON.stringify(category));
         const options = {
@@ -274,15 +277,29 @@ export const AddNewCategory = (category) => async (dispatch) => {
                             SET categories = '${res.data.dataversion[0].categories}'                    
                             WHERE id = 1;`
                         );
-                        tx.executeSql(`
-                            insert into categories 
-                            (id, name, description, imageUrl) 
-                            values (
-                                ${res.data.category[0].id},
-                                ${res.data.category[0].name}, 
-                                ${res.data.category[0].description}, 
-                                ${res.data.category[0].imageUrl})
-                        `);
+                        let strSql = '';
+                        console.log('res.data.category[0].imageUrl = ', res.data.category[0].imageUrl.length);
+                        if (res.data.category[0].imageUrl.length > 1) {
+                            strSql = `insert into categories 
+                                    (id, name, description, imageUrl) 
+                                    values (
+                                        ${res.data.category[0].id},
+                                        '${res.data.category[0].name}', 
+                                        '${res.data.category[0].description}', 
+                                        '${res.data.category[0].imageUrl}'
+                                    )
+                                    `;
+                        } else {
+                            strSql = `insert into categories 
+                                    (id, name, description) 
+                                    values (
+                                            ${res.data.category[0].id},
+                                           ' ${res.data.category[0].name}', 
+                                            '${res.data.category[0].description}'
+                                        )
+                                    `;
+                        }
+                        tx.executeSql(strSql);
                         tx.executeSql(
                             `select * from categories`,
                             null,
@@ -295,7 +312,7 @@ export const AddNewCategory = (category) => async (dispatch) => {
                             (e) => {
                                 console.log('error read categories data from sqlite = ', e)
                             }
-                        )
+                        );
                     },
                     (e) => console.log('Lỗi update sqlite: ', e),
                     null
