@@ -19,12 +19,36 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
+const stringConvert = ({
+        CategoryId,
+    UnitId,
+    TypeCargoId,
+    IsPublic,
+    PurchasePrice,
+    SalePrice,
+    MinQuantity,
+    IsAvaiable,
+    Name,
+    Description
+    }) => ({
+        CategoryId: parseInt(CategoryId),
+        UnitId: parseInt(UnitId),
+        TypeCargoId: parseInt(TypeCargoId),
+        IsPublic: JSON.parse(IsPublic),
+        IsAvaiable: JSON.parse(IsAvaiable),
+        PurchasePrice: parseFloat(PurchasePrice),
+        SalePrice: parseFloat(SalePrice),
+        MinQuantity: parseFloat(MinQuantity),
+        Name,
+        Description
+    });
+
 ProductRouter.post('/new', upload.single('productImage'), async (req, res) => {
     let ImageUrl = '';
     if (req.file) {
         ImageUrl = `/images/products/${req.file.filename}`;
     }
-    const {
+    let {
         CategoryId,
         UnitId,
         TypeCargoId,
@@ -35,9 +59,25 @@ ProductRouter.post('/new', upload.single('productImage'), async (req, res) => {
         SalePrice,
         MinQuantity,
         IsAvaiable
-    } = JSON.parse(req.body.product);
-    const { isValid, errors } = ProductFormValidator(JSON.parse(req.body.product));
+    } = stringConvert(JSON.parse(req.body.product));
 
+
+    console.log({
+        CategoryId,
+        UnitId,
+        TypeCargoId,
+        Name,
+        Description,
+        IsPublic,
+        PurchasePrice,
+        SalePrice,
+        MinQuantity,
+        IsAvaiable
+    });
+
+    const { isValid, errors } = ProductFormValidator(JSON.parse(req.body.product));
+    console.log('isValid = ', isValid);
+    console.log('errors = ', errors);
     if (isValid) {
         let newDataversion;
         let data;
@@ -45,19 +85,28 @@ ProductRouter.post('/new', upload.single('productImage'), async (req, res) => {
             Knex.transaction(async (t) => {
                 try {
                     const dataVersion = await Knex('dataVersions').where('id', 1);
-
+                    debugger;
                     let { menus, userMenus, roles, categories,
-                         units, warehouses, products, customers,
-                          customerGroups } = dataVersion[0];
+                        units, warehouses, products, customers,
+                        customerGroups } = dataVersion[0];
 
                     products++;
                     newDataversion = await t('dataVersions')
                         .returning('*')
                         .whereRaw('id = 1')
                         .update({
-                            id: 1, menus, userMenus, roles, categories, 
-                            units, warehouses, products, customers, customerGroups
+                            id: 1,
+                            menus,
+                            userMenus,
+                            roles,
+                            categories,
+                            units,
+                            warehouses,
+                            products,
+                            customers,
+                            customerGroups
                         });
+                    debugger;
                     data = await t('products')
                         .returning('*')
                         .insert({
@@ -73,6 +122,7 @@ ProductRouter.post('/new', upload.single('productImage'), async (req, res) => {
                             isAvaiable: IsAvaiable,
                             imageUrl: ImageUrl
                         });
+                    debugger;
                 } catch (e) {
                     t.rollback();
                     console.log(e);
@@ -115,7 +165,7 @@ ProductRouter.post('/update', upload.single('productImage'), async (req, res) =>
         throw new Error('Không tìm thấy sản phẩm');
     }
 
-    const {
+    let {
         CategoryId,
         UnitId,
         TypeCargoId,
@@ -126,8 +176,10 @@ ProductRouter.post('/update', upload.single('productImage'), async (req, res) =>
         SalePrice,
         MinQuantity,
         IsAvaiable
-    } = JSON.parse(req.body.product);
-    
+    } = stringConvert(JSON.parse(req.body.product));
+
+    const { Id } = JSON.parse(req.body.product);
+    debugger;
     const { isValid, errors } = ProductFormValidator(JSON.parse(req.body.product));
 
     if (isValid) {
@@ -137,10 +189,10 @@ ProductRouter.post('/update', upload.single('productImage'), async (req, res) =>
             Knex.transaction(async (t) => {
                 try {
                     const dataVersion = await Knex('dataVersions').where('id', 1);
-
-                    let { menus, userMenus, roles, 
+                    debugger;
+                    let { menus, userMenus, roles,
                         categories, units, warehouses, products,
-                         customers, customerGroups } = dataVersion[0];
+                        customers, customerGroups } = dataVersion[0];
 
                     products++;
 
@@ -148,16 +200,25 @@ ProductRouter.post('/update', upload.single('productImage'), async (req, res) =>
                         .returning('*')
                         .whereRaw('id = 1')
                         .update({
-                            id: 1, menus, userMenus, roles, categories, units,
-                             warehouses, products, customers, customerGroups
+                            id: 1,
+                            menus,
+                            userMenus,
+                            roles,
+                            categories,
+                            units,
+                            warehouses,
+                            products,
+                            customers,
+                            customerGroups
                         });
+                    debugger;
                     const oldProduct = await t('products').where('id', Id);
-
+                    debugger;
                     let oldImage;
                     if (oldProduct.length > 0) {
                         oldImage = oldProduct[0].imageUrl;
                     }
-                    if (ImageUrl !== '') {
+                    if (req.file) {
                         data = await t('products')
                             .returning('*')
                             .whereRaw(`id = ${Id}`)
@@ -174,17 +235,11 @@ ProductRouter.post('/update', upload.single('productImage'), async (req, res) =>
                                 isAvaiable: IsAvaiable,
                                 imageUrl: ImageUrl
                             });
-                        //Xóa ảnh cũ
-                        const dir = path.resolve('Server/public');
-                        const filePath = path.resolve(dir + oldImage);
-                        if (fs.existsSync(filePath)) {
-                            fs.unlinkSync(filePath);
-                        }
                     } else {
                         data = await t('products')
                             .returning('*')
                             .whereRaw(`id = ${Id}`)
-                            .update({ 
+                            .update({
                                 categoryId: CategoryId,
                                 unitId: UnitId,
                                 typeCargoId: TypeCargoId,
@@ -195,8 +250,18 @@ ProductRouter.post('/update', upload.single('productImage'), async (req, res) =>
                                 salePrice: SalePrice,
                                 minQuantity: MinQuantity,
                                 isAvaiable: IsAvaiable
-                             });
+                            });
                     }
+                    debugger;
+                    //Xóa ảnh cũ
+                    if (req.file && oldImage.indexOf('images/products') > 0) {
+                        const dir = path.resolve('Server/public');
+                        const filePath = path.resolve(dir + oldImage);
+                        if (fs.existsSync(filePath)) {
+                            fs.unlinkSync(filePath);
+                        }
+                    }
+                    debugger;
                 } catch (e) {
                     t.rollback();
                     console.log(e);
@@ -224,52 +289,63 @@ ProductRouter.post('/update', upload.single('productImage'), async (req, res) =>
 });
 
 ProductRouter.post('/delete', async (req, res) => {
-
+    debugger;
     const { Id } = req.body;
     let newDataversion;
+    debugger;
     Knex.transaction(async (t) => {
         try {
-
             const dataVersion = await Knex('dataVersions').where('id', 1);
-
+            debugger;
             let { menus, userMenus, roles, categories,
-                 units, warehouses, products, customers,
-                  customerGroups } = dataVersion[0];
+                units, warehouses, products, customers,
+                customerGroups } = dataVersion[0];
             products++;
             newDataversion = await t('dataVersions')
                 .returning('*')
                 .whereRaw('id = 1')
                 .update({
-                    id: 1, menus, userMenus, roles, categories, units,
-                     warehouses, products, customers, customerGroups
+                    id: 1,
+                    menus,
+                    userMenus,
+                    roles,
+                    categories,
+                    units,
+                    warehouses,
+                    products,
+                    customers,
+                    customerGroups
                 })
-                .catch(function (error) {
+                .catch((error) => {
                     console.error(error);
                 });
-
+                debugger;
+            const oldProduct = await Knex('products')
+                .debug(true)
+                .where({ id: Id })
+                .catch((error) => {
+                    console.error('oldProduct error ', error);
+                });
+                debugger;
             await Knex('products')
                 .transacting(t)
                 .debug(true)
                 .where({ id: Id })
                 .del()
-                .catch(function (error) {
-                    console.error("delete product error: ", error);
+                .catch((error) => {
+                    console.error('delete product error: ', error);
                 });
-                
-            const oldProduct = await Knex('products')
-                .debug(true)
-                .where({ id: Id })
-                .catch(function (error) {
-                    console.error("oldProduct error ", error);
-                });
-
-            if (oldProduct[0] && oldProduct.length > 0) {
+                debugger;
+            if (oldProduct[0] && oldProduct[0].imageUrl.indexOf('images/products') > 0) {
+                debugger
                 const dir = path.resolve('Server/public');
                 const filePath = path.resolve(dir + oldProduct[0].imageUrl);
                 if (fs.existsSync(filePath)) {
+                    debugger;
                     fs.unlinkSync(filePath);
                 }
             }
+            debugger;
         } catch (e) {
             t.rollback();
             res.status(400).json({ success: false, error: e });
@@ -286,4 +362,4 @@ ProductRouter.post('/delete', async (req, res) => {
         );
 });
 
-export { ProductRouter };
+export default ProductRouter;

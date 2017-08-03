@@ -47,13 +47,7 @@ class Categories extends React.Component {
                             Actions.categoryEdit({ category: item })
                         }} >
                             <View style={styles.listItem}>
-                                {
-                                    item.imageUrl &&
-                                    <Image
-                                        style={styles.itemImage}
-                                        source={{ uri: `${URL}/${item.imageUrl}` }}
-                                    />
-                                }
+                                {this.renderImage(item.imageUrl)}
                                 <Text style={styles.itemTitle}>{item.name}</Text>
                             </View>
                         </TouchableWithoutFeedback>
@@ -64,6 +58,17 @@ class Categories extends React.Component {
         return (
             <Spinner />
         );
+    }
+    renderImage(imagePath) {
+        if (imagePath && imagePath != '') {
+            return (
+                <Image
+                    style={styles.itemImage}
+                    source={{ uri: `${URL}/${imagePath}` }}
+                />
+            );
+        }
+        return null;
     }
     render() {
         return (

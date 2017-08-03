@@ -113,22 +113,26 @@ CategoryRouter.post('/update', upload.single('categoryImage'), async (req, res) 
             .update({
               id: 1, menus, userMenus, roles, categories, units, warehouses, products, customers, customerGroups
             });
-          if (ImageUrl !== '') {
+          if (req.file) {
             data = await t('categories')
               .returning('*')
               .whereRaw(`id = ${Id}`)
               .update({ name: Name, description: Description, imageUrl: ImageUrl });
-            //Xóa ảnh cũ
-            const dir = path.resolve('Server/public');
-            const filePath = path.resolve(dir + oldImage);
-            if (fs.existsSync(filePath)) {
-              fs.unlinkSync(filePath);
-            }
           } else {
             data = await t('categories')
               .returning('*')
               .whereRaw(`id = ${Id}`)
               .update({ name: Name, description: Description });
+          }
+
+          // console.log('index image = ', oldImage.indexOf('images/category'));
+            //Xóa ảnh cũ
+          if (req.file && oldImage.indexOf('images/category') > 0) {
+            const dir = path.resolve('Server/public');
+            const filePath = path.resolve(dir + oldImage);
+            if (fs.existsSync(filePath)) {
+              fs.unlinkSync(filePath);
+            }
           }
         } catch (e) {
           t.rollback();
@@ -157,7 +161,7 @@ CategoryRouter.post('/update', upload.single('categoryImage'), async (req, res) 
 });
 
 CategoryRouter.post('/delete', async (req, res) => {
-  
+
   const { Id } = req.body;
   let newDataversion;
   Knex.transaction(async (t) => {
@@ -200,16 +204,10 @@ CategoryRouter.post('/delete', async (req, res) => {
         .catch(function (error) {
           console.error("delete category error: ", error);
         });
-      const oldImage = await t('categories')
-        .debug(true)
-        .returning('imageUrl')
-        .where('id', Id)
-        .catch(function (error) {
-          console.error("get image error ", error);
-        });
-      if (oldImage[0] && oldImage.length > 0) {
+
+      if (oldCategories[0] && oldCategories[0].imageUrl.indexOf('images/category') > 0) {
         const dir = path.resolve('Server/public');
-        const filePath = path.resolve(dir + oldImage[0].imageUrl);
+        const filePath = path.resolve(dir + oldCategories[0].imageUrl);
         if (fs.existsSync(filePath)) {
           fs.unlinkSync(filePath);
         }
