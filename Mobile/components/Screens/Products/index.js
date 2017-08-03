@@ -1,5 +1,9 @@
 import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity, TouchableWithoutFeedback, TextInput } from 'react-native';
+import {
+    View, Text, ScrollView,
+    TouchableOpacity, TouchableWithoutFeedback,
+    TextInput, FlatList
+} from 'react-native';
 import Header from '../../commons/Header';
 import Footer from '../../commons/Footer';
 import { Actions } from 'react-native-router-flux';
@@ -7,44 +11,25 @@ import { connect } from 'react-redux';
 import stylesCommon from '../../../styles';
 import { Ionicons } from '@expo/vector-icons';
 import { loadProductsDataFromSqlite } from '../../../actions/productActions';
-import {Spinner} from '../../commons/Spinner';
+import { Spinner } from '../../commons/Spinner';
+import SqlService from '../../../database/sqliteService';
+
 class ProductList extends React.Component {
     state = {
         searchText: '',
-        error: null
+        error: null,
+        products: [],
+        loaded: false
     }
-    componentWillMount() {
-        if (!this.props.loaded) {
-            this.props.loadProductsDataFromSqlite();
-        }
-    }
-    renderProductsItem() {
-        if (this.props.loaded) {
-            const { products } = this.props;
-            const productsRedered = products.map((item) => {
-                return (
-                    <TouchableWithoutFeedback key={item.id} onPress={() => {
-                        console.log(`id = ${item.id} name = ${item.name} cliked`)
-                        Actions.ProductDetail({product: item})
-                    }} >
-                        <View style={styles.listItem}>
-                            <Text style={styles.itemTitle}>{item.name}</Text>
-                            <Ionicons name="ios-arrow-dropright" size={32} color="#16a085" />
-                        </View>
-                    </TouchableWithoutFeedback>
-                );
-            }, this);
-            return (
-                <View>
-                    {productsRedered}
-                </View>
-            );
-        } else {
-            return (
-                <Spinner />
-            )
-        }
-    }
+
+    // componentDidMount() {
+    // const { categoryId } = this.props;
+    // SqlService.query(`select * from products where categoryId = ${categoryId}`).then(
+    //     result => {
+    //         this.setState({ products: result });
+    //     }
+    // );
+    // }
     onSearchInputChange(text) {
         this.setState({ searchText: text });
     }
@@ -52,6 +37,74 @@ class ProductList extends React.Component {
     addNewGroupBtnPress() {
         Actions.main();
     }
+
+    convertData() {
+        const products = [];
+        if (this.props.categoryId) {
+            const { categoryId } = this.props;
+            this.setState({ loaded: false });
+            
+            SqlService.query(`select * from products where categoryId = ${categoryId}`).then(
+                result => {
+                    result.forEach((item) => {
+                        const convertedData = { ...item, key: item.id };
+                        products.push(convertedData);                        
+                    });
+                    this.setState({ products, loaded: true });
+                }
+            );
+        }
+    }
+    renderProductList() {
+        this.convertData();
+        if (this.state.products && this.state.loaded) {
+            return (
+                <FlatList
+                    data={this.state.products}
+                    renderItem={({ item }) =>
+                        <TouchableWithoutFeedback
+                            key={item.key} onPress={() => {
+                                console.log(`id = ${item.id} name = ${item.name} cliked`);
+                                Actions.ProductDetail({ product: item });
+                            }}
+                        >
+                            <View style={styles.listItem}>
+                                <Text style={styles.itemTitle}>{item.name}</Text>
+                            </View>
+                        </TouchableWithoutFeedback>
+                    }
+                />
+            );
+        }
+        return (
+            <Spinner />
+        );
+    }
+
+    renderProductsItem() {
+        if (this.props.loaded) {
+            const { products } = this.props;
+            const productsRedered = products.map((item) => (
+                <TouchableWithoutFeedback key={item.id} onPress={() => {
+                    console.log(`id = ${item.id} name = ${item.name} cliked`)
+                    Actions.ProductDetail({ product: item })
+                }} >
+                    <View style={styles.listItem}>
+                        <Text style={styles.itemTitle}>{item.name}</Text>
+                        <Ionicons name="ios-arrow-dropright" size={32} color="#16a085" />
+                    </View>
+                </TouchableWithoutFeedback>
+            ), this);
+            return (
+                <View>
+                    {productsRedered}
+                </View>
+            );
+        }
+        return (
+            <Spinner />
+        );
+    }    
 
     render() {
         return (
@@ -82,7 +135,7 @@ class ProductList extends React.Component {
                         <Text>
                             {this.state.error && <Text style={styles.errorStyle}>{this.state.error.identifier}</Text>}
                         </Text>
-                        {this.renderProductsItem()}
+                        {this.renderProductList()}
                     </ScrollView>
                 </View>
                 <Footer>
@@ -166,8 +219,8 @@ const styles = {
 };
 const mapStateToProps = (state, ownProps) => {
     const { loading, loaded, products } = state.products;
-    return { loading, loaded, products }
-}
+    return { loading, loaded, products };
+};
 export default connect(mapStateToProps, {
     loadProductsDataFromSqlite
 })(ProductList);

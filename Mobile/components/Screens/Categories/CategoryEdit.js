@@ -77,7 +77,7 @@ class CategoryEdit extends React.Component {
                 </TouchableOpacity>
                 <TouchableOpacity
                     disabled={this.props.loading}
-                    style={[styles.Btn, styles.footerBtn]} onPress={() => Actions.productList()}
+                    style={[styles.Btn, styles.footerBtn]} onPress={() => Actions.productList({ categoryId: this.props.Id })}
                 >
                     <Ionicons name="ios-folder-open-outline" size={25} color="#FFFFFF" />
                     <Text style={styles.titleButton}>DS Sản Phẩm</Text>
