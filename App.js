@@ -46,7 +46,7 @@ function cacheFonts(fonts) {
 let store;
 if (__DEV__) {
   store = createStore(Reducers, compose(
-    applyMiddleware(ReduxThunk, reduxLogger)));
+    applyMiddleware(ReduxThunk/*, reduxLogger*/)));
 } else {
   store = createStore(Reducers, compose(
     applyMiddleware(ReduxThunk)));
@@ -81,17 +81,12 @@ export default class serp extends React.Component {
 
     if (token) {
       const user = jwt(token);
-      if (__DEV__) console.log('token = ', token);
+      
       setAuthorizationToken(token);
       store.dispatch(SetCurrentUser(user));
-      // debugger;
-      // const slqMaster = await SqlService.select('sqlite_master', '*');
-      // console.log("sqlMaster = ", slqMaster);
       
       await createDatabaseSqlite();
-      await checkDataVersion(user.id, store);
-
-      
+      await checkDataVersion(user.id, store);      
     }
 
     this.setState({ appIsReady: true });

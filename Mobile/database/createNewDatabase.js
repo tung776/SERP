@@ -36,13 +36,11 @@ export const resetDatabase = (tx) => {
 };
 
 export const createDatabaseSqlite = async () => {
-  console.log("go create table");
   // SqlService.query(
   //   'drop table if exists dataVersions;');
   db.transaction(
     tx => {
       resetDatabase(tx);
-      console.log("begin transactions");
       // tx.executeSql('delete from dataVersions where id = 1');
       tx.executeSql(`create table if not exists
          menus (
@@ -50,7 +48,7 @@ export const createDatabaseSqlite = async () => {
            name text,
            parentId integer
           );`, null,
-          e=> console.log('menus success ??', e),
+          null,
           e => console.log('menus error: ', e)
       );
       tx.executeSql(`create table if not exists
@@ -60,7 +58,7 @@ export const createDatabaseSqlite = async () => {
            parentId,
            name text
           );`, null,  
-          e=> console.log('userMenus success ??', e),
+          null,
           e => console.log('userMenus error: ', e)
       );
       tx.executeSql(`create table if not exists
@@ -68,7 +66,7 @@ export const createDatabaseSqlite = async () => {
            id integer primary key not null,
            name text
           );`, null, 
-           e=> console.log('roles success ??', e),
+          null,
           e => console.log('roles error: ', e)
       );
       tx.executeSql(`create table if not exists
@@ -78,7 +76,7 @@ export const createDatabaseSqlite = async () => {
            description text,
            imageUrl text
           );`, null, 
-           e=> console.log('categories success ??', e),
+          null,
           e => console.log('categories error: ', e)
       );
       tx.executeSql(`create table if not exists
@@ -87,7 +85,7 @@ export const createDatabaseSqlite = async () => {
            name text,
            rate real
           );`, null,  
-          e=> console.log('units success ??', e),
+          null,
           e => console.log('units error: ', e)
       );
       tx.executeSql(`create table if not exists
@@ -97,7 +95,7 @@ export const createDatabaseSqlite = async () => {
            description text,
            address text
           );`, null, 
-           e=> console.log('warehouses success ??', e),
+          null,
           e => console.log('warehouses error: ', e)
       );
       tx.executeSql(`create table if not exists
@@ -115,7 +113,7 @@ export const createDatabaseSqlite = async () => {
            minQuantity real,
            isAvaiable integer
           );`, null, 
-           e=> console.log('products success ??', e),
+          null,
           e => console.log('products error: ', e)
       );
       tx.executeSql(`create table if not exists
@@ -124,7 +122,7 @@ export const createDatabaseSqlite = async () => {
            name text,
            description text
           );`, null,
-           e=> console.log('customerGroups success ??', e),
+          null,
           e => console.log('customerGroups error: ', e)
       );
       tx.executeSql(`create table if not exists
@@ -141,7 +139,7 @@ export const createDatabaseSqlite = async () => {
            overdue integer,
            minQuantity real
           );`, null,
-           e=> console.log('customers success ??', e),
+          null,
           e => console.log('customers error: ', e)
       );
       tx.executeSql(`create table if not exists
@@ -157,12 +155,12 @@ export const createDatabaseSqlite = async () => {
            customerGroups integer,
            customers integer
           );`, null, 
-           e=> console.log('dataVersions success ??', e),
+          null,
           e => console.log('dataVersions error: ', e)
       );
     },
     e => console.log("lỗi tạo các bảng dữ liệu 1 ", e),
-    () => console.log("success ", )
+    null
 
   )
 };
@@ -170,8 +168,6 @@ export const createDatabaseSqlite = async () => {
 export const getCurrentDataVersion = async () => await SqlService.select('dataVersions', '*');
 
 export const updateOrInsertDataVersion = async (data) => {
-  // debugger;
-  console.log('begin update data');
   const avaiabledDataVersion = await SqlService.select('dataVersions', '*', `id = '${data.id}'`);
 
   const newDataVersion = [
@@ -200,10 +196,9 @@ export const updateOrInsertDataVersion = async (data) => {
         `);
       },
       (e) => console.log("lỗi lưu dataVersions sqlite: ", e),
-      () => console.log('insert dataversion success')
+      null
     );
   } else {
-    console.log("avaiabledDataVersion.length", avaiabledDataVersion.length);
     let sql = 'UPDATE dataVersions SET ';
     if(data.menusVersion) 
       sql += `menus = '${data.menusVersion}' `
@@ -232,11 +227,10 @@ export const updateOrInsertDataVersion = async (data) => {
         );
       },
       (e) => console.log("lỗi lưu dataVersions sqlite: ", e),
-      () => console.log('update dataversion success')
+      null
     )
   }
   if (data.userMenus && data.userMenus.length > 0) {
-    console.log("remove old userMenus table");
     db.transaction(
       tx => {
         tx.executeSql(`drop table if exists userMenus;`);
@@ -437,12 +431,11 @@ export const updateOrInsertDataVersion = async (data) => {
 };
 
 export const checkDataVersion = async (userId, store) => {
-  // console.log("go checkDataVersion");
 
   try {
     await SqlService.select('dataVersions', '*', `id = 1`).then(
       async (currentVersion) => {
-        // debugger;
+
         if (!currentVersion[0]) currentVersion[0] = { id: 0, menus: 0, userMenus: 0, roles: 0, units: 0, warehouses: 0, categories: 0, products: 0, customerGroups: 0, customers: 0 };
         const { id, menus, userMenus, roles, units, warehouses, categories,
           products, customerGroups, customers } = currentVersion[0];
@@ -460,10 +453,8 @@ export const checkDataVersion = async (userId, store) => {
           customers,
           userId
         });
-        // console.log('data = ', data);
 
         await updateOrInsertDataVersion(data.data);
-        console.log('begin dispatch menuActions');
         store.dispatch(loadMenusData());
 
         // await getCurrentDataVersion().then(

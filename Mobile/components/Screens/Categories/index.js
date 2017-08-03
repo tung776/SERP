@@ -1,7 +1,8 @@
 import React from 'react';
 import {
     View, Text, ScrollView, Image, Dimensions,
-    TouchableOpacity, TouchableWithoutFeedback
+    TouchableOpacity, TouchableWithoutFeedback,
+    FlatList
 } from 'react-native';
 import Header from '../../commons/Header';
 import Footer from '../../commons/Footer';
@@ -10,40 +11,59 @@ import { connect } from 'react-redux';
 import stylesCommon from '../../../styles';
 import { Ionicons } from '@expo/vector-icons';
 import { loadCategoriesDataFromSqlite } from '../../../actions/categoryActions';
+import { Spinner } from '../../commons/Spinner';
+import { URL } from '../../../../env';
 
 class Categories extends React.Component {
     state = {}
     componentWillMount() {
-        this.props.loadCategoriesDataFromSqlite();
+        if (!this.props.loaded) {
+            this.props.loadCategoriesDataFromSqlite();
+        }
     }
     addNewGroupBtnPress() {
         Actions.main();
     }
-    renderCategoriesItem() {
-        const { categories } = this.props;
-        if (categories) {
-            const categoriesRendered = categories.map((item) => {
-                return (
-                    <TouchableWithoutFeedback key={item.id} onPress={() => {
-                        console.log(`id = ${item.id} name = ${item.name} cliked`)
-                        Actions.categoryEdit({ category: item })
-                    }} >
-                        <View style={styles.listItem}>
-                            <Text style={styles.itemTitle}>{item.name}</Text>
-                        </View>
-                    </TouchableWithoutFeedback>
-                );
-            }, this);
+
+    convertData() {
+        if (this.props.categories) {
+            let categories = [];
+            this.props.categories.forEach((item) => {
+                const convertedData = { ...item, key: item.id }
+                categories.push(convertedData);
+            });
+            return categories;
+        }
+    }
+    renderCategoryList() {
+        const categories = this.convertData();
+        if (this.props.categories) {
             return (
-                <View>
-                    {categoriesRendered}
-                </View>
-            );
-        } else {
-            return (
-                <View></View>
+                <FlatList
+                    data={categories}
+                    renderItem={({ item }) =>
+                        <TouchableWithoutFeedback key={item.key} onPress={() => {
+                            console.log(`id = ${item.id} name = ${item.name} cliked`)
+                            Actions.categoryEdit({ category: item })
+                        }} >
+                            <View style={styles.listItem}>
+                                {
+                                    item.imageUrl &&
+                                    <Image
+                                        style={styles.itemImage}
+                                        source={{ uri: `${URL}/${item.imageUrl}` }}
+                                    />
+                                }
+                                <Text style={styles.itemTitle}>{item.name}</Text>
+                            </View>
+                        </TouchableWithoutFeedback>
+                    }
+                />
             );
         }
+        return (
+            <Spinner />
+        );
     }
     render() {
         return (
@@ -52,9 +72,7 @@ class Categories extends React.Component {
                     <Text style={styles.headTitle}>Nhóm Sản Phẩm</Text>
                 </Header>
                 <View style={styles.body}>
-                    <ScrollView>
-                        {this.renderCategoriesItem()}
-                    </ScrollView>
+                    {this.renderCategoryList()}
                 </View>
                 <Footer>
                     <TouchableOpacity style={styles.addNewGroupBtn} onPress={() => { Actions.categoryNew(); }}>

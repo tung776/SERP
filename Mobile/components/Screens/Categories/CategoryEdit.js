@@ -27,16 +27,12 @@ class CategoryEdit extends React.Component {
 
     constructor(nextProps) {
         super(nextProps);
-        // console.log(nextProps);
-        // debugger;
-
     }
 
     componentWillMount() {
         const { id } = this.props.category;
         SqlService.query(`select * from categories where id = ${id}`).then(
             result => {
-                console.log("result", result)
                 this.props.CategoryChange({ prop: 'Name', value: result[0].name });
                 this.props.CategoryChange({ prop: 'Description', value: result[0].description });
                 this.props.CategoryChange({ prop: 'ImageUrl', value: result[0].imageUrl });
@@ -54,14 +50,12 @@ class CategoryEdit extends React.Component {
 
         if (!pickerResult.cancelled) {
             this.props.CategoryChange({ prop: 'ImageUrl', value: pickerResult.uri });
-            console.log("pickerResult.uri = ", pickerResult.uri);
             this.setState({ ImageUrl: pickerResult.uri, uploading: false, isImageChanged: true });
         }
     }
 
     onSavePress() {
         const { error, Id, Name, Description, ImageUrl, CategoryUpdate, loading } = this.props;
-        // console.log({ Name, Description, ImageUrl });
         CategoryUpdate({ Id, Name, Description, ImageUrl }, this.state.isImageChanged);
     }
 
@@ -100,23 +94,17 @@ class CategoryEdit extends React.Component {
         );
     }
     renderImage() {
-        console.log("image selected = ", this.props.ImageUrl);
-
         if (this.props.ImageUrl) {
-            console.log("this.props.ImageUrl.indexOf ", this.props.ImageUrl.indexOf(`${URL}`))
 
             if (this.props.ImageUrl.indexOf(`file:///data/user`) < 0) {
                 return (<Image style={styles.itemImage} source={{ uri: `${URL}/${this.props.ImageUrl}` }} />);
             }
-            console.log("render image ....")
             return (<Image style={styles.itemImage} source={{ uri: this.props.ImageUrl }} />);
         }
         return null;
     }
 
     render() {
-        // debugger;
-        // console.log(this.props);
         const { error, Name, Description, ImageUrl, loading, CategoryChange } = this.props;
         return (
             <View style={styles.container}>
@@ -244,8 +232,9 @@ const styles = {
         borderRadius: 5,
     },
     itemImage: {
-        width: 150,
-        height: 100,
+        width: widthImage,
+        height: (widthImage * 0.45),
+        borderRadius: 8,
         marginBottom: 15,
         marginTop: 5
     },

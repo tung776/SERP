@@ -25,6 +25,7 @@ export const CATEGORY_CHANGE_SUCCESS = 'CATEGORY_CHANGE_SUCCESS';
 export const CATEGORY_CHANGE = 'CATEGORY_CHANGE';
 export const CATEGORY_LOADED_SQLITE = 'CATEGORY_LOADED_SQLITE';
 export const CATEGORY_DELETE_SUCCESS = 'CATEGORY_DELETE_SUCCESS';
+export const RESET_CATEGORY_FORM = 'RESET_CATEGORY_FORM';
 //========================= PRODUCT ==================================================
 export const ADD_PRODUCT = 'ADD_PRODUCT';
 export const PRODUCT_PENDING = 'PRODUCT_PENDING';

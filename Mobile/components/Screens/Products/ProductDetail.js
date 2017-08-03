@@ -14,7 +14,6 @@ class ProductNew extends React.Component {
         Price: ''
     }
     render() {
-        console.log("this.props.product = ", this.props.product)
         const {product} = this.props;
         return (
             <View style={styles.container}>

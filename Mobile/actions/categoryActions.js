@@ -2,7 +2,8 @@ import {
     ADD_CATEGORY, CATEGORY_PENDING, CATEGORY_CHANGE,
     CATEGORY_CHANGE_FAIL, CATEGORY_CHANGE_SUCCESS,
     ADD_FLASH_MESSAGE, SUCCESS_MESSAGE, ERROR_MESSAGE, 
-    CATEGORY_LOADED_SQLITE, CATEGORY_DELETE_SUCCESS
+    CATEGORY_LOADED_SQLITE, CATEGORY_DELETE_SUCCESS,
+    RESET_CATEGORY_FORM
 } from './index';
 import { URL } from '../../env';
 import axios from 'axios';
@@ -26,6 +27,12 @@ export const loadCategoriesDataFromSqlite = () => async (dispatch) => {
         }
     );
 };
+
+export const resetData = () => (dispatch) => {
+    dispatch({
+        type: RESET_CATEGORY_FORM
+    });
+}
 
 export const CategoryChange = ({ prop, value }) => ({
     type: CATEGORY_CHANGE,
@@ -153,9 +160,7 @@ export const CategoryUpdate = (category, isImageChanged) => async (dispatch) => 
                             set categories = ${res.data.dataversion[0].categories} 
                             where id = 1`,
                                 null,
-                                () => {
-                                    console.log('success')
-                                },
+                                null,
                                 (e) => {
                                     console.log('lỗi update dataVersions = ', e)
                                 }
@@ -168,9 +173,7 @@ export const CategoryUpdate = (category, isImageChanged) => async (dispatch) => 
                             where id = ${res.data.category[0].id}
                             `,
                                 null,
-                                () => {
-                                    console.log('success')
-                                },
+                                null,
                                 (e) => {
                                     console.log('lỗi update categories = ', e)
                                 }
@@ -189,7 +192,7 @@ export const CategoryUpdate = (category, isImageChanged) => async (dispatch) => 
                             );
                         },
                         (e) => console.log('error ?????', e),
-                        console.log('success ????')
+                        null
                     );
                 }
                 catch (e) {
@@ -248,7 +251,6 @@ export const AddNewCategory = (category) => async (dispatch) => {
     } else {
         const apiUrl = `${URL}/api/category/new`;
         const formData = new FormData();
-        console.log('category.ImageUrl = ', category.ImageUrl);
         if (category.ImageUrl != '' && category.ImageUrl != undefined) {
             const uriParts = category.ImageUrl.split('.');
             const fileType = uriParts[uriParts.length - 1];
@@ -278,7 +280,7 @@ export const AddNewCategory = (category) => async (dispatch) => {
                             WHERE id = 1;`
                         );
                         let strSql = '';
-                        console.log('res.data.category[0].imageUrl = ', res.data.category[0].imageUrl.length);
+                        
                         if (res.data.category[0].imageUrl.length > 1) {
                             strSql = `insert into categories 
                                     (id, name, description, imageUrl) 

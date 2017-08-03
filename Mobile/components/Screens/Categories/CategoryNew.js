@@ -12,7 +12,7 @@ import {
     ADD_CATEGORY, ADD_CATEGORY_PENDING,
     CATEGORY_CHANGE_FAIL, CATEGORY_CHANGE_SUCCESS,
 } from '../../../actions';
-import { AddNewCategory, CategoryChange } from '../../../actions/categoryActions';
+import { AddNewCategory, CategoryChange, resetData} from '../../../actions/categoryActions';
 import { AppLoading } from 'expo';
 import { Spinner } from '../../commons/Spinner';
 
@@ -23,7 +23,9 @@ class CategoryNew extends React.Component {
         ImageUrl: null,
         uploading: false
     }
-
+    componentWillMount() {
+        this.props.resetData();
+    }
     async onSelectImage() {
         const pickerResult = await takeImage();
 
@@ -31,14 +33,12 @@ class CategoryNew extends React.Component {
 
         if (!pickerResult.cancelled) {
             this.props.CategoryChange({ prop: "ImageUrl", value: pickerResult.uri });
-            console.log(pickerResult.uri);
             this.setState({ ImageUrl: pickerResult.uri, uploading: false });
         }
     }
 
     onSavePress() {
         const { error, Name, Description, ImageUrl, AddNewCategory, loading } = this.props;
-        // console.log({ Name, Description, ImageUrl });
         AddNewCategory({ Name, Description, ImageUrl });
     }
     renderButton() {
@@ -75,14 +75,12 @@ class CategoryNew extends React.Component {
     renderImage() {
 
         if (this.props.ImageUrl) {
-            // console.log("this.props.ImageUrl ", this.props.ImageUrl)
             return (<Image style={styles.itemImage} source={{ uri: this.props.ImageUrl }} />);
         }
         return null;
     }
     render() {
         const { error, Name, Description, ImageUrl, loading, CategoryChange } = this.props;
-        console.log("loading = ", loading);
 
         return (
             <View style={styles.container}>
@@ -234,5 +232,6 @@ const mapStateToProps = (state, ownProps) => {
 }
 export default connect(mapStateToProps, {
     AddNewCategory,
-    CategoryChange
+    CategoryChange,
+    resetData
 })(CategoryNew);
