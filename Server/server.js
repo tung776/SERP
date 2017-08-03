@@ -43,6 +43,9 @@ app.use('/api/users', UserRouters);
 import { CategoryRouter } from './routes/categoryRouters'
 app.use('/api/category' , CategoryRouter);
 
+import ProductRouter from './routes/productRouters';
+app.use('/api/product', ProductRouter);
+
 import {RequestHandler} from'./requestHandler';
 app.use( RequestHandler);
 

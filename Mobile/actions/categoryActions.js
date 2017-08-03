@@ -1,7 +1,8 @@
+import { Alert } from 'react-native';
 import {
     ADD_CATEGORY, CATEGORY_PENDING, CATEGORY_CHANGE,
     CATEGORY_CHANGE_FAIL, CATEGORY_CHANGE_SUCCESS,
-    ADD_FLASH_MESSAGE, SUCCESS_MESSAGE, ERROR_MESSAGE, 
+    ADD_FLASH_MESSAGE, SUCCESS_MESSAGE, ERROR_MESSAGE,
     CATEGORY_LOADED_SQLITE, CATEGORY_DELETE_SUCCESS,
     RESET_CATEGORY_FORM
 } from './index';
@@ -85,7 +86,13 @@ export const CategoryDelete = (categoryId) => async (dispatch) => {
                 type: ADD_FLASH_MESSAGE,
                 payload: { message: 'Bạn đã tạo nhóm sản phẩm thành công', TypeMessage: SUCCESS_MESSAGE }
             });
-            alert('Bạn đã lưu dữ liệu thành công');
+            Alert.alert(
+                'Thông Báo',
+                'Bạn đã lưu dữ liệu thành công',
+                [
+                    { text: 'OK', onPress: () => console.log('OK Pressed') },
+                ]
+            );
         }
     ).catch(
         err => {
@@ -109,7 +116,13 @@ export const CategoryDelete = (categoryId) => async (dispatch) => {
                     payload: { message: `Tạo nhóm sản phẩm thất bại: ${err}`, TypeMessage: ERROR_MESSAGE }
                 });
             }
-            alert(`Lưu dữ liệu thất bại: ${err}`);
+            Alert.alert(
+                'Báo Lỗi',
+                `Lưu dữ liệu thất bại: ${err}`,
+                [
+                    { text: 'OK', onPress: () => console.log('OK Pressed') },
+                ]
+            );
         }
         );
 };
@@ -124,7 +137,13 @@ export const CategoryUpdate = (category, isImageChanged) => async (dispatch) => 
             type: CATEGORY_CHANGE_FAIL,
             payload: errors
         });
-        alert(`Lưu dữ liệu thất bại: ${errors}`);
+        Alert.alert(
+            'Báo Lỗi',
+            `Lưu dữ liệu thất bại: ${errors}`,
+            [
+                { text: 'OK', onPress: () => console.log('OK Pressed') },
+            ]
+        );
     } else {
         const apiUrl = `${URL}/api/category/update`;
         const formData = new FormData();
@@ -207,7 +226,13 @@ export const CategoryUpdate = (category, isImageChanged) => async (dispatch) => 
                     type: ADD_FLASH_MESSAGE,
                     payload: { message: 'Bạn đã tạo nhóm sản phẩm thành công', TypeMessage: SUCCESS_MESSAGE }
                 });
-                alert('Bạn đã lưu dữ liệu thành công');
+                Alert.alert(
+                    'Thông Báo',
+                    `Bạn đã lưu dữ liệu thành công`,
+                    [
+                        { text: 'OK', onPress: () => console.log('OK Pressed') },
+                    ]
+                );
             }
         ).catch(
             err => {
@@ -231,7 +256,13 @@ export const CategoryUpdate = (category, isImageChanged) => async (dispatch) => 
                         payload: { message: `Tạo nhóm sản phẩm thất bại: ${err}`, TypeMessage: ERROR_MESSAGE }
                     });
                 }
-                alert(`Lưu dữ liệu thất bại: ${err}`);
+                Alert.alert(
+                    'Báo Lỗi',
+                    `Lưu dữ liệu thất bại: ${err}`,
+                    [
+                        { text: 'OK', onPress: () => console.log('OK Pressed') },
+                    ]
+                );
             }
             );
     }
@@ -247,7 +278,13 @@ export const AddNewCategory = (category) => async (dispatch) => {
             type: CATEGORY_CHANGE_FAIL,
             payload: errors
         });
-        alert(`Lưu dữ liệu thất bại: ${errors}`);
+        Alert.alert(
+            'Báo Lỗi',
+            `Lưu dữ liệu thất bại: ${errors}`,
+            [
+                { text: 'OK', onPress: () => console.log('OK Pressed') },
+            ]
+        );
     } else {
         const apiUrl = `${URL}/api/category/new`;
         const formData = new FormData();
@@ -280,7 +317,7 @@ export const AddNewCategory = (category) => async (dispatch) => {
                             WHERE id = 1;`
                         );
                         let strSql = '';
-                        
+
                         if (res.data.category[0].imageUrl.length > 1) {
                             strSql = `insert into categories 
                                     (id, name, description, imageUrl) 
@@ -328,7 +365,13 @@ export const AddNewCategory = (category) => async (dispatch) => {
                     type: ADD_FLASH_MESSAGE,
                     payload: { message: 'Bạn đã tạo nhóm sản phẩm thành công', TypeMessage: SUCCESS_MESSAGE }
                 });
-                alert('Bạn đã lưu dữ liệu thành công');
+                Alert.alert(
+                    'Thông Báo',
+                    `Bạn đã lưu dữ liệu thành công`,
+                    [
+                        { text: 'OK', onPress: () => console.log('OK Pressed') },
+                    ]
+                );
             }
         ).catch(
             err => {
@@ -352,7 +395,13 @@ export const AddNewCategory = (category) => async (dispatch) => {
                         payload: { message: `Tạo nhóm sản phẩm thất bại: ${err}`, TypeMessage: ERROR_MESSAGE }
                     });
                 }
-                alert(`Lưu dữ liệu thất bại: ${err}`);
+                Alert.alert(
+                    'Báo Lỗi',
+                    `Lưu dữ liệu thất bại: ${err}`,
+                    [
+                        { text: 'OK', onPress: () => console.log('OK Pressed') },
+                    ]
+                );
             }
             );
     }
