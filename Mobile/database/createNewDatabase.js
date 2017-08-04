@@ -22,6 +22,8 @@ export const resetDatabase = (tx) => {
   tx.executeSql(
     'drop table if exists units;');
   tx.executeSql(
+    'drop table if exists typeCargoes;');
+  tx.executeSql(
     'drop table if exists warehouses;');
   tx.executeSql(
     'drop table if exists categories;');
@@ -87,6 +89,14 @@ export const createDatabaseSqlite = async () => {
           );`, null,  
           null,
           e => console.log('units error: ', e)
+      );
+      tx.executeSql(`create table if not exists
+         typeCargoes (
+           id integer primary key not null,
+           name text
+          );`, null,  
+          null,
+          e => console.log('typeCargoes error: ', e)
       );
       tx.executeSql(`create table if not exists
          warehouses (
@@ -172,7 +182,7 @@ export const updateOrInsertDataVersion = async (data) => {
 
   const newDataVersion = [
     data.id, data.menusVersion, data.userMenusVersion, data.categoriesVersion,
-    data.rolesVersion, data.unitsVersion, data.warehousesVersion, data.productsVersion,
+    data.rolesVersion, data.unitsVersion, data.typeCargoesVersion, data.warehousesVersion, data.productsVersion,
     data.customerGroupsVersion, data.customersVersion
   ];
   if (avaiabledDataVersion.length == 0) {
@@ -180,7 +190,7 @@ export const updateOrInsertDataVersion = async (data) => {
       tx => {
         tx.executeSql(`
           insert into dataVersions 
-            ('id', 'menus', 'userMenus', 'categories', 'roles', 'units', 'warehouses',
+            ('id', 'menus', 'userMenus', 'categories', 'roles', 'units', 'typeCargoes, 'warehouses',
             'products', 'customerGroups', 'customers') 
             values (
               '${data.id}',
@@ -189,6 +199,7 @@ export const updateOrInsertDataVersion = async (data) => {
               '${data.categoriesVersion}', 
              ' ${data.rolesVersion}', 
               '${data.unitsVersion}', 
+              '${data.typeCargoesVersion}', 
               '${data.warehousesVersion}', 
               '${data.productsVersion}', 
               '${data.customerGroupsVersion}', 
@@ -210,6 +221,8 @@ export const updateOrInsertDataVersion = async (data) => {
       sql += `roles = '${data.rolesVersion}' `
     if(data.unitsVersion) 
       sql += `units = '${data.unitsVersion}' `
+    if(data.typeCargoesVersion) 
+      sql += `typeCargoes = '${data.typeCargoesVersion}' `
     if(data.warehousesVersion) 
       sql += `warehouses = '${data.warehousesVersion}' `
     if(data.productsVersion) 
@@ -307,6 +320,29 @@ export const updateOrInsertDataVersion = async (data) => {
       }
     }, this);
   }
+
+  if (data.typeCargoes) {
+    data.typeCargoes.forEach(async (item) => {
+      const avaiabledData = await SqlService.select('typeCargoes', '*', `id = ${item.id}`);
+      if (avaiabledData.length == 0) {
+        SqlService.insert('typeCargoes', ['id', 'name'],
+          [item.id, item.name]);
+      } else {
+        db.transaction(
+          tx => {
+            tx.executeSql(`
+              update typeCargoes 
+              set name = '${item.name}'
+              where id = '${item.id}' 
+              `)
+          },
+          null,
+          console.log("error when update typeCargoes")
+        );
+      }
+    }, this);
+  }
+
   if (data.roles) {
     data.roles.forEach(async (item) => {
       const avaiabledData = await SqlService.select('roles', '*', `id = '${item.id}'`);
@@ -436,9 +472,17 @@ export const checkDataVersion = async (userId, store) => {
     await SqlService.select('dataVersions', '*', `id = 1`).then(
       async (currentVersion) => {
 
-        if (!currentVersion[0]) currentVersion[0] = { id: 0, menus: 0, userMenus: 0, roles: 0, units: 0, warehouses: 0, categories: 0, products: 0, customerGroups: 0, customers: 0 };
-        const { id, menus, userMenus, roles, units, warehouses, categories,
-          products, customerGroups, customers } = currentVersion[0];
+        if (!currentVersion[0]) currentVersion[0] = { 
+          id: 0, menus: 0, userMenus: 0, 
+          roles: 0, units: 0, typeCargoes: 0, 
+          warehouses: 0, categories: 0, products: 0, 
+          customerGroups: 0, customers: 0 };
+
+        const { id, menus, userMenus, 
+          roles, units, typeCargoes, 
+          warehouses, categories,
+          products, customerGroups, 
+          customers } = currentVersion[0];
 
         const data = await axios.post(`${URL}/api/data/checkDataVersion`, {
           id,
@@ -446,6 +490,7 @@ export const checkDataVersion = async (userId, store) => {
           userMenus,
           roles,
           units,
+          typeCargoes,
           warehouses,
           products,
           categories,

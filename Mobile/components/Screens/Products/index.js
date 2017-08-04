@@ -10,7 +10,7 @@ import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import stylesCommon from '../../../styles';
 import { Ionicons } from '@expo/vector-icons';
-import { loadProductsDataFromSqlite } from '../../../actions/productActions';
+import { loadProductListDataFromSqlite } from '../../../actions/productActions';
 import { Spinner } from '../../commons/Spinner';
 import SqlService from '../../../database/sqliteService';
 
@@ -22,14 +22,10 @@ class ProductList extends React.Component {
         loaded: false
     }
 
-    // componentDidMount() {
-    // const { categoryId } = this.props;
-    // SqlService.query(`select * from products where categoryId = ${categoryId}`).then(
-    //     result => {
-    //         this.setState({ products: result });
-    //     }
-    // );
-    // }
+    componentDidMount() {
+        console.log("this.props.categoryId", this.props.categoryId);
+        this.props.loadProductListDataFromSqlite(this.props.categoryId);
+    }
     onSearchInputChange(text) {
         this.setState({ searchText: text });
     }
@@ -38,29 +34,29 @@ class ProductList extends React.Component {
         Actions.main();
     }
 
-    convertData() {
-        const products = [];
-        if (this.props.categoryId) {
-            const { categoryId } = this.props;
-            this.setState({ loaded: false });
-            
-            SqlService.query(`select * from products where categoryId = ${categoryId}`).then(
-                result => {
-                    result.forEach((item) => {
-                        const convertedData = { ...item, key: item.id };
-                        products.push(convertedData);                        
-                    });
-                    this.setState({ products, loaded: true });
-                }
-            );
-        }
-    }
+    // convertData() {
+    //     const products = [];
+    //     if (this.props.categoryId) {
+    //         const { categoryId } = this.props;
+    //         this.setState({ loaded: false });
+
+    //         SqlService.query(`select * from products where categoryId = ${categoryId}`).then(
+    //             result => {
+    //                 result.forEach((item) => {
+    //                     const convertedData = { ...item, key: item.id };
+    //                     products.push(convertedData);                        
+    //                 });
+    //                 this.setState({ products, loaded: true });
+    //             }
+    //         );
+    //     }
+    // }
     renderProductList() {
-        this.convertData();
-        if (this.state.products && this.state.loaded) {
+
+        if (this.props.loaded) {
             return (
                 <FlatList
-                    data={this.state.products}
+                    data={this.props.products}
                     renderItem={({ item }) =>
                         <TouchableWithoutFeedback
                             key={item.key} onPress={() => {
@@ -81,30 +77,6 @@ class ProductList extends React.Component {
         );
     }
 
-    renderProductsItem() {
-        if (this.props.loaded) {
-            const { products } = this.props;
-            const productsRedered = products.map((item) => (
-                <TouchableWithoutFeedback key={item.id} onPress={() => {
-                    console.log(`id = ${item.id} name = ${item.name} cliked`)
-                    Actions.ProductDetail({ product: item })
-                }} >
-                    <View style={styles.listItem}>
-                        <Text style={styles.itemTitle}>{item.name}</Text>
-                        <Ionicons name="ios-arrow-dropright" size={32} color="#16a085" />
-                    </View>
-                </TouchableWithoutFeedback>
-            ), this);
-            return (
-                <View>
-                    {productsRedered}
-                </View>
-            );
-        }
-        return (
-            <Spinner />
-        );
-    }    
 
     render() {
         return (
@@ -222,5 +194,5 @@ const mapStateToProps = (state, ownProps) => {
     return { loading, loaded, products };
 };
 export default connect(mapStateToProps, {
-    loadProductsDataFromSqlite
+    loadProductListDataFromSqlite
 })(ProductList);

@@ -20,7 +20,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 const stringConvert = ({
-        CategoryId,
+    CategoryId,
     UnitId,
     TypeCargoId,
     IsPublic,
@@ -319,14 +319,14 @@ ProductRouter.post('/delete', async (req, res) => {
                 .catch((error) => {
                     console.error(error);
                 });
-                debugger;
+            debugger;
             const oldProduct = await Knex('products')
                 .debug(true)
                 .where({ id: Id })
                 .catch((error) => {
                     console.error('oldProduct error ', error);
                 });
-                debugger;
+            debugger;
             await Knex('products')
                 .transacting(t)
                 .debug(true)
@@ -335,7 +335,7 @@ ProductRouter.post('/delete', async (req, res) => {
                 .catch((error) => {
                     console.error('delete product error: ', error);
                 });
-                debugger;
+            debugger;
             if (oldProduct[0] && oldProduct[0].imageUrl.indexOf('images/products') > 0) {
                 debugger
                 const dir = path.resolve('Server/public');

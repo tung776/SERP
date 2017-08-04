@@ -1,10 +1,20 @@
 import React from 'react';
-import { View, Text, ScrollView, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, TextInput, TouchableOpacity, Picker } from 'react-native';
+import { Actions } from 'react-native-router-flux';
 import Header from '../../commons/Header';
 import Footer from '../../commons/Footer';
 import { connect } from 'react-redux';
 import stylesCommon from '../../../styles';
 import { Ionicons } from '@expo/vector-icons';
+import { URL } from '../../../../env';
+import {
+    loadProductByIdFromSqlite,
+    AddNewProduct,
+    ProductChange,
+    resetData,
+    loadUnits,
+    loadTypeCargo
+} from '../../../actions/productActions.js';
 
 class ProductNew extends React.Component {
     state = {
@@ -12,11 +22,18 @@ class ProductNew extends React.Component {
         MinStock: '',
         Price: ''
     }
+    componentWillMount() {
+        this.props.resetData();
+        this.props.loadTypeCargo();
+        this.props.loadUnits();
+    }
+    //Tham khảo select (picker) react native: 
+    //https://facebook.github.io/react-native/docs/picker.html
     render() {
         return (
             <View style={styles.container}>
                 <Header>
-                    <Text style={styles.headTitle} >Thêm mới Sản Phẩm</Text>
+                    <Text style={styles.headTitle} >Thêm sản phẩm mới</Text>
                 </Header>
                 <View style={styles.body}>
                     <ScrollView>
@@ -28,52 +45,14 @@ class ProductNew extends React.Component {
                                     underlineColorAndroid={'transparent'}
                                     style={styles.textInput}
                                     blurOnSubmit
-                                    value={this.state.ProductName}
-                                    onChangeText={text => this.setState({ ProductName: text })}
+                                    value={this.props.Name}
+                                    onChangeText={text => this.props.ProductChange({ 'Name': text })}
                                     type="Text"
                                     name="ProductName"
                                     placeholder="Điền tên sản phẩm:"
                                 />
                                 <Text>
                                     {this.error && <Text style={styles.errorStyle}>{this.error.ProductName}</Text>}
-                                </Text>
-                            </View>
-                        </View>
-                        <View style={styles.controlContainer}>
-                            <Text style={styles.label} >Giá Bán</Text>
-                            <View style={styles.groupControl}>
-                                <TextInput
-                                    disableFullscreenUI
-                                    underlineColorAndroid={'transparent'}
-                                    style={styles.textInput}
-                                    blurOnSubmit
-                                    value={this.state.Price}
-                                    onChangeText={text => this.setState({ Price: text })}
-                                    type="Text"
-                                    name="Price"
-                                    placeholder="Điền giá Bán"
-                                />
-                                <Text>
-                                    {this.error && <Text style={styles.errorStyle}>{this.error.Price}</Text>}
-                                </Text>
-                            </View>
-                        </View>
-                        <View style={styles.controlContainer}>
-                            <Text style={styles.label} >Tồn Tối Thiểu</Text>
-                            <View style={styles.groupControl}>
-                                <TextInput
-                                    disableFullscreenUI
-                                    underlineColorAndroid={'transparent'}
-                                    style={styles.textInput}
-                                    blurOnSubmit
-                                    value={this.state.MinStock}
-                                    onChangeText={text => this.setState({ MinStock: text })}
-                                    type="Text"
-                                    name="MinStock"
-                                    placeholder="Tồn kho tối thiểu"
-                                />
-                                <Text>
-                                    {this.error && <Text style={styles.errorStyle}>{this.error.MinStock}</Text>}
                                 </Text>
                             </View>
                         </View>
@@ -85,14 +64,182 @@ class ProductNew extends React.Component {
                                     underlineColorAndroid={'transparent'}
                                     style={styles.textInput}
                                     blurOnSubmit
-                                    value={this.state.CategoryName}
-                                    onChangeText={text => this.setState({ CategoryName: text })}
+                                    value={this.props.CategoryId}
+                                    onChangeText={text => this.props.ProductChange({ 'CategoryId': text })}
                                     type="Text"
-                                    name="CategoryName"
+                                    name="CategoryId"
                                     placeholder="Nhóm Sản Phẩm"
                                 />
                                 <Text>
-                                    {this.error && <Text style={styles.errorStyle}>{this.error.CategoryName}</Text>}
+                                    {this.error && <Text style={styles.errorStyle}>{this.error.CategoryId}</Text>}
+                                </Text>
+                            </View>
+                        </View>
+
+                        <View style={styles.controlContainer}>
+                            <Text style={styles.label} >Đơn Vị Tính</Text>
+                            <View style={styles.groupControl}>
+                                <TextInput
+                                    disableFullscreenUI
+                                    underlineColorAndroid={'transparent'}
+                                    style={styles.textInput}
+                                    blurOnSubmit
+                                    value={this.props.UnitId}
+                                    onChangeText={text => this.props.ProductChange({ 'UnitId': text })}
+                                    type="Text"
+                                    name="UnitId"
+                                    placeholder="Đơn Vị tính"
+                                />
+                                <Text>
+                                    {this.error && <Text style={styles.errorStyle}>{this.error.UnitId}</Text>}
+                                </Text>
+                            </View>
+                        </View>
+                        <View style={styles.controlContainer}>
+                            <Text style={styles.label} >Đơn Vị Tính</Text>
+                            <View style={styles.groupControl}>
+                                <Picker
+                                    selectedValue={this.props.UnitId}
+                                    onValueChange={(itemValue, itemIndex) => this.props.ProductChange({ 'UnitId': itemValue })}>
+                                    {this.props.units.map((item) => {
+                                            return(
+                                                <Picker.Item label= {item.name} value= {item.id} />
+                                            )
+                                        })
+                                    }
+                                </Picker>
+                            </View>
+                        </View>
+                        <View style={styles.controlContainer}>
+                            <Text style={styles.label} >Loại Hàng Hóa</Text>
+                            <View style={styles.groupControl}>
+                                <TextInput
+                                    disableFullscreenUI
+                                    underlineColorAndroid={'transparent'}
+                                    style={styles.textInput}
+                                    blurOnSubmit
+                                    value={this.props.TypeCargoId}
+                                    onChangeText={text => this.props.ProductChange({ 'TypeCargoId': text })}
+                                    type="Text"
+                                    name="TypeCargoId"
+                                    placeholder="Đơn Vị tính"
+                                />
+                                <Text>
+                                    {this.error && <Text style={styles.errorStyle}>{this.error.TypeCargoId}</Text>}
+                                </Text>
+                            </View>
+                        </View>
+
+
+                        <View style={styles.controlContainer}>
+                            <Text style={styles.label} >Loại Hàng Hóa</Text>
+                            <View style={styles.groupControl}>
+                                <Picker
+                                    selectedValue={this.props.TypeCargoId}
+                                    onValueChange={(itemValue, itemIndex) => this.props.ProductChange({ 'TypeCargoId': itemValue })}>
+                                    {this.props.units.map((item) => {
+                                            return(
+                                                <Picker.Item label= {item.name} value= {item.id} />
+                                            )
+                                        })
+                                    }
+                                </Picker>
+                            </View>
+                        </View>
+
+
+                        <View style={styles.controlContainer}>
+                            <Text style={styles.label} >Hiện Công Khai</Text>
+                            <View style={styles.groupControl}>
+                                <TextInput
+                                    disableFullscreenUI
+                                    underlineColorAndroid={'transparent'}
+                                    style={styles.textInput}
+                                    blurOnSubmit
+                                    value={this.props.IsPublic}
+                                    onChangeText={text => this.props.ProductChange({ 'IsPublic': text })}
+                                    type="Text"
+                                    name="TypeCargoId"
+                                    placeholder="Hiện Công Khai"
+                                />
+                                <Text>
+                                    {this.error && <Text style={styles.errorStyle}>{this.error.IsPublic}</Text>}
+                                </Text>
+                            </View>
+                        </View>
+                        <View style={styles.controlContainer}>
+                            <Text style={styles.label} >Giá Mua</Text>
+                            <View style={styles.groupControl}>
+                                <TextInput
+                                    disableFullscreenUI
+                                    underlineColorAndroid={'transparent'}
+                                    style={styles.textInput}
+                                    blurOnSubmit
+                                    value={this.props.PurchasePrice}
+                                    onChangeText={text => this.props.ProductChange({ 'PurchasePrice': text })}
+                                    type="Text"
+                                    name="PurchasePrice"
+                                    placeholder="Giá Mua"
+                                />
+                                <Text>
+                                    {this.error && <Text style={styles.errorStyle}>{this.error.PurchasePrice}</Text>}
+                                </Text>
+                            </View>
+                        </View>
+                        <View style={styles.controlContainer}>
+                            <Text style={styles.label} >Giá Bán</Text>
+                            <View style={styles.groupControl}>
+                                <TextInput
+                                    disableFullscreenUI
+                                    underlineColorAndroid={'transparent'}
+                                    style={styles.textInput}
+                                    blurOnSubmit
+                                    value={this.props.SalePrice}
+                                    onChangeText={text => this.props.ProductChange({ 'SalePrice': text })}
+                                    type="Text"
+                                    name="SalePrice"
+                                    placeholder="Giá bán"
+                                />
+                                <Text>
+                                    {this.error && <Text style={styles.errorStyle}>{this.error.SalePrice}</Text>}
+                                </Text>
+                            </View>
+                        </View>
+                        <View style={styles.controlContainer}>
+                            <Text style={styles.label} >Tồn Tối Thiểu</Text>
+                            <View style={styles.groupControl}>
+                                <TextInput
+                                    disableFullscreenUI
+                                    underlineColorAndroid={'transparent'}
+                                    style={styles.textInput}
+                                    blurOnSubmit
+                                    value={this.props.MinStock}
+                                    onChangeText={text => this.props.ProductChange({ 'MinQuantity': text })}
+                                    type="Text"
+                                    name="MinQuantity"
+                                    placeholder="Tồn kho tối thiểu"
+                                />
+                                <Text>
+                                    {this.error && <Text style={styles.errorStyle}>{this.error.MinQuantity}</Text>}
+                                </Text>
+                            </View>
+                        </View>
+                        <View style={styles.controlContainer}>
+                            <Text style={styles.label} >Hàng Có Sãn</Text>
+                            <View style={styles.groupControl}>
+                                <TextInput
+                                    disableFullscreenUI
+                                    underlineColorAndroid={'transparent'}
+                                    style={styles.textInput}
+                                    blurOnSubmit
+                                    value={this.props.MinStock}
+                                    onChangeText={text => this.props.ProductChange({ 'IsAvaiable': text })}
+                                    type="Text"
+                                    name="IsAvaiable"
+                                    placeholder="Hàng Có Sẵn"
+                                />
+                                <Text>
+                                    {this.error && <Text style={styles.errorStyle}>{this.error.IsAvaiable}</Text>}
                                 </Text>
                             </View>
                         </View>
@@ -106,8 +253,8 @@ class ProductNew extends React.Component {
                                     underlineColorAndroid={'transparent'}
                                     style={styles.textInput}
                                     blurOnSubmit
-                                    value={this.state.Descrition}
-                                    onChangeText={text => this.setState({ Descrition: text })}
+                                    value={this.props.Descrition}
+                                    onChangeText={text => this.props.ProductChange({ 'Descrition': text })}
                                     type="Text"
                                     name="Descrition"
                                     placeholder="Mô tả sản phẩm"
@@ -124,6 +271,12 @@ class ProductNew extends React.Component {
                         <TouchableOpacity style={styles.Btn} >
                             <Ionicons name="ios-checkmark-circle" size={25} color="#FFFFFF" />
                             <Text style={styles.titleButton}>Lưu</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.Btn}
+                            onPress={Actions.pop()}
+                        >
+                            <Ionicons name="ios-checkmark-circle" size={25} color="#FFFFFF" />
+                            <Text style={styles.titleButton}>Hủy</Text>
                         </TouchableOpacity>
                     </View>
                 </Footer>
@@ -211,7 +364,47 @@ const styles = {
         borderRadius: 5,
     },
 };
-// const mapStateToProps(state, ownProps)=> {
-//     return state
-// }
-export default connect(null, {})(ProductNew);
+const mapStateToProps = (state, ownProps) => {
+    const {
+        Id,
+        CategoryId,
+        UnitId,
+        TypeCargoId,
+        IsPublic,
+        PurchasePrice,
+        SalePrice,
+        MinQuantity,
+        IsAvaiable,
+        Name,
+        Description,
+        loaded,
+        units,
+        typeCargoes
+    } = state.products;
+    const { categoriesloaded: loaded, categories } = state.categories;
+    return {
+        Id,
+        CategoryId,
+        UnitId,
+        TypeCargoId,
+        IsPublic,
+        PurchasePrice,
+        SalePrice,
+        MinQuantity,
+        IsAvaiable,
+        Name,
+        Description,
+        units,
+        typeCargoes,
+        loaded,
+        errors
+    }
+}
+export default connect(mapStateToProps, {
+    loadProductByIdFromSqlite,
+    AddNewProduct,
+    ProductChange,
+    resetData,
+    loadTypeCargo,
+    loadUnits
+})(ProductNew);

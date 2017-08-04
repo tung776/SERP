@@ -371,6 +371,7 @@ exports.up = function (knex, Promise) {
             table.integer('roles').notNullable().defaultTo(1);
             table.integer('categories').notNullable().defaultTo(1);
             table.integer('units').notNullable().defaultTo(1);
+            table.integer('typeCargoes').notNullable().defaultTo(1);
             table.integer('warehouses').notNullable().defaultTo(1);
             table.integer('products').notNullable().defaultTo(1);
             table.integer('customerGroups').notNullable().defaultTo(1);

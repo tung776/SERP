@@ -11,6 +11,7 @@ exports.seed = function (knex, Promise) {
             roles: 1,
             categories: 1,
             units: 1,
+            typeCargoes: 1,
             warehouses: 1,
             products: 1,
             customerGroups: 1,
