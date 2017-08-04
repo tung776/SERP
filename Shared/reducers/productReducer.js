@@ -23,7 +23,7 @@ const INITIAL_STATE = {
     error: '',
     products: [],
     units: [],
-    typeCagoes: []
+    typeCargoes: []
     // uploading: false
 };
 
@@ -57,7 +57,7 @@ export default (state = INITIAL_STATE, action) => {
         case LOAD_UNIT_SUCCESS:
             return { ...state, units: action.payload };
         case LOAD_TYPE_CARGO_SUCCESS:
-            return { ...state, typeCagoes: action.payload };
+            return { ...state, typeCargoes: action.payload };
         case ADD_PRODUCT:
 
             return {

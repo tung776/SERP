@@ -23,14 +23,20 @@ export const resetData = () => async (dispatch) => {
 };
 
 export const loadTypeCargo = () => async (dispatch) => {
-    SqlService.query('select * from typeCargos').then(
+    SqlService.query('select * from typeCargoes').then(
         result => {
+            console.log('result = ', result);
             dispatch({
                 type: LOAD_TYPE_CARGO_SUCCESS,
                 payload: result
             });
         }
     );
+    // db.transaction(
+    //     tx=> {
+    //         tx.executeSql('select * from typeCargoes')
+    //     }
+    // )
 };
 export const loadUnits = () => async (dispatch) => {
     SqlService.query('select * from units').then(

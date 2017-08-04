@@ -15,6 +15,7 @@ import {
     loadUnits,
     loadTypeCargo
 } from '../../../actions/productActions.js';
+import { loadCategoriesDataFromSqlite } from '../../../actions/categoryActions';
 
 class ProductNew extends React.Component {
     state = {
@@ -24,8 +25,15 @@ class ProductNew extends React.Component {
     }
     componentWillMount() {
         this.props.resetData();
-        this.props.loadTypeCargo();
-        this.props.loadUnits();
+        if (!this.props.typeCargoes || this.props.typeCargoes.length == 0) {
+            this.props.loadTypeCargo();
+        }
+        if (!this.props.units || this.props.units.length == 0) {
+            this.props.loadUnits();
+        }
+        if (!this.props.categories || this.props.categories.length == 0) {
+            this.props.loadCategoriesDataFromSqlite();
+        }
     }
     //Tham khảo select (picker) react native: 
     //https://facebook.github.io/react-native/docs/picker.html
@@ -46,7 +54,7 @@ class ProductNew extends React.Component {
                                     style={styles.textInput}
                                     blurOnSubmit
                                     value={this.props.Name}
-                                    onChangeText={text => this.props.ProductChange({ Name: text })}
+                                    onChangeText={text => this.props.ProductChange({ prop: "Name", value: text })}
                                     type="Text"
                                     name="ProductName"
                                     placeholder="Điền tên sản phẩm:"
@@ -56,132 +64,59 @@ class ProductNew extends React.Component {
                                 </Text>
                             </View>
                         </View>
-                        <View style={styles.controlContainer}>
-                            <Text style={styles.label} >Nhóm Sản Phẩm</Text>
-                            <View style={styles.groupControl}>
-                                <TextInput
-                                    disableFullscreenUI
-                                    underlineColorAndroid={'transparent'}
-                                    style={styles.textInput}
-                                    blurOnSubmit
-                                    value={this.props.CategoryId}
-                                    onChangeText={text => this.props.ProductChange({ CategoryId: text })}
-                                    type="Text"
-                                    name="CategoryId"
-                                    placeholder="Nhóm Sản Phẩm"
-                                />
-                                <Text>
-                                    {this.error && <Text style={styles.errorStyle}>{this.error.CategoryId}</Text>}
-                                </Text>
-                            </View>
-                        </View>
-
 
                         <View style={styles.controlContainer}>
                             <Text style={styles.label} >Nhóm Sản Phẩm</Text>
                             <View style={styles.groupControl}>
                                 <Picker
                                     selectedValue={this.props.CategoryId}
-                                    onValueChange={(itemValue, itemIndex) => this.props.ProductChange({ CategoryId: itemValue })}
+                                    onValueChange={
+                                        (itemValue, itemIndex) => this.props.ProductChange({ prop: "CategoryId", value: itemValue })
+                                    }
                                 >
                                     {this.props.categories && this.props.categories.map((item) => (
-                                                <Picker.Item label={item.name} value={item.id} />
-                                            ))
+                                        <Picker.Item key={item.id} label={item.name} value={item.id} />
+                                    ))
                                     }
                                 </Picker>
                             </View>
                         </View>
 
 
-                        <View style={styles.controlContainer}>
-                            <Text style={styles.label} >Đơn Vị Tính</Text>
-                            <View style={styles.groupControl}>
-                                <TextInput
-                                    disableFullscreenUI
-                                    underlineColorAndroid={'transparent'}
-                                    style={styles.textInput}
-                                    blurOnSubmit
-                                    value={this.props.UnitId}
-                                    onChangeText={text => this.props.ProductChange({ UnitId: text })}
-                                    type="Text"
-                                    name="UnitId"
-                                    placeholder="Đơn Vị tính"
-                                />
-                                <Text>
-                                    {this.error && <Text style={styles.errorStyle}>{this.error.UnitId}</Text>}
-                                </Text>
-                            </View>
-                        </View>
                         <View style={styles.controlContainer}>
                             <Text style={styles.label} >Đơn Vị Tính</Text>
                             <View style={styles.groupControl}>
                                 <Picker
                                     selectedValue={this.props.UnitId}
-                                    onValueChange={(itemValue, itemIndex) => this.props.ProductChange({ UnitId: itemValue })}
+                                    onValueChange={
+                                        (itemValue, itemIndex) => this.props.ProductChange({ prop: "UnitId", value: itemValue })
+                                    }
                                 >
                                     {this.props.units && this.props.units.map((item) => (
-                                                <Picker.Item label={item.name} value={item.id} />
-                                            ))
+                                        <Picker.Item key={item.id} label={item.name} value={item.id} />
+                                    ))
                                     }
                                 </Picker>
                             </View>
                         </View>
-                        <View style={styles.controlContainer}>
-                            <Text style={styles.label} >Loại Hàng Hóa</Text>
-                            <View style={styles.groupControl}>
-                                <TextInput
-                                    disableFullscreenUI
-                                    underlineColorAndroid={'transparent'}
-                                    style={styles.textInput}
-                                    blurOnSubmit
-                                    value={this.props.TypeCargoId}
-                                    onChangeText={text => this.props.ProductChange({ TypeCargoId: text })}
-                                    type="Text"
-                                    name="TypeCargoId"
-                                    placeholder="Đơn Vị tính"
-                                />
-                                <Text>
-                                    {this.error && <Text style={styles.errorStyle}>{this.error.TypeCargoId}</Text>}
-                                </Text>
-                            </View>
-                        </View>
-
 
                         <View style={styles.controlContainer}>
                             <Text style={styles.label} >Loại Hàng Hóa</Text>
                             <View style={styles.groupControl}>
                                 <Picker
                                     selectedValue={this.props.TypeCargoId}
-                                    onValueChange={(itemValue, itemIndex) => this.props.ProductChange({ TypeCargoId: itemValue })}
+                                    onValueChange={
+                                        (itemValue, itemIndex) => this.props.ProductChange({ prop: "TypeCargoId", value: itemValue })
+                                    }
                                 >
-                                    {this.props.units.map((item) => (
-                                                <Picker.Item label={item.name} value={item.id} />
-                                            ))
+                                    {this.props.typeCargoes && this.props.typeCargoes.map((item) => (
+                                        <Picker.Item key={item.id} label={item.name} value={item.id} />
+                                    ))
                                     }
                                 </Picker>
                             </View>
                         </View>
 
-
-                        <View style={styles.controlContainer}>
-                            <Text style={styles.label} >Hiện Công Khai</Text>
-                            <View style={styles.groupControl}>
-                                <TextInput
-                                    disableFullscreenUI
-                                    underlineColorAndroid={'transparent'}
-                                    style={styles.textInput}
-                                    blurOnSubmit
-                                    value={this.props.IsPublic}
-                                    onChangeText={text => this.props.ProductChange({ IsPublic: text })}
-                                    type="Text"
-                                    name="TypeCargoId"
-                                    placeholder="Hiện Công Khai"
-                                />
-                                <Text>
-                                    {this.error && <Text style={styles.errorStyle}>{this.error.IsPublic}</Text>}
-                                </Text>
-                            </View>
-                        </View>
                         <View style={styles.controlContainer}>
                             <Text style={styles.label} >Giá Mua</Text>
                             <View style={styles.groupControl}>
@@ -191,7 +126,7 @@ class ProductNew extends React.Component {
                                     style={styles.textInput}
                                     blurOnSubmit
                                     value={this.props.PurchasePrice}
-                                    onChangeText={text => this.props.ProductChange({ PurchasePrice: text })}
+                                    onChangeText={text => this.props.ProductChange({  prop: "PurchasePrice", value: text })}
                                     type="Text"
                                     name="PurchasePrice"
                                     placeholder="Giá Mua"
@@ -210,7 +145,7 @@ class ProductNew extends React.Component {
                                     style={styles.textInput}
                                     blurOnSubmit
                                     value={this.props.SalePrice}
-                                    onChangeText={text => this.props.ProductChange({ SalePrice: text })}
+                                    onChangeText={text => this.props.ProductChange({ prop: "SalePrice", value: text })}
                                     type="Text"
                                     name="SalePrice"
                                     placeholder="Giá bán"
@@ -228,8 +163,8 @@ class ProductNew extends React.Component {
                                     underlineColorAndroid={'transparent'}
                                     style={styles.textInput}
                                     blurOnSubmit
-                                    value={this.props.MinStock}
-                                    onChangeText={text => this.props.ProductChange({ MinQuantity: text })}
+                                    value={this.props.MinQuantity}
+                                    onChangeText={text => this.props.ProductChange({ prop: "MinQuantity", value: text })}
                                     type="Text"
                                     name="MinQuantity"
                                     placeholder="Tồn kho tối thiểu"
@@ -239,25 +174,7 @@ class ProductNew extends React.Component {
                                 </Text>
                             </View>
                         </View>
-                        <View style={styles.controlContainer}>
-                            <Text style={styles.label} >Hàng Có Sãn</Text>
-                            <View style={styles.groupControl}>
-                                <TextInput
-                                    disableFullscreenUI
-                                    underlineColorAndroid={'transparent'}
-                                    style={styles.textInput}
-                                    blurOnSubmit
-                                    value={this.props.MinStock}
-                                    onChangeText={text => this.props.ProductChange({ IsAvaiable: text })}
-                                    type="Text"
-                                    name="IsAvaiable"
-                                    placeholder="Hàng Có Sẵn"
-                                />
-                                <Text>
-                                    {this.error && <Text style={styles.errorStyle}>{this.error.IsAvaiable}</Text>}
-                                </Text>
-                            </View>
-                        </View>
+
                         <View style={styles.controlContainer}>
                             <Text style={styles.label} >Mô tả</Text>
                             <View style={styles.groupControl}>
@@ -269,7 +186,7 @@ class ProductNew extends React.Component {
                                     style={styles.textInput}
                                     blurOnSubmit
                                     value={this.props.Descrition}
-                                    onChangeText={text => this.props.ProductChange({ Descrition: text })}
+                                    onChangeText={text => this.props.ProductChange({ prop: "Descrition", value: text })}
                                     type="Text"
                                     name="Descrition"
                                     placeholder="Mô tả sản phẩm"
@@ -282,14 +199,14 @@ class ProductNew extends React.Component {
                     </ScrollView>
                 </View>
                 <Footer>
-                    <View >
+                    <View style = {styles.FooterGroupButton} >
                         <TouchableOpacity style={styles.Btn} >
                             <Ionicons name="ios-checkmark-circle" size={25} color="#FFFFFF" />
                             <Text style={styles.titleButton}>Lưu</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                             style={styles.Btn}
-                            onPress={Actions.pop()}
+                            onPress = { Actions.pop() }
                         >
                             <Ionicons name="ios-checkmark-circle" size={25} color="#FFFFFF" />
                             <Text style={styles.titleButton}>Hủy</Text>
@@ -379,6 +296,11 @@ const styles = {
         paddingLeft: 15,
         borderRadius: 5,
     },
+    FooterGroupButton: {
+        // flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    }
 };
 const mapStateToProps = (state, ownProps) => {
     const {
@@ -424,5 +346,6 @@ export default connect(mapStateToProps, {
     ProductChange,
     resetData,
     loadTypeCargo,
-    loadUnits
+    loadUnits,
+    loadCategoriesDataFromSqlite
 })(ProductNew);
