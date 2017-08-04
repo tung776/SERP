@@ -2,7 +2,8 @@ import {
     ADD_PRODUCT, PRODUCT_PENDING, PRODUCT_CHANGE_FAIL,
     PRODUCT_CHANGE_SUCCESS, PRODUCT_CHANGE,
     PRODUCT_LOADED_SQLITE, PRODUCT_LIST_LOADED_SQLITE,
-    LOAD_UNIT_SUCCESS, LOAD_TYPE_CARGO_SUCCESS
+    LOAD_UNIT_SUCCESS, LOAD_TYPE_CARGO_SUCCESS,
+    RESET_PRODUCT_FORM
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -28,6 +29,23 @@ const INITIAL_STATE = {
 
 export default (state = INITIAL_STATE, action) => {
     switch (action.type) {
+        case RESET_PRODUCT_FORM:
+            return {
+                Id: '',
+                CategoryId: '',
+                UnitId: '',
+                TypeCargoId: '',
+                IsPublic: false,
+                PurchasePrice: '',
+                SalePrice: '',
+                MinQuantity: '',
+                IsAvaiable: true,
+                Name: '',
+                Description: '',
+                loading: false,
+                loaded: false,
+                error: '',
+            };
         case PRODUCT_PENDING:
             return { ...state, loading: true, error: '' };
         case PRODUCT_CHANGE:
@@ -39,9 +57,9 @@ export default (state = INITIAL_STATE, action) => {
         case LOAD_UNIT_SUCCESS:
             return { ...state, units: action.payload };
         case LOAD_TYPE_CARGO_SUCCESS:
-            return { ...state, typeCagoes: action.payload};
+            return { ...state, typeCagoes: action.payload };
         case ADD_PRODUCT:
-            
+
             return {
                 ...payload,
                 Id,
@@ -61,9 +79,9 @@ export default (state = INITIAL_STATE, action) => {
         case PRODUCT_CHANGE_FAIL:
             return { ...state, error: action.payload, loading: false };
         case PRODUCT_CHANGE_SUCCESS:
-            
+
             return {
-               ...payload,
+                ...payload,
                 Id,
                 CategoryId,
                 UnitId,

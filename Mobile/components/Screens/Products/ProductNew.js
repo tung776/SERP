@@ -46,7 +46,7 @@ class ProductNew extends React.Component {
                                     style={styles.textInput}
                                     blurOnSubmit
                                     value={this.props.Name}
-                                    onChangeText={text => this.props.ProductChange({ 'Name': text })}
+                                    onChangeText={text => this.props.ProductChange({ Name: text })}
                                     type="Text"
                                     name="ProductName"
                                     placeholder="Điền tên sản phẩm:"
@@ -65,7 +65,7 @@ class ProductNew extends React.Component {
                                     style={styles.textInput}
                                     blurOnSubmit
                                     value={this.props.CategoryId}
-                                    onChangeText={text => this.props.ProductChange({ 'CategoryId': text })}
+                                    onChangeText={text => this.props.ProductChange({ CategoryId: text })}
                                     type="Text"
                                     name="CategoryId"
                                     placeholder="Nhóm Sản Phẩm"
@@ -76,6 +76,23 @@ class ProductNew extends React.Component {
                             </View>
                         </View>
 
+
+                        <View style={styles.controlContainer}>
+                            <Text style={styles.label} >Nhóm Sản Phẩm</Text>
+                            <View style={styles.groupControl}>
+                                <Picker
+                                    selectedValue={this.props.CategoryId}
+                                    onValueChange={(itemValue, itemIndex) => this.props.ProductChange({ CategoryId: itemValue })}
+                                >
+                                    {this.props.categories && this.props.categories.map((item) => (
+                                                <Picker.Item label={item.name} value={item.id} />
+                                            ))
+                                    }
+                                </Picker>
+                            </View>
+                        </View>
+
+
                         <View style={styles.controlContainer}>
                             <Text style={styles.label} >Đơn Vị Tính</Text>
                             <View style={styles.groupControl}>
@@ -85,7 +102,7 @@ class ProductNew extends React.Component {
                                     style={styles.textInput}
                                     blurOnSubmit
                                     value={this.props.UnitId}
-                                    onChangeText={text => this.props.ProductChange({ 'UnitId': text })}
+                                    onChangeText={text => this.props.ProductChange({ UnitId: text })}
                                     type="Text"
                                     name="UnitId"
                                     placeholder="Đơn Vị tính"
@@ -100,12 +117,11 @@ class ProductNew extends React.Component {
                             <View style={styles.groupControl}>
                                 <Picker
                                     selectedValue={this.props.UnitId}
-                                    onValueChange={(itemValue, itemIndex) => this.props.ProductChange({ 'UnitId': itemValue })}>
-                                    {this.props.units.map((item) => {
-                                            return(
-                                                <Picker.Item label= {item.name} value= {item.id} />
-                                            )
-                                        })
+                                    onValueChange={(itemValue, itemIndex) => this.props.ProductChange({ UnitId: itemValue })}
+                                >
+                                    {this.props.units && this.props.units.map((item) => (
+                                                <Picker.Item label={item.name} value={item.id} />
+                                            ))
                                     }
                                 </Picker>
                             </View>
@@ -119,7 +135,7 @@ class ProductNew extends React.Component {
                                     style={styles.textInput}
                                     blurOnSubmit
                                     value={this.props.TypeCargoId}
-                                    onChangeText={text => this.props.ProductChange({ 'TypeCargoId': text })}
+                                    onChangeText={text => this.props.ProductChange({ TypeCargoId: text })}
                                     type="Text"
                                     name="TypeCargoId"
                                     placeholder="Đơn Vị tính"
@@ -136,12 +152,11 @@ class ProductNew extends React.Component {
                             <View style={styles.groupControl}>
                                 <Picker
                                     selectedValue={this.props.TypeCargoId}
-                                    onValueChange={(itemValue, itemIndex) => this.props.ProductChange({ 'TypeCargoId': itemValue })}>
-                                    {this.props.units.map((item) => {
-                                            return(
-                                                <Picker.Item label= {item.name} value= {item.id} />
-                                            )
-                                        })
+                                    onValueChange={(itemValue, itemIndex) => this.props.ProductChange({ TypeCargoId: itemValue })}
+                                >
+                                    {this.props.units.map((item) => (
+                                                <Picker.Item label={item.name} value={item.id} />
+                                            ))
                                     }
                                 </Picker>
                             </View>
@@ -157,7 +172,7 @@ class ProductNew extends React.Component {
                                     style={styles.textInput}
                                     blurOnSubmit
                                     value={this.props.IsPublic}
-                                    onChangeText={text => this.props.ProductChange({ 'IsPublic': text })}
+                                    onChangeText={text => this.props.ProductChange({ IsPublic: text })}
                                     type="Text"
                                     name="TypeCargoId"
                                     placeholder="Hiện Công Khai"
@@ -176,7 +191,7 @@ class ProductNew extends React.Component {
                                     style={styles.textInput}
                                     blurOnSubmit
                                     value={this.props.PurchasePrice}
-                                    onChangeText={text => this.props.ProductChange({ 'PurchasePrice': text })}
+                                    onChangeText={text => this.props.ProductChange({ PurchasePrice: text })}
                                     type="Text"
                                     name="PurchasePrice"
                                     placeholder="Giá Mua"
@@ -195,7 +210,7 @@ class ProductNew extends React.Component {
                                     style={styles.textInput}
                                     blurOnSubmit
                                     value={this.props.SalePrice}
-                                    onChangeText={text => this.props.ProductChange({ 'SalePrice': text })}
+                                    onChangeText={text => this.props.ProductChange({ SalePrice: text })}
                                     type="Text"
                                     name="SalePrice"
                                     placeholder="Giá bán"
@@ -214,7 +229,7 @@ class ProductNew extends React.Component {
                                     style={styles.textInput}
                                     blurOnSubmit
                                     value={this.props.MinStock}
-                                    onChangeText={text => this.props.ProductChange({ 'MinQuantity': text })}
+                                    onChangeText={text => this.props.ProductChange({ MinQuantity: text })}
                                     type="Text"
                                     name="MinQuantity"
                                     placeholder="Tồn kho tối thiểu"
@@ -233,7 +248,7 @@ class ProductNew extends React.Component {
                                     style={styles.textInput}
                                     blurOnSubmit
                                     value={this.props.MinStock}
-                                    onChangeText={text => this.props.ProductChange({ 'IsAvaiable': text })}
+                                    onChangeText={text => this.props.ProductChange({ IsAvaiable: text })}
                                     type="Text"
                                     name="IsAvaiable"
                                     placeholder="Hàng Có Sẵn"
@@ -247,14 +262,14 @@ class ProductNew extends React.Component {
                             <Text style={styles.label} >Mô tả</Text>
                             <View style={styles.groupControl}>
                                 <TextInput
-                                    multiline={true}
+                                    multiline
                                     numberOfLines={10}
                                     disableFullscreenUI
                                     underlineColorAndroid={'transparent'}
                                     style={styles.textInput}
                                     blurOnSubmit
                                     value={this.props.Descrition}
-                                    onChangeText={text => this.props.ProductChange({ 'Descrition': text })}
+                                    onChangeText={text => this.props.ProductChange({ Descrition: text })}
                                     type="Text"
                                     name="Descrition"
                                     placeholder="Mô tả sản phẩm"
@@ -272,7 +287,8 @@ class ProductNew extends React.Component {
                             <Ionicons name="ios-checkmark-circle" size={25} color="#FFFFFF" />
                             <Text style={styles.titleButton}>Lưu</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.Btn}
+                        <TouchableOpacity
+                            style={styles.Btn}
                             onPress={Actions.pop()}
                         >
                             <Ionicons name="ios-checkmark-circle" size={25} color="#FFFFFF" />
@@ -379,9 +395,10 @@ const mapStateToProps = (state, ownProps) => {
         Description,
         loaded,
         units,
-        typeCargoes
+        typeCargoes,
+        error
     } = state.products;
-    const { categoriesloaded: loaded, categories } = state.categories;
+    const { categories } = state.categories;
     return {
         Id,
         CategoryId,
@@ -397,9 +414,10 @@ const mapStateToProps = (state, ownProps) => {
         units,
         typeCargoes,
         loaded,
-        errors
-    }
-}
+        error,
+        categories
+    };
+};
 export default connect(mapStateToProps, {
     loadProductByIdFromSqlite,
     AddNewProduct,

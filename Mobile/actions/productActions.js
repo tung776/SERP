@@ -16,32 +16,32 @@ import {
 } from './index';
 import db from '../database/sqliteConfig';
 
-export const resetData = async (dispatch) => {
+export const resetData = () => async (dispatch) => {
     dispatch({
         type: RESET_PRODUCT_FORM
     });
-}
+};
 
-export const loadTypeCargo = async (dispatch) => {
-    SqlService.query(`select * from typeCargos`).then(
+export const loadTypeCargo = () => async (dispatch) => {
+    SqlService.query('select * from typeCargos').then(
         result => {
             dispatch({
                 type: LOAD_TYPE_CARGO_SUCCESS,
                 payload: result
-            })
+            });
         }
-    )
-}
-export const loadUnits = async (dispatch) => {
-    SqlService.query(`select * from units`).then(
+    );
+};
+export const loadUnits = () => async (dispatch) => {
+    SqlService.query('select * from units').then(
         result => {
             dispatch({
                 type: LOAD_UNIT_SUCCESS,
                 payload: result
-            })
+            });
         }
-    )
-}
+    );
+};
 
 export const ProductChange = ({ prop, value }) => ({
     type: PRODUCT_CHANGE,
@@ -56,7 +56,7 @@ export const loadProductListDataFromSqlite = (categoryId) => async (dispatch) =>
     SqlService.query(`select * from products where categoryId = ${categoryId}`).then(
         result => {
             console.log('result = ', result);
-            let products = [];
+            const products = [];
             result.forEach((item) => {
                 const convertedData = { ...item, key: item.id };
                 products.push(convertedData);
@@ -79,10 +79,10 @@ export const loadProductByIdFromSqlite = (productId) => async (dispatch) => {
             dispatch({
                 type: PRODUCT_LOADED_SQLITE,
                 payload: result
-            })
+            });
         }
-    )
-}
+    );
+};
 
 
 export const CategoryDelete = (productId) => async (dispatch) => {
@@ -106,8 +106,8 @@ export const CategoryDelete = (productId) => async (dispatch) => {
                     tx.executeSql(
                         `DELETE FROM products 
                         WHERE id = '${productId}';`
-                    )
-                    tx.executeSql(`select * from products`,
+                    );
+                    tx.executeSql('select * from products',
                         null,
                         (_, { rows: { _array } }) => {
                             dispatch({
@@ -116,7 +116,7 @@ export const CategoryDelete = (productId) => async (dispatch) => {
                             });
                         },
                         (e) => {
-                            console.log('error = ', e)
+                            console.log('error = ', e);
                         }
                     );
                 },
@@ -226,7 +226,7 @@ export const ProductUpdate = (category, isImageChanged) => async (dispatch) => {
                                 null,
                                 null,
                                 (e) => {
-                                    console.log('lỗi update dataVersions = ', e)
+                                    console.log('lỗi update dataVersions = ', e);
                                 }
                             );
                             tx.executeSql(`
@@ -239,10 +239,10 @@ export const ProductUpdate = (category, isImageChanged) => async (dispatch) => {
                                 null,
                                 null,
                                 (e) => {
-                                    console.log('lỗi update categories = ', e)
+                                    console.log('lỗi update categories = ', e);
                                 }
                             );
-                            tx.executeSql(`select * from categories`,
+                            tx.executeSql('select * from categories',
                                 null,
                                 (_, { rows: { _array } }) => {
                                     dispatch({
@@ -251,15 +251,14 @@ export const ProductUpdate = (category, isImageChanged) => async (dispatch) => {
                                     });
                                 },
                                 (e) => {
-                                    console.log('error = ', e)
+                                    console.log('error = ', e);
                                 }
                             );
                         },
                         (e) => console.log('error ?????', e),
                         null
                     );
-                }
-                catch (e) {
+                }                catch (e) {
                     console.log(e);
                 }
                 Actions.categoryList();
@@ -273,7 +272,7 @@ export const ProductUpdate = (category, isImageChanged) => async (dispatch) => {
                 });
                 Alert.alert(
                     'Thông Báo',
-                    `Bạn đã lưu dữ liệu thành công`,
+                    'Bạn đã lưu dữ liệu thành công',
                     [
                         { text: 'OK', onPress: () => console.log('OK Pressed') },
                     ]
@@ -385,7 +384,7 @@ export const AddNewProduct = (product) => async (dispatch) => {
                         }
                         tx.executeSql(strSql);
                         tx.executeSql(
-                            `select * from categories`,
+                            'select * from categories',
                             null,
                             (_, { rows: { _array } }) => {
                                 dispatch({
@@ -394,7 +393,7 @@ export const AddNewProduct = (product) => async (dispatch) => {
                                 });
                             },
                             (e) => {
-                                console.log('error read categories data from sqlite = ', e)
+                                console.log('error read categories data from sqlite = ', e);
                             }
                         );
                     },
@@ -412,7 +411,7 @@ export const AddNewProduct = (product) => async (dispatch) => {
                 });
                 Alert.alert(
                     'Thông Báo',
-                    `Bạn đã lưu dữ liệu thành công`,
+                    'Bạn đã lưu dữ liệu thành công',
                     [
                         { text: 'OK', onPress: () => console.log('OK Pressed') },
                     ]

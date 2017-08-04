@@ -42,7 +42,7 @@ export const createDatabaseSqlite = async () => {
   //   'drop table if exists dataVersions;');
   db.transaction(
     tx => {
-      resetDatabase(tx);
+      // resetDatabase(tx);
       // tx.executeSql('delete from dataVersions where id = 1');
       tx.executeSql(`create table if not exists
          menus (
@@ -50,8 +50,8 @@ export const createDatabaseSqlite = async () => {
            name text,
            parentId integer
           );`, null,
-          null,
-          e => console.log('menus error: ', e)
+        null,
+        e => console.log('menus error: ', e)
       );
       tx.executeSql(`create table if not exists
          userMenus (
@@ -59,17 +59,17 @@ export const createDatabaseSqlite = async () => {
            userId integer,
            parentId,
            name text
-          );`, null,  
-          null,
-          e => console.log('userMenus error: ', e)
+          );`, null,
+        null,
+        e => console.log('userMenus error: ', e)
       );
       tx.executeSql(`create table if not exists
          roles (
            id integer primary key not null,
            name text
-          );`, null, 
-          null,
-          e => console.log('roles error: ', e)
+          );`, null,
+        null,
+        e => console.log('roles error: ', e)
       );
       tx.executeSql(`create table if not exists
          categories (
@@ -77,26 +77,26 @@ export const createDatabaseSqlite = async () => {
            name text,
            description text,
            imageUrl text
-          );`, null, 
-          null,
-          e => console.log('categories error: ', e)
+          );`, null,
+        null,
+        e => console.log('categories error: ', e)
       );
       tx.executeSql(`create table if not exists
          units (
            id integer primary key not null,
            name text,
            rate real
-          );`, null,  
-          null,
-          e => console.log('units error: ', e)
+          );`, null,
+        null,
+        e => console.log('units error: ', e)
       );
       tx.executeSql(`create table if not exists
          typeCargoes (
            id integer primary key not null,
            name text
-          );`, null,  
-          null,
-          e => console.log('typeCargoes error: ', e)
+          );`, null,
+        null,
+        e => console.log('typeCargoes error: ', e)
       );
       tx.executeSql(`create table if not exists
          warehouses (
@@ -104,9 +104,9 @@ export const createDatabaseSqlite = async () => {
            name text,
            description text,
            address text
-          );`, null, 
-          null,
-          e => console.log('warehouses error: ', e)
+          );`, null,
+        null,
+        e => console.log('warehouses error: ', e)
       );
       tx.executeSql(`create table if not exists
          products (
@@ -122,9 +122,9 @@ export const createDatabaseSqlite = async () => {
            salePrice real,
            minQuantity real,
            isAvaiable integer
-          );`, null, 
-          null,
-          e => console.log('products error: ', e)
+          );`, null,
+        null,
+        e => console.log('products error: ', e)
       );
       tx.executeSql(`create table if not exists
          customerGroups (
@@ -132,8 +132,8 @@ export const createDatabaseSqlite = async () => {
            name text,
            description text
           );`, null,
-          null,
-          e => console.log('customerGroups error: ', e)
+        null,
+        e => console.log('customerGroups error: ', e)
       );
       tx.executeSql(`create table if not exists
          customers (
@@ -149,8 +149,8 @@ export const createDatabaseSqlite = async () => {
            overdue integer,
            minQuantity real
           );`, null,
-          null,
-          e => console.log('customers error: ', e)
+        null,
+        e => console.log('customers error: ', e)
       );
       tx.executeSql(`create table if not exists
          dataVersions (
@@ -160,93 +160,92 @@ export const createDatabaseSqlite = async () => {
            categories integer,
            roles integer,
            units integer,
+           typeCargoes integer,
            warehouses integer,
            products integer,
            customerGroups integer,
            customers integer
-          );`, null, 
-          null,
-          e => console.log('dataVersions error: ', e)
+          );`, null,
+        null,
+        e => console.log('dataVersions error: ', e)
       );
     },
-    e => console.log("lỗi tạo các bảng dữ liệu 1 ", e),
+    e => console.log('lỗi tạo các bảng dữ liệu 1 ', e),
     null
 
-  )
+  );
 };
 
 export const getCurrentDataVersion = async () => await SqlService.select('dataVersions', '*');
 
 export const updateOrInsertDataVersion = async (data) => {
-  const avaiabledDataVersion = await SqlService.select('dataVersions', '*', `id = '${data.id}'`);
+  const avaiabledDataVersion = await SqlService.select('dataVersions', '*', `id = ${data.id}`);
 
   const newDataVersion = [
     data.id, data.menusVersion, data.userMenusVersion, data.categoriesVersion,
     data.rolesVersion, data.unitsVersion, data.typeCargoesVersion, data.warehousesVersion, data.productsVersion,
     data.customerGroupsVersion, data.customersVersion
   ];
+  console.log('newDataVersion = ', newDataVersion);
+  console.log('avaiabledDataVersion = ', avaiabledDataVersion);
+
   if (avaiabledDataVersion.length == 0) {
     db.transaction(
       tx => {
         tx.executeSql(`
           insert into dataVersions 
-            ('id', 'menus', 'userMenus', 'categories', 'roles', 'units', 'typeCargoes, 'warehouses',
-            'products', 'customerGroups', 'customers') 
+            (id, menus, userMenus, categories, roles, units, typeCargoes, warehouses, products, customerGroups, customers) 
             values (
-              '${data.id}',
+              '${data.id}', 
               '${data.menusVersion}', 
               '${data.userMenusVersion}', 
               '${data.categoriesVersion}', 
-             ' ${data.rolesVersion}', 
+              '${data.rolesVersion}', 
               '${data.unitsVersion}', 
               '${data.typeCargoesVersion}', 
               '${data.warehousesVersion}', 
               '${data.productsVersion}', 
               '${data.customerGroupsVersion}', 
-              '${data.customersVersion}')
+              '${data.customersVersion}'
+            )
         `);
       },
-      (e) => console.log("lỗi lưu dataVersions sqlite: ", e),
-      null
+      (e) => console.log('lỗi lưu dataVersions sqlite: ', e),
+      (e) => console.log('success ', e)
     );
   } else {
-    let sql = 'UPDATE dataVersions SET ';
-    if(data.menusVersion) 
-      sql += `menus = '${data.menusVersion}' `
-    if(data.userMenusVersion) 
-      sql += `userMenus = '${data.userMenusVersion}' `
-    if(data.categoriesVersion) 
-      sql += `categories = '${data.categoriesVersion}' `
-    if(data.rolesVersion) 
-      sql += `roles = '${data.rolesVersion}' `
-    if(data.unitsVersion) 
-      sql += `units = '${data.unitsVersion}' `
-    if(data.typeCargoesVersion) 
-      sql += `typeCargoes = '${data.typeCargoesVersion}' `
-    if(data.warehousesVersion) 
-      sql += `warehouses = '${data.warehousesVersion}' `
-    if(data.productsVersion) 
-      sql += `products = '${data.productsVersion}' `
-    if(data.customerGroupsVersion) 
-      sql += `customerGroups = '${data.customerGroupsVersion}' `
-    if(data.customersVersion) 
-      sql += `customers = '${data.customersVersion}' `
-    sql += `WHERE id = ${data.id};`
+    if (data != null) {
+      let sql = 'UPDATE dataVersions SET ';
+      if (data.menusVersion) { sql += `menus = '${data.menusVersion}',`; }
+      if (data.userMenusVersion) { sql += `userMenus = '${data.userMenusVersion}',`; }
+      if (data.categoriesVersion) { sql += `categories = '${data.categoriesVersion}',`; }
+      if (data.rolesVersion) { sql += `roles = '${data.rolesVersion}',`; }
+      if (data.unitsVersion) { sql += `units = '${data.unitsVersion}',`; }
+      if (data.typeCargoesVersion) { sql += `typeCargoes = '${data.typeCargoesVersion}',`; }
+      if (data.warehousesVersion) { sql += `warehouses = '${data.warehousesVersion}',`; }
+      if (data.productsVersion) { sql += `products = '${data.productsVersion}',`; }
+      if (data.customerGroupsVersion) { sql += `customerGroups = '${data.customerGroupsVersion}',`; }
+      if (data.customersVersion) { sql += `customers = '${data.customersVersion}',`; }
+      console.log('sql = ', sql);
+      sql.slice(0, sql.length - 1)
+      console.log('sql = ', sql);
+      sql += `WHERE id = ${data.id};`;
 
-    db.transaction(
-      tx => {
-        tx.executeSql(
-          sql
-        );
-      },
-      (e) => console.log("lỗi lưu dataVersions sqlite: ", e),
-      null
-    )
+      db.transaction(
+        tx => {
+          tx.executeSql(
+            sql
+          );
+        },
+        (e) => console.log('lỗi update dataVersions sqlite: ', e),
+        null
+      );
+    }
   }
   if (data.userMenus && data.userMenus.length > 0) {
     db.transaction(
       tx => {
-        tx.executeSql(`drop table if exists userMenus;`);
+        tx.executeSql('drop table if exists userMenus;');
         tx.executeSql(`create table if not exists
          userMenus (
            menuId integer,
@@ -259,18 +258,18 @@ export const updateOrInsertDataVersion = async (data) => {
             insert into userMenus 
               (userId, menuId, name, parentId) 
               values (
-               ' ${item.userId}',
+                '${item.userId}',
                 '${item.menuId}', 
                 '${item.name}', 
                 '${item.parentId}'
               )
           `);
+
         }, this);
       },
-      (e) => console.log("lỗi lưu menuUser sqlite: ", e),
+      (e) => console.log('lỗi lưu menuUser sqlite: ', e),
       null
     );
-
   }
 
   if (data.categories) {
@@ -285,14 +284,14 @@ export const updateOrInsertDataVersion = async (data) => {
           tx => {
             tx.executeSql(`
               update categories 
-              set name = '${item.name}',
-              description = '${item.description}',
-              imageUrl = '${item.imageUrl}'
-              where id = '${item.id} '
-              `)
+              set name = ${item.name},
+              description = ${item.description},
+              imageUrl = ${item.imageUrl}
+              where id = ${item.id}
+              `);
           },
           null,
-          console.log("error when update category")
+          e => console.log('error when update category', e)
         );
       }
     }, this);
@@ -309,13 +308,13 @@ export const updateOrInsertDataVersion = async (data) => {
           tx => {
             tx.executeSql(`
               update units 
-              set name = '${item.name}',
-              rate = '${item.rate}'
-              where id = '${item.id}' 
-              `)
+              set name = ${item.name},
+              rate = ${item.rate}
+              where id = ${item.id} 
+              `);
           },
           null,
-          console.log("error when update units")
+          e => console.log('error when update units', e)
         );
       }
     }, this);
@@ -332,12 +331,12 @@ export const updateOrInsertDataVersion = async (data) => {
           tx => {
             tx.executeSql(`
               update typeCargoes 
-              set name = '${item.name}'
-              where id = '${item.id}' 
-              `)
+              set name = ${item.name}
+              where id = ${item.id} 
+              `);
           },
           null,
-          console.log("error when update typeCargoes")
+          e => console.log('error when update typeCargoes', e)
         );
       }
     }, this);
@@ -356,12 +355,12 @@ export const updateOrInsertDataVersion = async (data) => {
           tx => {
             tx.executeSql(`
               update roles 
-              set name = '${item.name}' 
-              where id = '${item.id}' 
+              set name = ${item.name} 
+              where id = ${item.id} 
               `);
           },
           null,
-          console.log("error when update roles")
+          e => console.log('error when update roles', e)
         );
       }
     }, this);
@@ -378,14 +377,14 @@ export const updateOrInsertDataVersion = async (data) => {
           tx => {
             tx.executeSql(`
               update warehouses 
-              set name = '${item.name}',
-              description = '${item.description}',
-              address =' ${item.address}'
-              where id = '${item.id}' 
+              set name = ${item.name},
+              description = ${item.description},
+              address = ${item.address}
+              where id = ${item.id} 
               `);
           },
           null,
-          console.log("error when update warehouses")
+          e => console.log('error when update warehouses', e)
         );
       }
     }, this);
@@ -408,21 +407,21 @@ export const updateOrInsertDataVersion = async (data) => {
           tx => {
             tx.executeSql(`
               update customers 
-              set name = '${item.name}',
-              customerGroupId = '${item.customerGroupId}',
-              bankId = '${item.bankId}',
-              companyId = '${item.companyId}',
-              address = '${item.address}',
-              imageUrl = '${item.imageUrl}',
-              phone = '${item.phone}',
-              email = '${item.email}',
-              overdue = '${item.overdue}',
-              excessDebt = '${item.excessDebt}' 
-              where id = '${item.id}' 
+              set name = ${item.name},
+              customerGroupId = ${item.customerGroupId},
+              bankId = ${item.bankId},
+              companyId = ${item.companyId},
+              address = ${item.address},
+              imageUrl = ${item.imageUrl},
+              phone = ${item.phone},
+              email = ${item.email},
+              overdue = ${item.overdue},
+              excessDebt = ${item.excessDebt} 
+              where id = ${item.id} 
               `);
           },
           null,
-          console.log("error when update customers")
+          e => console.log('error when update customers', e)
         );
       }
     }, this);
@@ -444,22 +443,22 @@ export const updateOrInsertDataVersion = async (data) => {
           tx => {
             tx.executeSql(`
           update products 
-          set categoryId = '${item.categoryId}',
-          unitId = '${item.unitId}',
-          typeCargoId = '${item.typeCargoId}',
-          name =' ${item.name}',
-          description = '${item.description}',
-          isPublic = '${item.isPublic}',
-          imageUrl = '${item.imageUrl}',
-          purchasePrice = '${item.purchasePrice}',
-          salePrice = '${item.salePrice}',
-          minQuantity = '${item.minQuantity}',
-          isAvaiable = '${item.isAvaiable}'
-          where id = '${item.id}' 
+          set categoryId = ${item.categoryId},
+          unitId = ${item.unitId},
+          typeCargoId = ${item.typeCargoId},
+          name = ${item.name},
+          description = ${item.description},
+          isPublic = ${item.isPublic},
+          imageUrl = ${item.imageUrl},
+          purchasePrice = ${item.purchasePrice},
+          salePrice = ${item.salePrice},
+          minQuantity = ${item.minQuantity},
+          isAvaiable = ${item.isAvaiable}
+          where id = ${item.id} 
           `);
           },
           null,
-          console.log("error when update products")
+          e => console.log('error when update products', e)
         );
       }
     }, this);
@@ -467,21 +466,29 @@ export const updateOrInsertDataVersion = async (data) => {
 };
 
 export const checkDataVersion = async (userId, store) => {
-
   try {
-    await SqlService.select('dataVersions', '*', `id = 1`).then(
+    await SqlService.select('dataVersions', '*', 'id = 1').then(
       async (currentVersion) => {
+        if (!currentVersion[0]) {
+          currentVersion[0] = {
+            id: 0,
+            menus: 0,
+            userMenus: 0,
+            roles: 0,
+            units: 0,
+            typeCargoes: 0,
+            warehouses: 0,
+            categories: 0,
+            products: 0,
+            customerGroups: 0,
+            customers: 0
+          };
+        }
 
-        if (!currentVersion[0]) currentVersion[0] = { 
-          id: 0, menus: 0, userMenus: 0, 
-          roles: 0, units: 0, typeCargoes: 0, 
-          warehouses: 0, categories: 0, products: 0, 
-          customerGroups: 0, customers: 0 };
-
-        const { id, menus, userMenus, 
-          roles, units, typeCargoes, 
+        const { id, menus, userMenus,
+          roles, units, typeCargoes,
           warehouses, categories,
-          products, customerGroups, 
+          products, customerGroups,
           customers } = currentVersion[0];
 
         const data = await axios.post(`${URL}/api/data/checkDataVersion`, {

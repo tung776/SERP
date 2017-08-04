@@ -81,7 +81,10 @@ exports.seed = function (knex, Promise) {
 
         { name: 'Hệ Thống' },
         { name: 'Thay Đổi Thông Tin Công Ty', parentId: 64 },
-        { name: 'Thay Đổi Menu', parentId: 64 }
+        { name: 'Thay Đổi Menu', parentId: 64 },
+        //update 4/8/2017
+        { name: 'Thêm sản phẩm mới', parentId: 2 },
+        { name: 'Tìm kiếm sản phẩm', parentId: 2 }
 
       ]);
     });
