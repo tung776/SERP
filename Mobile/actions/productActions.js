@@ -1,7 +1,7 @@
 import { URL } from '../../env';
 import axios from 'axios';
 import { ProductFormValidator } from '../validators';
-import { AsyncStorage } from 'react-native';
+import { AsyncStorage, Alert } from 'react-native';
 import SqlService from '../database/sqliteService';
 import {
     PRODUCT_LOADED_SQLITE,
@@ -14,7 +14,9 @@ import {
     LOAD_TYPE_CARGO_SUCCESS,
     LOAD_UNIT_SUCCESS,
     PRODUCT_CHANGE_FAIL,
-    ADD_FLASH_MESSAGE
+    ADD_FLASH_MESSAGE,
+    ERROR_MESSAGE,
+    SUCCESS_MESSAGE
 } from './index';
 import db from '../database/sqliteConfig';
 
@@ -72,6 +74,9 @@ export const loadProductListDataFromSqlite = (categoryId) => async (dispatch) =>
 };
 
 export const loadProductByIdFromSqlite = (productId) => async (dispatch) => {
+    /**
+     * Phương thức này sẽ load sản phẩm dựa trên id của sản phẩm được cung cấp
+     */
     dispatch({
         type: PRODUCT_PENDING
     });
@@ -85,6 +90,23 @@ export const loadProductByIdFromSqlite = (productId) => async (dispatch) => {
     );
 };
 
+export const loadProductByNameFromSqlite = (name) => (dispatch) => {
+    /*
+        Phương thức này sẽ trả về danh sách các sản phẩm có tên gần nhất với tên sản phẩm được cung cấp
+    */
+    dispatch({
+        type: PRODUCT_PENDING
+    });
+
+    SqlService.query(`select * from products where name like %${name}`).then(
+        result => {
+            dispatch({
+                type: PRODUCT_LIST_LOADED_SQLITE,
+                payload: result
+            });
+        }
+    );
+};
 
 export const ProductDelete = (productId) => async (dispatch) => {
     dispatch({
@@ -216,8 +238,8 @@ export const ProductUpdate = (product) => async (dispatch) => {
                                 unitId = ${res.data.product[0].unitId},
                                 typeCargoId = ${res.data.product[0].typeCargoId},
                                 categoryId = ${res.data.product[0].categoryId},
-                                isAvaiable = ${res.data.product[0].isAvaiable},
-                                isPublic = ${res.data.product[0].isPublic},
+                                isAvaiable = '${res.data.product[0].isAvaiable}',
+                                isPublic = '${res.data.product[0].isPublic}',
                                 purchasePrice = ${res.data.product[0].purchasePrice},
                                 salePrice = ${res.data.product[0].salePrice},
                                 name = '${res.data.product[0].name}', 
@@ -338,6 +360,7 @@ export const AddNewProduct = (product) => async (dispatch) => {
                 //Tiến hàng lưu dữ liệu lên sqlite cho mục đích offline
                 db.transaction(
                     tx => {
+                        debugger;
                         tx.executeSql(`UPDATE dataVersions 
                             SET products = '${res.data.dataversion[0].products}'                    
                             WHERE id = 1;`
@@ -361,17 +384,18 @@ export const AddNewProduct = (product) => async (dispatch) => {
                                         ${res.data.product[0].unitId},
                                         ${res.data.product[0].typeCargoId},
                                         ${res.data.product[0].categoryId},
-                                        ${res.data.product[0].isAvaiable},
-                                        ${res.data.product[0].isPublic},
+                                        '${res.data.product[0].isAvaiable}',
+                                        '${res.data.product[0].isPublic}',
                                         ${res.data.product[0].purchasePrice},
                                         ${res.data.product[0].salePrice},
                                         '${res.data.product[0].name}', 
                                         '${res.data.product[0].description}', 
-                                        '${res.data.product[0].minQuantity}'
+                                        ${res.data.product[0].minQuantity}
                                     )
                                     `;
 
                         tx.executeSql(strSql);
+                        debugger;
                         tx.executeSql(
                             'select * from products',
                             null,
@@ -385,6 +409,7 @@ export const AddNewProduct = (product) => async (dispatch) => {
                                 console.log('error read products data from sqlite = ', e);
                             }
                         );
+                        debugger;
                     },
                     (e) => console.log('Lỗi update sqlite: ', e),
                     null

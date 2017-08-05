@@ -53,9 +53,10 @@ class ProductList extends React.Component {
     // }
     renderProductList() {
 
-        if (this.props.loaded) {
+        if (this.props.loaded && this.props.products) {
             return (
                 <FlatList
+                    style = {styles.listProduct}
                     data={this.props.products}
                     renderItem={({ item }) =>
                         <TouchableWithoutFeedback
@@ -85,7 +86,6 @@ class ProductList extends React.Component {
                     <Text style={styles.headTitle}>Danh Sách Sản Phẩm</Text>
                 </Header>
                 <View style={styles.body}>
-                    <ScrollView>
                         <View style={styles.InputContainer}>
                             <View style={styles.groupControl} >
                                 <TextInput
@@ -108,7 +108,6 @@ class ProductList extends React.Component {
                             {this.state.error && <Text style={styles.errorStyle}>{this.state.error.identifier}</Text>}
                         </Text>
                         {this.renderProductList()}
-                    </ScrollView>
                 </View>
                 <Footer>
                     <TouchableOpacity style={styles.addNewGroupBtn} onPress={() => { Actions.ProductNew(); }}>
@@ -129,7 +128,6 @@ const styles = {
     headTitle: stylesCommon.headTitle,
     listItem: {
         flexDirection: 'row',
-        flex: 1,
         paddingTop: 2,
         paddingBottom: 2,
         paddingRight: 10,
@@ -165,7 +163,7 @@ const styles = {
         borderRadius: 5,
     },
     InputContainer: {
-        flex: 1,
+        height: 40,
         // flexDirection: 'row',
         paddingLeft: 10,
         paddingRight: 10,
@@ -173,6 +171,9 @@ const styles = {
         marginTop: 10,
         borderRadius: 5,
         backgroundColor: '#2980b9'
+    },
+    listProduct: {
+        flex: 1
     },
     groupControl: {
         flex: 1,

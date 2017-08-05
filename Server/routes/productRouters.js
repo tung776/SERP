@@ -44,7 +44,7 @@ const stringConvert = ({
     });
 
 ProductRouter.post('/new', async (req, res) => {
-    
+    debugger;
     let {
         CategoryId,
         UnitId,
@@ -56,7 +56,7 @@ ProductRouter.post('/new', async (req, res) => {
         SalePrice,
         MinQuantity,
         IsAvaiable
-    } = req.body.product;
+    } = stringConvert(req.body);
 
 
     console.log({
@@ -71,8 +71,19 @@ ProductRouter.post('/new', async (req, res) => {
         MinQuantity,
         IsAvaiable
     });
-
-    const { isValid, errors } = ProductFormValidator(JSON.parse(req.body.product));
+    debugger;
+    const { isValid, errors } = ProductFormValidator({
+        CategoryId,
+        UnitId,
+        TypeCargoId,
+        Name,
+        Description,
+        IsPublic,
+        PurchasePrice,
+        SalePrice,
+        MinQuantity,
+        IsAvaiable
+    });
     console.log('isValid = ', isValid);
     console.log('errors = ', errors);
     if (isValid) {
@@ -81,6 +92,7 @@ ProductRouter.post('/new', async (req, res) => {
         try {
             Knex.transaction(async (t) => {
                 try {
+                    debugger;
                     const dataVersion = await Knex('dataVersions').where('id', 1);
                     debugger;
                     let { menus, userMenus, roles, categories,
@@ -162,11 +174,11 @@ ProductRouter.post('/update', async (req, res) => {
         SalePrice,
         MinQuantity,
         IsAvaiable
-    } = req.body.product;
+    } = stringConvert(req.body);
 
-    const { Id } = JSON.parse(req.body.product);
+    const { Id } = JSON.parse(req.body);
     debugger;
-    const { isValid, errors } = ProductFormValidator(JSON.parse(req.body.product));
+    const { isValid, errors } = ProductFormValidator(JSON.parse(req.body));
 
     if (isValid) {
         let newDataversion;
@@ -235,9 +247,9 @@ ProductRouter.post('/update', async (req, res) => {
                 }
                 )
                 .catch(
-                e => {
-                    res.status(400).json({ success: false, error: e });
-                }
+                    e => {
+                        res.status(400).json({ success: false, error: e });
+                    }
                 );
             //end transaction
         } catch (e) {

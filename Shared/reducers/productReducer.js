@@ -59,9 +59,11 @@ export default (state = INITIAL_STATE, action) => {
         case LOAD_TYPE_CARGO_SUCCESS:
             return { ...state, typeCargoes: action.payload };
         case ADD_PRODUCT:
-
-            return {
-                ...payload,
+           
+        case PRODUCT_CHANGE_FAIL:
+            return { ...state, error: action.payload, loading: false };
+        case PRODUCT_CHANGE_SUCCESS:
+            const {
                 Id,
                 CategoryId,
                 UnitId,
@@ -73,15 +75,9 @@ export default (state = INITIAL_STATE, action) => {
                 IsAvaiable,
                 Name,
                 Description,
-                error: '',
-                loading: false,
-            };
-        case PRODUCT_CHANGE_FAIL:
-            return { ...state, error: action.payload, loading: false };
-        case PRODUCT_CHANGE_SUCCESS:
-
+            } = action.payload;
             return {
-                ...payload,
+                ...state,
                 Id,
                 CategoryId,
                 UnitId,

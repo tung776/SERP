@@ -117,11 +117,11 @@ export const createDatabaseSqlite = async () => {
            name text,
            description text,
            imageUrl text,
-           isPublic integer,
+           isPublic text,
            purchasePrice real,
            salePrice real,
            minQuantity real,
-           isAvaiable integer
+           isAvaiable text
           );`, null,
         null,
         e => console.log('products error: ', e)
@@ -179,7 +179,7 @@ export const createDatabaseSqlite = async () => {
 export const getCurrentDataVersion = async () => await SqlService.select('dataVersions', '*');
 
 export const updateOrInsertDataVersion = async (data) => {
-  const avaiabledDataVersion = await SqlService.select('dataVersions', '*', `id = ${data.id}`);
+  const avaiabledDataVersion = await SqlService.select('dataVersions', '*', `id = 1`);
 
   const newDataVersion = [
     data.id, data.menusVersion, data.userMenusVersion, data.categoriesVersion,
@@ -227,9 +227,9 @@ export const updateOrInsertDataVersion = async (data) => {
       if (data.customerGroupsVersion) { sql += `customerGroups = '${data.customerGroupsVersion}',`; }
       if (data.customersVersion) { sql += `customers = '${data.customersVersion}',`; }
       console.log('sql = ', sql);
-      sql.slice(0, sql.length - 1)
+      sql = sql.slice(0, sql.length - 1);
       console.log('sql = ', sql);
-      sql += `WHERE id = ${data.id};`;
+      sql += ` WHERE id = 1;`;
 
       db.transaction(
         tx => {
@@ -448,12 +448,12 @@ export const updateOrInsertDataVersion = async (data) => {
           typeCargoId = ${item.typeCargoId},
           name = ${item.name},
           description = ${item.description},
-          isPublic = ${item.isPublic},
+          isPublic = '${item.isPublic}',
           imageUrl = ${item.imageUrl},
           purchasePrice = ${item.purchasePrice},
           salePrice = ${item.salePrice},
           minQuantity = ${item.minQuantity},
-          isAvaiable = ${item.isAvaiable}
+          isAvaiable = '${item.isAvaiable}'
           where id = ${item.id} 
           `);
           },

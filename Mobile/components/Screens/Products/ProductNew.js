@@ -230,7 +230,6 @@ class ProductNew extends React.Component {
                                 </Picker>
                             </View>
                         </View>
-                        <Text>{this.props.Description}</Text>
                         <View style={styles.controlContainer}>
                             <Text style={styles.label} >Mô tả</Text>
                             <View style={styles.groupControl}>
