@@ -1,6 +1,6 @@
 import { URL } from '../../env';
 import axios from 'axios';
-import { NewCategoryValidator } from '../validators';
+import { ProductFormValidator } from '../validators';
 import { AsyncStorage } from 'react-native';
 import SqlService from '../database/sqliteService';
 import {
@@ -12,7 +12,9 @@ import {
     PRODUCT_CHANGE_SUCCESS,
     PRODUCT_DELETE_SUCCESS,
     LOAD_TYPE_CARGO_SUCCESS,
-    LOAD_UNIT_SUCCESS
+    LOAD_UNIT_SUCCESS,
+    PRODUCT_CHANGE_FAIL,
+    ADD_FLASH_MESSAGE
 } from './index';
 import db from '../database/sqliteConfig';
 
@@ -32,11 +34,6 @@ export const loadTypeCargo = () => async (dispatch) => {
             });
         }
     );
-    // db.transaction(
-    //     tx=> {
-    //         tx.executeSql('select * from typeCargoes')
-    //     }
-    // )
 };
 export const loadUnits = () => async (dispatch) => {
     SqlService.query('select * from units').then(
@@ -61,13 +58,11 @@ export const loadProductListDataFromSqlite = (categoryId) => async (dispatch) =>
 
     SqlService.query(`select * from products where categoryId = ${categoryId}`).then(
         result => {
-            console.log('result = ', result);
             const products = [];
             result.forEach((item) => {
                 const convertedData = { ...item, key: item.id };
                 products.push(convertedData);
             });
-            console.log('products = ', products);
             dispatch({
                 type: PRODUCT_LIST_LOADED_SQLITE,
                 payload: products
@@ -91,7 +86,7 @@ export const loadProductByIdFromSqlite = (productId) => async (dispatch) => {
 };
 
 
-export const CategoryDelete = (productId) => async (dispatch) => {
+export const ProductDelete = (productId) => async (dispatch) => {
     dispatch({
         type: PRODUCT_PENDING
     });
@@ -135,7 +130,7 @@ export const CategoryDelete = (productId) => async (dispatch) => {
             });
             dispatch({
                 type: ADD_FLASH_MESSAGE,
-                payload: { message: 'Bạn đã tạo nhóm sản phẩm thành công', TypeMessage: SUCCESS_MESSAGE }
+                payload: { message: 'Bạn đã tạo sản phẩm thành công', TypeMessage: SUCCESS_MESSAGE }
             });
             Alert.alert(
                 'Thông Báo',
@@ -150,21 +145,21 @@ export const CategoryDelete = (productId) => async (dispatch) => {
             console.log('error: ', err);
             if (err.response) {
                 dispatch({
-                    type: CATEGORY_CHANGE_FAIL,
+                    type: PRODUCT_CHANGE_FAIL,
                     payload: err.response.data.error
                 });
                 dispatch({
                     type: ADD_FLASH_MESSAGE,
-                    payload: { message: `Tạo nhóm sản phẩm thất bại: ${err.response.data.error}`, TypeMessage: ERROR_MESSAGE }
+                    payload: { message: `Tạo sản phẩm thất bại: ${err.response.data.error}`, TypeMessage: ERROR_MESSAGE }
                 });
             } else {
                 dispatch({
-                    type: CATEGORY_CHANGE_FAIL,
+                    type: PRODUCT_CHANGE_FAIL,
                     payload: err
                 });
                 dispatch({
                     type: ADD_FLASH_MESSAGE,
-                    payload: { message: `Tạo nhóm sản phẩm thất bại: ${err}`, TypeMessage: ERROR_MESSAGE }
+                    payload: { message: `Tạo sản phẩm thất bại: ${err}`, TypeMessage: ERROR_MESSAGE }
                 });
             }
             Alert.alert(
@@ -178,14 +173,14 @@ export const CategoryDelete = (productId) => async (dispatch) => {
         );
 };
 
-export const ProductUpdate = (category, isImageChanged) => async (dispatch) => {
+export const ProductUpdate = (product) => async (dispatch) => {
     dispatch({
-        type: CATEGORY_PENDING
+        type: PRODUCT_PENDING
     });
-    const { isValid, errors } = NewCategoryValidator(category);
+    const { isValid, errors } = ProductFormValidator(product);
     if (!isValid) {
         dispatch({
-            type: CATEGORY_CHANGE_FAIL,
+            type: PRODUCT_CHANGE_FAIL,
             payload: errors
         });
         Alert.alert(
@@ -196,29 +191,9 @@ export const ProductUpdate = (category, isImageChanged) => async (dispatch) => {
             ]
         );
     } else {
-        const apiUrl = `${URL}/api/category/update`;
-        const formData = new FormData();
+        const apiUrl = `${URL}/api/product/update`;        
 
-        if (isImageChanged) {
-            const uriParts = category.ImageUrl.split('.');
-            const fileType = uriParts[uriParts.length - 1];
-
-            formData.append('categoryImage', {
-                uri: category.ImageUrl,
-                name: `category.${fileType}`,
-                filename: `category.${fileType}`,
-                type: `image/${fileType}`,
-            });
-        }
-
-        formData.append('category', JSON.stringify(category));
-        const options = {
-            headers: {
-                Accept: 'application/json',
-            },
-        };
-
-        axios.post(apiUrl, formData).then(
+        axios.post(apiUrl, product).then(
             (res) => {
                 //Dữ liệu đã được lưu thành công trên server,
                 //Tiến hàng lưu dữ liệu lên sqlite cho mục đích offline
@@ -227,7 +202,7 @@ export const ProductUpdate = (category, isImageChanged) => async (dispatch) => {
                         tx => {
                             tx.executeSql(`
                             update dataVersions 
-                            set categories = ${res.data.dataversion[0].categories} 
+                            set products = ${res.data.dataversion[0].products} 
                             where id = 1`,
                                 null,
                                 null,
@@ -236,23 +211,31 @@ export const ProductUpdate = (category, isImageChanged) => async (dispatch) => {
                                 }
                             );
                             tx.executeSql(`
-                            update categories 
-                            set name = '${res.data.category[0].name}',
-                            description = '${res.data.category[0].description}',
-                            imageUrl = '${res.data.category[0].imageUrl}' 
-                            where id = ${res.data.category[0].id}
+                            update products 
+                            set 
+                                unitId = ${res.data.product[0].unitId},
+                                typeCargoId = ${res.data.product[0].typeCargoId},
+                                categoryId = ${res.data.product[0].categoryId},
+                                isAvaiable = ${res.data.product[0].isAvaiable},
+                                isPublic = ${res.data.product[0].isPublic},
+                                purchasePrice = ${res.data.product[0].purchasePrice},
+                                salePrice = ${res.data.product[0].salePrice},
+                                name = '${res.data.product[0].name}', 
+                                description = '${res.data.product[0].description}', 
+                                minQuantity = '${res.data.product[0].minQuantity}'
+                            where id = ${res.data.product[0].id}
                             `,
                                 null,
                                 null,
                                 (e) => {
-                                    console.log('lỗi update categories = ', e);
+                                    console.log('lỗi update products = ', e);
                                 }
                             );
-                            tx.executeSql('select * from categories',
+                            tx.executeSql('select * from products',
                                 null,
                                 (_, { rows: { _array } }) => {
                                     dispatch({
-                                        type: CATEGORY_LOADED_SQLITE,
+                                        type: PRODUCT_LIST_LOADED_SQLITE,
                                         payload: _array
                                     });
                                 },
@@ -264,17 +247,17 @@ export const ProductUpdate = (category, isImageChanged) => async (dispatch) => {
                         (e) => console.log('error ?????', e),
                         null
                     );
-                }                catch (e) {
+                } catch (e) {
                     console.log(e);
                 }
                 Actions.categoryList();
                 dispatch({
-                    type: CATEGORY_CHANGE_SUCCESS,
-                    payload: res.data.category[0]
+                    type: PRODUCT_CHANGE_SUCCESS,
+                    payload: res.data.product[0]
                 });
                 dispatch({
                     type: ADD_FLASH_MESSAGE,
-                    payload: { message: 'Bạn đã tạo nhóm sản phẩm thành công', TypeMessage: SUCCESS_MESSAGE }
+                    payload: { message: 'Bạn đã tạo sản phẩm thành công', TypeMessage: SUCCESS_MESSAGE }
                 });
                 Alert.alert(
                     'Thông Báo',
@@ -289,21 +272,21 @@ export const ProductUpdate = (category, isImageChanged) => async (dispatch) => {
                 console.log('error: ', err);
                 if (err.response) {
                     dispatch({
-                        type: CATEGORY_CHANGE_FAIL,
+                        type: PRODUCT_CHANGE_FAIL,
                         payload: err.response.data.error
                     });
                     dispatch({
                         type: ADD_FLASH_MESSAGE,
-                        payload: { message: `Tạo nhóm sản phẩm thất bại: ${err.response.data.error}`, TypeMessage: ERROR_MESSAGE }
+                        payload: { message: `Tạo sản phẩm thất bại: ${err.response.data.error}`, TypeMessage: ERROR_MESSAGE }
                     });
                 } else {
                     dispatch({
-                        type: CATEGORY_CHANGE_FAIL,
+                        type: PRODUCT_CHANGE_FAIL,
                         payload: err
                     });
                     dispatch({
                         type: ADD_FLASH_MESSAGE,
-                        payload: { message: `Tạo nhóm sản phẩm thất bại: ${err}`, TypeMessage: ERROR_MESSAGE }
+                        payload: { message: `Tạo sản phẩm thất bại: ${err}`, TypeMessage: ERROR_MESSAGE }
                     });
                 }
                 Alert.alert(
@@ -319,13 +302,25 @@ export const ProductUpdate = (category, isImageChanged) => async (dispatch) => {
 };
 
 export const AddNewProduct = (product) => async (dispatch) => {
+    const {
+        CategoryId,
+        UnitId,
+        TypeCargoId,
+        IsPublic,
+        PurchasePrice,
+        SalePrice,
+        MinQuantity,
+        IsAvaiable,
+        Name,
+        Description
+        } = product
     dispatch({
-        type: CATEGORY_PENDING
+        type: PRODUCT_PENDING
     });
-    const { isValid, errors } = NewCategoryValidator(category);
+    const { isValid, errors } = ProductFormValidator(product);
     if (!isValid) {
         dispatch({
-            type: CATEGORY_CHANGE_FAIL,
+            type: PRODUCT_CHANGE_FAIL,
             payload: errors
         });
         Alert.alert(
@@ -336,70 +331,58 @@ export const AddNewProduct = (product) => async (dispatch) => {
             ]
         );
     } else {
-        const apiUrl = `${URL}/api/category/new`;
-        const formData = new FormData();
-        if (category.ImageUrl != '' && category.ImageUrl != undefined) {
-            const uriParts = category.ImageUrl.split('.');
-            const fileType = uriParts[uriParts.length - 1];
-            formData.append('categoryImage', {
-                uri: category.ImageUrl,
-                name: `category.${fileType}`,
-                filename: `category.${fileType}`,
-                type: `image/${fileType}`,
-            });
-        }
-
-        formData.append('category', JSON.stringify(category));
-        const options = {
-            headers: {
-                Accept: 'application/json',
-            },
-        };
-
-        axios.post(apiUrl, formData).then(
+        const apiUrl = `${URL}/api/product/new`;  
+        axios.post(apiUrl, product).then(
             (res) => {
                 //Dữ liệu đã được lưu thành công trên server,
                 //Tiến hàng lưu dữ liệu lên sqlite cho mục đích offline
                 db.transaction(
                     tx => {
                         tx.executeSql(`UPDATE dataVersions 
-                            SET categories = '${res.data.dataversion[0].categories}'                    
+                            SET products = '${res.data.dataversion[0].products}'                    
                             WHERE id = 1;`
                         );
-                        let strSql = '';
-
-                        if (res.data.category[0].imageUrl.length > 1) {
-                            strSql = `insert into categories 
-                                    (id, name, description, imageUrl) 
+                        let strSql = `insert into products 
+                                    (
+                                        id, 
+                                        unitId, 
+                                        typeCargoId, 
+                                        categoryId, 
+                                        isAvaiable, 
+                                        isPublic, 
+                                        purchasePrice, 
+                                        salePrice, 
+                                        name, 
+                                        description, 
+                                        minQuantity
+                                    ) 
                                     values (
-                                        ${res.data.category[0].id},
-                                        '${res.data.category[0].name}', 
-                                        '${res.data.category[0].description}', 
-                                        '${res.data.category[0].imageUrl}'
+                                        ${res.data.product[0].id},
+                                        ${res.data.product[0].unitId},
+                                        ${res.data.product[0].typeCargoId},
+                                        ${res.data.product[0].categoryId},
+                                        ${res.data.product[0].isAvaiable},
+                                        ${res.data.product[0].isPublic},
+                                        ${res.data.product[0].purchasePrice},
+                                        ${res.data.product[0].salePrice},
+                                        '${res.data.product[0].name}', 
+                                        '${res.data.product[0].description}', 
+                                        '${res.data.product[0].minQuantity}'
                                     )
                                     `;
-                        } else {
-                            strSql = `insert into categories 
-                                    (id, name, description) 
-                                    values (
-                                            ${res.data.category[0].id},
-                                           ' ${res.data.category[0].name}', 
-                                            '${res.data.category[0].description}'
-                                        )
-                                    `;
-                        }
+
                         tx.executeSql(strSql);
                         tx.executeSql(
-                            'select * from categories',
+                            'select * from products',
                             null,
                             (_, { rows: { _array } }) => {
                                 dispatch({
-                                    type: CATEGORY_LOADED_SQLITE,
+                                    type: PRODUCT_LIST_LOADED_SQLITE,
                                     payload: _array
                                 });
                             },
                             (e) => {
-                                console.log('error read categories data from sqlite = ', e);
+                                console.log('error read products data from sqlite = ', e);
                             }
                         );
                     },
@@ -408,12 +391,12 @@ export const AddNewProduct = (product) => async (dispatch) => {
                 );
 
                 dispatch({
-                    type: CATEGORY_CHANGE_SUCCESS,
-                    payload: res.data.category[0]
+                    type: PRODUCT_CHANGE_SUCCESS,
+                    payload: res.data.product[0]
                 });
                 dispatch({
                     type: ADD_FLASH_MESSAGE,
-                    payload: { message: 'Bạn đã tạo nhóm sản phẩm thành công', TypeMessage: SUCCESS_MESSAGE }
+                    payload: { message: 'Bạn đã tạo sản phẩm thành công', TypeMessage: SUCCESS_MESSAGE }
                 });
                 Alert.alert(
                     'Thông Báo',
@@ -428,21 +411,21 @@ export const AddNewProduct = (product) => async (dispatch) => {
                 console.log('error: ', err);
                 if (err.response) {
                     dispatch({
-                        type: CATEGORY_CHANGE_FAIL,
+                        type: PRODUCT_CHANGE_FAIL,
                         payload: err.response.data.error
                     });
                     dispatch({
                         type: ADD_FLASH_MESSAGE,
-                        payload: { message: `Tạo nhóm sản phẩm thất bại: ${err.response.data.error}`, TypeMessage: ERROR_MESSAGE }
+                        payload: { message: `Tạo sản phẩm thất bại: ${err.response.data.error}`, TypeMessage: ERROR_MESSAGE }
                     });
                 } else {
                     dispatch({
-                        type: CATEGORY_CHANGE_FAIL,
+                        type: PRODUCT_CHANGE_FAIL,
                         payload: err
                     });
                     dispatch({
                         type: ADD_FLASH_MESSAGE,
-                        payload: { message: `Tạo nhóm sản phẩm thất bại: ${err}`, TypeMessage: ERROR_MESSAGE }
+                        payload: { message: `Tạo sản phẩm thất bại: ${err}`, TypeMessage: ERROR_MESSAGE }
                     });
                 }
                 Alert.alert(

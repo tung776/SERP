@@ -42,7 +42,7 @@ export const createDatabaseSqlite = async () => {
   //   'drop table if exists dataVersions;');
   db.transaction(
     tx => {
-      // resetDatabase(tx);
+      resetDatabase(tx);
       // tx.executeSql('delete from dataVersions where id = 1');
       tx.executeSql(`create table if not exists
          menus (

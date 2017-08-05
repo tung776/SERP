@@ -35,6 +35,32 @@ class ProductNew extends React.Component {
             this.props.loadCategoriesDataFromSqlite();
         }
     }
+    onSave() {
+        const {
+            CategoryId,
+            UnitId,
+            TypeCargoId,
+            IsPublic,
+            PurchasePrice,
+            SalePrice,
+            MinQuantity,
+            IsAvaiable,
+            Name,
+            Description,
+        } = this.props;
+        this.props.AddNewProduct({
+            CategoryId,
+            UnitId,
+            TypeCargoId,
+            IsPublic,
+            PurchasePrice,
+            SalePrice,
+            MinQuantity,
+            IsAvaiable,
+            Name,
+            Description,
+        })
+    }
     //Tham khảo select (picker) react native: 
     //https://facebook.github.io/react-native/docs/picker.html
     render() {
@@ -126,7 +152,7 @@ class ProductNew extends React.Component {
                                     style={styles.textInput}
                                     blurOnSubmit
                                     value={this.props.PurchasePrice}
-                                    onChangeText={text => this.props.ProductChange({  prop: "PurchasePrice", value: text })}
+                                    onChangeText={text => this.props.ProductChange({ prop: "PurchasePrice", value: text })}
                                     type="Text"
                                     name="PurchasePrice"
                                     placeholder="Giá Mua"
@@ -176,6 +202,36 @@ class ProductNew extends React.Component {
                         </View>
 
                         <View style={styles.controlContainer}>
+                            <Text style={styles.label} >Công Khai Sản Phẩm</Text>
+                            <View style={styles.groupControl}>
+                                <Picker
+                                    selectedValue={this.props.IsPublic}
+                                    onValueChange={
+                                        (itemValue, itemIndex) => this.props.ProductChange({ prop: "IsPublic", value: itemValue })
+                                    }
+                                >
+                                    <Picker.Item key={true} label={'Công Khai'} value={true} />
+                                    <Picker.Item key={false} label={'Riêng tư'} value={false} />
+                                </Picker>
+                            </View>
+                        </View>
+
+                        <View style={styles.controlContainer}>
+                            <Text style={styles.label} >Hàng Có Sẵn</Text>
+                            <View style={styles.groupControl}>
+                                <Picker
+                                    selectedValue={this.props.IsAvaiable}
+                                    onValueChange={
+                                        (itemValue, itemIndex) => this.props.ProductChange({ prop: "IsAvaiable", value: itemValue })
+                                    }
+                                >
+                                    <Picker.Item key={true} label={'Hàng Có Sẵn'} value={true} />
+                                    <Picker.Item key={false} label={'Hàng Chưa Có Sẵn'} value={false} />
+                                </Picker>
+                            </View>
+                        </View>
+                        <Text>{this.props.Description}</Text>
+                        <View style={styles.controlContainer}>
                             <Text style={styles.label} >Mô tả</Text>
                             <View style={styles.groupControl}>
                                 <TextInput
@@ -185,28 +241,30 @@ class ProductNew extends React.Component {
                                     underlineColorAndroid={'transparent'}
                                     style={styles.textInput}
                                     blurOnSubmit
-                                    value={this.props.Descrition}
-                                    onChangeText={text => this.props.ProductChange({ prop: "Descrition", value: text })}
+                                    value={this.props.Description}
+                                    onChangeText={text => this.props.ProductChange({ prop: "Description", value: text })}
                                     type="Text"
-                                    name="Descrition"
+                                    name="Description"
                                     placeholder="Mô tả sản phẩm"
                                 />
                                 <Text>
-                                    {this.error && <Text style={styles.errorStyle}>{this.error.Descrition}</Text>}
+                                    {this.error && <Text style={styles.errorStyle}>{this.error.Description}</Text>}
                                 </Text>
                             </View>
                         </View>
                     </ScrollView>
                 </View>
                 <Footer>
-                    <View style = {styles.FooterGroupButton} >
-                        <TouchableOpacity style={styles.Btn} >
+                    <View style={styles.FooterGroupButton} >
+                        <TouchableOpacity style={styles.Btn}
+                            onPress={this.onSave.bind(this) }
+                        >
                             <Ionicons name="ios-checkmark-circle" size={25} color="#FFFFFF" />
                             <Text style={styles.titleButton}>Lưu</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                             style={styles.Btn}
-                            onPress = { Actions.pop() }
+                            onPress={() => Actions.pop()}
                         >
                             <Ionicons name="ios-checkmark-circle" size={25} color="#FFFFFF" />
                             <Text style={styles.titleButton}>Hủy</Text>
@@ -291,10 +349,12 @@ const styles = {
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#16a085',
-        padding: 3,
+        paddingTop: 3,
         paddingRight: 15,
         paddingLeft: 15,
+        paddingBottom: 8,
         borderRadius: 5,
+        marginLeft: 5,
     },
     FooterGroupButton: {
         // flex: 1,

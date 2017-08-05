@@ -8,9 +8,9 @@ import {
 
 const INITIAL_STATE = {
     Id: '',
-    CategoryId: '',
-    UnitId: '',
-    TypeCargoId: '',
+    CategoryId: 1,
+    UnitId: 1,
+    TypeCargoId: 1,
     IsPublic: false,
     PurchasePrice: '',
     SalePrice: '',
@@ -32,9 +32,9 @@ export default (state = INITIAL_STATE, action) => {
         case RESET_PRODUCT_FORM:
             return {
                 Id: '',
-                CategoryId: '',
-                UnitId: '',
-                TypeCargoId: '',
+                CategoryId: 1,
+                UnitId: 1,
+                TypeCargoId: 1,
                 IsPublic: false,
                 PurchasePrice: '',
                 SalePrice: '',

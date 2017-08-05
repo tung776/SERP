@@ -8,16 +8,16 @@ import path from 'path';
 const ProductRouter = Router();
 
 //Xác định nơi lưu ảnh
-const storage = multer.diskStorage({
-    destination(req, file, cb) {
-        cb(null, './Server/public/images/products');
-    },
-    filename(req, file, cb) {
-        const extent = file.originalname.slice(file.originalname.length - 4, file.originalname.length);
-        cb(null, `${file.fieldname}-${Date.now()}${extent}`);
-    }
-});
-const upload = multer({ storage });
+// const storage = multer.diskStorage({
+//     destination(req, file, cb) {
+//         cb(null, './Server/public/images/products');
+//     },
+//     filename(req, file, cb) {
+//         const extent = file.originalname.slice(file.originalname.length - 4, file.originalname.length);
+//         cb(null, `${file.fieldname}-${Date.now()}${extent}`);
+//     }
+// });
+// const upload = multer({ storage });
 
 const stringConvert = ({
     CategoryId,
@@ -43,11 +43,8 @@ const stringConvert = ({
         Description
     });
 
-ProductRouter.post('/new', upload.single('productImage'), async (req, res) => {
-    let ImageUrl = '';
-    if (req.file) {
-        ImageUrl = `/images/products/${req.file.filename}`;
-    }
+ProductRouter.post('/new', async (req, res) => {
+    
     let {
         CategoryId,
         UnitId,
@@ -59,7 +56,7 @@ ProductRouter.post('/new', upload.single('productImage'), async (req, res) => {
         SalePrice,
         MinQuantity,
         IsAvaiable
-    } = stringConvert(JSON.parse(req.body.product));
+    } = req.body.product;
 
 
     console.log({
@@ -119,8 +116,7 @@ ProductRouter.post('/new', upload.single('productImage'), async (req, res) => {
                             purchasePrice: PurchasePrice,
                             salePrice: SalePrice,
                             minQuantity: MinQuantity,
-                            isAvaiable: IsAvaiable,
-                            imageUrl: ImageUrl
+                            isAvaiable: IsAvaiable
                         });
                     debugger;
                 } catch (e) {
@@ -139,14 +135,7 @@ ProductRouter.post('/new', upload.single('productImage'), async (req, res) => {
                 )
                 .catch(
                 e => {
-                    //Lưu dữ liệu thất bại, vì vậy cần phải xóa file rác
-                    if (req.file) {
-                        const dir = path.resolve('Server/public');
-                        const filePath = path.resolve(dir + ImageUrl);
-                        if (fs.existsSync(filePath)) {
-                            fs.unlinkSync(filePath);
-                        }
-                    }
+                    
                     res.status(400).json({ success: false, error: e });
                 }
                 );
@@ -156,11 +145,8 @@ ProductRouter.post('/new', upload.single('productImage'), async (req, res) => {
         }
     }
 });
-ProductRouter.post('/update', upload.single('productImage'), async (req, res) => {
-    let ImageUrl = '';
-    if (req.file) {
-        ImageUrl = `/images/products/${req.file.filename}`;
-    }
+ProductRouter.post('/update', async (req, res) => {
+    
     if (!req.body.product) {
         throw new Error('Không tìm thấy sản phẩm');
     }
@@ -176,7 +162,7 @@ ProductRouter.post('/update', upload.single('productImage'), async (req, res) =>
         SalePrice,
         MinQuantity,
         IsAvaiable
-    } = stringConvert(JSON.parse(req.body.product));
+    } = req.body.product;
 
     const { Id } = JSON.parse(req.body.product);
     debugger;
@@ -214,28 +200,8 @@ ProductRouter.post('/update', upload.single('productImage'), async (req, res) =>
                     debugger;
                     const oldProduct = await t('products').where('id', Id);
                     debugger;
-                    let oldImage;
-                    if (oldProduct.length > 0) {
-                        oldImage = oldProduct[0].imageUrl;
-                    }
-                    if (req.file) {
-                        data = await t('products')
-                            .returning('*')
-                            .whereRaw(`id = ${Id}`)
-                            .update({
-                                categoryId: CategoryId,
-                                unitId: UnitId,
-                                typeCargoId: TypeCargoId,
-                                name: Name,
-                                description: Description,
-                                isPublic: IsPublic,
-                                purchasePrice: PurchasePrice,
-                                salePrice: SalePrice,
-                                minQuantity: MinQuantity,
-                                isAvaiable: IsAvaiable,
-                                imageUrl: ImageUrl
-                            });
-                    } else {
+                    
+                   
                         data = await t('products')
                             .returning('*')
                             .whereRaw(`id = ${Id}`)
@@ -251,17 +217,9 @@ ProductRouter.post('/update', upload.single('productImage'), async (req, res) =>
                                 minQuantity: MinQuantity,
                                 isAvaiable: IsAvaiable
                             });
-                    }
+                    
                     debugger;
-                    //Xóa ảnh cũ
-                    if (req.file && oldImage.indexOf('images/products') > 0) {
-                        const dir = path.resolve('Server/public');
-                        const filePath = path.resolve(dir + oldImage);
-                        if (fs.existsSync(filePath)) {
-                            fs.unlinkSync(filePath);
-                        }
-                    }
-                    debugger;
+                    
                 } catch (e) {
                     t.rollback();
                     console.log(e);
@@ -335,17 +293,7 @@ ProductRouter.post('/delete', async (req, res) => {
                 .catch((error) => {
                     console.error('delete product error: ', error);
                 });
-            debugger;
-            if (oldProduct[0] && oldProduct[0].imageUrl.indexOf('images/products') > 0) {
-                debugger
-                const dir = path.resolve('Server/public');
-                const filePath = path.resolve(dir + oldProduct[0].imageUrl);
-                if (fs.existsSync(filePath)) {
-                    debugger;
-                    fs.unlinkSync(filePath);
-                }
-            }
-            debugger;
+           
         } catch (e) {
             t.rollback();
             res.status(400).json({ success: false, error: e });
