@@ -25,7 +25,6 @@ class ProductEdit extends React.Component {
     }
     componentWillMount() {
         const { id } = this.props.product;
-        console.log('id product = ', id)
         this.props.loadProductByIdFromSqlite(id);
 
         if (!this.props.typeCargoes || this.props.typeCargoes.length == 0) {
@@ -38,9 +37,7 @@ class ProductEdit extends React.Component {
             this.props.loadCategoriesDataFromSqlite();
         }
     }
-    editModeToggle() {
-        this.setState({ editMode: !this.state.editMode });
-    }
+
     onSave() {
         const {
             Id,
@@ -60,7 +57,8 @@ class ProductEdit extends React.Component {
             'Bạn chắc chắn muốn lưu dữ liệu ?',
             [
                 {
-                    text: 'Xác Nhận', onPress: () => this.props.ProductUpdate({
+                    text: 'Xác Nhận',
+                    onPress: () => this.props.ProductUpdate({
                         Id,
                         CategoryId,
                         UnitId,
@@ -77,14 +75,31 @@ class ProductEdit extends React.Component {
                 { text: 'Hủy', onPress: () => console.log('cancel Pressed') },
             ]
         );
+    }
 
+    onDelete() {
+        Alert.alert(
+            'Yêu cầu xác nhận',
+            `Bạn chắc chắn muốn lưu dữ liệu sản phẩm ${this.props.Name}?`,
+            [
+                {
+                    text: 'Xác Nhận',
+                    onPress: () => this.props.ProductDelete(this.props.Id)
+                },
+                { text: 'Hủy', onPress: () => console.log('cancel Pressed') },
+            ]
+        );        
+    }
+
+    editModeToggle() {
+        this.setState({ editMode: !this.state.editMode });
     }
     //Tham khảo select (picker) react native: 
     //https://facebook.github.io/react-native/docs/picker.html
     render() {
         console.log('this.props.loaded = ', this.props.loaded);
         // console.log('this.props = ', this.props);
-        
+
         return (
             <View style={styles.container}>
                 <Header>
@@ -92,7 +107,7 @@ class ProductEdit extends React.Component {
                 </Header>
                 <View style={styles.body}>
                     {this.props.loaded ?
-                        <ScrollView>                        
+                        <ScrollView>
                             <View style={styles.controlContainer}>
                                 <Text style={styles.label} >Tên Sản Phẩm</Text>
                                 <View style={styles.groupControl}>
@@ -103,7 +118,7 @@ class ProductEdit extends React.Component {
                                         style={styles.textInput}
                                         blurOnSubmit
                                         value={this.props.Name}
-                                        onChangeText={text => this.props.ProductChange({ prop: "Name", value: text })}
+                                        onChangeText={text => this.props.ProductChange({ prop: 'Name', value: text })}
                                         type="Text"
                                         name="ProductName"
                                         placeholder="Điền tên sản phẩm:"
@@ -121,7 +136,7 @@ class ProductEdit extends React.Component {
                                         enabled={this.state.editMode}
                                         selectedValue={this.props.CategoryId}
                                         onValueChange={
-                                            (itemValue, itemIndex) => this.props.ProductChange({ prop: "CategoryId", value: itemValue })
+                                            (itemValue, itemIndex) => this.props.ProductChange({ prop: 'CategoryId', value: itemValue })
                                         }
                                     >
                                         {this.props.categories && this.props.categories.map((item) => (
@@ -140,7 +155,7 @@ class ProductEdit extends React.Component {
                                         enabled={this.state.editMode}
                                         selectedValue={this.props.UnitId}
                                         onValueChange={
-                                            (itemValue, itemIndex) => this.props.ProductChange({ prop: "UnitId", value: itemValue })
+                                            (itemValue, itemIndex) => this.props.ProductChange({ prop: 'UnitId', value: itemValue })
                                         }
                                     >
                                         {this.props.units && this.props.units.map((item) => (
@@ -158,7 +173,7 @@ class ProductEdit extends React.Component {
                                         enabled={this.state.editMode}
                                         selectedValue={this.props.TypeCargoId}
                                         onValueChange={
-                                            (itemValue, itemIndex) => this.props.ProductChange({ prop: "TypeCargoId", value: itemValue })
+                                            (itemValue, itemIndex) => this.props.ProductChange({ prop: 'TypeCargoId', value: itemValue })
                                         }
                                     >
                                         {this.props.typeCargoes && this.props.typeCargoes.map((item) => (
@@ -179,7 +194,7 @@ class ProductEdit extends React.Component {
                                         style={styles.textInput}
                                         blurOnSubmit
                                         value={this.props.PurchasePrice}
-                                        onChangeText={text => this.props.ProductChange({ prop: "PurchasePrice", value: text })}
+                                        onChangeText={text => this.props.ProductChange({ prop: 'PurchasePrice', value: text })}
                                         type="Text"
                                         name="PurchasePrice"
                                         placeholder="Giá Mua"
@@ -199,7 +214,7 @@ class ProductEdit extends React.Component {
                                         style={styles.textInput}
                                         blurOnSubmit
                                         value={this.props.SalePrice}
-                                        onChangeText={text => this.props.ProductChange({ prop: "SalePrice", value: text })}
+                                        onChangeText={text => this.props.ProductChange({ prop: 'SalePrice', value: text })}
                                         type="Text"
                                         name="SalePrice"
                                         placeholder="Giá bán"
@@ -219,7 +234,7 @@ class ProductEdit extends React.Component {
                                         style={styles.textInput}
                                         blurOnSubmit
                                         value={this.props.MinQuantity}
-                                        onChangeText={text => this.props.ProductChange({ prop: "MinQuantity", value: text })}
+                                        onChangeText={text => this.props.ProductChange({ prop: 'MinQuantity', value: text })}
                                         type="Text"
                                         name="MinQuantity"
                                         placeholder="Tồn kho tối thiểu"
@@ -237,10 +252,10 @@ class ProductEdit extends React.Component {
                                         enabled={this.state.editMode}
                                         selectedValue={this.props.IsPublic}
                                         onValueChange={
-                                            (itemValue, itemIndex) => this.props.ProductChange({ prop: "IsPublic", value: itemValue })
+                                            (itemValue, itemIndex) => this.props.ProductChange({ prop: 'IsPublic', value: itemValue })
                                         }
                                     >
-                                        <Picker.Item key={true} label={'Công Khai'} value={true} />
+                                        <Picker.Item key label={'Công Khai'} value />
                                         <Picker.Item key={false} label={'Riêng tư'} value={false} />
                                     </Picker>
                                 </View>
@@ -253,10 +268,10 @@ class ProductEdit extends React.Component {
                                         enabled={this.state.editMode}
                                         selectedValue={this.props.IsAvaiable}
                                         onValueChange={
-                                            (itemValue, itemIndex) => this.props.ProductChange({ prop: "IsAvaiable", value: itemValue })
+                                            (itemValue, itemIndex) => this.props.ProductChange({ prop: 'IsAvaiable', value: itemValue })
                                         }
                                     >
-                                        <Picker.Item key={true} label={'Hàng Có Sẵn'} value={true} />
+                                        <Picker.Item key label={'Hàng Có Sẵn'} value />
                                         <Picker.Item key={false} label={'Hàng Chưa Có Sẵn'} value={false} />
                                     </Picker>
                                 </View>
@@ -273,7 +288,7 @@ class ProductEdit extends React.Component {
                                         style={styles.textInput}
                                         blurOnSubmit
                                         value={this.props.Description}
-                                        onChangeText={text => this.props.ProductChange({ prop: "Description", value: text })}
+                                        onChangeText={text => this.props.ProductChange({ prop: 'Description', value: text })}
                                         type="Text"
                                         name="Description"
                                         placeholder="Mô tả sản phẩm"
@@ -283,25 +298,27 @@ class ProductEdit extends React.Component {
                                     </Text>
                                 </View>
                             </View>
-                        
+
                         </ScrollView>
                         : <Spinner />
                     }
                 </View>
                 <Footer>
                     <View style={styles.FooterGroupButton} >
-                        <TouchableOpacity style={[styles.Btn, { backgroundColor: '#2ecc71' }]}
+                        <TouchableOpacity
+style={[styles.Btn, { backgroundColor: '#2ecc71' }]}
                             onPress={this.editModeToggle.bind(this)}
                         >
                             <Ionicons name="ios-apps-outline" size={25} color="#FFFFFF" />
-                            { this.state.editMode ? (<Text style={styles.titleButton}>Hủy</Text>) : 
+                            {this.state.editMode ? (<Text style={styles.titleButton}>Hủy</Text>) :
                                 (<Text style={styles.titleButton}>Sửa</Text>)
                             }
                         </TouchableOpacity>
-                        <TouchableOpacity 
+                        <TouchableOpacity
                             style={[
-                                styles.Btn, { 
-                                    backgroundColor: this.state.editMode ? '#e67e22': '#34495e' }
+                                styles.Btn, {
+                                    backgroundColor: this.state.editMode ? '#e67e22' : '#34495e'
+                                }
                             ]}
                             disabled={!this.state.editMode}
                             onPress={this.onSave.bind(this)}
@@ -310,8 +327,9 @@ class ProductEdit extends React.Component {
                             <Text style={styles.titleButton}>Lưu</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
+                            disabled={!this.state.editMode}
                             style={styles.Btn}
-                            onPress={() => this.props.ProductDelete()}
+                            onPress={ this.onDelete.bind(this) }
                         >
                             <Ionicons name="ios-close-circle-outline" size={25} color="#e74c3c" />
                             <Text style={styles.titleButton}>Xóa</Text>
