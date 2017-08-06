@@ -158,12 +158,9 @@ ProductRouter.post('/new', async (req, res) => {
     }
 });
 ProductRouter.post('/update', async (req, res) => {
-    
-    if (!req.body.product) {
-        throw new Error('Không tìm thấy sản phẩm');
-    }
 
     let {
+        Id,
         CategoryId,
         UnitId,
         TypeCargoId,
@@ -174,11 +171,21 @@ ProductRouter.post('/update', async (req, res) => {
         SalePrice,
         MinQuantity,
         IsAvaiable
-    } = stringConvert(req.body);
+    } = req.body;
 
-    const { Id } = JSON.parse(req.body);
     debugger;
-    const { isValid, errors } = ProductFormValidator(JSON.parse(req.body));
+    const { isValid, errors } = ProductFormValidator({
+        CategoryId,
+        UnitId,
+        TypeCargoId,
+        Name,
+        Description,
+        IsPublic,
+        PurchasePrice,
+        SalePrice,
+        MinQuantity,
+        IsAvaiable
+    });
 
     if (isValid) {
         let newDataversion;
@@ -210,9 +217,8 @@ ProductRouter.post('/update', async (req, res) => {
                             customerGroups
                         });
                     debugger;
-                    const oldProduct = await t('products').where('id', Id);
-                    debugger;
-                    
+                    // const oldProduct = await t('products').where('id', Id);
+                    debugger;                    
                    
                         data = await t('products')
                             .returning('*')

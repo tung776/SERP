@@ -41,16 +41,23 @@ class Categories extends React.Component {
             return (
                 <FlatList
                     data={categories}
-                    renderItem={({ item }) =>
-                        <TouchableWithoutFeedback key={item.key} onPress={() => {
-                            console.log(`id = ${item.id} name = ${item.name} cliked`)
-                            Actions.categoryEdit({ category: item })
-                        }} >
-                            <View style={styles.listItem}>
-                                {this.renderImage(item.imageUrl)}
-                                <Text style={styles.itemTitle}>{item.name}</Text>
-                            </View>
-                        </TouchableWithoutFeedback>
+                    renderItem={({ item }) => {
+                        
+                        if (item) {
+                            return (
+                                <TouchableWithoutFeedback key={item.key} onPress={() => {
+                                    Actions.categoryEdit({ category: item })
+                                }} >
+                                    <View style={styles.listItem}>
+                                        {this.renderImage(item.imageUrl)}
+                                        <Text style={styles.itemTitle}>{item.name}</Text>
+                                    </View>
+                                </TouchableWithoutFeedback>
+                            )
+                        }
+                        return null;
+                    }
+
                     }
                 />
             );

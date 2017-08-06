@@ -1,5 +1,6 @@
 import { URL } from '../../env';
 import axios from 'axios';
+import { Actions } from 'react-native-router-flux';
 import { ProductFormValidator } from '../validators';
 import { AsyncStorage, Alert } from 'react-native';
 import SqlService from '../database/sqliteService';
@@ -56,7 +57,6 @@ export const loadProductListDataFromSqlite = (categoryId) => async (dispatch) =>
     dispatch({
         type: PRODUCT_PENDING
     });
-    console.log('begin load product list from sqlite, categoryId =', categoryId);
 
     SqlService.query(`select * from products where categoryId = ${categoryId}`).then(
         result => {
@@ -77,14 +77,16 @@ export const loadProductByIdFromSqlite = (productId) => async (dispatch) => {
     /**
      * Phương thức này sẽ load sản phẩm dựa trên id của sản phẩm được cung cấp
      */
+
     dispatch({
         type: PRODUCT_PENDING
     });
+    
     SqlService.query(`select * from products where id = ${productId}`).then(
         result => {
             dispatch({
                 type: PRODUCT_LOADED_SQLITE,
-                payload: result
+                payload: result[0]
             });
         }
     );

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, ScrollView, TextInput, TouchableOpacity, Picker } from 'react-native';
+import { View, Text, ScrollView, TextInput, TouchableOpacity, Picker, Alert } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import Header from '../../commons/Header';
 import Footer from '../../commons/Footer';
@@ -22,6 +22,11 @@ class ProductNew extends React.Component {
         ProductName: '',
         MinStock: '',
         Price: ''
+    }
+    constructor(props) {
+        super(props);
+        
+        
     }
     componentWillMount() {
         this.props.resetData();
@@ -48,18 +53,28 @@ class ProductNew extends React.Component {
             Name,
             Description,
         } = this.props;
-        this.props.AddNewProduct({
-            CategoryId,
-            UnitId,
-            TypeCargoId,
-            IsPublic,
-            PurchasePrice,
-            SalePrice,
-            MinQuantity,
-            IsAvaiable,
-            Name,
-            Description,
-        })
+        Alert.alert(
+            'Thông Báo',
+            'Bạn đã lưu dữ liệu thành công',
+            [
+                {
+                    text: 'Xác Nhận', onPress: () => this.props.AddNewProduct({
+                        CategoryId,
+                        UnitId,
+                        TypeCargoId,
+                        IsPublic,
+                        PurchasePrice,
+                        SalePrice,
+                        MinQuantity,
+                        IsAvaiable,
+                        Name,
+                        Description,
+                    })
+                },
+                { text: 'Hủy', onPress: () => console.log('cancel Pressed') },
+            ]
+        );
+
     }
     //Tham khảo select (picker) react native: 
     //https://facebook.github.io/react-native/docs/picker.html
@@ -256,7 +271,7 @@ class ProductNew extends React.Component {
                 <Footer>
                     <View style={styles.FooterGroupButton} >
                         <TouchableOpacity style={styles.Btn}
-                            onPress={this.onSave.bind(this) }
+                            onPress={this.onSave.bind(this)}
                         >
                             <Ionicons name="ios-checkmark-circle" size={25} color="#FFFFFF" />
                             <Text style={styles.titleButton}>Lưu</Text>
@@ -266,7 +281,7 @@ class ProductNew extends React.Component {
                             onPress={() => Actions.pop()}
                         >
                             <Ionicons name="ios-checkmark-circle" size={25} color="#FFFFFF" />
-                            <Text style={styles.titleButton}>Hủy</Text>
+                            <Text style={styles.titleButton}>Xóa</Text>
                         </TouchableOpacity>
                     </View>
                 </Footer>

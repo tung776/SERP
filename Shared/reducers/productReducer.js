@@ -31,6 +31,7 @@ export default (state = INITIAL_STATE, action) => {
     switch (action.type) {
         case RESET_PRODUCT_FORM:
             return {
+                ...state,
                 Id: '',
                 CategoryId: 1,
                 UnitId: 1,
@@ -47,13 +48,33 @@ export default (state = INITIAL_STATE, action) => {
                 error: '',
             };
         case PRODUCT_PENDING:
-            return { ...state, loading: true, error: '' };
+            return { ...state, loading: true, loaded: false, error: '' };
         case PRODUCT_CHANGE:
             return { ...state, [action.payload.prop]: action.payload.value };
         case PRODUCT_LIST_LOADED_SQLITE:
-            return { ...state, products: action.payload, loaded: true, loading: false };
+            let convertedData= [];
+            action.payload.forEach((item) => {
+                const convert = {...item, key: item.id};
+                convertedData.push(convert);
+            })
+            return { ...state, products: convertedData, loaded: true, loading: false };
         case PRODUCT_LOADED_SQLITE:
-            return { ...state, products: action.payload, loaded: true, loading: false };
+            console.log('action.payload = ', action.payload);
+            return { 
+                ...state, 
+                Id: action.payload.id,
+                CategoryId: action.payload.categoryId,
+                UnitId: action.payload.unitId,
+                TypeCargoId: action.payload.typeCargoId,
+                IsPublic: JSON.parse(action.payload.isPublic),
+                PurchasePrice: `${action.payload.purchasePrice}`,
+                SalePrice: `${action.payload.salePrice}`,
+                MinQuantity: `${action.payload.minQuantity}`,
+                IsAvaiable: JSON.parse(action.payload.isAvaiable),
+                Name: action.payload.name,
+                Description: action.payload.description,
+                loaded: true, loading: false 
+            };
         case LOAD_UNIT_SUCCESS:
             return { ...state, units: action.payload };
         case LOAD_TYPE_CARGO_SUCCESS:
@@ -91,6 +112,7 @@ export default (state = INITIAL_STATE, action) => {
                 Description,
                 error: '',
                 loading: false,
+                loaded: false
             };
         default:
             return state;

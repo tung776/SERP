@@ -17,7 +17,7 @@ import LoginForm from '../components/Screens/Auth/LoginForm';
 // import AuthScene from './authScene';
 import ProductList from '../components/Screens/Products';
 import ProductNew from '../components/Screens/Products/ProductNew';
-import ProductDetail from '../components/Screens/Products/ProductDetail';
+import ProductEdit from '../components/Screens/Products/ProductEdit';
 import ComminSoon from '../components/commons/CommingSoon';
 
 const RouterComponent = () => (
@@ -44,7 +44,7 @@ const RouterComponent = () => (
                 <Scene key="ProductNew" component={ProductNew} title="Thêm Sản Phẩm" />
                 <Scene key="searchProduct" component={ComminSoon} title="tim sản phẩm" />
                 <Scene key="productList" component={ProductList} title="Danh sách sản phẩm" />
-                <Scene key="ProductDetail" component={ProductDetail} title="Thêm Sản Phẩm" />
+                <Scene key="ProductEdit" component={ProductEdit} title="Sửa sản phẩm" />
 
                 <Scene key="newSaleOrder" component={ComminSoon} title="..." />
                 <Scene key="saleOrderReturnning" component={ComminSoon} title="..." />

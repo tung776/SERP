@@ -21,9 +21,11 @@ class ProductList extends React.Component {
         products: [],
         loaded: false
     }
-
+    constructor(props) {
+        super(props);
+        
+    }
     componentDidMount() {
-        console.log("this.props.categoryId", this.props.categoryId);
         this.props.loadProductListDataFromSqlite(this.props.categoryId);
     }
     onSearchInputChange(text) {
@@ -53,22 +55,27 @@ class ProductList extends React.Component {
     // }
     renderProductList() {
 
-        if (this.props.loaded && this.props.products) {
+        if ( this.props.products) {
             return (
                 <FlatList
-                    style = {styles.listProduct}
+                    style={styles.listProduct}
                     data={this.props.products}
-                    renderItem={({ item }) =>
-                        <TouchableWithoutFeedback
-                            key={item.key} onPress={() => {
-                                console.log(`id = ${item.id} name = ${item.name} cliked`);
-                                Actions.ProductDetail({ product: item });
-                            }}
-                        >
-                            <View style={styles.listItem}>
-                                <Text style={styles.itemTitle}>{item.name}</Text>
-                            </View>
-                        </TouchableWithoutFeedback>
+                    renderItem={({ item }) => {
+                        if (item) {
+                            return (
+                                <TouchableWithoutFeedback
+                                    key={item.key} onPress={() => {
+                                        Actions.ProductEdit({ product: item });
+                                    }}
+                                >
+                                    <View style={styles.listItem}>
+                                        <Text style={styles.itemTitle}>{item.name}</Text>
+                                    </View>
+                                </TouchableWithoutFeedback>
+                            )
+                        }
+                        return null;
+                    }
                     }
                 />
             );
@@ -86,28 +93,28 @@ class ProductList extends React.Component {
                     <Text style={styles.headTitle}>Danh Sách Sản Phẩm</Text>
                 </Header>
                 <View style={styles.body}>
-                        <View style={styles.InputContainer}>
-                            <View style={styles.groupControl} >
-                                <TextInput
-                                    disableFullscreenUI
-                                    underlineColorAndroid={'transparent'}
-                                    style={styles.searchInput}
-                                    blurOnSubmit
-                                    value={this.state.searchText}
-                                    onChangeText={this.onSearchInputChange.bind(this)}
-                                    type="Text"
-                                    name="search"
-                                    placeholder="Tìm sản phẩm :"
-                                />
-                                <TouchableOpacity>
-                                    <Ionicons name="ios-search" size={32} color="#16a085" />
-                                </TouchableOpacity>
-                            </View>
+                    <View style={styles.InputContainer}>
+                        <View style={styles.groupControl} >
+                            <TextInput
+                                disableFullscreenUI
+                                underlineColorAndroid={'transparent'}
+                                style={styles.searchInput}
+                                blurOnSubmit
+                                value={this.state.searchText}
+                                onChangeText={this.onSearchInputChange.bind(this)}
+                                type="Text"
+                                name="search"
+                                placeholder="Tìm sản phẩm :"
+                            />
+                            <TouchableOpacity>
+                                <Ionicons name="ios-search" size={32} color="#16a085" />
+                            </TouchableOpacity>
                         </View>
-                        <Text>
-                            {this.state.error && <Text style={styles.errorStyle}>{this.state.error.identifier}</Text>}
-                        </Text>
-                        {this.renderProductList()}
+                    </View>
+                    <Text>
+                        {this.state.error && <Text style={styles.errorStyle}>{this.state.error.identifier}</Text>}
+                    </Text>
+                    {this.renderProductList()}
                 </View>
                 <Footer>
                     <TouchableOpacity style={styles.addNewGroupBtn} onPress={() => { Actions.ProductNew(); }}>
