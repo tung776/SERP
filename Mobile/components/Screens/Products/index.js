@@ -10,7 +10,7 @@ import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import stylesCommon from '../../../styles';
 import { Ionicons } from '@expo/vector-icons';
-import { loadProductListDataFromSqlite } from '../../../actions/productActions';
+import { loadProductListDataFromSqlite, loadProductByNameFromSqlite } from '../../../actions/productActions';
 import { Spinner } from '../../commons/Spinner';
 import SqlService from '../../../database/sqliteService';
 
@@ -81,10 +81,16 @@ class ProductList extends React.Component {
             );
         }
         return (
-            <Spinner />
+            <View>
+                <Text>Không tìm thấy sản phẩm bạn cần</Text>
+            </View>
         );
     }
 
+    onSearch() {
+        console.log(this.state.searchText);
+        this.props.loadProductByNameFromSqlite(this.state.searchText);
+    }
 
     render() {
         return (
@@ -106,7 +112,9 @@ class ProductList extends React.Component {
                                 name="search"
                                 placeholder="Tìm sản phẩm :"
                             />
-                            <TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={ this.onSearch.bind(this) }
+                            >
                                 <Ionicons name="ios-search" size={32} color="#16a085" />
                             </TouchableOpacity>
                         </View>
@@ -202,5 +210,6 @@ const mapStateToProps = (state, ownProps) => {
     return { loading, loaded, products };
 };
 export default connect(mapStateToProps, {
-    loadProductListDataFromSqlite
+    loadProductListDataFromSqlite,
+    loadProductByNameFromSqlite
 })(ProductList);

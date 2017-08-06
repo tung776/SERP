@@ -99,8 +99,8 @@ export const loadProductByNameFromSqlite = (name) => (dispatch) => {
     dispatch({
         type: PRODUCT_PENDING
     });
-
-    SqlService.query(`select * from products where name like %${name}`).then(
+    console.log('go ro search actions');
+    SqlService.query(`select * from products where name like '%${name}%'`).then(
         result => {
             dispatch({
                 type: PRODUCT_LIST_LOADED_SQLITE,

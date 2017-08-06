@@ -91,7 +91,7 @@ export const getActionForMenus = (menu) => {
         case NEW_CATEGORY_ACT:
             return Actions.categoryNew();
         case SEARCH_CATEGORY_ACT:
-            return Actions.categorySearch();
+            return Actions.productList();
         case PRODUCT_LIST_ACT:
             return Actions.productList();
         case NEW_CARGO_TYPE_ACT:
@@ -110,7 +110,7 @@ export const getActionForMenus = (menu) => {
         case NEW_PRODUCT_ACT:
             return Actions.ProductNew();
         case SESRCH_PRODUCT_ACT:
-            return Actions.searchProduct();
+            return Actions.productList();
 
 
         case SALE_ORDER_ACT:
