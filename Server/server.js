@@ -40,8 +40,11 @@ app.use('/api/data', dataRoutes);
 import {UserRouters} from './routes/UserRouters';
 app.use('/api/users', UserRouters);
 
-import { CategoryRouter } from './routes/categoryRouters'
+import { CategoryRouter } from './routes/categoryRouters';
 app.use('/api/category' , CategoryRouter);
+
+import CustomerGroupRouter from './routes/customerGroupRouters';
+app.use('/api/customerGroup' , CustomerGroupRouter);
 
 import ProductRouter from './routes/productRouters';
 app.use('/api/product', ProductRouter);

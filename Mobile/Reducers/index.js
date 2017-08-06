@@ -6,6 +6,7 @@ import AuthReducer from '../../Shared/reducers/authReducer';
 import categoryReducer from '../../Shared/reducers/categoryReducer';
 import menuReducer from './menuReducer';
 import productReducer from '../../Shared/reducers/productReducer';
+import customerGroups from '../../Shared/reducers/customerGroupReducer';
 
 const reducers = combineReducers({
     main: () => null,
@@ -17,6 +18,7 @@ const reducers = combineReducers({
     userMenus: menuReducer,
     categories: categoryReducer,
     products: productReducer,
+    customerGroups
 
 });
 export default reducers;
