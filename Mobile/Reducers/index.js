@@ -18,7 +18,7 @@ const reducers = combineReducers({
     userMenus: menuReducer,
     categories: categoryReducer,
     products: productReducer,
-    customerGroups
+    customerGroups: customerGroups
 
 });
 export default reducers;

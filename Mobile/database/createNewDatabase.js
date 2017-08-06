@@ -296,6 +296,29 @@ export const updateOrInsertDataVersion = async (data) => {
       }
     }, this);
   }
+  if (data.customerGroups) {
+    data.customerGroups.forEach(async (item) => {
+      // console.log("categories item = ", item);
+      const avaiabledData = await SqlService.select('customerGroups', '*', `id = ${item.id}`);
+      if (avaiabledData.length == 0) {
+        SqlService.insert('customerGroups', ['id', 'name', 'description'],
+          [item.id, item.name, item.description]);
+      } else {
+        db.transaction(
+          tx => {
+            tx.executeSql(`
+              update customerGroups 
+              set name = ${item.name},
+              description = ${item.description}
+              where id = ${item.id}
+              `);
+          },
+          null,
+          e => console.log('error when update customerGroups', e)
+        );
+      }
+    }, this);
+  }
 
   if (data.units) {
     data.units.forEach(async (item) => {

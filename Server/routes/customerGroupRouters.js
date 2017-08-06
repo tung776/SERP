@@ -15,16 +15,19 @@ CustomerGroupRouter.post('/new', async (req, res) => {
         let newDataversion;
         let data;
         try {
+            //bắt đầu thực hiện giao dịch, một trong nhiệm vụ thất bại sẽ bị rollback
             Knex.transaction(async (t) => {
                 try {
+                    //lấy dataversion hiện tại
                     const dataVersion = await Knex('dataVersions').where('id', 1);
 
                     let { menus, userMenus, roles, categoryGroups, units, warehouses, products, customers, customerGroups } = dataVersion[0];
                     customerGroups++;
+                    //thực hiện thay đổi dwx liệu nhóm khách hàng
                     data = await t('customerGroups')
                         .returning('*')
                         .insert({ name: Name, description: Description });
-
+                    //để cập nhật dataversion mới
                     newDataversion = await t('dataVersions')
                         .returning('*')
                         .whereRaw('id = 1')
@@ -32,12 +35,14 @@ CustomerGroupRouter.post('/new', async (req, res) => {
                             id: 1, menus, userMenus, roles, categoryGroups, units, warehouses, products, customers, customerGroups
                         });
                 } catch (e) {
+                    //Đã có lỗi phát sinh, rollback lại toàn bộ thay đổi
                     t.rollback();
                     console.log(e);
                     res.status(400).json({ success: false, error: e });
                 }
             }).then(
                 () => {
+                    //không có lỗi nào xuất hiện, server sẽ gửi tới client nhóm khách hàng vừa được insert, và dataVersion mới nhất
                     res.json({
                         success: true,
                         customerGroup: data,

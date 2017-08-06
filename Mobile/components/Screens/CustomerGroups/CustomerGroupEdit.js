@@ -12,7 +12,7 @@ import {
     ADD_CUSTOMER_GROUP, ADD_CUSTOMER_GROUP_PENDING,
     CUSTOMER_GROUP_CHANGE_FAIL, CUSTOMER_GROUP_CHANGE_SUCCESS,
 } from '../../../actions';
-import { CustomerGroupUpdate, CustomerGroupChange, CustomerGroupDelete } from '../../../actions/customerGroupAction';
+import { CustomerGroupUpdate, CustomerGroupChange, CustomerGroupDelete, loadCustomerGroupDataFromSqlite } from '../../../actions/customerGroupAction';
 import { Spinner } from '../../commons/Spinner';
 import SqlService from '../../../database/sqliteService';
 
@@ -29,14 +29,8 @@ class CustomerGroupEdit extends React.Component {
     }
 
     componentWillMount() {
-        const { id } = this.props.customerGroup;
-        SqlService.query(`select * from customerGroups where id = ${id}`).then(
-            result => {
-                this.props.CustomerGroupChange({ prop: 'Name', value: result[0].name });
-                this.props.CustomerGroupChange({ prop: 'Description', value: result[0].description });
-                this.props.CustomerGroupChange({ prop: 'Id', value: id });
-            }
-        );
+        const { Id } = this.props.customerGroup;
+        this.props.loadCustomerGroupDataFromSqlite(Id);
 
     };
 
@@ -223,5 +217,6 @@ const mapStateToProps = (state, ownProps) => {
 export default connect(mapStateToProps, {
     CustomerGroupChange,
     CustomerGroupUpdate,
-    CustomerGroupDelete
+    CustomerGroupDelete,
+    loadCustomerGroupDataFromSqlite
 })(CustomerGroupEdit);

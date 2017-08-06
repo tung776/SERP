@@ -78,7 +78,12 @@ export const COMPANY_INFOR_ACT = 65;
 export const MENU_ACT = 66;
 
 export const NEW_PRODUCT_ACT = 67;
-export const SESRCH_PRODUCT_ACT = 68;
+export const SEARCH_PRODUCT_ACT = 68;
+
+export const NEW_CUSTOMER_GROUP_ACT = 69;
+export const SEARCH_CUSTOMER_GROUP_ACT = 70;
+export const NEW_SUPPLIER_GROUP_ACT = 71;
+export const SEARCH_SUPPLIER_GROUP_ACT = 72;
 
 export const getActionForMenus = (menu) => {
     switch (menu) {
@@ -109,7 +114,7 @@ export const getActionForMenus = (menu) => {
 
         case NEW_PRODUCT_ACT:
             return Actions.ProductNew();
-        case SESRCH_PRODUCT_ACT:
+        case SEARCH_PRODUCT_ACT:
             return Actions.productList();
 
 
@@ -134,6 +139,10 @@ export const getActionForMenus = (menu) => {
             return Actions.customerDebt();
         case SALE_BY_CUSTOMER_ACT:
             return Actions.reportSaleByCustomer();
+        case NEW_CUSTOMER_GROUP_ACT:
+            return Actions.customerGroupNew();
+        case SEARCH_CUSTOMER_GROUP_ACT:
+            return Actions.customerGroupSearch();
 
         case RECEIPTS_ACT:
             return null;
@@ -169,6 +178,10 @@ export const getActionForMenus = (menu) => {
             return Actions.supplierDept();
         case SALE_BY_SUPPLIER:
             return Actions.reportSaleBySupplier();
+        case NEW_SUPPLIER_GROUP_ACT:
+            return Actions.newSupplierGroup();
+        case SEARCH_SUPPLIER_GROUP_ACT:
+            return Actions.searchSupplierGroup();
 
         case RESEARCH_ACT:
             return null;

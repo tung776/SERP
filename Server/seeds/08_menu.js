@@ -80,11 +80,17 @@ exports.seed = function (knex, Promise) {
         { name: 'Báo Cáo Giá Thành Sản Xuất', parentId: 58 },
 
         { name: 'Hệ Thống' },
-        { name: 'Thay Đổi Thông Tin Công Ty', parentId: 64 },
-        { name: 'Thay Đổi Menu', parentId: 64 },
+        { name: 'Thay Đổi Thông Tin Công Ty', parentId: 64 }, //65
+        { name: 'Thay Đổi Menu', parentId: 64 }, //66
         //update 4/8/2017
-        { name: 'Thêm sản phẩm mới', parentId: 2 },
-        { name: 'Tìm kiếm sản phẩm', parentId: 2 }
+        { name: 'Thêm sản phẩm mới', parentId: 2 }, //67
+        { name: 'Tìm kiếm sản phẩm', parentId: 2 }, //68
+        //update 6/8
+        { name: 'Thêm Nhóm Khách Hàng', parentId: 18 }, //69
+        { name: 'Tìm kiếm Nhóm Khách Hàng', parentId: 18 }, //70
+
+        { name: 'Thêm Nhóm Nhà Cung Cấp', parentId: 34 }, //71
+        { name: 'Tìm kiếm Nhóm Nhà Cung Cấp', parentId: 34 } //72
 
       ]);
     });

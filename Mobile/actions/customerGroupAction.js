@@ -4,7 +4,7 @@ import {
     CUSTOMER_GROUP_CHANGE_FAIL, CUSTOMER_GROUP_CHANGE_SUCCESS,
     ADD_FLASH_MESSAGE, SUCCESS_MESSAGE, ERROR_MESSAGE,
     CUSTOMER_GROUP_LOADED_SQLITE, CUSTOMER_GROUP_DELETE_SUCCESS,
-    RESET_CUSTOMER_GROUP_FORM
+    RESET_CUSTOMER_GROUP_FORM, CUSTOMER_GROUP_LIST_LOADED_SQLITE
 } from './index';
 import { URL } from '../../env';
 import axios from 'axios';
@@ -15,19 +15,36 @@ import SqlService from '../database/sqliteService';
 import { Actions } from 'react-native-router-flux';
 import db from '../database/sqliteConfig';
 
-export const loadCustomerGroupsDataFromSqlite = () => async (dispatch) => {
+export const loadCustomerGroupListDataFromSqlite = () => async (dispatch) => {
     dispatch({
         type: CUSTOMER_GROUP_PENDING
     });
-    SqlService.select('customerGroups', '*').then(
+    console.log('begin search customerGroup');
+    SqlService.query('select * from customerGroups').then(        
         result => {
+            console.log('result customer group = ', result);
             dispatch({
-                type: CUSTOMER_GROUP_LOADED_SQLITE,
+                type: CUSTOMER_GROUP_LIST_LOADED_SQLITE,
                 payload: result
             });
         }
     );
 };
+
+export const loadCustomerGroupDataFromSqlite = (customerGroupId) => async (dispatch) => {
+    dispatch({
+        type: CUSTOMER_GROUP_PENDING
+    });
+    SqlService.query(`select * from customerGroups where id = ${customerGroupId}`).then(
+        result => {
+            dispatch({
+                type: CUSTOMER_GROUP_LOADED_SQLITE,
+                payload: result[0]
+            });
+        }
+    );
+};
+
 
 export const resetData = () => (dispatch) => {
     dispatch({

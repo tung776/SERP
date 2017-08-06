@@ -56,7 +56,7 @@ class CustomerGroupNew extends React.Component {
                     disabled={this.props.loading}
                     style={[styles.Btn, styles.footerBtn]} onPress={() => Actions.productList()}>
                     <Ionicons name="ios-folder-open-outline" size={25} color="#FFFFFF" />
-                    <Text style={styles.titleButton}>DS Nhóm Khách Hàng</Text>
+                    <Text style={styles.titleButton}>DS Nhóm</Text>
                 </TouchableOpacity>
             </View>
         );
@@ -168,7 +168,7 @@ const styles = {
         fontWeight: '500'
     },
     titleButton: {
-        fontSize: 16,
+        fontSize: 14,
         fontWeight: '500',
         paddingBottom: 5,
         paddingTop: 5,

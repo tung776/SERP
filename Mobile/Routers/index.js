@@ -51,10 +51,10 @@ const RouterComponent = () => (
                 <Scene key="productList" component={ProductList} title="Danh sách sản phẩm" />
                 <Scene key="ProductEdit" component={ProductEdit} title="Sửa sản phẩm" />
 
-                <Scene key="CustomerGroupNew" component={CustomerGroupNew} title="Thêm nhóm khách hàng" />
-                <Scene key="CustomerGroupSearch" component={CustomerGroupSearch} title="Tìm nhóm khách hàng" />
-                <Scene key="CustomerGroupsList" component={CustomerGroups} title="danh sách nhóm khách hàng" />
-                <Scene key="CustomerGroupEdit" component={CustomerGroupEdit} title="Sửa nhóm khách hàng" />
+                <Scene key="customerGroupNew" component={CustomerGroupNew} title="Thêm nhóm khách hàng" />
+                <Scene key="customerGroupSearch" component={CustomerGroups} title="Tìm nhóm khách hàng" />
+                <Scene key="customerGroupsList" component={CustomerGroups} title="danh sách nhóm khách hàng" />
+                <Scene key="customerGroupEdit" component={CustomerGroupEdit} title="Sửa nhóm khách hàng" />
 
                 <Scene key="newSaleOrder" component={ComminSoon} title="..." />
                 <Scene key="saleOrderReturnning" component={ComminSoon} title="..." />
@@ -81,6 +81,8 @@ const RouterComponent = () => (
                 <Scene key="newSupplier" component={ComminSoon} title="..." />
                 <Scene key="supplierDept" component={ComminSoon} title="..." />
                 <Scene key="reportSaleBySupplier" component={ComminSoon} title="..." />
+                <Scene key="newSupplierGroup" component={ComminSoon} title="..." />
+                <Scene key="searchSupplierGroup" component={ComminSoon} title="..." />
 
                 <Scene key="newResearch" component={ComminSoon} title="..." />
                 <Scene key="reportCostTemp" component={ComminSoon} title="..." />
