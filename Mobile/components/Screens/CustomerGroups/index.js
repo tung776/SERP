@@ -26,7 +26,6 @@ class CustomerGroups extends React.Component {
 
     renderCustomerGroupList() {
         const { customerGroups } = this.props;
-        console.log('customerGroups = ', customerGroups);
         if (customerGroups) {
             return (
                 <FlatList
@@ -58,7 +57,6 @@ class CustomerGroups extends React.Component {
     }
     
     render() {
-        console.log('this.props.customerGroups = ', this.props.customerGroups);
         return (
             <View style={styles.container}>
                 <Header>

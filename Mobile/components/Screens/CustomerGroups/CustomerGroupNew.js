@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Dimensions, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, Dimensions, TouchableOpacity, TextInput, Alert } from 'react-native';
 import Header from '../../commons/Header';
 import Footer from '../../commons/Footer';
 import { Actions } from 'react-native-router-flux';
@@ -12,7 +12,7 @@ import {
     ADD_CUSTOMER_GROUP, ADD_CUSTOMER_GROUP_PENDING,
     CUSTOMER_GROUP_CHANGE_FAIL, CUSTOMER_GROUP_CHANGE_SUCCESS,
 } from '../../../actions';
-import { AddNewCustomerGroup, CustomerGroupChange, resetData} from '../../../actions/customerGroupAction';
+import { AddNewCustomerGroup, CustomerGroupChange, resetData } from '../../../actions/customerGroupAction';
 import { AppLoading } from 'expo';
 import { Spinner } from '../../commons/Spinner';
 
@@ -25,17 +25,44 @@ class CustomerGroupNew extends React.Component {
     componentWillMount() {
         this.props.resetData();
     }
-
+    
     onSavePress() {
-        const { error, Name, Description, AddNewCustomerGroup, loading } = this.props;
-        AddNewCustomerGroup({ Name, Description });
+        Alert.alert(
+            'Yêu cầu xác nhận',
+            `Bạn chắc chắn muốn lưu thông tin nhóm: ${this.props.Name} ?`,
+            [
+                {
+                    text: 'Xác Nhận',
+                    onPress: () => {
+                        const { error, Name, Description, AddNewCustomerGroup, loading } = this.props;
+                        AddNewCustomerGroup({ Name, Description });
+
+                    }
+                },
+                { text: 'Hủy', onPress: () => console.log('cancel Pressed') },
+            ]
+        );
     }
+    onDelete() {
+        Alert.alert(
+            'Yêu cầu xác nhận',
+            `Bạn chắc chắn muốn xóa Nhóm Khách Hàng: ${this.props.Name} ?`,
+            [
+                {
+                    text: 'Xác Nhận',
+                    onPress: () => this.props.CustomerGroupDelete(this.props.customerGroup.id)
+                },
+                { text: 'Hủy', onPress: () => console.log('cancel Pressed') },
+            ]
+        );
+    }
+
+    editModeToggle() {
+        this.setState({ editMode: !this.state.editMode });
+    }
+
     renderButton() {
-        if (this.props.loading) {
-            return (
-                <Spinner size='small' />
-            );
-        }
+       
         return (
             <View style={styles.FooterGroupButton}>
                 <TouchableOpacity
@@ -54,7 +81,7 @@ class CustomerGroupNew extends React.Component {
                 </TouchableOpacity>
                 <TouchableOpacity
                     disabled={this.props.loading}
-                    style={[styles.Btn, styles.footerBtn]} onPress={() => Actions.productList()}>
+                    style={[styles.Btn, styles.footerBtn]} onPress={() => Actions.customerGroupSearch()}>
                     <Ionicons name="ios-folder-open-outline" size={25} color="#FFFFFF" />
                     <Text style={styles.titleButton}>DS Nhóm</Text>
                 </TouchableOpacity>
@@ -108,7 +135,7 @@ class CustomerGroupNew extends React.Component {
                                     />
                                     {error && <Text style={styles.errorStyle}>{error.Description}</Text>}
                                 </View>
-                            </View>                            
+                            </View>
                         </View>
                     </View>
                 </View>

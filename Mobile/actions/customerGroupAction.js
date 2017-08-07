@@ -19,10 +19,8 @@ export const loadCustomerGroupListDataFromSqlite = () => async (dispatch) => {
     dispatch({
         type: CUSTOMER_GROUP_PENDING
     });
-    console.log('begin search customerGroup');
     SqlService.query('select * from customerGroups').then(        
         result => {
-            console.log('result customer group = ', result);
             dispatch({
                 type: CUSTOMER_GROUP_LIST_LOADED_SQLITE,
                 payload: result
@@ -35,8 +33,11 @@ export const loadCustomerGroupDataFromSqlite = (customerGroupId) => async (dispa
     dispatch({
         type: CUSTOMER_GROUP_PENDING
     });
+    console.log(`go in load ${customerGroupId} from sqlite`);
+    
     SqlService.query(`select * from customerGroups where id = ${customerGroupId}`).then(
         result => {
+            console.log(`customerGroupId = ${customerGroupId} and result = `, result);
             dispatch({
                 type: CUSTOMER_GROUP_LOADED_SQLITE,
                 payload: result[0]
@@ -83,7 +84,7 @@ export const CustomerGroupDelete = (customerGroupId) => async (dispatch) => {
                         null,
                         (_, { rows: { _array } }) => {
                             dispatch({
-                                type: CUSTOMER_GROUP_LOADED_SQLITE,
+                                type: CUSTOMER_GROUP_LIST_LOADED_SQLITE,
                                 payload: _array
                             });
                         },
@@ -198,7 +199,7 @@ export const CustomerGroupUpdate = (customerGroup) => async (dispatch) => {
                                 null,
                                 (_, { rows: { _array } }) => {
                                     dispatch({
-                                        type: CUSTOMER_GROUP_LOADED_SQLITE,
+                                        type: CUSTOMER_GROUP_LIST_LOADED_SQLITE,
                                         payload: _array
                                     });
                                 },
@@ -206,14 +207,16 @@ export const CustomerGroupUpdate = (customerGroup) => async (dispatch) => {
                                     console.log('error = ', e);
                                 }
                             );
+                            
                         },
                         (e) => console.log('error ?????', e),
                         null
                     );
+                    
                 } catch (e) {
                     console.log(e);
                 }
-                Actions.pop();
+                Actions.pop({ reLoad: true });
                 dispatch({
                     type: CUSTOMER_GROUP_CHANGE_SUCCESS,
                     payload: res.data.customerGroup[0]
@@ -310,7 +313,7 @@ export const AddNewCustomerGroup = (customerGroup) => async (dispatch) => {
                             null,
                             (_, { rows: { _array } }) => {
                                 dispatch({
-                                    type: CUSTOMER_GROUP_LOADED_SQLITE,
+                                    type: CUSTOMER_GROUP_LIST_LOADED_SQLITE,
                                     payload: _array
                                 });
                             },

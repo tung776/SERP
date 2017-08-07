@@ -30,7 +30,6 @@ export default (state = INITIAL_STATE, action) => {
                 const convert = { ...item, key: item.id };
                 convertedData.push(convert);
             });
-            console.log('convertedData = ', convertedData);
             return { ...state, customerGroups: convertedData, loaded: true, loading: false };
         case ADD_CUSTOMER_GROUP:
             return {
@@ -43,6 +42,7 @@ export default (state = INITIAL_STATE, action) => {
         case CUSTOMER_GROUP_LOADED_SQLITE:
             return {
                 ...state,
+                Id: action.payload.id,
                 Name: action.payload.name,
                 Description: action.payload.description,
                 error: '',
