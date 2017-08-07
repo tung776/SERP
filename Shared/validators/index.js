@@ -3,3 +3,4 @@ export * from './SignupValidator';
 export * from './categoryValidator';
 export * from './customerGroupValidator';
 export * from './ProductFormValidator';
+export * from './customerValidator';

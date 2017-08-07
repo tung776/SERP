@@ -25,6 +25,11 @@ import CustomerGroupEdit from '../components/Screens/CustomerGroups/CustomerGrou
 import CustomerGroupSearch from '../components/Screens/CustomerGroups/CustomerGroupSearch';
 import CustomerGroupNew from '../components/Screens/CustomerGroups/CustomerGroupNew';
 
+import Customers from '../components/Screens/Customers';
+import CustomerEdit from '../components/Screens/Customers/CustomerEdit';
+import CustomerSearch from '../components/Screens/Customers/CustomerSearch';
+import CustomerNew from '../components/Screens/Customers/CustomerNew';
+
 const RouterComponent = () => (
     <Router hideNavBar="true" sceneStyle={{ backgroundColor: '#F7F7F7' }} >
 
@@ -55,6 +60,11 @@ const RouterComponent = () => (
                 <Scene key="customerGroupSearch" component={CustomerGroups} title="Tìm nhóm khách hàng" />
                 <Scene key="customerGroupsList" component={CustomerGroups} title="danh sách nhóm khách hàng" />
                 <Scene key="customerGroupEdit" component={CustomerGroupEdit} title="Sửa nhóm khách hàng" />
+
+                <Scene key="customerNew" component={CustomerNew} title="Thêm khách hàng" />
+                <Scene key="customerSearch" component={Customers} title="Tìm khách hàng" />
+                <Scene key="customersList" component={Customers} title="danh sách khách hàng" />
+                <Scene key="customerEdit" component={CustomerEdit} title="Sửa khách hàng" />
 
                 <Scene key="newSaleOrder" component={ComminSoon} title="..." />
                 <Scene key="saleOrderReturnning" component={ComminSoon} title="..." />
