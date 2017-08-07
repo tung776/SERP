@@ -8,11 +8,22 @@ import path from 'path';
 const CustomerRouter = Router();
 
 CustomerRouter.post('/new', async (req, res) => {
-    const { 
-        CustomerGroupId, BankId, 
-        CompanyId, Name, Adress, 
-        Phone, Email, Overdue, 
-        excessDebt 
+    const {
+        Id,
+        CustomerGroupId,
+        Name,
+        Address,
+        Phone,
+        Email,
+        Overdue,
+        ExcessDebt,
+        CompanyName,
+        CompanyAdress,
+        DirectorName,
+        BankNumber,
+        BankName,
+        TaxCode,
+        Fax,
     } = req.body;
 
     const { isValid, errors } = NewCustomerValidator(req.body);
@@ -34,14 +45,19 @@ CustomerRouter.post('/new', async (req, res) => {
                         .returning('*')
                         .insert({
                             customerGroupId: CustomerGroupId,
-                            bankId: BankId ? BankId : null,
-                            companyId: CompanyId ? CompanyId : null,
-                            name: Name, 
-                            address: Adress ? Adress : '',
-                            phone: Phone ? Phone : '',
-                            email: Email ? Email : '',
-                            overdue: Overdue ? Overdue : 10,
-                            excessDebt: ExcessDebt ? ExcessDebt : 10000000
+                            name: Name,
+                            address: Address || '',
+                            phone: Phone || '',
+                            email: Email || '',
+                            overdue: Overdue || 10,
+                            excessDebt: ExcessDebt || 10000000,
+                            companyName: CompanyName || null,
+                            companyAdress: CompanyAdress || null,
+                            directorName: DirectorName || null,
+                            bankNumber: BankNumber || null,
+                            bankName: BankName || null,
+                            taxCode: TaxCode || null,
+                            fax: Fax || null
                         });
                     //để cập nhật dataversion mới
                     newDataversion = await t('dataVersions')
@@ -78,12 +94,22 @@ CustomerRouter.post('/new', async (req, res) => {
     }
 });
 CustomerRouter.post('/update', async (req, res) => {
-
-    const { 
-        Id, CustomerGroupId,
-        CompanyId, Name, Adress, 
-        Phone, Email, Overdue, 
-        excessDebt, BankId
+    const {
+        Id,
+        CustomerGroupId,
+        Name,
+        Address,
+        Phone,
+        Email,
+        Overdue,
+        ExcessDebt,
+        CompanyName,
+        CompanyAdress,
+        DirectorName,
+        BankNumber,
+        BankName,
+        TaxCode,
+        Fax,
     } = req.body;
 
     const { isValid, errors } = NewCustomerValidator(req.body);
@@ -109,16 +135,21 @@ CustomerRouter.post('/update', async (req, res) => {
                     data = await t('customers')
                         .returning('*')
                         .whereRaw(`id = ${Id}`)
-                        .update({ 
+                        .update({
                             customerGroupId: CustomerGroupId,
-                            bankId: BankId ? BankId : null,
-                            companyId: CompanyId ? CompanyId : null,
-                            name: Name, 
-                            address: Adress ? Adress : '',
-                            phone: Phone ? Phone : '',
-                            email: Email ? Email : '',
-                            overdue: Overdue ? Overdue : 10,
-                            excessDebt: ExcessDebt ? ExcessDebt : 10000000 
+                            name: Name,
+                            address: Address || '',
+                            phone: Phone || '',
+                            email: Email || '',
+                            overdue: Overdue || 10,
+                            excessDebt: ExcessDebt || 10000000,
+                            companyName: CompanyName || null,
+                            companyAdress: CompanyAdress || null,
+                            directorName: DirectorName || null,
+                            bankNumber: BankNumber || null,
+                            bankName: BankName || null,
+                            taxCode: TaxCode || null,
+                            fax: Fax || null
                         });
                 } catch (e) {
                     t.rollback();

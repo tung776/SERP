@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Image, Dimensions, TouchableOpacity, TextInput, Alert } from 'react-native';
+import { View, Text, Image, Dimensions, TouchableOpacity, TextInput, Alert, Picker, ScrollView } from 'react-native';
 import Header from '../../commons/Header';
 import Footer from '../../commons/Footer';
 import { Actions } from 'react-native-router-flux';
@@ -12,6 +12,7 @@ import {
     CUSTOMER_CHANGE_FAIL, CUSTOMER_CHANGE_SUCCESS,
 } from '../../../actions';
 import { CustomerUpdate, CustomerChange, CustomerDelete, loadCustomerDataFromSqlite } from '../../../actions/customerAction';
+import { loadCustomerGroupListDataFromSqlite } from '../../../actions/customerGroupAction';
 import { Spinner } from '../../commons/Spinner';
 import SqlService from '../../../database/sqliteService';
 
@@ -27,7 +28,7 @@ class CustomerEdit extends React.Component {
     componentWillMount() {
         const { id } = this.props.customer;
         this.props.loadCustomerDataFromSqlite(id);
-
+        this.props.loadCustomerGroupListDataFromSqlite();
     };
 
     onSavePress() {
@@ -40,29 +41,39 @@ class CustomerEdit extends React.Component {
                     onPress: () => {
                         const {
                             error,
+                            Id,
                             CustomerGroupId,
-                            BankId,
-                            CompanyId,
                             Name,
                             Address,
                             Phone,
                             Email,
                             Overdue,
                             ExcessDebt,
-                            Id,
+                            CompanyName,
+                            CompanyAdress,
+                            DirectorName,
+                            BankNumber,
+                            BankName,
+                            TaxCode,
+                            Fax,
                             CustomerUpdate,
                             loading } = this.props;
                         CustomerUpdate({
+                            Id,
                             CustomerGroupId,
-                            BankId,
-                            CompanyId,
                             Name,
                             Address,
                             Phone,
                             Email,
                             Overdue,
                             ExcessDebt,
-                            Id,
+                            CompanyName,
+                            CompanyAdress,
+                            DirectorName,
+                            BankNumber,
+                            BankName,
+                            TaxCode,
+                            Fax,
                         });
 
                     }
@@ -126,7 +137,9 @@ class CustomerEdit extends React.Component {
     }
 
     render() {
-        const { error, Name, Description, loading, CustomerChange } = this.props;
+        const {
+            error, loading, CustomerChange
+        } = this.props;
         return (
             <View style={styles.container}>
                 <Header>
@@ -134,115 +147,261 @@ class CustomerEdit extends React.Component {
                 </Header>
                 <View style={styles.body}>
                     <View style={styles.card}>
-                        <View style={styles.controlContainer}>
-                            <Text style={styles.label} >Tên Khách Hàng</Text>
-                            <View style={styles.groupControl}>
-                                <TextInput
-                                    editable={this.state.editMode}
-                                    disableFullscreenUI
-                                    underlineColorAndroid={'transparent'}
-                                    style={styles.textInput}
-                                    blurOnSubmit
-                                    value={Name}
-                                    onChangeText={text => CustomerChange({ prop: 'Name', value: text })}
-                                    type="Text"
-                                    name="Name"
-                                    placeholder="Điền tên khách hàng:"
-                                />
-                                {error && <Text style={styles.errorStyle}>{error.Name}</Text>}
-                            </View>
+                        <ScrollView>
+                            <View style={styles.controlContainer}>
+                                <Text style={styles.label} >Tên Khách Hàng</Text>
+                                <View style={styles.groupControl}>
+                                    <TextInput
+                                        editable={this.state.editMode}
+                                        disableFullscreenUI
+                                        underlineColorAndroid={'transparent'}
+                                        style={styles.textInput}
+                                        blurOnSubmit
+                                        value={this.props.Name}
+                                        onChangeText={text => CustomerChange({ prop: 'Name', value: text })}
+                                        type="Text"
+                                        name="Name"
+                                        placeholder="Điền tên khách hàng:"
+                                    />
+                                    {error && <Text style={styles.errorStyle}>{error.Name}</Text>}
+                                </View>
 
-                            <View style={styles.controlContainer}>
-                                <Text style={styles.label} >Địa chỉ</Text>
-                                <View style={styles.groupControl}>
-                                    <TextInput
-                                        editable={this.state.editMode}
-                                        disableFullscreenUI
-                                        underlineColorAndroid={'transparent'}
-                                        style={styles.textInput}
-                                        blurOnSubmit
-                                        value={Address}
-                                        onChangeText={text => CustomerChange({ prop: 'Address', value: text })}
-                                        type="Text"
-                                        name="Address"
-                                        placeholder="Địa chỉ"
-                                    />
-                                    {error && <Text style={styles.errorStyle}>{error.Address}</Text>}
+                                <View style={styles.controlContainer}>
+                                    <Text style={styles.label} >Nhóm Khách Hàng</Text>
+                                    <View style={styles.groupControl}>
+                                        <Picker
+                                            enabled={this.state.editMode}
+                                            selectedValue={this.props.CustomerGroupId}
+                                            onValueChange={
+                                                (itemValue, itemIndex) => CustomerChange({ prop: 'CustomerGroupId', value: itemValue })
+                                            }
+                                        >
+                                            {this.props.customerGroups && this.props.customerGroups.map((item) => (
+                                                <Picker.Item key={item.id} label={item.name} value={item.id} />
+                                            ))
+                                            }
+                                        </Picker>
+                                    </View>
+                                </View>
+
+                                <View style={styles.controlContainer}>
+                                    <Text style={styles.label} >Địa chỉ</Text>
+                                    <View style={styles.groupControl}>
+                                        <TextInput
+                                            editable={this.state.editMode}
+                                            disableFullscreenUI
+                                            underlineColorAndroid={'transparent'}
+                                            style={styles.textInput}
+                                            blurOnSubmit
+                                            value={this.props.Address}
+                                            onChangeText={text => CustomerChange({ prop: 'Address', value: text })}
+                                            type="Text"
+                                            name="Address"
+                                            placeholder="Địa chỉ"
+                                        />
+                                        {error && <Text style={styles.errorStyle}>{error.Address}</Text>}
+                                    </View>
+                                </View>
+                                <View style={styles.controlContainer}>
+                                    <Text style={styles.label} >Điện thoại</Text>
+                                    <View style={styles.groupControl}>
+                                        <TextInput
+                                            editable={this.state.editMode}
+                                            disableFullscreenUI
+                                            underlineColorAndroid={'transparent'}
+                                            style={styles.textInput}
+                                            blurOnSubmit
+                                            value={this.props.Phone}
+                                            onChangeText={text => CustomerChange({ prop: 'Phone', value: text })}
+                                            type="Text"
+                                            name="Phone"
+                                            placeholder="Điện thoại"
+                                        />
+                                        {error && <Text style={styles.errorStyle}>{error.Address}</Text>}
+                                    </View>
+                                </View>
+                                <View style={styles.controlContainer}>
+                                    <Text style={styles.label} >Email</Text>
+                                    <View style={styles.groupControl}>
+                                        <TextInput
+                                            editable={this.state.editMode}
+                                            disableFullscreenUI
+                                            underlineColorAndroid={'transparent'}
+                                            style={styles.textInput}
+                                            blurOnSubmit
+                                            value={this.props.Email}
+                                            onChangeText={text => CustomerChange({ prop: 'Email', value: text })}
+                                            type="Text"
+                                            name="Email"
+                                            placeholder="Thư điện tử"
+                                        />
+                                        {error && <Text style={styles.errorStyle}>{error.Email}</Text>}
+                                    </View>
+                                </View>
+                                <View style={styles.controlContainer}>
+                                    <Text style={styles.label} >Số ngày tối đa cho phép nợ</Text>
+                                    <View style={styles.groupControl}>
+                                        <TextInput
+                                            editable={this.state.editMode}
+                                            disableFullscreenUI
+                                            underlineColorAndroid={'transparent'}
+                                            style={styles.textInput}
+                                            blurOnSubmit
+                                            value={this.props.Overdue}
+                                            onChangeText={text => CustomerChange({ prop: 'Overdue', value: text })}
+                                            type="Text"
+                                            name="Overdue"
+                                            placeholder="Số ngày tối đa (30)"
+                                        />
+                                        {error && <Text style={styles.errorStyle}>{error.Overdue}</Text>}
+                                    </View>
+                                </View>
+                                <View style={styles.controlContainer}>
+                                    <Text style={styles.label} >Số nợ tối đa</Text>
+                                    <View style={styles.groupControl}>
+                                        <TextInput
+                                            editable={this.state.editMode}
+                                            disableFullscreenUI
+                                            underlineColorAndroid={'transparent'}
+                                            style={styles.textInput}
+                                            blurOnSubmit
+                                            value={this.props.ExcessDebt}
+                                            onChangeText={text => CustomerChange({ prop: 'ExcessDebt', value: text })}
+                                            type="Text"
+                                            name="ExcessDebt"
+                                            placeholder="Số nợ tối đa"
+                                        />
+                                        {error && <Text style={styles.errorStyle}>{error.ExcessDebt}</Text>}
+                                    </View>
+                                </View>
+                                <View style={styles.controlContainer}>
+                                    <Text style={styles.label} >Tên Công Ty</Text>
+                                    <View style={styles.groupControl}>
+                                        <TextInput
+                                            editable={this.state.editMode}
+                                            disableFullscreenUI
+                                            underlineColorAndroid={'transparent'}
+                                            style={styles.textInput}
+                                            blurOnSubmit
+                                            value={this.props.CompanyName}
+                                            onChangeText={text => CustomerChange({ prop: 'CompanyName', value: text })}
+                                            type="Text"
+                                            name="CompanyName"
+                                            placeholder="Tên công ty"
+                                        />
+                                        {error && <Text style={styles.errorStyle}>{error.CompanyName}</Text>}
+                                    </View>
+                                </View>
+                                <View style={styles.controlContainer}>
+                                    <Text style={styles.label} >Địa chỉ công ty</Text>
+                                    <View style={styles.groupControl}>
+                                        <TextInput
+                                            editable={this.state.editMode}
+                                            disableFullscreenUI
+                                            underlineColorAndroid={'transparent'}
+                                            style={styles.textInput}
+                                            blurOnSubmit
+                                            value={this.props.CompanyAdress}
+                                            onChangeText={text => CustomerChange({ prop: 'CompanyAdress', value: text })}
+                                            type="Text"
+                                            name="CompanyAdress"
+                                            placeholder="Địa chỉ công ty"
+                                        />
+                                        {error && <Text style={styles.errorStyle}>{error.CompanyAdress}</Text>}
+                                    </View>
+                                </View>
+                                <View style={styles.controlContainer}>
+                                    <Text style={styles.label} >Tên Giám Đốc</Text>
+                                    <View style={styles.groupControl}>
+                                        <TextInput
+                                            editable={this.state.editMode}
+                                            disableFullscreenUI
+                                            underlineColorAndroid={'transparent'}
+                                            style={styles.textInput}
+                                            blurOnSubmit
+                                            value={this.props.DirectorName}
+                                            onChangeText={text => CustomerChange({ prop: 'DirectorName', value: text })}
+                                            type="Text"
+                                            name="DirectorName"
+                                            placeholder="Tên Giám Đốc"
+                                        />
+                                        {error && <Text style={styles.errorStyle}>{error.DirectorName}</Text>}
+                                    </View>
+                                </View>
+                                <View style={styles.controlContainer}>
+                                    <Text style={styles.label} >Số tài khoản</Text>
+                                    <View style={styles.groupControl}>
+                                        <TextInput
+                                            editable={this.state.editMode}
+                                            disableFullscreenUI
+                                            underlineColorAndroid={'transparent'}
+                                            style={styles.textInput}
+                                            blurOnSubmit
+                                            value={this.props.BankNumber}
+                                            onChangeText={text => CustomerChange({ prop: 'BankNumber', value: text })}
+                                            type="Text"
+                                            name="BankNumber"
+                                            placeholder="Số tài khoản"
+                                        />
+                                        {error && <Text style={styles.errorStyle}>{error.BankNumber}</Text>}
+                                    </View>
+                                </View>
+                                <View style={styles.controlContainer}>
+                                    <Text style={styles.label} >Tên ngân hàng</Text>
+                                    <View style={styles.groupControl}>
+                                        <TextInput
+                                            editable={this.state.editMode}
+                                            disableFullscreenUI
+                                            underlineColorAndroid={'transparent'}
+                                            style={styles.textInput}
+                                            blurOnSubmit
+                                            value={this.props.BankName}
+                                            onChangeText={text => CustomerChange({ prop: 'BankName', value: text })}
+                                            type="Text"
+                                            name="BankName"
+                                            placeholder="Tên ngân hàng"
+                                        />
+                                        {error && <Text style={styles.errorStyle}>{error.BankName}</Text>}
+                                    </View>
+                                </View>
+                                <View style={styles.controlContainer}>
+                                    <Text style={styles.label} >Mã số thuế</Text>
+                                    <View style={styles.groupControl}>
+                                        <TextInput
+                                            editable={this.state.editMode}
+                                            disableFullscreenUI
+                                            underlineColorAndroid={'transparent'}
+                                            style={styles.textInput}
+                                            blurOnSubmit
+                                            value={this.props.TaxCode}
+                                            onChangeText={text => CustomerChange({ prop: 'TaxCode', value: text })}
+                                            type="Text"
+                                            name="TaxCode"
+                                            placeholder="Mã số thuế"
+                                        />
+                                        {error && <Text style={styles.errorStyle}>{error.TaxCode}</Text>}
+                                    </View>
+                                </View>
+                                <View style={styles.controlContainer}>
+                                    <Text style={styles.label} >Số Fax</Text>
+                                    <View style={styles.groupControl}>
+                                        <TextInput
+                                            editable={this.state.editMode}
+                                            disableFullscreenUI
+                                            underlineColorAndroid={'transparent'}
+                                            style={styles.textInput}
+                                            blurOnSubmit
+                                            value={this.props.Fax}
+                                            onChangeText={text => CustomerChange({ prop: 'Fax', value: text })}
+                                            type="Text"
+                                            name="Fax"
+                                            placeholder="Số Fax"
+                                        />
+                                        {error && <Text style={styles.errorStyle}>{error.Fax}</Text>}
+                                    </View>
                                 </View>
                             </View>
-                            <View style={styles.controlContainer}>
-                                <Text style={styles.label} >Điện thoại</Text>
-                                <View style={styles.groupControl}>
-                                    <TextInput
-                                        editable={this.state.editMode}
-                                        disableFullscreenUI
-                                        underlineColorAndroid={'transparent'}
-                                        style={styles.textInput}
-                                        blurOnSubmit
-                                        value={Phone}
-                                        onChangeText={text => CustomerChange({ prop: 'Phone', value: text })}
-                                        type="Text"
-                                        name="Phone"
-                                        placeholder="Điện thoại"
-                                    />
-                                    {error && <Text style={styles.errorStyle}>{error.Address}</Text>}
-                                </View>
-                            </View>
-                            <View style={styles.controlContainer}>
-                                <Text style={styles.label} >Email</Text>
-                                <View style={styles.groupControl}>
-                                    <TextInput
-                                        editable={this.state.editMode}
-                                        disableFullscreenUI
-                                        underlineColorAndroid={'transparent'}
-                                        style={styles.textInput}
-                                        blurOnSubmit
-                                        value={Email}
-                                        onChangeText={text => CustomerChange({ prop: 'Email', value: text })}
-                                        type="Text"
-                                        name="Email"
-                                        placeholder="Thư điện tử"
-                                    />
-                                    {error && <Text style={styles.errorStyle}>{error.Email}</Text>}
-                                </View>
-                            </View>
-                            <View style={styles.controlContainer}>
-                                <Text style={styles.label} >Số ngày tối đa cho phép nợ</Text>
-                                <View style={styles.groupControl}>
-                                    <TextInput
-                                        editable={this.state.editMode}
-                                        disableFullscreenUI
-                                        underlineColorAndroid={'transparent'}
-                                        style={styles.textInput}
-                                        blurOnSubmit
-                                        value={Overdue}
-                                        onChangeText={text => CustomerChange({ prop: 'Overdue', value: text })}
-                                        type="Text"
-                                        name="Overdue"
-                                        placeholder="Số ngày tối đa (30)"
-                                    />
-                                    {error && <Text style={styles.errorStyle}>{error.Overdue}</Text>}
-                                </View>
-                            </View>
-                            <View style={styles.controlContainer}>
-                                <Text style={styles.label} >Số nợ tối đa</Text>
-                                <View style={styles.groupControl}>
-                                    <TextInput
-                                        editable={this.state.editMode}
-                                        disableFullscreenUI
-                                        underlineColorAndroid={'transparent'}
-                                        style={styles.textInput}
-                                        blurOnSubmit
-                                        value={ExcessDebt}
-                                        onChangeText={text => CustomerChange({ prop: 'ExcessDebt', value: text })}
-                                        type="Text"
-                                        name="ExcessDebt"
-                                        placeholder="Số nợ tối đa"
-                                    />
-                                    {error && <Text style={styles.errorStyle}>{error.ExcessDebt}</Text>}
-                                </View>
-                            </View>
-                        </View>
+                        </ScrollView>
                     </View>
                 </View>
                 <Footer>
@@ -334,35 +493,48 @@ const styles = {
 };
 const mapStateToProps = (state, ownProps) => {
     const {
+        Id,
         CustomerGroupId,
-        BankId,
-        CompanyId,
         Name,
         Address,
         Phone,
         Email,
         Overdue,
         ExcessDebt,
-        Id,
+        CompanyName,
+        CompanyAdress,
+        DirectorName,
+        BankNumber,
+        BankName,
+        TaxCode,
+        Fax,
         loading
     } = state.customers;
+    const { customerGroups } = state.customerGroups;
     return {
+        Id,
         CustomerGroupId,
-        BankId,
-        CompanyId,
         Name,
         Address,
         Phone,
         Email,
         Overdue,
         ExcessDebt,
-        Id,
-        loading
+        CompanyName,
+        CompanyAdress,
+        DirectorName,
+        BankNumber,
+        BankName,
+        TaxCode,
+        Fax,
+        loading,
+        customerGroups
     };
 };
 export default connect(mapStateToProps, {
     CustomerChange,
     CustomerUpdate,
     CustomerDelete,
-    loadCustomerDataFromSqlite
+    loadCustomerDataFromSqlite,
+    loadCustomerGroupListDataFromSqlite
 })(CustomerEdit);

@@ -132,9 +132,9 @@ export const getActionForMenus = (menu) => {
         case CUSTOMERS_ACT:
             return null;
         case NEW_CUSTOMER_ACT:
-            return Actions.newCustomer();
+            return Actions.customerNew();
         case CUSTOMER_LIST_ACT:
-            return Actions.customerList();
+            return Actions.customersList();
         case CUSTOMER_DEBT_ACT:
             return Actions.customerDebt();
         case SALE_BY_CUSTOMER_ACT:

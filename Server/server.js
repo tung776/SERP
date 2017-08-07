@@ -46,6 +46,9 @@ app.use('/api/category' , CategoryRouter);
 import CustomerGroupRouter from './routes/customerGroupRouters';
 app.use('/api/customerGroup' , CustomerGroupRouter);
 
+import CustomerRouter from './routes/customerRouters';
+app.use('/api/customer' , CustomerRouter);
+
 import ProductRouter from './routes/productRouters';
 app.use('/api/product', ProductRouter);
 

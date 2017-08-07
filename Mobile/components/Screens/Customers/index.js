@@ -2,7 +2,7 @@ import React from 'react';
 import {
     View, Text, ScrollView, Dimensions,
     TouchableOpacity, TouchableWithoutFeedback,
-    FlatList
+    FlatList, TextInput
 } from 'react-native';
 import Header from '../../commons/Header';
 import Footer from '../../commons/Footer';
@@ -152,7 +152,19 @@ const styles = {
         paddingRight: 15,
         paddingLeft: 15,
         borderRadius: 5,
-    }
+    },
+    groupControl: {
+        height: 40,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        borderColor: '#FFFFFF',
+        borderBottomWidth: 1
+    },
+    searchInput: {
+        flex: 1,
+        color: 'black',
+        fontSize: 16
+    },
 };
 const mapStateToProps = (state, ownProps) => {
     const { loading, loaded, customers } = state.customers;

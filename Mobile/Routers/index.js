@@ -27,7 +27,7 @@ import CustomerGroupNew from '../components/Screens/CustomerGroups/CustomerGroup
 
 import Customers from '../components/Screens/Customers';
 import CustomerEdit from '../components/Screens/Customers/CustomerEdit';
-import CustomerSearch from '../components/Screens/Customers/CustomerSearch';
+import customerSearch from '../components/Screens/Customers';
 import CustomerNew from '../components/Screens/Customers/CustomerNew';
 
 const RouterComponent = () => (

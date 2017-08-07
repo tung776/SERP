@@ -139,15 +139,20 @@ export const createDatabaseSqlite = async () => {
          customers (
            id integer primary key not null,
            customerGroupId integer,
-           bankId integer,
-           companyId integer,
            name text,
            address text,
            imageUrl text,
            phone text,
            email text,
            overdue integer,
-           minQuantity real
+           excessDebt real,
+           directorName text,
+           bankNumber text,
+           bankName text,
+           companyName text,
+           companyAdress text,
+           taxCode text,
+           fax text
           );`, null,
         null,
         e => console.log('customers error: ', e)
@@ -418,12 +423,27 @@ export const updateOrInsertDataVersion = async (data) => {
       const avaiabledData = await SqlService.select('customers', '*', `id = '${item.id}'`);
       if (avaiabledData.length == 0) {
         SqlService.insert('customers', [
-          'id', 'customerGroupId',
-          'name', 'bankId', 'companyId', 'address',
-          'imageUrl', 'phone', 'email', 'overdue', 'excessDebt'
+          'id', 
+          'customerGroupId',
+          'name', 
+          'address',
+          'imageUrl', 
+          'phone', 
+          'email', 
+          'overdue', 
+          'excessDebt',
+          'directorName',
+          'bankNumber',
+          'bankName',
+          'companyName',
+          'companyAdress',
+          'taxCode',
+          'fax'
         ], [
-            item.id, item.customerGroupId, item.name, item.bankId, item.companyId, item.address,
-            item.imageUrl, item.phone, item.email, item.overdue, item.excessDebt
+            item.id, item.customerGroupId, item.name, item.address,
+            item.imageUrl, item.phone, item.email, item.overdue, 
+            item.excessDebt, item.directorName, item.bankNumber, item.bankName,
+             item.companyName, item.companyAdress, item.taxCode, item.fax
           ]);
       } else {
         db.transaction(
@@ -432,14 +452,19 @@ export const updateOrInsertDataVersion = async (data) => {
               update customers 
               set name = ${item.name},
               customerGroupId = ${item.customerGroupId},
-              bankId = ${item.bankId},
-              companyId = ${item.companyId},
               address = ${item.address},
               imageUrl = ${item.imageUrl},
               phone = ${item.phone},
               email = ${item.email},
               overdue = ${item.overdue},
-              excessDebt = ${item.excessDebt} 
+              excessDebt = ${item.excessDebt},
+              directorName = ${item.directorName},
+              bankNumber = ${item.bankNumber},
+              bankName = ${item.bankName},
+              companyName = ${item.companyName},
+              companyAdress = ${item.companyAdress},
+              taxCode = ${item.taxCode},
+              fax = ${item.fax}
               where id = ${item.id} 
               `);
           },

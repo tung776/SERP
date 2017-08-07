@@ -19,7 +19,7 @@ export const loadCustomerListDataFromSqlite = () => async (dispatch) => {
     dispatch({
         type: CUSTOMER_PENDING
     });
-    SqlService.query('select * from customers').then(        
+    SqlService.query('select * from customers').then(
         result => {
             dispatch({
                 type: CUSTOMER_LIST_LOADED_SQLITE,
@@ -34,7 +34,7 @@ export const loadCustomerByNameFromSqlite = (name) => (dispatch) => {
         Phương thức này sẽ trả về danh sách các sản phẩm có tên gần nhất với tên sản phẩm được cung cấp
     */
     dispatch({
-        type: PRODUCT_PENDING
+        type: CUSTOMER_PENDING
     });
     console.log('go ro search actions');
     SqlService.query(`select * from customers where name like '%${name}%'`).then(
@@ -52,7 +52,7 @@ export const loadCustomerDataFromSqlite = (customerId) => async (dispatch) => {
         type: CUSTOMER_PENDING
     });
     console.log(`go in load ${customerId} from sqlite`);
-    
+
     SqlService.query(`select * from customers where id = ${customerId}`).then(
         result => {
             console.log(`customerId = ${customerId} and result = `, result);
@@ -120,7 +120,7 @@ export const CustomerDelete = (customerId) => async (dispatch) => {
             });
             dispatch({
                 type: ADD_FLASH_MESSAGE,
-                payload: { message: 'Bạn đã tạo khách hàng thành công', TypeMessage: SUCCESS_MESSAGE }
+                payload: { message: 'Bạn đã xóa khách hàng thành công', TypeMessage: SUCCESS_MESSAGE }
             });
             Alert.alert(
                 'Thông Báo',
@@ -140,7 +140,7 @@ export const CustomerDelete = (customerId) => async (dispatch) => {
                 });
                 dispatch({
                     type: ADD_FLASH_MESSAGE,
-                    payload: { message: `Tạo khách hàng thất bại: ${err.response.data.error}`, TypeMessage: ERROR_MESSAGE }
+                    payload: { message: `Xóa khách hàng thất bại: ${err.response.data.error}`, TypeMessage: ERROR_MESSAGE }
                 });
             } else {
                 dispatch({
@@ -149,7 +149,7 @@ export const CustomerDelete = (customerId) => async (dispatch) => {
                 });
                 dispatch({
                     type: ADD_FLASH_MESSAGE,
-                    payload: { message: `Tạo khách hàng thất bại: ${err}`, TypeMessage: ERROR_MESSAGE }
+                    payload: { message: `Xóa khách hàng thất bại: ${err}`, TypeMessage: ERROR_MESSAGE }
                 });
             }
             Alert.alert(
@@ -204,7 +204,18 @@ export const CustomerUpdate = (customer) => async (dispatch) => {
                             tx.executeSql(`
                             update customers 
                             set name = '${res.data.customer[0].name}',
-                            description = '${res.data.customer[0].description}'
+                            customerGroupId = '${res.data.customer[0].customerGroupId}',
+                            phone = '${res.data.customer[0].phone}',
+                            email = '${res.data.customer[0].email}',
+                            overdue = '${res.data.customer[0].overdue}',
+                            excessDebt = '${res.data.customer[0].excessDebt}',
+                            companyName = '${res.data.customer[0].companyName}',
+                            companyAdress = '${res.data.customer[0].companyAdress}',
+                            directorName = '${res.data.customer[0].directorName}',
+                            bankNumber = '${res.data.customer[0].bankNumber}',
+                            bankName = '${res.data.customer[0].bankName}',
+                            taxCode = '${res.data.customer[0].taxCode}',
+                            fax = '${res.data.customer[0].fax}'
                             where id = ${res.data.customer[0].id}
                             `,
                                 null,
@@ -225,12 +236,12 @@ export const CustomerUpdate = (customer) => async (dispatch) => {
                                     console.log('error = ', e);
                                 }
                             );
-                            
+
                         },
                         (e) => console.log('error ?????', e),
                         null
                     );
-                    
+
                 } catch (e) {
                     console.log(e);
                 }
@@ -316,16 +327,44 @@ export const AddNewCustomer = (customer) => async (dispatch) => {
                             WHERE id = 1;`
                         );
                         const strSql = `insert into customers 
-                                    (id, name, description) 
+                                    (
+                                        Id,
+                                        CustomerGroupId,
+                                        Name,
+                                        Address,
+                                        Phone,
+                                        Email,
+                                        Overdue,
+                                        ExcessDebt,
+                                        CompanyName,
+                                        CompanyAdress,
+                                        DirectorName,
+                                        BankNumber,
+                                        BankName,
+                                        TaxCode,
+                                        Fax
+                                    ) 
                                     values (
                                             ${res.data.customer[0].id},
+                                           ' ${res.data.customer[0].CustomerGroupId}', 
                                            ' ${res.data.customer[0].name}', 
-                                            '${res.data.customer[0].description}'
+                                           ' ${res.data.customer[0].Address}', 
+                                           ' ${res.data.customer[0].Phone}', 
+                                           ' ${res.data.customer[0].Email}', 
+                                           ' ${res.data.customer[0].Overdue}', 
+                                           ' ${res.data.customer[0].ExcessDebt}', 
+                                           ' ${res.data.customer[0].CompanyName}', 
+                                           ' ${res.data.customer[0].CompanyAdress}', 
+                                           ' ${res.data.customer[0].DirectorName}', 
+                                           ' ${res.data.customer[0].BankNumber}', 
+                                           ' ${res.data.customer[0].BankName}', 
+                                           ' ${res.data.customer[0].TaxCode}', 
+                                            '${res.data.customer[0].Fax}'
                                         )
                                     `;
-                        
+
                         tx.executeSql(strSql);
-                        
+
                         tx.executeSql(
                             'select * from customers',
                             null,

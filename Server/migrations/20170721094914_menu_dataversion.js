@@ -89,8 +89,6 @@ exports.up = function (knex, Promise) {
         .createTableIfNotExists('customers', (table) => {
             table.increments();
             table.integer('customerGroupId').notNullable().references('id').inTable('customerGroups');
-            table.integer('bankId').references('id').inTable('banks');
-            table.integer('companyId').references('id').inTable('companies');
             table.string('name').unique().notNullable();
             table.string('address');
             table.string('imageUrl');
@@ -98,6 +96,13 @@ exports.up = function (knex, Promise) {
             table.string('email');
             table.integer('overdue'); //Số ngày nợ cho phép, vượt quá sẽ bị hệ thống liệt kê trong ds đòi nợ
             table.float('excessDebt'); //Nợ vượt mức cho phép
+            table.string('directorName').nullable();
+            table.string('bankNumber').nullable();
+            table.string('bankName').nullable();
+            table.string('companyName').nullable();
+            table.string('companyAdress').nullable();
+            table.string('taxCode').nullable();
+            table.string('fax').nullable();
         })
         .createTableIfNotExists('debtCustomers', (table) => {
             /*
