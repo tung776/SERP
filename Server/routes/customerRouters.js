@@ -51,13 +51,13 @@ CustomerRouter.post('/new', async (req, res) => {
                             email: Email || '',
                             overdue: Overdue || 10,
                             excessDebt: ExcessDebt || 10000000,
-                            companyName: CompanyName || null,
-                            companyAdress: CompanyAdress || null,
-                            directorName: DirectorName || null,
-                            bankNumber: BankNumber || null,
-                            bankName: BankName || null,
-                            taxCode: TaxCode || null,
-                            fax: Fax || null
+                            companyName: CompanyName || "",
+                            companyAdress: CompanyAdress || "",
+                            directorName: DirectorName || "",
+                            bankNumber: BankNumber || "",
+                            bankName: BankName || "",
+                            taxCode: TaxCode || "",
+                            fax: Fax || ""
                         });
                     //để cập nhật dataversion mới
                     newDataversion = await t('dataVersions')
@@ -111,6 +111,7 @@ CustomerRouter.post('/update', async (req, res) => {
         TaxCode,
         Fax,
     } = req.body;
+    console.log(req.body);
 
     const { isValid, errors } = NewCustomerValidator(req.body);
 
@@ -143,13 +144,13 @@ CustomerRouter.post('/update', async (req, res) => {
                             email: Email || '',
                             overdue: Overdue || 10,
                             excessDebt: ExcessDebt || 10000000,
-                            companyName: CompanyName || null,
-                            companyAdress: CompanyAdress || null,
-                            directorName: DirectorName || null,
-                            bankNumber: BankNumber || null,
-                            bankName: BankName || null,
-                            taxCode: TaxCode || null,
-                            fax: Fax || null
+                            companyName: CompanyName || '',
+                            companyAdress: CompanyAdress || '',
+                            directorName: DirectorName || '',
+                            bankNumber: BankNumber || '',
+                            bankName: BankName || '',
+                            taxCode: TaxCode || '',
+                            fax: Fax || ''
                         });
                 } catch (e) {
                     t.rollback();

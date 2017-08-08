@@ -7,7 +7,7 @@ import {
 
 const INITIAL_STATE = {
     Id: '',
-    CustomerGroupId: '',
+    CustomerGroupId: 6,
     Name: '',
     Address: '',
     Phone: '',
@@ -36,7 +36,7 @@ export default (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 Id: '',
-                CustomerGroupId: '',
+                CustomerGroupId: 6,
                 Name: '',
                 Address: '',
                 Phone: '',
@@ -67,8 +67,6 @@ export default (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 CustomerGroupId: action.payload.customerGroupId,
-                BankId: action.payload.bankId,
-                CompanyId: action.payload.companyId,
                 Name: action.payload.name,
                 Address: action.payload.address,
                 Phone: action.payload.phone,
@@ -94,7 +92,7 @@ export default (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 Id: '',
-                CustomerGroupId: '',
+                CustomerGroupId: 6,
                 Name: '',
                 Address: '',
                 Phone: '',

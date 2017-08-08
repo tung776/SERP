@@ -204,11 +204,11 @@ export const CustomerUpdate = (customer) => async (dispatch) => {
                             tx.executeSql(`
                             update customers 
                             set name = '${res.data.customer[0].name}',
-                            customerGroupId = '${res.data.customer[0].customerGroupId}',
+                            customerGroupId = ${res.data.customer[0].customerGroupId},
                             phone = '${res.data.customer[0].phone}',
                             email = '${res.data.customer[0].email}',
-                            overdue = '${res.data.customer[0].overdue}',
-                            excessDebt = '${res.data.customer[0].excessDebt}',
+                            overdue = ${res.data.customer[0].overdue},
+                            excessDebt = ${res.data.customer[0].excessDebt},
                             companyName = '${res.data.customer[0].companyName}',
                             companyAdress = '${res.data.customer[0].companyAdress}',
                             directorName = '${res.data.customer[0].directorName}',
@@ -326,40 +326,41 @@ export const AddNewCustomer = (customer) => async (dispatch) => {
                             SET customers = '${res.data.dataversion[0].customers}'                    
                             WHERE id = 1;`
                         );
+                        console.log('res.data.customer[0] = ', res.data.customer[0]);
                         const strSql = `insert into customers 
                                     (
-                                        Id,
-                                        CustomerGroupId,
-                                        Name,
-                                        Address,
-                                        Phone,
-                                        Email,
-                                        Overdue,
-                                        ExcessDebt,
-                                        CompanyName,
-                                        CompanyAdress,
-                                        DirectorName,
-                                        BankNumber,
-                                        BankName,
-                                        TaxCode,
-                                        Fax
+                                        id,
+                                        customerGroupId,
+                                        name,
+                                        address,
+                                        phone,
+                                        email,
+                                        overdue,
+                                        excessDebt,
+                                        companyName,
+                                        companyAdress,
+                                        directorName,
+                                        bankNumber,
+                                        bankName,
+                                        taxCode,
+                                        fax
                                     ) 
                                     values (
                                             ${res.data.customer[0].id},
-                                           ' ${res.data.customer[0].CustomerGroupId}', 
-                                           ' ${res.data.customer[0].name}', 
-                                           ' ${res.data.customer[0].Address}', 
-                                           ' ${res.data.customer[0].Phone}', 
-                                           ' ${res.data.customer[0].Email}', 
-                                           ' ${res.data.customer[0].Overdue}', 
-                                           ' ${res.data.customer[0].ExcessDebt}', 
-                                           ' ${res.data.customer[0].CompanyName}', 
-                                           ' ${res.data.customer[0].CompanyAdress}', 
-                                           ' ${res.data.customer[0].DirectorName}', 
-                                           ' ${res.data.customer[0].BankNumber}', 
-                                           ' ${res.data.customer[0].BankName}', 
-                                           ' ${res.data.customer[0].TaxCode}', 
-                                            '${res.data.customer[0].Fax}'
+                                            '${res.data.customer[0].customerGroupId}', 
+                                           '${res.data.customer[0].name}', 
+                                           '${res.data.customer[0].address}', 
+                                           '${res.data.customer[0].phone}', 
+                                           '${res.data.customer[0].email}', 
+                                            ${res.data.customer[0].overdue}, 
+                                            ${res.data.customer[0].excessDebt}, 
+                                           '${res.data.customer[0].companyName}', 
+                                           '${res.data.customer[0].companyAdress}', 
+                                           '${res.data.customer[0].directorName}', 
+                                           '${res.data.customer[0].bankNumber}', 
+                                           '${res.data.customer[0].bankName}', 
+                                           '${res.data.customer[0].taxCode}', 
+                                            '${res.data.customer[0].fax}'
                                         )
                                     `;
 
