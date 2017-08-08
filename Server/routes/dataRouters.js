@@ -49,6 +49,14 @@ dataRoutes.post('/checkDataVersion', async function (req, res) {
             shouldUpdate.warehouses = await Knex.select().from('warehouses');
             shouldUpdate.warehousesVersion = dataVersion[0].warehouses;
         }
+        if(dataVersion[0].quoctes != quoctes) {
+            shouldUpdate.quoctes = await Knex.select().from('quoctes')
+                                    innerJoin('quocteDetails', 'quoctes.id', 'quocteDetails.quocteId')
+                                    .select('id', 'customerId', 'date', 'title', 'unitId', 'productId', 'price');
+            console.log(shouldUpdate.quoctes);
+            
+            shouldUpdate.quoctesVersion = dataVersion[0].quoctes;
+        }
         if(dataVersion[0].products != products) {
             shouldUpdate.products = await Knex.select().from('products');
             shouldUpdate.productsVersion = dataVersion[0].products;

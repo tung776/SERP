@@ -34,6 +34,10 @@ export const resetDatabase = (tx) => {
   tx.executeSql(
     'drop table if exists customers;');
   tx.executeSql(
+    'drop table if exists quoctes;');
+  tx.executeSql(
+    'drop table if exists quocteDetails;');
+  tx.executeSql(
     'drop table if exists dataVersions;');
 };
 
@@ -136,6 +140,27 @@ export const createDatabaseSqlite = async () => {
         e => console.log('customerGroups error: ', e)
       );
       tx.executeSql(`create table if not exists
+         quoctes (
+           id integer primary key not null,
+           customerId integer,           
+           date text,
+           title text
+          );`, null,
+        null,
+        e => console.log('quoctes error: ', e)
+      );
+      tx.executeSql(`create table if not exists
+         quocteDetails (
+           id integer,
+           unitId integer,
+           productId integer,
+           price real
+          );`, null,
+        null,
+        e => console.log('quoctes error: ', e)
+      );
+
+      tx.executeSql(`create table if not exists
          customers (
            id integer primary key not null,
            customerGroupId integer,
@@ -169,7 +194,8 @@ export const createDatabaseSqlite = async () => {
            warehouses integer,
            products integer,
            customerGroups integer,
-           customers integer
+           customers integer,
+           quoctes integer
           );`, null,
         null,
         e => console.log('dataVersions error: ', e)
@@ -189,7 +215,7 @@ export const updateOrInsertDataVersion = async (data) => {
   const newDataVersion = [
     data.id, data.menusVersion, data.userMenusVersion, data.categoriesVersion,
     data.rolesVersion, data.unitsVersion, data.typeCargoesVersion, data.warehousesVersion, data.productsVersion,
-    data.customerGroupsVersion, data.customersVersion
+    data.customerGroupsVersion, data.customersVersion, data.quoctesVersion
   ];
   console.log('newDataVersion = ', newDataVersion);
   console.log('avaiabledDataVersion = ', avaiabledDataVersion);
@@ -199,7 +225,7 @@ export const updateOrInsertDataVersion = async (data) => {
       tx => {
         tx.executeSql(`
           insert into dataVersions 
-            (id, menus, userMenus, categories, roles, units, typeCargoes, warehouses, products, customerGroups, customers) 
+            (id, menus, userMenus, categories, roles, units, typeCargoes, warehouses, products, customerGroups, customers, quoctes) 
             values (
               '${data.id}', 
               '${data.menusVersion}', 
@@ -211,7 +237,8 @@ export const updateOrInsertDataVersion = async (data) => {
               '${data.warehousesVersion}', 
               '${data.productsVersion}', 
               '${data.customerGroupsVersion}', 
-              '${data.customersVersion}'
+              '${data.customersVersion}',
+              '${data.quoctesVersion}'
             )
         `);
       },
@@ -231,6 +258,7 @@ export const updateOrInsertDataVersion = async (data) => {
       if (data.productsVersion) { sql += `products = '${data.productsVersion}',`; }
       if (data.customerGroupsVersion) { sql += `customerGroups = '${data.customerGroupsVersion}',`; }
       if (data.customersVersion) { sql += `customers = '${data.customersVersion}',`; }
+      if (data.quoctesVersion) { sql += `quoctes = '${data.quoctesVersion}',`; }
       console.log('sql = ', sql);
       sql = sql.slice(0, sql.length - 1);
       console.log('sql = ', sql);
@@ -418,19 +446,96 @@ export const updateOrInsertDataVersion = async (data) => {
     }, this);
   }
 
+  if (data.quoctes) {
+    data.quoctes.forEach(async (item) => {
+      const avaiabledData = await SqlService.select('quoctes', '*', `id = ${item.id} and customerId = ${item.customerId}`);
+      if (avaiabledData.length == 0) {
+        SqlService.insert('quoctes', [
+          'id',
+          'customerId',
+          'title',
+          'date'
+        ],
+          [
+            item.id,
+            item.customerId,
+            item.title,
+            item.date
+          ]);
+        SqlService.insert('quocteDetails', [
+          'id',
+          'unitId',
+          'productId',
+          'price'
+        ],
+          [
+            item.id,
+            item.unitId,
+            item.productId,
+            item.price
+          ]);
+      } else {
+        db.transaction(
+          tx => { 
+            tx.executeSql(`
+              update quoctes 
+              set date = ${item.date},
+              title = ${item.title}
+              where id = ${item.id} and customerId = ${item.customerId}
+              `);          
+            tx.executeSql(`
+              update quocteDetails 
+              set unitId = ${item.unitId},
+              price = ${item.price}
+              where id = ${item.id} and productId = ${item.productId}
+              `);          
+
+            
+          },
+          null,
+          e => console.log('error when update quoctes', e)
+        );
+      }
+    }, this);
+  }
+
+  if (data.quocteDetails) {
+    data.quocteDetails.forEach(async (item) => {
+      const avaiabledData = await SqlService.select('quocteDetails', '*', `id = '${item.id}'`);
+      if (avaiabledData.length == 0) {
+        SqlService.insert('quocteDetails', ['quocteId', 'productId', 'unitId', 'price'],
+          [item.id, item.productId, item.unitId, item.price]);
+      } else {
+        db.transaction(
+          tx => {
+            tx.executeSql(`
+              update warehouses 
+              set productId = ${item.productId},
+              unitId = ${item.unitId},
+              price = ${item.price}
+              where quocteId = ${item.quocteId} 
+              `);
+          },
+          null,
+          e => console.log('error when update quocteDetails', e)
+        );
+      }
+    }, this);
+  }
+
   if (data.customers) {
     data.customers.forEach(async (item) => {
       const avaiabledData = await SqlService.select('customers', '*', `id = '${item.id}'`);
       if (avaiabledData.length == 0) {
         SqlService.insert('customers', [
-          'id', 
+          'id',
           'customerGroupId',
-          'name', 
+          'name',
           'address',
-          'imageUrl', 
-          'phone', 
-          'email', 
-          'overdue', 
+          'imageUrl',
+          'phone',
+          'email',
+          'overdue',
           'excessDebt',
           'directorName',
           'bankNumber',
@@ -441,9 +546,9 @@ export const updateOrInsertDataVersion = async (data) => {
           'fax'
         ], [
             item.id, item.customerGroupId, item.name, item.address,
-            item.imageUrl, item.phone, item.email, item.overdue, 
+            item.imageUrl, item.phone, item.email, item.overdue,
             item.excessDebt, item.directorName, item.bankNumber, item.bankName,
-             item.companyName, item.companyAdress, item.taxCode, item.fax
+            item.companyName, item.companyAdress, item.taxCode, item.fax
           ]);
       } else {
         db.transaction(

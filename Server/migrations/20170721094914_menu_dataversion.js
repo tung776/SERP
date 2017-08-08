@@ -196,6 +196,19 @@ exports.up = function (knex, Promise) {
             table.increments();
             table.string('name').notNullable();
         })
+        .createTableIfNotExists('quoctes', (table) => {
+            table.increments();
+            table.integer('customerId').notNullable().references('id').inTable('customers');  
+            table.string('title').defaultTo("");
+            table.date('date').defaultTo(knex.fn.now());          
+        })
+        .createTableIfNotExists('quocteDetails', (table) => {
+            table.increments();
+            table.integer('quocteId').notNullable().references('id').inTable('quoctes');
+            table.integer('productId').notNullable().references('id').inTable('products');
+            table.integer('unitId').notNullable().references('id').inTable('units');            
+            table.float('price').defaultTo(0);            
+        })
         .createTableIfNotExists('saleOrders', (table) => {
             /*
             mỗi hóa đơn sẽ có thể có hoặc không phát sinh phiếu thu 
@@ -211,11 +224,12 @@ exports.up = function (knex, Promise) {
             */
             table.increments();
             table.integer('customerId').notNullable().references('id').inTable('customers');
+            table.integer('quocteId').notNullable().references('id').inTable('quoctes');
             table.integer('userId').notNullable().references('id').inTable('users');
             table.integer('paymentCustomerId').nullable().references('id').inTable('paymentCustomers');
             table.integer('debtCustomerId').notNullable().references('id').inTable('debtCustomers');
             table.integer('orderTypeId').notNullable().references('id').inTable('orderTypes');
-            table.string('note').defaultTo(0);
+            table.string('note').defaultTo("");
             table.float('total').defaultTo(0);
             table.float('vat').defaultTo(0);
             table.float('totalIncludeVat').defaultTo(0);

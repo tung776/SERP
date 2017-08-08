@@ -16,6 +16,7 @@ exports.seed = function (knex, Promise) {
             products: 1,
             customerGroups: 1,
             customers: 1,
+            quoctes: 1,
         },
       ]);
     });
