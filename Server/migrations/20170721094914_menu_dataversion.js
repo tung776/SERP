@@ -395,6 +395,7 @@ exports.up = function (knex, Promise) {
             table.integer('products').notNullable().defaultTo(1);
             table.integer('customerGroups').notNullable().defaultTo(1);
             table.integer('customers').notNullable().defaultTo(1);
+            table.integer('quoctes').notNullable().defaultTo(1);
         });
 };
 
@@ -405,6 +406,9 @@ exports.down = function (knex, Promise) {
         .dropTableIfExists('purchaseOrders')
         .dropTableIfExists('saleOrders')
         .dropTableIfExists('orderTypes')
+        .dropTableIfExists('quocteDetails')
+        .dropTableIfExists('quoctes')
+
         .dropTableIfExists('billOfMaterialDetails')
         .dropTableIfExists('billOfMaterials')
         .dropTableIfExists('formulationDetails')

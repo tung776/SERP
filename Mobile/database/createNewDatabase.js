@@ -476,21 +476,31 @@ export const updateOrInsertDataVersion = async (data) => {
           ]);
       } else {
         db.transaction(
-          tx => { 
+          tx => {
             tx.executeSql(`
               update quoctes 
               set date = ${item.date},
               title = ${item.title}
               where id = ${item.id} and customerId = ${item.customerId}
-              `);          
-            tx.executeSql(`
-              update quocteDetails 
-              set unitId = ${item.unitId},
-              price = ${item.price}
-              where id = ${item.id} and productId = ${item.productId}
-              `);          
-
+              `);
             
+            tx.executeSql(`
+              delete from quocteDetails where exists
+               (select * from quocteDetails where id = ${item.id} and unitId = ${item.unitId} and productId = ${item.productId})
+            `);
+
+            SqlService.insert('quocteDetails', [
+              'id',
+              'unitId',
+              'productId',
+              'price'
+            ],
+              [
+                item.id,
+                item.unitId,
+                item.productId,
+                item.price
+              ]);
           },
           null,
           e => console.log('error when update quoctes', e)
@@ -622,6 +632,7 @@ export const checkDataVersion = async (userId, store) => {
   try {
     await SqlService.select('dataVersions', '*', 'id = 1').then(
       async (currentVersion) => {
+        debugger;
         if (!currentVersion[0]) {
           currentVersion[0] = {
             id: 0,
@@ -634,16 +645,17 @@ export const checkDataVersion = async (userId, store) => {
             categories: 0,
             products: 0,
             customerGroups: 0,
-            customers: 0
+            customers: 0,
+            quoctes: 0
           };
         }
-
+        debugger;
         const { id, menus, userMenus,
           roles, units, typeCargoes,
           warehouses, categories,
           products, customerGroups,
-          customers } = currentVersion[0];
-
+          customers, quoctes } = currentVersion[0];
+          debugger;
         const data = await axios.post(`${URL}/api/data/checkDataVersion`, {
           id,
           menus,
@@ -656,9 +668,10 @@ export const checkDataVersion = async (userId, store) => {
           categories,
           customerGroups,
           customers,
+          quoctes,
           userId
         });
-
+        debugger;
         await updateOrInsertDataVersion(data.data);
         store.dispatch(loadMenusData());
 
@@ -666,9 +679,9 @@ export const checkDataVersion = async (userId, store) => {
         //   newData =>
         //     console.log("dataversion after updateOrInsert =", newData)
         // );
-        // SqlService.select('userMenus', '*').then(
-        //   result => console.log("userMenus = ", result)
-        // );
+        SqlService.query(`select * from 'quoctes' inner join 'quocteDetails' on 'quoctes'.'id' = 'quocteDetails'.'quocteId' `, null).then(
+          result => console.log("userMenus = ", result)
+        );
         // SqlService.select('units', '*').then(
         //   result => console.log("units = ", result)
         // );

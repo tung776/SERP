@@ -13,60 +13,68 @@ dataRoutes.post('/checkDataVersion', async function (req, res) {
         const maxId = await Knex('dataVersions').max('id');
         const dataVersion = await Knex.select().from('dataVersions').where('id', maxId[0].max);
         // console.log("dataversion = ", JSON.stringify(dataVersion));
-        if(dataVersion[0].id != id) {
+        if (dataVersion[0].id != id) {
             shouldUpdate.id = dataVersion[0].id;
         }
-        if( dataVersion[0].menus != menus) {
+        if (dataVersion[0].menus != menus) {
             shouldUpdate.menus = dataVersion[0].menus;
             shouldUpdate.menusVersion = dataVersion[0].menus;
         }
-        if(dataVersion[0].userMenus != req.body.userMenus) {
+        if (dataVersion[0].userMenus != req.body.userMenus) {
             const menusData = await Knex('userMenus')
                 .where('userId', userId)
                 .innerJoin('menus', 'userMenus.menuId', 'menus.id')
-                .select('userId','menuId', 'name', 'parentId');
-                shouldUpdate.userMenus = menusData;
-                shouldUpdate.userMenusVersion = dataVersion[0].userMenus;
+                .select('userId', 'menuId', 'name', 'parentId');
+            shouldUpdate.userMenus = menusData;
+            shouldUpdate.userMenusVersion = dataVersion[0].userMenus;
 
         }
-        if(dataVersion[0].roles != roles) {
-            shouldUpdate.roles = await Knex('roles').select('id','name');
+        if (dataVersion[0].roles != roles) {
+            shouldUpdate.roles = await Knex('roles').select('id', 'name');
             shouldUpdate.rolesVersion = dataVersion[0].roles;
         }
-        if(dataVersion[0].categories != categories) {
+        if (dataVersion[0].categories != categories) {
             shouldUpdate.categories = await Knex.select().from('categories');
             shouldUpdate.categoriesVersion = dataVersion[0].categories;
         }
-        if(dataVersion[0].units != units) {
+        if (dataVersion[0].units != units) {
             shouldUpdate.units = await Knex('units').select('id', 'name', 'rate');
             shouldUpdate.unitsVersion = dataVersion[0].units;
         }
-        if(dataVersion[0].typeCargoes != typeCargoes) {
+        if (dataVersion[0].typeCargoes != typeCargoes) {
             shouldUpdate.typeCargoes = await Knex('typeCargoes').select('id', 'name');
             shouldUpdate.typeCargoesVersion = dataVersion[0].typeCargoes;
         }
-        if(dataVersion[0].warehouses != warehouses) {
+        if (dataVersion[0].warehouses != warehouses) {
             shouldUpdate.warehouses = await Knex.select().from('warehouses');
             shouldUpdate.warehousesVersion = dataVersion[0].warehouses;
         }
-        if(dataVersion[0].quoctes != quoctes) {
-            shouldUpdate.quoctes = await Knex.select().from('quoctes')
-                                    innerJoin('quocteDetails', 'quoctes.id', 'quocteDetails.quocteId')
-                                    .select('id', 'customerId', 'date', 'title', 'unitId', 'productId', 'price');
+        if (dataVersion[0].quoctes != quoctes) {
+            //kết quả chỉ trả về là báo giá mới nhất (có id lớn nhất) của toàn bộ khách hàng
+            shouldUpdate.quoctes = await Knex.raw(`
+                SELECT "q"."id", "q"."customerId", "q"."title", "q"."date", 
+                    "qd"."productId", "qd"."unitId", "qd"."price" FROM "quoctes" AS "q"
+                INNER JOIN "quocteDetails" AS "qd" on "q"."id" = "qd"."quocteId"
+                WHERE "q"."id" IN (
+                    SELECT max(id) FROM "quoctes"
+                    GROUP BY "customerId"
+                );
+                
+            `)
             console.log(shouldUpdate.quoctes);
-            
+
             shouldUpdate.quoctesVersion = dataVersion[0].quoctes;
         }
-        if(dataVersion[0].products != products) {
+        if (dataVersion[0].products != products) {
             shouldUpdate.products = await Knex.select().from('products');
             shouldUpdate.productsVersion = dataVersion[0].products;
         }
-        if(dataVersion[0].customers != customers) {
+        if (dataVersion[0].customers != customers) {
             shouldUpdate.customers = await Knex.select().from('customers');
             shouldUpdate.customersVersion = dataVersion[0].customers;
 
         }
-        if(dataVersion[0].customerGroups != customerGroups) {
+        if (dataVersion[0].customerGroups != customerGroups) {
             shouldUpdate.customerGroups = await Knex.select().from('customerGroups');
             shouldUpdate.customerGroupsVersion = dataVersion[0].customerGroups;
 
@@ -74,7 +82,7 @@ dataRoutes.post('/checkDataVersion', async function (req, res) {
         console.log('shouldUpdate = ', shouldUpdate);
         res.status(200).json(shouldUpdate);
     }
-    catch(err) {
+    catch (err) {
         console.log(err);
         res.json(err);
     }

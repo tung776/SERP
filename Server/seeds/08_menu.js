@@ -90,7 +90,7 @@ exports.seed = function (knex, Promise) {
         { name: 'Tìm kiếm Nhóm Khách Hàng', parentId: 18 }, //70
 
         { name: 'Thêm Nhóm Nhà Cung Cấp', parentId: 34 }, //71
-        { name: 'Tìm kiếm Nhóm Nhà Cung Cấp', parentId: 34 } //72
+        { name: 'Tìm kiếm Nhóm Nhà Cung Cấp', parentId: 34 }, //72
         //update 8/8
         { name: 'Lập Báo Giá', parentId: 29 }, //73
         { name: 'Tìm Báo Giá', parentId: 29 } //74
