@@ -21,9 +21,10 @@ import {
 } from './index';
 import db from '../database/sqliteConfig';
 
-export const resetData = () => async (dispatch) => {
+export const resetData = (selectedProducts) => async (dispatch) => {
     dispatch({
-        type: RESET_PRODUCT_FORM
+        type: RESET_PRODUCT_FORM,
+        payload: { selectedProducts }
     });
 };
 

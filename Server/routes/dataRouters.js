@@ -65,15 +65,16 @@ dataRoutes.post('/checkDataVersion', async function (req, res) {
             //         GROUP BY "customerId"
             //     );                
             // `)
-            shouldUpdate.quoctes = await Knex.raw(`
-                SELECT "q"."id", "q"."customerId", "q"."customerGroupId", "q"."title", "q"."date", 
-                    "qd"."productId", "qd"."unitId", "qd"."price" FROM "quoctes" AS "q"
-                INNER JOIN "quocteDetails" AS "qd" on "q"."id" = "qd"."quocteId"
-                WHERE "q"."id" IN (
+            const result = await Knex.raw(`
+                SELECT q."id", q."customerId", q."customerGroupId", q."title", q."date", 
+                    qd."productId", qd."unitId", qd."price" FROM "quoctes" AS q
+                INNER JOIN "quocteDetails" AS qd ON q."id" = qd."quocteId"
+                WHERE q."id" IN (
                     SELECT max(id) FROM "quoctes"  
                     GROUP BY "customerGroupId", "customerId"
                 );                           
-            `)
+            `);
+            shouldUpdate.quoctes = result.rows;
             console.log(shouldUpdate.quoctes);
 
             shouldUpdate.quoctesVersion = dataVersion[0].quoctes;

@@ -23,7 +23,8 @@ const INITIAL_STATE = {
     error: '',
     products: [],
     units: [],
-    typeCargoes: []
+    typeCargoes: [],
+    selectedProducts: []
     // uploading: false
 };
 
@@ -43,33 +44,35 @@ export default (state = INITIAL_STATE, action) => {
                 IsAvaiable: true,
                 Name: '',
                 Description: '',
+                selectedProducts: action.payload.selectedProducts || [],
                 loading: false,
                 loaded: false,
                 error: '',
             };
         case PRODUCT_PENDING:
             return { ...state, loading: true, loaded: false, error: '' };
+
         case PRODUCT_CHANGE:
             return { ...state, [action.payload.prop]: action.payload.value };
+
         case PRODUCT_LIST_LOADED_SQLITE:
-            let convertedData= [];
-            action.payload.forEach((item) => {
-                const convert = {...item, key: item.id, isSelected: false};
-                convertedData.push(convert);
-            })
+            const convertedData = toggleSelectDataSource(action.payload, this.state.selectedData);
             return { ...state, products: convertedData, loaded: true, loading: false };
+
         case TOGGLE_PRODUCT_TO_SELECT_LIST:
-            let tempProducts = {...state.products};
-            tempProducts.forEach((item) => {
-                if(item.id === action.payload.id) {
-                    item.isSelected = !item.isSelected
-                }
-            })
-            return { ...state, products: tempProducts, loaded: true, loading: false };
-        case PRODUCT_LOADED_SQLITE:
-            console.log('action.payload = ', action.payload);
+            let selectedProductClone = { ...state.selectedProducts };
+            selectedProductClone.push(action.payload);
+
             return { 
                 ...state, 
+                products: toggleSelectDataSource(action.payload, this.state.selectedData),
+                selectedProducts: selectedProductClone,
+                loaded: true, 
+                loading: false };
+        case PRODUCT_LOADED_SQLITE:
+            console.log('action.payload = ', action.payload);
+            return {
+                ...state,
                 Id: action.payload.id,
                 CategoryId: action.payload.categoryId,
                 UnitId: action.payload.unitId,
@@ -81,14 +84,15 @@ export default (state = INITIAL_STATE, action) => {
                 IsAvaiable: JSON.parse(action.payload.isAvaiable),
                 Name: action.payload.name,
                 Description: action.payload.description,
-                loaded: true, loading: false 
+                loaded: true,
+                loading: false
             };
         case LOAD_UNIT_SUCCESS:
             return { ...state, units: action.payload };
         case LOAD_TYPE_CARGO_SUCCESS:
             return { ...state, typeCargoes: action.payload };
         case ADD_PRODUCT:
-           
+
         case PRODUCT_CHANGE_FAIL:
             return { ...state, error: action.payload, loading: false };
         case PRODUCT_CHANGE_SUCCESS:
@@ -125,5 +129,24 @@ export default (state = INITIAL_STATE, action) => {
         default:
             return state;
     }
-}
-    ;
+};
+
+const toggleSelectDataSource = (source, selectedData) => {
+    let convertedData = [];
+    let convert;
+    source.forEach((item) => {
+        selectedData.forEach((el) => {
+            if ((el.id === item.id) &&
+                (el.customerId === item.customerId) &&
+                (el.customerGroupId === item.customerGroupId) &&
+                (el.productId === item.productId) &&
+                (el.unitId === item.unitId)) {
+                convert = { ...item, key: item.id, isSelected: true };
+            } else {
+                convert = { ...item, key: item.id, isSelected: false };
+            }
+        });
+        convertedData.push(convert);
+    });
+    return convertedData;
+};

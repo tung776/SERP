@@ -25,7 +25,7 @@ class ProductSelector extends React.Component {
         if(this.props.selectedProducts) {
             this.props.selectedProducts.forEach((item) => {
                 this.props.toggleProductToSelectList(item);
-            })
+            });
         }
         
     }

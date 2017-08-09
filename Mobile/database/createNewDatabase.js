@@ -437,7 +437,7 @@ export const updateOrInsertDataVersion = async (data) => {
       }
     }, this);
   }
-
+  debugger;
   if (data.quoctes) {
     data.quoctes.forEach(async (item) => {
       const avaiabledData = await SqlService.select('quoctes', '*', `id = ${item.id} and 
@@ -447,36 +447,44 @@ export const updateOrInsertDataVersion = async (data) => {
                                                                     unitId = ${item.unitId}
                                                                     `);
       if (avaiabledData.length == 0) {
-        SqlService.insert('quoctes', [
-          'id',
-          'customerId',
-          'customerGroupId',
-          'title',
-          'date',
-          'id',
-          'unitId',
-          'productId',
-          'price'
-        ],
-          [
-            item.id,
-            item.customerId,
-            item.customerGroupId,
-            item.title,
-            item.date,
-            item.unitId,
-            item.productId,
-            item.price
-          ]);
-
-      } else {
+        debugger;
         db.transaction(
           tx => {
             tx.executeSql(`
+              insert into quoctes 
+              (
+                id,
+                customerId,
+                customerGroupId,
+                title,
+                date,
+                unitId,
+                productId,
+                price
+              ) 
+              values (
+                ${item.id},
+                ${item.customerId},
+                '${item.customerGroupId}',
+                '${item.title}',
+                '${item.date}',
+                ${item.unitId},
+                ${item.productId},
+                ${item.price}
+              )
+            `);
+          },
+          null,
+          e => console.log('errors quoctes = ', e)
+        );
+      } else {
+        db.transaction(
+          tx => {
+            debugger;
+            tx.executeSql(`
               update quoctes 
-              set date = ${item.date},
-              title = ${item.title},
-              date = ${item.date},
+              set date = '${item.date}',
+              title = '${item.title}',
               price = ${item.price}
               where id = ${item.id} and 
                     customerId = ${item.customerId} and
@@ -639,12 +647,12 @@ export const checkDataVersion = async (userId, store) => {
         //   newData =>
         //     console.log("dataversion after updateOrInsert =", newData)
         // );
-        SqlService.query(`select * from 'quoctes'`, null).then(
+        // SqlService.query(`select * from 'quoctes'`, null).then(
+        //   result => console.log("quoctes = ", result)
+        // );
+        SqlService.select('quoctes', '*').then(
           result => console.log("quoctes = ", result)
         );
-        // SqlService.select('units', '*').then(
-        //   result => console.log("units = ", result)
-        // );
         // SqlService.select('roles', '*').then(
         //   result => console.log("roles = ", result)
         // );
