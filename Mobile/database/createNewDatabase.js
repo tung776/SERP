@@ -36,8 +36,6 @@ export const resetDatabase = (tx) => {
   tx.executeSql(
     'drop table if exists quoctes;');
   tx.executeSql(
-    'drop table if exists quocteDetails;');
-  tx.executeSql(
     'drop table if exists dataVersions;');
 };
 
@@ -143,15 +141,9 @@ export const createDatabaseSqlite = async () => {
          quoctes (
            id integer primary key not null,
            customerId integer,           
+           customerGroupId integer,
            date text,
-           title text
-          );`, null,
-        null,
-        e => console.log('quoctes error: ', e)
-      );
-      tx.executeSql(`create table if not exists
-         quocteDetails (
-           id integer,
+           title text,
            unitId integer,
            productId integer,
            price real
@@ -448,21 +440,19 @@ export const updateOrInsertDataVersion = async (data) => {
 
   if (data.quoctes) {
     data.quoctes.forEach(async (item) => {
-      const avaiabledData = await SqlService.select('quoctes', '*', `id = ${item.id} and customerId = ${item.customerId}`);
+      const avaiabledData = await SqlService.select('quoctes', '*', `id = ${item.id} and 
+                                                                    customerId = ${item.customerId} and
+                                                                    customerGroupId = ${item.customerGroupId} and
+                                                                    productId = ${item.productId} and
+                                                                    unitId = ${item.unitId}
+                                                                    `);
       if (avaiabledData.length == 0) {
         SqlService.insert('quoctes', [
           'id',
           'customerId',
+          'customerGroupId',
           'title',
-          'date'
-        ],
-          [
-            item.id,
-            item.customerId,
-            item.title,
-            item.date
-          ]);
-        SqlService.insert('quocteDetails', [
+          'date',
           'id',
           'unitId',
           'productId',
@@ -470,37 +460,30 @@ export const updateOrInsertDataVersion = async (data) => {
         ],
           [
             item.id,
+            item.customerId,
+            item.customerGroupId,
+            item.title,
+            item.date,
             item.unitId,
             item.productId,
             item.price
           ]);
+
       } else {
         db.transaction(
           tx => {
             tx.executeSql(`
               update quoctes 
               set date = ${item.date},
-              title = ${item.title}
-              where id = ${item.id} and customerId = ${item.customerId}
+              title = ${item.title},
+              date = ${item.date},
+              price = ${item.price}
+              where id = ${item.id} and 
+                    customerId = ${item.customerId} and
+                    customerGroupId = ${item.customerGroupId} and
+                    productId = ${item.productId} and
+                    unitId = ${item.unitId}
               `);
-            
-            tx.executeSql(`
-              delete from quocteDetails where exists
-               (select * from quocteDetails where id = ${item.id} and unitId = ${item.unitId} and productId = ${item.productId})
-            `);
-
-            SqlService.insert('quocteDetails', [
-              'id',
-              'unitId',
-              'productId',
-              'price'
-            ],
-              [
-                item.id,
-                item.unitId,
-                item.productId,
-                item.price
-              ]);
           },
           null,
           e => console.log('error when update quoctes', e)
@@ -509,29 +492,6 @@ export const updateOrInsertDataVersion = async (data) => {
     }, this);
   }
 
-  if (data.quocteDetails) {
-    data.quocteDetails.forEach(async (item) => {
-      const avaiabledData = await SqlService.select('quocteDetails', '*', `id = '${item.id}'`);
-      if (avaiabledData.length == 0) {
-        SqlService.insert('quocteDetails', ['quocteId', 'productId', 'unitId', 'price'],
-          [item.id, item.productId, item.unitId, item.price]);
-      } else {
-        db.transaction(
-          tx => {
-            tx.executeSql(`
-              update warehouses 
-              set productId = ${item.productId},
-              unitId = ${item.unitId},
-              price = ${item.price}
-              where quocteId = ${item.quocteId} 
-              `);
-          },
-          null,
-          e => console.log('error when update quocteDetails', e)
-        );
-      }
-    }, this);
-  }
 
   if (data.customers) {
     data.customers.forEach(async (item) => {
@@ -655,7 +615,7 @@ export const checkDataVersion = async (userId, store) => {
           warehouses, categories,
           products, customerGroups,
           customers, quoctes } = currentVersion[0];
-          debugger;
+        debugger;
         const data = await axios.post(`${URL}/api/data/checkDataVersion`, {
           id,
           menus,
@@ -679,8 +639,8 @@ export const checkDataVersion = async (userId, store) => {
         //   newData =>
         //     console.log("dataversion after updateOrInsert =", newData)
         // );
-        SqlService.query(`select * from 'quoctes' inner join 'quocteDetails' on 'quoctes'.'id' = 'quocteDetails'.'quocteId' `, null).then(
-          result => console.log("userMenus = ", result)
+        SqlService.query(`select * from 'quoctes'`, null).then(
+          result => console.log("quoctes = ", result)
         );
         // SqlService.select('units', '*').then(
         //   result => console.log("units = ", result)

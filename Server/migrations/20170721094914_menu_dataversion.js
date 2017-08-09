@@ -197,8 +197,10 @@ exports.up = function (knex, Promise) {
             table.string('name').notNullable();
         })
         .createTableIfNotExists('quoctes', (table) => {
+            //Bảng báo giá có thể lập cho một nhóm khách hàng hoặc được lập dành riêng cho 1 khách hàng cụ thể
             table.increments();
-            table.integer('customerId').notNullable().references('id').inTable('customers');  
+            table.integer('customerId').nullable().references('id').inTable('customers');  
+            table.integer('customerGroupId').nullable().references('id').inTable('customerGroups');  
             table.string('title').defaultTo("");
             table.date('date').defaultTo(knex.fn.now());          
         })

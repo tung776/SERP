@@ -3,7 +3,7 @@ import {
     PRODUCT_CHANGE_SUCCESS, PRODUCT_CHANGE,
     PRODUCT_LOADED_SQLITE, PRODUCT_LIST_LOADED_SQLITE,
     LOAD_UNIT_SUCCESS, LOAD_TYPE_CARGO_SUCCESS,
-    RESET_PRODUCT_FORM
+    RESET_PRODUCT_FORM, TOGGLE_PRODUCT_TO_SELECT_LIST
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -54,10 +54,18 @@ export default (state = INITIAL_STATE, action) => {
         case PRODUCT_LIST_LOADED_SQLITE:
             let convertedData= [];
             action.payload.forEach((item) => {
-                const convert = {...item, key: item.id};
+                const convert = {...item, key: item.id, isSelected: false};
                 convertedData.push(convert);
             })
             return { ...state, products: convertedData, loaded: true, loading: false };
+        case TOGGLE_PRODUCT_TO_SELECT_LIST:
+            let tempProducts = {...state.products};
+            tempProducts.forEach((item) => {
+                if(item.id === action.payload.id) {
+                    item.isSelected = !item.isSelected
+                }
+            })
+            return { ...state, products: tempProducts, loaded: true, loading: false };
         case PRODUCT_LOADED_SQLITE:
             console.log('action.payload = ', action.payload);
             return { 

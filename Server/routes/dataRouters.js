@@ -4,9 +4,11 @@ import passport from 'passport';
 import Knex from '../config/knex';
 
 dataRoutes.post('/checkDataVersion', async function (req, res) {
-    const { id, menus, userMenus, roles,
+    const { 
+        id, menus, userMenus, roles,
         categories, units, warehouses,
-        products, customerGroups, customers, userId, typeCargoes
+        products, customerGroups, customers, userId, typeCargoes,
+        quoctes
      } = req.body;
     try {
         let shouldUpdate = {};
@@ -50,16 +52,27 @@ dataRoutes.post('/checkDataVersion', async function (req, res) {
             shouldUpdate.warehousesVersion = dataVersion[0].warehouses;
         }
         if (dataVersion[0].quoctes != quoctes) {
-            //kết quả chỉ trả về là báo giá mới nhất (có id lớn nhất) của toàn bộ khách hàng
+            //kết quả chỉ trả về là báo giá mới nhất (có id lớn nhất) 
+            //của toàn bộ khách hàng hoặc nhóm khách hàng
+
+            // shouldUpdate.quoctes = await Knex.raw(`
+            //     SELECT "q"."id", "q"."customerId", "q"."title", "q"."date", 
+            //         "qd"."productId", "qd"."unitId", "qd"."price" FROM "quoctes" AS "q"
+            //     INNER JOIN "quocteDetails" AS "qd" on "q"."id" = "qd"."quocteId"
+            //     WHERE "q"."id" IN (
+            //         SELECT max(id) FROM "quoctes"  
+            //         WHERE "customerGroupId" IS NULL
+            //         GROUP BY "customerId"
+            //     );                
+            // `)
             shouldUpdate.quoctes = await Knex.raw(`
-                SELECT "q"."id", "q"."customerId", "q"."title", "q"."date", 
+                SELECT "q"."id", "q"."customerId", "q"."customerGroupId", "q"."title", "q"."date", 
                     "qd"."productId", "qd"."unitId", "qd"."price" FROM "quoctes" AS "q"
                 INNER JOIN "quocteDetails" AS "qd" on "q"."id" = "qd"."quocteId"
                 WHERE "q"."id" IN (
-                    SELECT max(id) FROM "quoctes"
-                    GROUP BY "customerId"
-                );
-                
+                    SELECT max(id) FROM "quoctes"  
+                    GROUP BY "customerGroupId", "customerId"
+                );                           
             `)
             console.log(shouldUpdate.quoctes);
 

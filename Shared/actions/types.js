@@ -38,6 +38,7 @@ export const PRODUCT_LOADED_SQLITE = 'PRODUCT_LOADED_SQLITE';
 export const PRODUCT_LIST_LOADED_SQLITE = 'PRODUCT_LIST_LOADED_SQLITE';
 export const LOAD_TYPE_CARGO_SUCCESS = 'LOAD_TYPE_CARGO_SUCCESS';
 export const LOAD_UNIT_SUCCESS = 'LOAD_UNIT_SUCCESS';
+export const TOGGLE_PRODUCT_TO_SELECT_LIST = 'TOGGLE_PRODUCT_TO_SELECT_LIST';
 //========================= Customer Group ==================================================
 export const ADD_CUSTOMER_GROUP = 'ADD_CUSTOMER_GROUP';
 export const CUSTOMER_GROUP_PENDING = 'ADD_CUSTOMER_GROUP_PENDING';

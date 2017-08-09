@@ -53,8 +53,32 @@ exports.seed = function (knex, Promise) {
                     unitId: 8,
                     price: 4600000
                 },
-                
-                
+                //khách mây tre đan
+                {
+                    quocteId: 5,                    
+                    productId: 1,
+                    unitId: 1,
+                    price: 59000
+                },
+                {
+                    quocteId: 5,                    
+                    productId: 2,
+                    unitId: 8,
+                    price: 4590000
+                },
+                //khách lẻ
+                {
+                    quocteId: 6,                    
+                    productId: 1,
+                    unitId: 1,
+                    price: 54000
+                },
+                {
+                    quocteId: 6,                    
+                    productId: 2,
+                    unitId: 8,
+                    price: 4550000
+                },            
             ]);
         });
 };
