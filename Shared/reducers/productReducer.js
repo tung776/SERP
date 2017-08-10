@@ -55,15 +55,15 @@ export default (state = INITIAL_STATE, action) => {
         case PRODUCT_CHANGE:
             return { ...state, [action.payload.prop]: action.payload.value };
 
-        case PRODUCT_LIST_LOADED_SQLITE:
-            const convertedData = toggleSelectDataSource(action.payload, state.selectedProducts);
+        case PRODUCT_LIST_LOADED_SQLITE: {
+            const convertedData = toggleSelectDataSource([...action.payload], state.selectedProducts);
             console.log('convertedData = ', convertedData);
 
             return { ...state, products: convertedData, loaded: true, loading: false };
-
-        case TOGGLE_PRODUCT_TO_SELECT_LIST:
+        }
+        case TOGGLE_PRODUCT_TO_SELECT_LIST: {
             const newSelectedProductsList = addOrRemoveToSelectedProducts(action.payload, state.selectedProducts);
-            const newProductsList = toggleSelectDataSource(action.payload, newSelectedProductsList)
+            const newProductsList = toggleSelectDataSource(action.payload, newSelectedProductsList);
 
             return {
                 ...state,
@@ -72,6 +72,7 @@ export default (state = INITIAL_STATE, action) => {
                 loaded: true,
                 loading: false
             };
+        }
         case PRODUCT_LOADED_SQLITE:
             console.log('action.payload = ', action.payload);
             return {
