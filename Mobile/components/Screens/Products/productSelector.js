@@ -27,14 +27,15 @@ class ProductSelector extends React.Component {
                 this.props.toggleProductToSelectList(item);
             });
         }
-        
+        this.onAddOrRemove = this.onAddOrRemove.bind(this);
     }
 
     componentDidMount() {
         this.props.loadProductListDataFromSqlite(this.props.categoryId);
     }
 
-    onAdd(product) {
+    onAddOrRemove(product) {
+        console.log('go addOrRemove, product = ', product);
         this.props.toggleProductToSelectList(product)
     }
     onRemove(product) {
@@ -49,7 +50,7 @@ class ProductSelector extends React.Component {
     }
 
     renderProductList() {
-
+        console.log('this.props.selectedProducts = ', this.props.selectedPoducts)
         if ( this.props.products) {
             return (
                 <FlatList
@@ -59,9 +60,9 @@ class ProductSelector extends React.Component {
                         if (item) {
                             return (
                                 <TouchableWithoutFeedback
-                                    key={item.key} onPress={() => {
-                                        Actions.ProductEdit({ product: item });
-                                    }}
+                                    key={item.key} onPress={() => 
+                                        this.onAddOrRemove(item)
+                                    }
                                 >
                                     <View style={styles.listItem}>
                                         <Text style={styles.itemTitle}>{item.name}</Text>
@@ -201,10 +202,11 @@ const styles = {
     },
 };
 const mapStateToProps = (state, ownProps) => {
-    const { loading, loaded, products } = state.products;
-    return { loading, loaded, products };
+    const { loading, loaded, products, selectedPoducts } = state.products;
+    return { loading, loaded, products, selectedPoducts };
 };
 export default connect(mapStateToProps, {
     loadProductListDataFromSqlite,
-    loadProductByNameFromSqlite
+    loadProductByNameFromSqlite,
+    toggleProductToSelectList
 })(ProductSelector);

@@ -30,6 +30,7 @@ import CustomerEdit from '../components/Screens/Customers/CustomerEdit';
 import customerSearch from '../components/Screens/Customers';
 import CustomerNew from '../components/Screens/Customers/CustomerNew';
 
+import productSelector from '../components/Screens/Products/productSelector';
 const RouterComponent = () => (
     <Router hideNavBar="true" sceneStyle={{ backgroundColor: '#F7F7F7' }} >
 
@@ -39,6 +40,8 @@ const RouterComponent = () => (
                 key="main"
                 animation='fade'
             >
+                <Scene key="productSelector" component={productSelector} title="productSelector" />
+
                 <Scene key="Home" component={Home} title="Home" />
                 <Scene key="categoryNew" component={CategoryNew} title="Thêm sản phẩm" />
                 <Scene key="categorySearch" component={CategorySearch} title="Xem sản phẩm" />

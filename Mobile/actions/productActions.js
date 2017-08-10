@@ -17,7 +17,8 @@ import {
     PRODUCT_CHANGE_FAIL,
     ADD_FLASH_MESSAGE,
     ERROR_MESSAGE,
-    SUCCESS_MESSAGE
+    SUCCESS_MESSAGE,
+    TOGGLE_PRODUCT_TO_SELECT_LIST
 } from './index';
 import db from '../database/sqliteConfig';
 
@@ -25,6 +26,12 @@ export const resetData = (selectedProducts) => async (dispatch) => {
     dispatch({
         type: RESET_PRODUCT_FORM,
         payload: { selectedProducts }
+    });
+};
+export const toggleProductToSelectList = (product) => async (dispatch) => {
+    dispatch({
+        type: TOGGLE_PRODUCT_TO_SELECT_LIST,
+        payload: product
     });
 };
 

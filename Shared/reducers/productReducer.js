@@ -56,19 +56,22 @@ export default (state = INITIAL_STATE, action) => {
             return { ...state, [action.payload.prop]: action.payload.value };
 
         case PRODUCT_LIST_LOADED_SQLITE:
-            const convertedData = toggleSelectDataSource(action.payload, this.state.selectedData);
+            const convertedData = toggleSelectDataSource(action.payload, state.selectedProducts);
+            console.log('convertedData = ', convertedData);
+
             return { ...state, products: convertedData, loaded: true, loading: false };
 
         case TOGGLE_PRODUCT_TO_SELECT_LIST:
-            let selectedProductClone = { ...state.selectedProducts };
-            selectedProductClone.push(action.payload);
+            const newSelectedProductsList = addOrRemoveToSelectedProducts(action.payload, state.selectedProducts);
+            const newProductsList = toggleSelectDataSource(action.payload, newSelectedProductsList)
 
-            return { 
-                ...state, 
-                products: toggleSelectDataSource(action.payload, this.state.selectedData),
-                selectedProducts: selectedProductClone,
-                loaded: true, 
-                loading: false };
+            return {
+                ...state,
+                products: newProductsList,
+                selectedProducts: newSelectedProductsList,
+                loaded: true,
+                loading: false
+            };
         case PRODUCT_LOADED_SQLITE:
             console.log('action.payload = ', action.payload);
             return {
@@ -132,9 +135,13 @@ export default (state = INITIAL_STATE, action) => {
 };
 
 const toggleSelectDataSource = (source, selectedData) => {
+    console.log('source = ', source);
+    console.log('selectedData = ', selectedData);
     let convertedData = [];
     let convert;
     source.forEach((item) => {
+        console.log('item = ', item);
+        convert = { ...item, key: item.id, isSelected: false };
         selectedData.forEach((el) => {
             if ((el.id === item.id) &&
                 (el.customerId === item.customerId) &&
@@ -142,11 +149,42 @@ const toggleSelectDataSource = (source, selectedData) => {
                 (el.productId === item.productId) &&
                 (el.unitId === item.unitId)) {
                 convert = { ...item, key: item.id, isSelected: true };
-            } else {
-                convert = { ...item, key: item.id, isSelected: false };
             }
         });
+        console.log('convert = ', convert);
         convertedData.push(convert);
+        console.log('converted = ', convertedData);
     });
     return convertedData;
 };
+
+const addOrRemoveToSelectedProducts = (product, selectedList) => {
+    //xác định sản phẩm này đã tồn tại trong danh sách chọn chưa
+    const temp = selectedList.filter((item) => {
+
+        if ((product.id === item.id) &&
+            (product.customerId === item.customerId) &&
+            (product.customerGroupId === item.customerGroupId) &&
+            (product.productId === item.productId) &&
+            (product.unitId === item.unitId)) {
+            return item;
+        }
+    });
+
+    if (temp) {
+        //Nếu sp đã tồn tại, thì loại bọ sản phẩm
+        return selectedList.filter((item) => {
+            if ((product.id !== item.id) &&
+                (product.customerId !== item.customerId) &&
+                (product.customerGroupId !== item.customerGroupId) &&
+                (product.productId !== item.productId) &&
+                (product.unitId !== item.unitId)) {
+                return item;
+            }
+        });
+    } else {
+        //nếu chưa tồn tại trong ds chọn thì thêm vào
+        let clone = [...selectedList];
+        return clone.push(product);
+    }
+}

@@ -139,7 +139,7 @@ export const createDatabaseSqlite = async () => {
       );
       tx.executeSql(`create table if not exists
          quoctes (
-           id integer primary key not null,
+           id integer,
            customerId integer,           
            customerGroupId integer,
            date text,
@@ -437,50 +437,46 @@ export const updateOrInsertDataVersion = async (data) => {
       }
     }, this);
   }
-  debugger;
   if (data.quoctes) {
     data.quoctes.forEach(async (item) => {
-      const avaiabledData = await SqlService.select('quoctes', '*', `id = ${item.id} and 
-                                                                    customerId = ${item.customerId} and
-                                                                    customerGroupId = ${item.customerGroupId} and
-                                                                    productId = ${item.productId} and
-                                                                    unitId = ${item.unitId}
-                                                                    `);
-      if (avaiabledData.length == 0) {
-        debugger;
-        db.transaction(
-          tx => {
-            tx.executeSql(`
-              insert into quoctes 
-              (
-                id,
-                customerId,
-                customerGroupId,
-                title,
-                date,
-                unitId,
-                productId,
-                price
-              ) 
-              values (
-                ${item.id},
-                ${item.customerId},
-                '${item.customerGroupId}',
-                '${item.title}',
-                '${item.date}',
-                ${item.unitId},
-                ${item.productId},
-                ${item.price}
-              )
-            `);
-          },
-          null,
-          e => console.log('errors quoctes = ', e)
-        );
+      let strSql = "";
+      if (item.customerGroupId === null) {
+        strSql = `id = ${item.id} and customerId = ${item.customerId} and customerGroupId IS NULL and productId = ${item.productId} and unitId = ${item.unitId}`
+        
       } else {
-        db.transaction(
-          tx => {
-            debugger;
+        strSql = `id = ${item.id} and customerId IS NULL and customerGroupId = ${item.customerGroupId} and productId = ${item.productId} and unitId = ${item.unitId}`
+      }
+      const avaiabledData = await SqlService.select('quoctes', '*', strSql, []);
+        
+      console.log('avaiabledData = ', avaiabledData);
+      db.transaction(
+        tx => {
+
+          if (avaiabledData.length === 0) {
+            tx.executeSql(`
+                insert into quoctes 
+                (
+                  id,
+                  customerId,
+                  customerGroupId,
+                  title,
+                  date,
+                  unitId,
+                  productId,
+                  price
+                ) 
+                values (
+                  ${item.id},
+                  ${item.customerId},
+                  ${item.customerGroupId},
+                  '${item.title}',
+                  '${item.date}',
+                  ${item.unitId},
+                  ${item.productId},
+                  ${item.price}
+                )
+              `);
+          } else {
             tx.executeSql(`
               update quoctes 
               set date = '${item.date}',
@@ -492,12 +488,13 @@ export const updateOrInsertDataVersion = async (data) => {
                     productId = ${item.productId} and
                     unitId = ${item.unitId}
               `);
-          },
-          null,
-          e => console.log('error when update quoctes', e)
-        );
-      }
-    }, this);
+          }
+        },
+        null,
+        e => console.log('errors quoctes = ', e)
+      );
+    },
+      this);
   }
 
 
@@ -650,9 +647,9 @@ export const checkDataVersion = async (userId, store) => {
         // SqlService.query(`select * from 'quoctes'`, null).then(
         //   result => console.log("quoctes = ", result)
         // );
-        SqlService.select('quoctes', '*').then(
-          result => console.log("quoctes = ", result)
-        );
+        const a = await SqlService.select('quoctes', '*');
+        console.log("a = ", a);
+
         // SqlService.select('roles', '*').then(
         //   result => console.log("roles = ", result)
         // );
