@@ -209,8 +209,6 @@ export const updateOrInsertDataVersion = async (data) => {
     data.rolesVersion, data.unitsVersion, data.typeCargoesVersion, data.warehousesVersion, data.productsVersion,
     data.customerGroupsVersion, data.customersVersion, data.quoctesVersion
   ];
-  console.log('newDataVersion = ', newDataVersion);
-  console.log('avaiabledDataVersion = ', avaiabledDataVersion);
 
   if (avaiabledDataVersion.length == 0) {
     db.transaction(
@@ -448,7 +446,6 @@ export const updateOrInsertDataVersion = async (data) => {
       }
       const avaiabledData = await SqlService.select('quoctes', '*', strSql, []);
         
-      console.log('avaiabledData = ', avaiabledData);
       db.transaction(
         tx => {
 
@@ -597,7 +594,6 @@ export const checkDataVersion = async (userId, store) => {
   try {
     await SqlService.select('dataVersions', '*', 'id = 1').then(
       async (currentVersion) => {
-        debugger;
         if (!currentVersion[0]) {
           currentVersion[0] = {
             id: 0,
@@ -614,13 +610,11 @@ export const checkDataVersion = async (userId, store) => {
             quoctes: 0
           };
         }
-        debugger;
         const { id, menus, userMenus,
           roles, units, typeCargoes,
           warehouses, categories,
           products, customerGroups,
           customers, quoctes } = currentVersion[0];
-        debugger;
         const data = await axios.post(`${URL}/api/data/checkDataVersion`, {
           id,
           menus,
@@ -636,7 +630,6 @@ export const checkDataVersion = async (userId, store) => {
           quoctes,
           userId
         });
-        debugger;
         await updateOrInsertDataVersion(data.data);
         store.dispatch(loadMenusData());
 

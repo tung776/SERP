@@ -50,7 +50,6 @@ class ProductSelector extends React.Component {
     }
 
     renderProductList() {
-        console.log('this.props.selectedProducts = ', this.props.selectedPoducts)
         if ( this.props.products) {
             return (
                 <FlatList
@@ -64,8 +63,8 @@ class ProductSelector extends React.Component {
                                         this.onAddOrRemove(item)
                                     }
                                 >
-                                    <View style={styles.listItem}>
-                                        <Text style={styles.itemTitle}>{item.name}</Text>
+                                    <View style={[styles.listItem, {backgroundColor: item.isSelected ? '#27ae60' : '#FFFFFF'}]}>
+                                        <Text style={[styles.itemTitle, {color: item.isSelected ? '#FFFFFF' : 'black'}]}>{item.name}</Text>
                                     </View>
                                 </TouchableWithoutFeedback>
                             )
@@ -92,7 +91,7 @@ class ProductSelector extends React.Component {
         return (
             <View style={styles.container}>
                 <Header>
-                    <Text style={styles.headTitle}>Danh Sách Sản Phẩm</Text>
+                    <Text style={styles.headTitle}>Chọn sản phẩm</Text>
                 </Header>
                 <View style={styles.body}>
                     <View style={styles.InputContainer}>

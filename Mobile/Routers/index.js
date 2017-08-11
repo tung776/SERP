@@ -20,6 +20,8 @@ import ProductNew from '../components/Screens/Products/ProductNew';
 import ProductEdit from '../components/Screens/Products/ProductEdit';
 import ComminSoon from '../components/commons/CommingSoon';
 
+import NewQuocte from '../components/Screens/quoctes/newQuocte';
+
 import CustomerGroups from '../components/Screens/CustomerGroups';
 import CustomerGroupEdit from '../components/Screens/CustomerGroups/CustomerGroupEdit';
 import CustomerGroupSearch from '../components/Screens/CustomerGroups/CustomerGroupSearch';
@@ -40,6 +42,7 @@ const RouterComponent = () => (
                 key="main"
                 animation='fade'
             >
+                <Scene key="newQuocte" component={NewQuocte} title="tạo báo giá" />
                 <Scene key="productSelector" component={productSelector} title="productSelector" />
 
                 <Scene key="Home" component={Home} title="Home" />
