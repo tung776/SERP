@@ -7,20 +7,19 @@ import Footer from '../../commons/Footer';
 import { connect } from 'react-redux';
 import stylesCommon from '../../../styles';
 import { Ionicons } from '@expo/vector-icons';
-import { URL } from '../../../../env';
 import { loadCustomerGroupListDataFromSqlite } from '../../../actions/customerGroupAction';
 import { loadCustomerListDataFromSqlite } from '../../../actions/customerAction';
 import { loadUnits, toggleProductToSelectList } from '../../../actions/productActions';
 import { QuocteChange, resetData } from '../../../actions/quocteActions';
+import db from '../../../database/sqliteConfig';
 
 class NewQuocte extends React.Component {
     state = {
-        isExpanded: true
-    }
-    constructor(props) {
-        super(props);
-
-
+        isExpanded: true,
+        customerGroupId: '',
+        customerId: '',
+        date: '',
+        quocteDetails: []
     }
     componentWillMount() {
         this.props.resetData();
@@ -35,9 +34,67 @@ class NewQuocte extends React.Component {
         }
     }
 
-    renderProductList() {
+    componentWillReceiveProps(nextProps) {
+        console.log('nextProps = ', nextProps.selectedProducts);
+        this.setState({ quocteDetails: nextProps.selectedProducts });
+    }
+
+    onSave() {
+        const {
+            customerId,
+            customerGroupId,
+            date,
+            selectedProducts
+        } = this.props;
+        Alert.alert(
+            'Thông Báo',
+            'Bạn đã lưu dữ liệu thành công',
+            [
+                {
+                    text: 'Xác Nhận',
+onPress: () => this.props.AddQuocte({
+                        customerId,
+                        customerGroupId,
+                        date,
+                        selectedProducts
+                    })
+                },
+                { text: 'Hủy', onPress: () => console.log('cancel Pressed') },
+            ]
+        );
+    }
+
+    caculatePriceOnUnitChanged(product, newUnitId) {
+        let oldPrice = product.salePrice;
+        let newRate = 1;
+        this.props.units.forEach((unit) => {
+            if (unit.id == product.unitId) {
+                oldPrice = Math.floor(product.salePrice / unit.rate);
+            }
+            if (unit.id == newUnitId) {
+                newRate = unit.rate;
+            }
+        });
+        this.state.quocteDetails.forEach((item) => {
+            if (item.id === product.id) {
+                item.salePrice = Math.floor(oldPrice * newRate);
+                item.unitId = newUnitId;
+            }            
+        });
+        
+        this.setState({
+            quocteDetails: this.state.quocteDetails,
+        });
+    }
+
+    onSelectProduct() {
         console.log('this.props.selectedProducts = ', this.props.selectedProducts);
-        if (this.props.selectedProducts) {
+        Actions.productSelector(this.props.selectedProducts);
+    }
+
+    renderProductList() {
+        if (this.state.quocteDetails) {            
+            console.log('this.state.quocteDetails = ', this.state.quocteDetails);
             return (
                 <FlatList
                     style={{ marginTop: 10, marginBottom: 10 }}
@@ -69,24 +126,24 @@ class NewQuocte extends React.Component {
 
                                             <Picker
                                                 style={{ flex: 1 }}
-                                                selectedValue={this.props.unitsId}
+                                                selectedValue={item.unitId}
                                                 onValueChange={
-                                                    (itemValue, itemIndex) => this.props.QuocteDetailChange({ prop: "unitId", value: itemValue })
+                                                    (itemValue, itemIndex) => this.caculatePriceOnUnitChanged(item, itemValue)
                                                 }
                                             >
-                                                {this.props.units && this.props.units.map((item) => (
-                                                    <Picker.Item key={item.id} label={item.name} value={item.id} />
+                                                {this.props.units && this.props.units.map((unit) => (
+                                                    <Picker.Item key={unit.id} label={unit.name} value={unit.id} />
                                                 ))
                                                 }
                                             </Picker>
 
                                             <View style={{ flex: 1 }}>
-                                                <Text style={{ fontSize: 15 }}>10.000 VND</Text>
+                                                <Text style={{ fontSize: 15 }}>{item.salePrice}</Text>
                                             </View>
                                         </View>
                                     </View>
                                 </View>
-                            )
+                            );
                         }
                         return null;
                     }
@@ -101,48 +158,6 @@ class NewQuocte extends React.Component {
         );
     }
 
-    onSelectProduct() {
-        console.log('this.props.selectedProducts = ', this.props.selectedProducts);
-        Actions.productSelector(this.props.selectedProducts);
-    }
-
-    onSave() {
-        const {
-            CategoryId,
-            UnitId,
-            TypeCargoId,
-            IsPublic,
-            PurchasePrice,
-            SalePrice,
-            MinQuantity,
-            IsAvaiable,
-            Name,
-            Description,
-        } = this.props;
-        Alert.alert(
-            'Thông Báo',
-            'Bạn đã lưu dữ liệu thành công',
-            [
-                {
-                    text: 'Xác Nhận', onPress: () => this.props.AddNewProduct({
-                        CategoryId,
-                        UnitId,
-                        TypeCargoId,
-                        IsPublic,
-                        PurchasePrice,
-                        SalePrice,
-                        MinQuantity,
-                        IsAvaiable,
-                        Name,
-                        Description,
-                    })
-                },
-                { text: 'Hủy', onPress: () => console.log('cancel Pressed') },
-            ]
-        );
-
-    }
-
     renderHeaderQuocte() {
         if (this.state.isExpanded) {
             return (
@@ -152,7 +167,7 @@ class NewQuocte extends React.Component {
                         <View style={styles.groupControl}>
                             <DatePicker
                                 style={{ width: 200 }}
-                                date={this.props.date}
+                                date={this.state.date}
                                 mode="date"
                                 placeholder="Chọn ngày lập báo giá"
                                 format="DD-MM-YYYY"
@@ -172,7 +187,7 @@ class NewQuocte extends React.Component {
                                     }
                                     // ... You can check the source to find the other keys.
                                 }}
-                                onDateChange={(date) => { this.props.QuocteChange({ prop: "date", value: date }) }}
+                                onDateChange={(date) => { this.setState({ date }); }}
                             />
                         </View>
                     </View>
@@ -180,9 +195,9 @@ class NewQuocte extends React.Component {
                         <Text style={styles.label} >Nhóm Khách hàng</Text>
                         <View style={styles.groupControl}>
                             <Picker
-                                selectedValue={this.props.customerGroupId}
+                                selectedValue={this.state.customerGroupId}
                                 onValueChange={
-                                    (itemValue, itemIndex) => this.props.QuocteChange({ prop: "customerGroupId", value: itemValue })
+                                    (itemValue, itemIndex) => this.setState({ customerGroupId: itemValue, customerId: '' })
                                 }
                             >
                                 {this.props.customerGroups && this.props.customerGroups.map((item) => (
@@ -196,9 +211,9 @@ class NewQuocte extends React.Component {
                         <Text style={styles.label} >Khách Hàng</Text>
                         <View style={styles.groupControl}>
                             <Picker
-                                selectedValue={this.props.customerId}
+                                selectedValue={this.state.customerId}
                                 onValueChange={
-                                    (itemValue, itemIndex) => this.props.QuocteChange({ prop: "customerId", value: itemValue })
+                                    (itemValue, itemIndex) => this.setState({ customerId: itemValue, customerGroupId: '' })
                                 }
                             >
                                 {this.props.customers && this.props.customers.map((item) => (
@@ -209,10 +224,9 @@ class NewQuocte extends React.Component {
                         </View>
                     </View>
                 </View>
-            )
-        } else {
-            return <View/>
-        }
+            );
+        } 
+            return <View />;
     }
     //Tham khảo select (picker) react native: 
     //https://facebook.github.io/react-native/docs/picker.html
@@ -224,19 +238,20 @@ class NewQuocte extends React.Component {
                 </Header>
                 <View style={styles.body}>
                     {this.renderHeaderQuocte()}
-                    
-                        <TouchableOpacity
-                            style={styles.Btn}
-                            onPress = {() => this.setState({isExpanded: !this.state.isExpanded})}
-                        >
-                            {this.state.isExpanded ?
-                            <Ionicons name="ios-arrow-dropup-outline" size={25} color="#FFFFFF" />:
+
+                    <TouchableOpacity
+                        style={styles.Btn}
+                        onPress={() => this.setState({ isExpanded: !this.state.isExpanded })}
+                    >
+                        {this.state.isExpanded ?
+                            <Ionicons name="ios-arrow-dropup-outline" size={25} color="#FFFFFF" /> :
                             <Ionicons name="ios-arrow-dropdown-outline" size={25} color="#FFFFFF" />
-                            }
-                        </TouchableOpacity>
-                        
+                        }
+                    </TouchableOpacity>
+
                     {this.renderProductList()}
-                    <TouchableOpacity style={{ padding: 2, alignSelf: 'center', position: 'absolute', right: 5, bottom: 5 }}
+                    <TouchableOpacity
+                        style={{ padding: 2, alignSelf: 'center', position: 'absolute', right: 5, bottom: 5 }}
                         onPress={this.onSelectProduct.bind(this)}
                     >
                         <Ionicons name="ios-add-circle" size={55} color="rgba(52, 152, 219,0.7)" />
@@ -244,7 +259,8 @@ class NewQuocte extends React.Component {
                 </View>
                 <Footer>
                     <View style={styles.FooterGroupButton} >
-                        <TouchableOpacity style={styles.Btn}
+                        <TouchableOpacity
+                            style={styles.Btn}
                             onPress={this.onSave.bind(this)}
                         >
                             <Ionicons name="ios-checkmark-circle" size={25} color="#FFFFFF" />

@@ -4,7 +4,8 @@ import {
     QUOCTE_CHANGE_FAIL, QUOCTE_CHANGE_SUCCESS,
     ADD_FLASH_MESSAGE, SUCCESS_MESSAGE, ERROR_MESSAGE,
     QUOCTE_LOADED_SQLITE, QUOCTE_DELETE_SUCCESS,
-    RESET_QUOCTE_FORM, QUOCTE_LIST_LOADED_SQLITE
+    RESET_QUOCTE_FORM, QUOCTE_LIST_LOADED_SQLITE,
+    QUOCTE_DETAIL_CHANGE
 } from './index';
 import { URL } from '../../env';
 import axios from 'axios';
@@ -75,6 +76,12 @@ export const QuocteChange = ({ prop, value }) => ({
     type: QUOCTE_CHANGE,
     payload: { prop, value }
 });
+
+export const QuocteDetailChange = ({ index, prop, value }) => ({
+    type: QUOCTE_DETAIL_CHANGE,
+    payload: { index, prop, value }
+});
+
 
 export const QuocteDelete = (quocteId) => async (dispatch) => {
     dispatch({

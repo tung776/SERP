@@ -2,7 +2,7 @@ import {
     ADD_QUOCTE, QUOCTE_PENDING, QUOCTE_CHANGE_FAIL,
     QUOCTE_CHANGE_SUCCESS, QUOCTE_CHANGE,
     QUOCTE_LOADED_SQLITE, QUOCTE_LIST_LOADED_SQLITE, QUOCTE_DELETE_SUCCESS,
-    RESET_QUOCTE_FORM
+    RESET_QUOCTE_FORM, QUOCTE_DETAIL_CHANGE, SELECTED_PRODUCT_TO_QUOCTE_DETAIL
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -34,6 +34,15 @@ export default (state = INITIAL_STATE, action) => {
             return { ...state, [action.payload.prop]: action.payload.value };
         case QUOCTE_LIST_LOADED_SQLITE: {
            
+        }
+        case QUOCTE_DETAIL_CHANGE: {
+           
+        }
+        case SELECTED_PRODUCT_TO_QUOCTE_DETAIL: {
+           return {
+               ...state,
+               quocteDetails: action.payload
+           };
         }
 
         case QUOCTE_LOADED_SQLITE:
