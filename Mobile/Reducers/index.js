@@ -8,6 +8,7 @@ import menuReducer from './menuReducer';
 import productReducer from '../../Shared/reducers/productReducer';
 import customerGroups from '../../Shared/reducers/customerGroupReducer';
 import customers from '../../Shared/reducers/customerReducer';
+import quoctes from '../../Shared/reducers/quocteReducer';
 
 const reducers = combineReducers({
     main: () => null,
@@ -21,6 +22,7 @@ const reducers = combineReducers({
     products: productReducer,
     customerGroups: customerGroups,
     customers: customers,
+    quoctes: quoctes,
 
 });
 export default reducers;

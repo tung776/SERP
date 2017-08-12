@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, ScrollView, TextInput, TouchableOpacity, Picker, Alert } from 'react-native';
+import { View, Text, ScrollView, TextInput, TouchableOpacity, TouchableWithoutFeedback, Picker, Alert, FlatList } from 'react-native';
+import DatePicker from 'react-native-datepicker';
 import { Actions } from 'react-native-router-flux';
 import Header from '../../commons/Header';
 import Footer from '../../commons/Footer';
@@ -7,24 +8,14 @@ import { connect } from 'react-redux';
 import stylesCommon from '../../../styles';
 import { Ionicons } from '@expo/vector-icons';
 import { URL } from '../../../../env';
-import {
-    loadProductByIdFromSqlite,
-    AddNewProduct,
-    ProductChange,
-    resetData,
-    loadUnits,
-    loadTypeCargo
-} from '../../../actions/productActions.js';
 import { loadCustomerGroupListDataFromSqlite } from '../../../actions/customerGroupAction';
 import { loadCustomerListDataFromSqlite } from '../../../actions/customerAction';
-import { loadUnits } from '../../../actions/productActions';
+import { loadUnits, toggleProductToSelectList } from '../../../actions/productActions';
 import { QuocteChange, resetData } from '../../../actions/quocteActions';
 
 class NewQuocte extends React.Component {
     state = {
-        ProductName: '',
-        MinStock: '',
-        Price: ''
+        isExpanded: true
     }
     constructor(props) {
         super(props);
@@ -45,33 +36,42 @@ class NewQuocte extends React.Component {
     }
 
     renderProductList() {
+        console.log('this.props.selectedProducts = ', this.props.selectedProducts);
         if (this.props.selectedProducts) {
             return (
                 <FlatList
-                    style={styles.listProduct}
+                    style={{ marginTop: 10, marginBottom: 10 }}
                     data={this.props.selectedProducts}
                     renderItem={({ item }) => {
                         if (item) {
                             return (
-                                <View>
+                                <View
+                                    style={{ flexDirection: 'row', height: 70, borderBottomWidth: 3, borderBottomColor: '#bdc3c7', backgroundColor: '#ecf0f1', padding: 5 }}
+                                >
                                     <TouchableWithoutFeedback
+
                                         key={item.key} onPress={() =>
-                                            this.onRemove(item)
+                                            this.props.toggleProductToSelectList(item)
                                         }
                                     >
-                                        <View style={styles.listItem}>
-                                            <Text style={styles.itemTitle}>Remove</Text>
+                                        <View style={{ flex: 1, alignSelf: 'center' }}>
+                                            <Ionicons name="ios-trash-outline" size={25} color="#d35400" />
                                         </View>
-                                    </TouchableWithoutFeedback>                                    
-                                    <View>
-                                        <View style={styles.listItem}>
-                                            <Text style={styles.itemTitle}>{item.name}</Text>
+                                    </TouchableWithoutFeedback>
+                                    <View style={{ flex: 10, flexDirection: 'column' }}>
+
+                                        <View style={{ flexDirection: 'row', paddingBottom: 4, borderBottomWidth: 0.5, borderBottomColor: '#16a085' }}>
+                                            <View>
+                                                <Text style={{ fontSize: 15 }}>{item.name}</Text>
+                                            </View>
                                         </View>
-                                        <View>
+                                        <View style={{ flexDirection: 'row', alignContent: 'center', alignItems: 'center' }}>
+
                                             <Picker
+                                                style={{ flex: 1 }}
                                                 selectedValue={this.props.unitsId}
                                                 onValueChange={
-                                                    (itemValue, itemIndex) => this.props.QuocteChange({ prop: "unitId", value: itemValue })
+                                                    (itemValue, itemIndex) => this.props.QuocteDetailChange({ prop: "unitId", value: itemValue })
                                                 }
                                             >
                                                 {this.props.units && this.props.units.map((item) => (
@@ -79,10 +79,11 @@ class NewQuocte extends React.Component {
                                                 ))
                                                 }
                                             </Picker>
+
+                                            <View style={{ flex: 1 }}>
+                                                <Text style={{ fontSize: 15 }}>10.000 VND</Text>
+                                            </View>
                                         </View>
-                                    </View>
-                                    <View style={styles.listItem}>
-                                        <Text style={styles.itemTitle}>Giá Bán</Text>
                                     </View>
                                 </View>
                             )
@@ -98,6 +99,11 @@ class NewQuocte extends React.Component {
                 <Text>Không tìm thấy sản phẩm bạn cần</Text>
             </View>
         );
+    }
+
+    onSelectProduct() {
+        console.log('this.props.selectedProducts = ', this.props.selectedProducts);
+        Actions.productSelector(this.props.selectedProducts);
     }
 
     onSave() {
@@ -136,73 +142,105 @@ class NewQuocte extends React.Component {
         );
 
     }
+
+    renderHeaderQuocte() {
+        if (this.state.isExpanded) {
+            return (
+                <View>
+                    <View style={styles.controlContainer}>
+                        <Text style={styles.label} >Ngày tháng</Text>
+                        <View style={styles.groupControl}>
+                            <DatePicker
+                                style={{ width: 200 }}
+                                date={this.props.date}
+                                mode="date"
+                                placeholder="Chọn ngày lập báo giá"
+                                format="DD-MM-YYYY"
+                                minDate="01-01-2008"
+                                maxDate="01-01-2056"
+                                confirmBtnText="Xác Nhận"
+                                cancelBtnText="Hủy Bỏ"
+                                customStyles={{
+                                    dateIcon: {
+                                        position: 'absolute',
+                                        left: 0,
+                                        top: 4,
+                                        marginLeft: 0
+                                    },
+                                    dateInput: {
+                                        marginLeft: 36
+                                    }
+                                    // ... You can check the source to find the other keys.
+                                }}
+                                onDateChange={(date) => { this.props.QuocteChange({ prop: "date", value: date }) }}
+                            />
+                        </View>
+                    </View>
+                    <View style={styles.controlContainer}>
+                        <Text style={styles.label} >Nhóm Khách hàng</Text>
+                        <View style={styles.groupControl}>
+                            <Picker
+                                selectedValue={this.props.customerGroupId}
+                                onValueChange={
+                                    (itemValue, itemIndex) => this.props.QuocteChange({ prop: "customerGroupId", value: itemValue })
+                                }
+                            >
+                                {this.props.customerGroups && this.props.customerGroups.map((item) => (
+                                    <Picker.Item key={item.id} label={item.name} value={item.id} />
+                                ))
+                                }
+                            </Picker>
+                        </View>
+                    </View>
+                    <View style={styles.controlContainer}>
+                        <Text style={styles.label} >Khách Hàng</Text>
+                        <View style={styles.groupControl}>
+                            <Picker
+                                selectedValue={this.props.customerId}
+                                onValueChange={
+                                    (itemValue, itemIndex) => this.props.QuocteChange({ prop: "customerId", value: itemValue })
+                                }
+                            >
+                                {this.props.customers && this.props.customers.map((item) => (
+                                    <Picker.Item key={item.id} label={item.name} value={item.id} />
+                                ))
+                                }
+                            </Picker>
+                        </View>
+                    </View>
+                </View>
+            )
+        } else {
+            return <View/>
+        }
+    }
     //Tham khảo select (picker) react native: 
     //https://facebook.github.io/react-native/docs/picker.html
     render() {
         return (
             <View style={styles.container}>
                 <Header>
-                    <Text style={styles.headTitle} >Tạo Báo Giáo</Text>
+                    <Text style={styles.headTitle} >Tạo Báo Giá</Text>
                 </Header>
                 <View style={styles.body}>
-                    <ScrollView>
-
-                        <View style={styles.controlContainer}>
-                            <Text style={styles.label} >Ngày tháng</Text>
-                            <View style={styles.groupControl}>
-                                <Picker
-                                    selectedValue={this.props.customerGroupId}
-                                    onValueChange={
-                                        (itemValue, itemIndex) => this.props.QuocteChange({ prop: "date", value: itemValue })
-                                    }
-                                >
-                                    {this.props.customerGroups && this.props.customerGroups.map((item) => (
-                                        <Picker.Item key={item.id} label={item.name} value={item.id} />
-                                    ))
-                                    }
-                                </Picker>
-                            </View>
-                        </View>
-                        <View style={styles.controlContainer}>
-                            <Text style={styles.label} >Nhóm Khách hàng</Text>
-                            <View style={styles.groupControl}>
-                                <Picker
-                                    selectedValue={this.props.customerGroupId}
-                                    onValueChange={
-                                        (itemValue, itemIndex) => this.props.QuocteChange({ prop: "customerGroupId", value: itemValue })
-                                    }
-                                >
-                                    {this.props.customerGroups && this.props.customerGroups.map((item) => (
-                                        <Picker.Item key={item.id} label={item.name} value={item.id} />
-                                    ))
-                                    }
-                                </Picker>
-                            </View>
-                        </View>
-                        <View style={styles.controlContainer}>
-                            <Text style={styles.label} >Khách Hàng</Text>
-                            <View style={styles.groupControl}>
-                                <Picker
-                                    selectedValue={this.props.customerId}
-                                    onValueChange={
-                                        (itemValue, itemIndex) => this.props.QuocteChange({ prop: "customerId", value: itemValue })
-                                    }
-                                >
-                                    {this.props.customers && this.props.customers.map((item) => (
-                                        <Picker.Item key={item.id} label={item.name} value={item.id} />
-                                    ))
-                                    }
-                                </Picker>
-                            </View>
-                        </View>
-                        {this.renderProductList()}
-                        <TouchableOpacity style={styles.Btn}
-                            onPress={this.onSave.bind(this)}
+                    {this.renderHeaderQuocte()}
+                    
+                        <TouchableOpacity
+                            style={styles.Btn}
+                            onPress = {() => this.setState({isExpanded: !this.state.isExpanded})}
                         >
-                            <Ionicons name="ios-checkmark-circle" size={25} color="#FFFFFF" />
-                            <Text style={styles.titleButton}>Thêm sản phẩm</Text>
+                            {this.state.isExpanded ?
+                            <Ionicons name="ios-arrow-dropup-outline" size={25} color="#FFFFFF" />:
+                            <Ionicons name="ios-arrow-dropdown-outline" size={25} color="#FFFFFF" />
+                            }
                         </TouchableOpacity>
-                    </ScrollView>
+                        
+                    {this.renderProductList()}
+                    <TouchableOpacity style={{ padding: 2, alignSelf: 'center', position: 'absolute', right: 5, bottom: 5 }}
+                        onPress={this.onSelectProduct.bind(this)}
+                    >
+                        <Ionicons name="ios-add-circle" size={55} color="rgba(52, 152, 219,0.7)" />
+                    </TouchableOpacity>
                 </View>
                 <Footer>
                     <View style={styles.FooterGroupButton} >
@@ -210,14 +248,24 @@ class NewQuocte extends React.Component {
                             onPress={this.onSave.bind(this)}
                         >
                             <Ionicons name="ios-checkmark-circle" size={25} color="#FFFFFF" />
-                            <Text style={styles.titleButton}>Lưu</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                             style={styles.Btn}
                             onPress={() => Actions.pop()}
                         >
-                            <Ionicons name="ios-checkmark-circle" size={25} color="#FFFFFF" />
-                            <Text style={styles.titleButton}>Gửi Báo Giá</Text>
+                            <Ionicons name="ios-print-outline" size={25} color="#FFFFFF" />
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={styles.Btn}
+                            onPress={() => Actions.pop()}
+                        >
+                            <Ionicons name="ios-send-outline" size={25} color="#FFFFFF" />
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={styles.Btn}
+                            onPress={() => Actions.pop()}
+                        >
+                            <Ionicons name="ios-mail-outline" size={25} color="#FFFFFF" />
                         </TouchableOpacity>
                     </View>
                 </Footer>
@@ -256,20 +304,20 @@ const styles = {
         marginRight: 10
     },
     controlContainer: {
-        flex: 1,
         padding: 5,
         justifyContent: 'center',
         borderColor: '#7f8c8d',
         borderRadius: 10,
         borderWidth: 0.2,
         marginTop: 5,
+        height: 80,
     },
     groupControl: {
         borderRadius: 5,
         borderWidth: 1,
-        marginBottom: 5,
-        marginTop: 5,
-        padding: 5,
+        marginBottom: 2,
+        marginTop: 2,
+        padding: 2,
         borderColor: 'rgba(41, 128, 185,1.0)',
         backgroundColor: '#FFFFFF'
     },
@@ -310,6 +358,12 @@ const styles = {
         // flex: 1,
         flexDirection: 'row',
         justifyContent: 'space-between',
+    },
+    QuocteDetailItemContainer: {
+        flexDirection: 'row',
+    },
+    quocteDetailRemoveBtn: {
+
     }
 };
 const mapStateToProps = (state, ownProps) => {
@@ -318,9 +372,10 @@ const mapStateToProps = (state, ownProps) => {
         customerGroupId,
         date,
         quocteDetails,
-        loaded,        
+        loaded,
         error
     } = state.quoctes;
+    const { selectedProducts } = state.products;
     const { categories } = state.categories;
     const { customerGroups } = state.customerGroups;
     const { customers } = state.customers;
@@ -336,6 +391,7 @@ const mapStateToProps = (state, ownProps) => {
         categories,
         customerGroups,
         customers,
+        selectedProducts,
     };
 };
 export default connect(mapStateToProps, {
@@ -343,5 +399,6 @@ export default connect(mapStateToProps, {
     QuocteChange,
     resetData,
     loadUnits,
-    loadCustomerListDataFromSqlite
+    loadCustomerListDataFromSqlite,
+    toggleProductToSelectList
 })(NewQuocte);
