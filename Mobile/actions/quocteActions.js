@@ -20,8 +20,9 @@ export const loadQuocteListDataFromSqlite = () => async (dispatch) => {
     dispatch({
         type: QUOCTE_PENDING
     });
-    SqlService.query('select * from quoctes').then(
+    SqlService.query('select id, customerId, customerGroupId from quoctes').then(
         result => {
+            console.log('loadQuocteListDataFromSqlite result = ', result)
             dispatch({
                 type: QUOCTE_LIST_LOADED_SQLITE,
                 payload: result
@@ -30,20 +31,50 @@ export const loadQuocteListDataFromSqlite = () => async (dispatch) => {
     );
 };
 
-export const loadQuocteByNameFromSqlite = (name) => (dispatch) => {
+export const loadQuocteByCustomerOrCustomerGroupIdFromSqlite = (customerId = null, customerGroupId = null) => (dispatch) => {
     /*
         Phương thức này sẽ trả về danh sách các sản phẩm có tên gần nhất với tên sản phẩm được cung cấp
     */
     dispatch({
         type: QUOCTE_PENDING
     });
-    console.log('go ro search actions');
-    SqlService.query(`select * from quoctes where name like '%${title}%'`).then(
+    console.log(`go to search actions, customerId = ${customerId} and groupId = ${customerGroupId}`);
+    let strSql = '';
+    if (customerId !== null) {
+        strSql = `select
+         id, title, date, customerId, customerGroupId 
+         from quoctes 
+         where id IN (
+                    SELECT max(id) FROM quoctes  
+                    GROUP BY customerGroupId, customerId
+                ) 
+        and customerId = ${customerId}
+         `;
+    } else {
+        strSql = `
+        select id, title, date, customerId, customerGroupId 
+        from quoctes 
+        where id IN (
+                    SELECT max(id) FROM quoctes  
+                    GROUP BY customerGroupId, customerId
+                ) 
+        and customerGroupId = ${customerGroupId}
+        `;
+    }
+    SqlService.query(strSql).then(
         result => {
-            dispatch({
-                type: QUOCTE_LIST_LOADED_SQLITE,
-                payload: result
-            });
+            console.log('search result = ', result);
+            if (result[0]) {
+                dispatch({
+                    type: QUOCTE_LIST_LOADED_SQLITE,
+                    payload: result[0]
+                });
+            } else {
+                dispatch({
+                    type: QUOCTE_LIST_LOADED_SQLITE,
+                    payload: null
+                });
+            }
         }
     );
 };
@@ -59,7 +90,7 @@ export const loadQuocteDataFromSqlite = (quocteId) => async (dispatch) => {
             console.log(`quocteId = ${quocteId} and result = `, result);
             dispatch({
                 type: QUOCTE_LOADED_SQLITE,
-                payload: result[0]
+                payload: result
             });
         }
     );
@@ -210,20 +241,14 @@ export const QuocteUpdate = (quocte) => async (dispatch) => {
 
                             tx.executeSql(`
                             update quoctes 
-                            set name = '${res.data.quocte[0].name}',
-                            quocteGroupId = ${res.data.quocte[0].quocteGroupId},
-                            phone = '${res.data.quocte[0].phone}',
-                            email = '${res.data.quocte[0].email}',
-                            overdue = ${res.data.quocte[0].overdue},
-                            excessDebt = ${res.data.quocte[0].excessDebt},
-                            companyName = '${res.data.quocte[0].companyName}',
-                            companyAdress = '${res.data.quocte[0].companyAdress}',
-                            directorName = '${res.data.quocte[0].directorName}',
-                            bankNumber = '${res.data.quocte[0].bankNumber}',
-                            bankName = '${res.data.quocte[0].bankName}',
-                            taxCode = '${res.data.quocte[0].taxCode}',
-                            fax = '${res.data.quocte[0].fax}'
-                            where id = ${res.data.quocte[0].id}
+                            set date = '${res.data.quocte[0].date}',
+                            title = '${res.data.quocte[0].title}',
+                            price = ${res.data.quocte[0].price}
+                            where id = ${res.data.quocte[0].id} and 
+                                    customerId = ${res.data.quocte[0].customerId} and
+                                    customerGroupId = ${res.data.quocte[0].customerGroupId} and
+                                    productId = ${res.data.quocte[0].productId} and
+                                    unitId = ${res.data.quocte[0].unitId}
                             `,
                                 null,
                                 null,
@@ -337,37 +362,23 @@ export const AddNewQuocte = (quocte) => async (dispatch) => {
                         const strSql = `insert into quoctes 
                                     (
                                         id,
-                                        quocteGroupId,
-                                        name,
-                                        address,
-                                        phone,
-                                        email,
-                                        overdue,
-                                        excessDebt,
-                                        companyName,
-                                        companyAdress,
-                                        directorName,
-                                        bankNumber,
-                                        bankName,
-                                        taxCode,
-                                        fax
+                                        customerId,
+                                        customerGroupId,
+                                        title,
+                                        date,
+                                        unitId,
+                                        productId,
+                                        price
                                     ) 
                                     values (
                                             ${res.data.quocte[0].id},
-                                            '${res.data.quocte[0].quocteGroupId}', 
-                                           '${res.data.quocte[0].name}', 
-                                           '${res.data.quocte[0].address}', 
-                                           '${res.data.quocte[0].phone}', 
-                                           '${res.data.quocte[0].email}', 
-                                            ${res.data.quocte[0].overdue}, 
-                                            ${res.data.quocte[0].excessDebt}, 
-                                           '${res.data.quocte[0].companyName}', 
-                                           '${res.data.quocte[0].companyAdress}', 
-                                           '${res.data.quocte[0].directorName}', 
-                                           '${res.data.quocte[0].bankNumber}', 
-                                           '${res.data.quocte[0].bankName}', 
-                                           '${res.data.quocte[0].taxCode}', 
-                                            '${res.data.quocte[0].fax}'
+                                            ${res.data.quocte[0].customerId}, 
+                                            ${res.data.quocte[0].customerGroupId}, 
+                                            '${res.data.quocte[0].title}', 
+                                            '${res.data.quocte[0].date}', 
+                                            ${res.data.quocte[0].unitId}, 
+                                            ${res.data.quocte[0].productId}, 
+                                            ${res.data.quocte[0].price}
                                         )
                                     `;
 

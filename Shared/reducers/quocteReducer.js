@@ -10,7 +10,9 @@ const INITIAL_STATE = {
     customerId: '',
     customerGroupId: '',
     date: '',
+    title: '',
     quocteDetails: [],
+    quocteList: [],
     loading: false,
     loaded: false,
     error: '',
@@ -27,28 +29,52 @@ export default (state = INITIAL_STATE, action) => {
                 customerId: '',
                 customerGroupId: '',
                 date: '',
+                title: '',
                 quocteDetails: [],
                 error: ''
             };
         case QUOCTE_CHANGE:
             return { ...state, [action.payload.prop]: action.payload.value };
         case QUOCTE_LIST_LOADED_SQLITE: {
-           
-        }
-        case QUOCTE_DETAIL_CHANGE: {
-           
+
+            if (action.payload) {
+                return {
+                    ...state,
+                    quocteList: [{ ...action.payload, key: action.payload.id }],
+                    loading: false,
+                    loaded: true
+                }
+            }
+            return {
+                ...state,
+                quocteList: null,
+                loading: false,
+                loaded: true
+            }
         }
         case SELECTED_PRODUCT_TO_QUOCTE_DETAIL: {
-           return {
-               ...state,
-               quocteDetails: action.payload
-           };
+            return {
+                ...state,
+                quocteDetails: action.payload
+            };
         }
 
         case QUOCTE_LOADED_SQLITE:
+            let quocteDetails = [];
+            action.payload.forEach((item) => {
+                quocteDetails.push({
+                    unitId: item.unitId,
+                    productId: item.productId,
+                    price: item.price
+                });
+            });
             return {
                 ...state,
-                
+                customerId: action.payload[0].customerId,
+                customerGroupId: action.payload[0].customerGroupId,
+                date: action.payload[0].date,
+                title: action.payload[0].title,
+                quocteDetails: quocteDetails,
                 error: '',
                 loading: false,
                 loaded: true
@@ -59,7 +85,11 @@ export default (state = INITIAL_STATE, action) => {
             // console.log(action.payload);
             return {
                 ...state,
-                
+                customerId: '',
+                customerGroupId: '',
+                date: '',
+                title: '',
+                quocteDetails: [],
                 error: '',
                 loading: false,
             };

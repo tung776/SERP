@@ -10,7 +10,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { loadCustomerGroupListDataFromSqlite } from '../../../actions/customerGroupAction';
 import { loadCustomerListDataFromSqlite } from '../../../actions/customerAction';
 import { loadUnits, toggleProductToSelectList } from '../../../actions/productActions';
-import { QuocteChange, resetData } from '../../../actions/quocteActions';
+import { resetData, AddNewQuocte } from '../../../actions/quocteActions';
 import db from '../../../database/sqliteConfig';
 
 class NewQuocte extends React.Component {
@@ -47,17 +47,12 @@ class NewQuocte extends React.Component {
             selectedProducts
         } = this.props;
         Alert.alert(
-            'Thông Báo',
-            'Bạn đã lưu dữ liệu thành công',
+            'Xác Nhận',
+            'Bạn chắc chắn muốn lưu báo giá',
             [
                 {
                     text: 'Xác Nhận',
-onPress: () => this.props.AddQuocte({
-                        customerId,
-                        customerGroupId,
-                        date,
-                        selectedProducts
-                    })
+                        onPress: () => this.props.AddNewQuocte(this.state)
                 },
                 { text: 'Hủy', onPress: () => console.log('cancel Pressed') },
             ]
@@ -138,6 +133,26 @@ onPress: () => this.props.AddQuocte({
                                             </Picker>
 
                                             <View style={{ flex: 1 }}>
+                                                <TextInput
+                                                    multiline
+                                                    numberOfLines={10}
+                                                    disableFullscreenUI
+                                                    underlineColorAndroid={'transparent'}
+                                                    style={styles.textInput}
+                                                    blurOnSubmit
+                                                    value={item.salePrice}
+                                                    onChangeText={text => {
+                                                        this.state.quocteDetails.forEach((product) => {
+                                                            if(product.id == item.id) {
+                                                                product.salePrice = item.salePrice
+                                                            }
+                                                        });
+                                                        this.setState({ quocteDetails: this.state.quocteDetails });
+                                                    }}
+                                                    type="Text"
+                                                    name="Description"
+                                                    placeholder="Mô tả sản phẩm"
+                                                />
                                                 <Text style={{ fontSize: 15 }}>{item.salePrice}</Text>
                                             </View>
                                         </View>
@@ -411,10 +426,10 @@ const mapStateToProps = (state, ownProps) => {
     };
 };
 export default connect(mapStateToProps, {
-    loadCustomerGroupListDataFromSqlite,
-    QuocteChange,
     resetData,
     loadUnits,
+    loadCustomerGroupListDataFromSqlite,
     loadCustomerListDataFromSqlite,
-    toggleProductToSelectList
+    toggleProductToSelectList,
+    AddNewQuocte
 })(NewQuocte);

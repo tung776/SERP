@@ -4,3 +4,4 @@ export * from './categoryValidator';
 export * from './customerGroupValidator';
 export * from './ProductFormValidator';
 export * from './customerValidator';
+export * from './quocteValidator';

@@ -21,6 +21,7 @@ import ProductEdit from '../components/Screens/Products/ProductEdit';
 import ComminSoon from '../components/commons/CommingSoon';
 
 import NewQuocte from '../components/Screens/quoctes/newQuocte';
+import quoctes from '../components/Screens/quoctes/index';
 
 import CustomerGroups from '../components/Screens/CustomerGroups';
 import CustomerGroupEdit from '../components/Screens/CustomerGroups/CustomerGroupEdit';
@@ -31,8 +32,8 @@ import Customers from '../components/Screens/Customers';
 import CustomerEdit from '../components/Screens/Customers/CustomerEdit';
 import customerSearch from '../components/Screens/Customers';
 import CustomerNew from '../components/Screens/Customers/CustomerNew';
-
 import productSelector from '../components/Screens/Products/productSelector';
+
 const RouterComponent = () => (
     <Router hideNavBar="true" sceneStyle={{ backgroundColor: '#F7F7F7' }} >
 
@@ -42,6 +43,7 @@ const RouterComponent = () => (
                 key="main"
                 animation='fade'
             >
+                <Scene key="quoctes" component={quoctes} title="Danh sách báo giá" />
                 <Scene key="newQuocte" component={NewQuocte} title="tạo báo giá" />
                 <Scene key="productSelector" component={productSelector} title="productSelector" />
 
