@@ -18,6 +18,7 @@ import { loadCustomerGroupListDataFromSqlite } from '../../../actions/customerGr
 import { loadCustomerListDataFromSqlite } from '../../../actions/customerAction';
 import { Spinner } from '../../commons/Spinner';
 import SqlService from '../../../database/sqliteService';
+import moment from '../../../utils/moment';
 
 class QuocteList extends React.Component {
     state = {
@@ -55,6 +56,7 @@ class QuocteList extends React.Component {
                     data={this.props.quocteList}
                     renderItem={({ item }) => {
                         if (item) {
+                            // moment.locale('vi');
                             return (
                                 <TouchableWithoutFeedback
                                     key={item.key} onPress={() => {
@@ -62,7 +64,7 @@ class QuocteList extends React.Component {
                                     }}
                                 >
                                     <View style={styles.listItem}>
-                                        <Text style={styles.itemTitle}>{item.title} - {item.date}</Text>
+                                        <Text style={styles.itemTitle}>{item.title} - {moment(item.date).format('LL')}</Text>
                                     </View>
                                 </TouchableWithoutFeedback>
                             )
