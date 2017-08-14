@@ -158,7 +158,7 @@ export const QuocteDelete = (quocteId) => async (dispatch) => {
             });
             dispatch({
                 type: ADD_FLASH_MESSAGE,
-                payload: { message: 'Bạn đã xóa khách hàng thành công', TypeMessage: SUCCESS_MESSAGE }
+                payload: { message: 'Bạn đã xóa báo giá thành công', TypeMessage: SUCCESS_MESSAGE }
             });
             Alert.alert(
                 'Thông Báo',
@@ -178,7 +178,7 @@ export const QuocteDelete = (quocteId) => async (dispatch) => {
                 });
                 dispatch({
                     type: ADD_FLASH_MESSAGE,
-                    payload: { message: `Xóa khách hàng thất bại: ${err.response.data.error}`, TypeMessage: ERROR_MESSAGE }
+                    payload: { message: `Xóa báo giá thất bại: ${err.response.data.error}`, TypeMessage: ERROR_MESSAGE }
                 });
             } else {
                 dispatch({
@@ -187,7 +187,7 @@ export const QuocteDelete = (quocteId) => async (dispatch) => {
                 });
                 dispatch({
                     type: ADD_FLASH_MESSAGE,
-                    payload: { message: `Xóa khách hàng thất bại: ${err}`, TypeMessage: ERROR_MESSAGE }
+                    payload: { message: `Xóa báo giá thất bại: ${err}`, TypeMessage: ERROR_MESSAGE }
                 });
             }
             Alert.alert(
@@ -284,7 +284,7 @@ export const QuocteUpdate = (quocte) => async (dispatch) => {
                 });
                 dispatch({
                     type: ADD_FLASH_MESSAGE,
-                    payload: { message: 'Bạn đã tạo khách hàng thành công', TypeMessage: SUCCESS_MESSAGE }
+                    payload: { message: 'Bạn đã tạo báo giá thành công', TypeMessage: SUCCESS_MESSAGE }
                 });
                 Alert.alert(
                     'Thông Báo',
@@ -304,7 +304,7 @@ export const QuocteUpdate = (quocte) => async (dispatch) => {
                     });
                     dispatch({
                         type: ADD_FLASH_MESSAGE,
-                        payload: { message: `Tạo khách hàng thất bại: ${err.response.data.error}`, TypeMessage: ERROR_MESSAGE }
+                        payload: { message: `Tạo báo giá thất bại: ${err.response.data.error}`, TypeMessage: ERROR_MESSAGE }
                     });
                 } else {
                     dispatch({
@@ -313,7 +313,7 @@ export const QuocteUpdate = (quocte) => async (dispatch) => {
                     });
                     dispatch({
                         type: ADD_FLASH_MESSAGE,
-                        payload: { message: `Tạo khách hàng thất bại: ${err}`, TypeMessage: ERROR_MESSAGE }
+                        payload: { message: `Tạo báo giá thất bại: ${err}`, TypeMessage: ERROR_MESSAGE }
                     });
                 }
                 Alert.alert(
@@ -358,8 +358,9 @@ export const AddNewQuocte = (quocte) => async (dispatch) => {
                             SET quoctes = '${res.data.dataversion[0].quoctes}'                    
                             WHERE id = 1;`
                         );
-                        console.log('res.data.quocte[0] = ', res.data.quocte[0]);
-                        const strSql = `insert into quoctes 
+                        console.log('res.data.quocte = ', res.data.quocte);
+                        res.data.quocte.forEach((item) => {
+                            const strSql = `insert into quoctes 
                                     (
                                         id,
                                         customerId,
@@ -371,18 +372,20 @@ export const AddNewQuocte = (quocte) => async (dispatch) => {
                                         price
                                     ) 
                                     values (
-                                            ${res.data.quocte[0].id},
-                                            ${res.data.quocte[0].customerId}, 
-                                            ${res.data.quocte[0].customerGroupId}, 
-                                            '${res.data.quocte[0].title}', 
-                                            '${res.data.quocte[0].date}', 
-                                            ${res.data.quocte[0].unitId}, 
-                                            ${res.data.quocte[0].productId}, 
-                                            ${res.data.quocte[0].price}
+                                            ${item.id},
+                                            ${item.customerId}, 
+                                            ${item.customerGroupId}, 
+                                            '${item.title}', 
+                                            '${item.date}', 
+                                            ${item.unitId}, 
+                                            ${item.productId}, 
+                                            ${item.price}
                                         )
                                     `;
 
-                        tx.executeSql(strSql);
+                            tx.executeSql(strSql);
+                        })
+
 
                         tx.executeSql(
                             'select * from quoctes',
@@ -408,7 +411,7 @@ export const AddNewQuocte = (quocte) => async (dispatch) => {
                 });
                 dispatch({
                     type: ADD_FLASH_MESSAGE,
-                    payload: { message: 'Bạn đã tạo khách hàng thành công', TypeMessage: SUCCESS_MESSAGE }
+                    payload: { message: 'Bạn đã tạo báo giá thành công', TypeMessage: SUCCESS_MESSAGE }
                 });
                 Alert.alert(
                     'Thông Báo',
@@ -428,7 +431,7 @@ export const AddNewQuocte = (quocte) => async (dispatch) => {
                     });
                     dispatch({
                         type: ADD_FLASH_MESSAGE,
-                        payload: { message: `Tạo khách hàng thất bại: ${err.response.data.error}`, TypeMessage: ERROR_MESSAGE }
+                        payload: { message: `Tạo báo giá thất bại: ${err.response.data.error}`, TypeMessage: ERROR_MESSAGE }
                     });
                 } else {
                     dispatch({
@@ -437,7 +440,7 @@ export const AddNewQuocte = (quocte) => async (dispatch) => {
                     });
                     dispatch({
                         type: ADD_FLASH_MESSAGE,
-                        payload: { message: `Tạo khách hàng thất bại: ${err}`, TypeMessage: ERROR_MESSAGE }
+                        payload: { message: `Tạo báo giá thất bại: ${err}`, TypeMessage: ERROR_MESSAGE }
                     });
                 }
                 Alert.alert(

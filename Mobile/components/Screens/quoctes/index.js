@@ -18,7 +18,7 @@ import { loadCustomerGroupListDataFromSqlite } from '../../../actions/customerGr
 import { loadCustomerListDataFromSqlite } from '../../../actions/customerAction';
 import { Spinner } from '../../commons/Spinner';
 import SqlService from '../../../database/sqliteService';
-import moment from '../../../utils/moment';
+import moment from '../../../../Shared/utils/moment';
 
 class QuocteList extends React.Component {
     state = {

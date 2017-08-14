@@ -52,6 +52,9 @@ app.use('/api/customer' , CustomerRouter);
 import ProductRouter from './routes/productRouters';
 app.use('/api/product', ProductRouter);
 
+import QuocteRouter from './routes/quocteRouters';
+app.use('/api/quocte', QuocteRouter);
+
 import {RequestHandler} from'./requestHandler';
 app.use( RequestHandler);
 

@@ -16,9 +16,10 @@ import db from '../../../database/sqliteConfig';
 class NewQuocte extends React.Component {
     state = {
         isExpanded: true,
-        customerGroupId: '',
-        customerId: '',
+        customerGroupId: null,
+        customerId: null,
         date: '',
+        title: '',
         quocteDetails: []
     }
     componentWillMount() {
@@ -35,7 +36,6 @@ class NewQuocte extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log('nextProps = ', nextProps.selectedProducts);
         this.setState({ quocteDetails: nextProps.selectedProducts });
     }
 
@@ -52,7 +52,7 @@ class NewQuocte extends React.Component {
             [
                 {
                     text: 'Xác Nhận',
-                        onPress: () => this.props.AddNewQuocte(this.state)
+                    onPress: () => this.props.AddNewQuocte(this.state)
                 },
                 { text: 'Hủy', onPress: () => console.log('cancel Pressed') },
             ]
@@ -74,22 +74,20 @@ class NewQuocte extends React.Component {
             if (item.id === product.id) {
                 item.salePrice = Math.floor(oldPrice * newRate);
                 item.unitId = newUnitId;
-            }            
+            }
         });
-        
+
         this.setState({
             quocteDetails: this.state.quocteDetails,
         });
     }
 
     onSelectProduct() {
-        console.log('this.props.selectedProducts = ', this.props.selectedProducts);
         Actions.productSelector(this.props.selectedProducts);
     }
 
     renderProductList() {
-        if (this.state.quocteDetails) {            
-            console.log('this.state.quocteDetails = ', this.state.quocteDetails);
+        if (this.state.quocteDetails) {
             return (
                 <FlatList
                     style={{ marginTop: 10, marginBottom: 10 }}
@@ -98,7 +96,7 @@ class NewQuocte extends React.Component {
                         if (item) {
                             return (
                                 <View
-                                    style={{ flexDirection: 'row', height: 70, borderBottomWidth: 3, borderBottomColor: '#bdc3c7', backgroundColor: '#ecf0f1', padding: 5 }}
+                                    style={{ flexDirection: 'row', height: 80, borderBottomWidth: 3, borderBottomColor: '#bdc3c7', backgroundColor: '#ecf0f1', padding: 5 }}
                                 >
                                     <TouchableWithoutFeedback
 
@@ -120,7 +118,7 @@ class NewQuocte extends React.Component {
                                         <View style={{ flexDirection: 'row', alignContent: 'center', alignItems: 'center' }}>
 
                                             <Picker
-                                                style={{ flex: 1 }}
+                                                style={{ flex: 1, alignItems: 'center' }}
                                                 selectedValue={item.unitId}
                                                 onValueChange={
                                                     (itemValue, itemIndex) => this.caculatePriceOnUnitChanged(item, itemValue)
@@ -134,16 +132,14 @@ class NewQuocte extends React.Component {
 
                                             <View style={{ flex: 1 }}>
                                                 <TextInput
-                                                    multiline
-                                                    numberOfLines={10}
                                                     disableFullscreenUI
                                                     underlineColorAndroid={'transparent'}
                                                     style={styles.textInput}
                                                     blurOnSubmit
-                                                    value={item.salePrice}
+                                                    value={`${item.salePrice}`}
                                                     onChangeText={text => {
                                                         this.state.quocteDetails.forEach((product) => {
-                                                            if(product.id == item.id) {
+                                                            if (product.id == item.id) {
                                                                 product.salePrice = item.salePrice
                                                             }
                                                         });
@@ -151,9 +147,8 @@ class NewQuocte extends React.Component {
                                                     }}
                                                     type="Text"
                                                     name="Description"
-                                                    placeholder="Mô tả sản phẩm"
+                                                    placeholder="Giá bán"
                                                 />
-                                                <Text style={{ fontSize: 15 }}>{item.salePrice}</Text>
                                             </View>
                                         </View>
                                     </View>
@@ -176,7 +171,7 @@ class NewQuocte extends React.Component {
     renderHeaderQuocte() {
         if (this.state.isExpanded) {
             return (
-                <View>
+                <ScrollView>
                     <View style={styles.controlContainer}>
                         <Text style={styles.label} >Ngày tháng</Text>
                         <View style={styles.groupControl}>
@@ -212,9 +207,10 @@ class NewQuocte extends React.Component {
                             <Picker
                                 selectedValue={this.state.customerGroupId}
                                 onValueChange={
-                                    (itemValue, itemIndex) => this.setState({ customerGroupId: itemValue, customerId: '' })
+                                    (itemValue, itemIndex) => this.setState({ customerGroupId: itemValue, customerId: null })
                                 }
                             >
+                                <Picker.Item key={0} label="" value={null} />
                                 {this.props.customerGroups && this.props.customerGroups.map((item) => (
                                     <Picker.Item key={item.id} label={item.name} value={item.id} />
                                 ))
@@ -228,9 +224,10 @@ class NewQuocte extends React.Component {
                             <Picker
                                 selectedValue={this.state.customerId}
                                 onValueChange={
-                                    (itemValue, itemIndex) => this.setState({ customerId: itemValue, customerGroupId: '' })
+                                    (itemValue, itemIndex) => this.setState({ customerId: itemValue, customerGroupId: null })
                                 }
                             >
+                                <Picker.Item key={0} label="" value={null} />
                                 {this.props.customers && this.props.customers.map((item) => (
                                     <Picker.Item key={item.id} label={item.name} value={item.id} />
                                 ))
@@ -238,10 +235,26 @@ class NewQuocte extends React.Component {
                             </Picker>
                         </View>
                     </View>
-                </View>
+                    <View style={styles.controlContainer}>
+                        <Text style={styles.label} >Tiêu đề</Text>
+                        <View style={styles.groupControl}>
+                            <TextInput
+                                disableFullscreenUI
+                                underlineColorAndroid={'transparent'}
+                                style={styles.textInput}
+                                blurOnSubmit
+                                value={this.state.title}
+                                onChangeText={text => this.setState({ title: text })}
+                                type="Text"
+                                name="title"
+                                placeholder="Tiêu đề báo giá"
+                            />
+                        </View>
+                    </View>
+                </ScrollView>
             );
-        } 
-            return <View />;
+        }
+        return <View />;
     }
     //Tham khảo select (picker) react native: 
     //https://facebook.github.io/react-native/docs/picker.html
@@ -252,8 +265,6 @@ class NewQuocte extends React.Component {
                     <Text style={styles.headTitle} >Tạo Báo Giá</Text>
                 </Header>
                 <View style={styles.body}>
-                    {this.renderHeaderQuocte()}
-
                     <TouchableOpacity
                         style={styles.Btn}
                         onPress={() => this.setState({ isExpanded: !this.state.isExpanded })}
@@ -263,6 +274,8 @@ class NewQuocte extends React.Component {
                             <Ionicons name="ios-arrow-dropdown-outline" size={25} color="#FFFFFF" />
                         }
                     </TouchableOpacity>
+
+                    {this.renderHeaderQuocte()}
 
                     {this.renderProductList()}
                     <TouchableOpacity
@@ -341,7 +354,7 @@ const styles = {
         borderRadius: 10,
         borderWidth: 0.2,
         marginTop: 5,
-        height: 80,
+        height: 75,
     },
     groupControl: {
         borderRadius: 5,
@@ -354,14 +367,14 @@ const styles = {
     },
     textInput: {
         color: '#000000',
-        fontSize: 16
+        fontSize: 15
     },
     errorStyle: {
         color: 'rgba(231, 76, 60,1.0)',
         fontSize: 18
     },
     label: {
-        fontSize: 16,
+        fontSize: 15,
         color: '#34495e',
         fontWeight: '500'
     },
