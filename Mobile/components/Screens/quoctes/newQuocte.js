@@ -91,7 +91,7 @@ class NewQuocte extends React.Component {
             return (
                 <FlatList
                     style={{ marginTop: 10, marginBottom: 10 }}
-                    data={this.props.selectedProducts}
+                    data={this.state.quocteDetails}
                     renderItem={({ item }) => {
                         if (item) {
                             return (
@@ -140,7 +140,7 @@ class NewQuocte extends React.Component {
                                                     onChangeText={text => {
                                                         this.state.quocteDetails.forEach((product) => {
                                                             if (product.id == item.id) {
-                                                                product.salePrice = item.salePrice
+                                                                product.salePrice = text
                                                             }
                                                         });
                                                         this.setState({ quocteDetails: this.state.quocteDetails });

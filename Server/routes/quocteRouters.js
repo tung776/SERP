@@ -47,16 +47,23 @@ QuocteRouter.post('/new', async (req, res) => {
                             date: date
                         });
                     //thêm các báo giá chi tiết
-                    quocteDetails.forEach(async ({ id, unitId, price }) => {
-                        console.log(`insert quocteDetail: id = ${newQuocte[0].id}, productId = ${id}, unitId = ${unitId}, price = ${price}`)
-                        await t('quocteDetails')
+                    let QuoctedetailItems = [];
+                    quocteDetails.forEach(async ({ id, unitId, salePrice }) => {
+                        console.log(`insert quocteDetail: id = ${newQuocte[0].id}, productId = ${id}, unitId = ${unitId}, price = ${salePrice}`)
+                        let newItem = await t('quocteDetails')
                             .returning('*')
                             .insert({
                                 quocteId: newQuocte[0].id,
                                 productId: id,
                                 unitId: unitId,
-                                price: price
+                                price: salePrice
                             });
+                        newItem[0].id = newQuocte[0].id;
+                        newItem[0].customerId = newQuocte[0].customerId;
+                        newItem[0].customerGroupId = newQuocte[0].customerGroupId;
+                        newItem[0].title = newQuocte[0].title;
+                        newItem[0].date = newQuocte[0].date;
+                        QuoctedetailItems.push(newItem[0]);
                     });
 
                     const result = await Knex.raw(`
@@ -66,9 +73,10 @@ QuocteRouter.post('/new', async (req, res) => {
                         WHERE q."id" IN (
                             SELECT max(id) FROM "quoctes"  
                             GROUP BY "customerGroupId", "customerId"
-                        );                           
+                        ) 
+                        AND q."id" = ${newQuocte[0].id};                      
                     `);
-                    data = result.rows;
+                    data = QuoctedetailItems;
                     //để cập nhật dataversion mới
                     newDataversion = await t('dataVersions')
                         .returning('*')

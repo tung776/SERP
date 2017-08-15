@@ -387,19 +387,19 @@ export const AddNewQuocte = (quocte) => async (dispatch) => {
                         })
 
 
-                        tx.executeSql(
-                            'select * from quoctes',
-                            null,
-                            (_, { rows: { _array } }) => {
-                                dispatch({
-                                    type: QUOCTE_LIST_LOADED_SQLITE,
-                                    payload: _array
-                                });
-                            },
-                            (e) => {
-                                console.log('error read quoctes data from sqlite = ', e);
-                            }
-                        );
+                        // tx.executeSql(
+                        //     'select * from quoctes',
+                        //     null,
+                        //     (_, { rows: { _array } }) => {
+                        //         dispatch({
+                        //             type: QUOCTE_LIST_LOADED_SQLITE,
+                        //             payload: _array
+                        //         });
+                        //     },
+                        //     (e) => {
+                        //         console.log('error read quoctes data from sqlite = ', e);
+                        //     }
+                        // );
                     },
                     (e) => console.log('Lỗi update sqlite: ', e),
                     null
