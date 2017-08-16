@@ -23,7 +23,7 @@ QuocteRouter.post('/new', async (req, res) => {
     console.log('date = ', date);
 
     const { isValid, errors } = NewQuocteValidator(req.body);
-
+    let newQuocte;
     if (isValid) {
         let newDataversion;
         let data;
@@ -38,7 +38,7 @@ QuocteRouter.post('/new', async (req, res) => {
                     let { menus, userMenus, roles, categoryGroups, units, warehouses, products, customers, customerGroups, quoctes } = dataVersion[0];
                     quoctes++;
                     //thực hiện thay đổi dữ liệu bảng báo giá
-                    const newQuocte = await t('quoctes')
+                    newQuocte = await t('quoctes')
                         .returning('*')
                         .insert({
                             customerId: customerId,
@@ -66,17 +66,7 @@ QuocteRouter.post('/new', async (req, res) => {
                         QuoctedetailItems.push(newItem[0]);
                     });
 
-                    const result = await Knex.raw(`
-                        SELECT q."id", q."customerId", q."customerGroupId", q."title", q."date", 
-                            qd."productId", qd."unitId", qd."price" FROM "quoctes" AS q
-                        INNER JOIN "quocteDetails" AS qd ON q."id" = qd."quocteId"
-                        WHERE q."id" IN (
-                            SELECT max(id) FROM "quoctes"  
-                            GROUP BY "customerGroupId", "customerId"
-                        ) 
-                        AND q."id" = ${newQuocte[0].id};                      
-                    `);
-                    data = QuoctedetailItems;
+                    
                     //để cập nhật dataversion mới
                     newDataversion = await t('dataVersions')
                         .returning('*')
@@ -91,11 +81,19 @@ QuocteRouter.post('/new', async (req, res) => {
                     res.status(400).json({ success: false, error: e });
                 }
             }).then(
-                () => {
+                async () => {
                     //không có lỗi nào xuất hiện, server sẽ gửi tới client nhóm khách hàng vừa được insert, và dataVersion mới nhất
+                    
+                    data =  await Knex.raw(`
+                        SELECT q."id", q."customerId", q."customerGroupId", q."title", q."date", 
+                            qd."productId", qd."unitId", qd."price" FROM "quoctes" AS q
+                        INNER JOIN "quocteDetails" AS qd ON q."id" = qd."quocteId"
+                        WHERE q."id" = ${newQuocte[0].id};                      
+                    `);
+                    
                     res.json({
                         success: true,
-                        quocte: data,
+                        quocte: data.rows,
                         dataversion: newDataversion
                     });
                 }
