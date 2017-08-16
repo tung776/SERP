@@ -21,6 +21,7 @@ export const loadCustomerGroupListDataFromSqlite = () => async (dispatch) => {
     });
     SqlService.query('select * from customerGroups').then(        
         result => {
+            console.log('go to load customerGroup = ', result);
             dispatch({
                 type: CUSTOMER_GROUP_LIST_LOADED_SQLITE,
                 payload: result

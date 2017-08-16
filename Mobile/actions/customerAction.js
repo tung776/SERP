@@ -19,8 +19,9 @@ export const loadCustomerListDataFromSqlite = () => async (dispatch) => {
     dispatch({
         type: CUSTOMER_PENDING
     });
-    SqlService.query('select * from customers').then(
+    await SqlService.query('select * from customers').then(
         result => {
+            console.log('customers = ', result);
             dispatch({
                 type: CUSTOMER_LIST_LOADED_SQLITE,
                 payload: result

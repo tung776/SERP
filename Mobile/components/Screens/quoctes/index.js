@@ -33,11 +33,12 @@ class QuocteList extends React.Component {
 
     }
     componentWillMount() {
-        
-        if (!this.props.customers || this.props.customers.length == 0) {
+        // console.log(this.props.customers.length)
+        if (this.props.customers.length == 0) {
+            console.log('go to load customer');
             this.props.loadCustomerListDataFromSqlite();
         }
-        if (!this.props.customerGroups || this.props.customerGroups.length == 0) {
+        if (this.props.customerGroups.length == 0) {
             this.props.loadCustomerGroupListDataFromSqlite();
         }
     }
@@ -99,8 +100,6 @@ class QuocteList extends React.Component {
     }
 
     render() {
-        console.log('this.props.customerGroups = ', this.props.customerGroups)
-        console.log('this.props.customers = ', this.props.customers)
         return (
             <View style={styles.container}>
                 <Header>

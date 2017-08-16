@@ -367,6 +367,7 @@ export const AddNewQuocte = (quocte) => async (dispatch) => {
                                         customerGroupId,
                                         title,
                                         date,
+                                        detailId
                                         unitId,
                                         productId,
                                         price
@@ -377,6 +378,7 @@ export const AddNewQuocte = (quocte) => async (dispatch) => {
                                             ${item.customerGroupId}, 
                                             '${item.title}', 
                                             '${item.date}', 
+                                            ${item.detailId},
                                             ${item.unitId}, 
                                             ${item.productId}, 
                                             ${item.price}

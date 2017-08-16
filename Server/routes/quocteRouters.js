@@ -27,7 +27,6 @@ QuocteRouter.post('/new', async (req, res) => {
     if (isValid) {
         let newDataversion;
         let data;
-        let newQuocteDetails = [];
         try {
             //bắt đầu thực hiện giao dịch, một trong nhiệm vụ thất bại sẽ bị rollback
             Knex.transaction(async (t) => {
@@ -47,10 +46,8 @@ QuocteRouter.post('/new', async (req, res) => {
                             date: date
                         });
                     //thêm các báo giá chi tiết
-                    let QuoctedetailItems = [];
                     quocteDetails.forEach(async ({ id, unitId, salePrice }) => {
-                        console.log(`insert quocteDetail: id = ${newQuocte[0].id}, productId = ${id}, unitId = ${unitId}, price = ${salePrice}`)
-                        let newItem = await t('quocteDetails')
+                       await t('quocteDetails')
                             .returning('*')
                             .insert({
                                 quocteId: newQuocte[0].id,
@@ -58,12 +55,6 @@ QuocteRouter.post('/new', async (req, res) => {
                                 unitId: unitId,
                                 price: salePrice
                             });
-                        newItem[0].id = newQuocte[0].id;
-                        newItem[0].customerId = newQuocte[0].customerId;
-                        newItem[0].customerGroupId = newQuocte[0].customerGroupId;
-                        newItem[0].title = newQuocte[0].title;
-                        newItem[0].date = newQuocte[0].date;
-                        QuoctedetailItems.push(newItem[0]);
                     });
 
                     
@@ -86,7 +77,7 @@ QuocteRouter.post('/new', async (req, res) => {
                     
                     data =  await Knex.raw(`
                         SELECT q."id", q."customerId", q."customerGroupId", q."title", q."date", 
-                            qd."productId", qd."unitId", qd."price" FROM "quoctes" AS q
+                            qd."id" AS "detailId", qd."productId", qd."unitId", qd."price" FROM "quoctes" AS q
                         INNER JOIN "quocteDetails" AS qd ON q."id" = qd."quocteId"
                         WHERE q."id" = ${newQuocte[0].id};                      
                     `);
@@ -112,20 +103,11 @@ QuocteRouter.post('/new', async (req, res) => {
 QuocteRouter.post('/update', async (req, res) => {
     const {
         Id,
-        QuocteGroupId,
-        Name,
-        Address,
-        Phone,
-        Email,
-        Overdue,
-        ExcessDebt,
-        CompanyName,
-        CompanyAdress,
-        DirectorName,
-        BankNumber,
-        BankName,
-        TaxCode,
-        Fax,
+        customerId,
+        customerGroupId,
+        title,
+        date,
+        quocteDetails
     } = req.body;
     console.log(req.body);
 
@@ -149,25 +131,45 @@ QuocteRouter.post('/update', async (req, res) => {
                             id: 1, menus, userMenus, roles, categoryGroups, units, warehouses, products, customers, customerGroups, quoctes
                         });
 
-                    data = await t('quoctes')
+                    await t('quoctes')
                         .returning('*')
                         .whereRaw(`id = ${Id}`)
                         .update({
                             customerGroupId: QuocteGroupId,
-                            name: Name,
-                            address: Address || '',
-                            phone: Phone || '',
-                            email: Email || '',
-                            overdue: Overdue || 10,
-                            excessDebt: ExcessDebt || 10000000,
-                            companyName: CompanyName || '',
-                            companyAdress: CompanyAdress || '',
-                            directorName: DirectorName || '',
-                            bankNumber: BankNumber || '',
-                            bankName: BankName || '',
-                            taxCode: TaxCode || '',
-                            fax: Fax || ''
+                            customerId: customerId,
+                            title: title || '',
+                            date:  moment(date, 'DD-MM-YYYY')
                         });
+                    quocteDetails.forEach(async (detail) => {
+                        await t('quocteDetails')
+                        .returning('*')
+                        .whereRaw(`id = ${detail.detailId}`)
+                        .update({
+                            productId: detail.productId, 
+                            unitId: detail.unitId,
+                            quocteId: detail.quoc,
+                            price:  detail.price
+                        });
+
+                       await t('quocteDetails')
+                            .returning('*')
+                            .insert({
+                                quocteId: newQuocte[0].id,
+                                productId: id,
+                                unitId: unitId,
+                                price: salePrice
+                            });
+                    });
+                    await t('quocteDetails')
+                        .returning('*')
+                        .whereRaw(`id = ${Id}`)
+                        .update({
+                            customerGroupId: QuocteGroupId,
+                            customerId: customerId,
+                            title: title || '',
+                            date:  moment(date, 'DD-MM-YYYY')
+                        });
+
                 } catch (e) {
                     t.rollback();
                     console.log(e);

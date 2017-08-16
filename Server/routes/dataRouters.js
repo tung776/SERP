@@ -67,7 +67,7 @@ dataRoutes.post('/checkDataVersion', async function (req, res) {
             // `)
             const result = await Knex.raw(`
                 SELECT q."id", q."customerId", q."customerGroupId", q."title", q."date", 
-                    qd."productId", qd."unitId", qd."price" FROM "quoctes" AS q
+                    qd."id" AS "detailId", qd."productId", qd."unitId", qd."price" FROM "quoctes" AS q
                 INNER JOIN "quocteDetails" AS qd ON q."id" = qd."quocteId"
                 WHERE q."id" IN (
                     SELECT max(id) FROM "quoctes"  
@@ -75,7 +75,6 @@ dataRoutes.post('/checkDataVersion', async function (req, res) {
                 );                           
             `);
             shouldUpdate.quoctes = result.rows;
-            console.log(shouldUpdate.quoctes);
 
             shouldUpdate.quoctesVersion = dataVersion[0].quoctes;
         }
@@ -93,7 +92,7 @@ dataRoutes.post('/checkDataVersion', async function (req, res) {
             shouldUpdate.customerGroupsVersion = dataVersion[0].customerGroups;
 
         }
-        console.log('shouldUpdate = ', shouldUpdate);
+        // console.log('shouldUpdate = ', shouldUpdate);
         res.status(200).json(shouldUpdate);
     }
     catch (err) {

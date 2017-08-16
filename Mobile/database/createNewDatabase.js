@@ -3,6 +3,10 @@ import axios from 'axios';
 import { URL } from '../../env';
 import SqlService from './sqliteService';
 import { loadMenusData } from '../actions/menuAction';
+import { loadCustomerListDataFromSqlite } from '../actions/customerAction';
+import { loadCustomerGroupListDataFromSqlite } from '../actions/customerGroupAction';
+import { loadCategoriesDataFromSqlite } from '../actions/categoryActions';
+import { loadProductListDataFromSqlite, loadUnits, loadTypeCargo } from '../actions/productActions';
 import db from './sqliteConfig';
 
 /*
@@ -144,6 +148,7 @@ export const createDatabaseSqlite = async () => {
            customerGroupId integer,
            date text,
            title text,
+           detailId,
            unitId integer,
            productId integer,
            price real
@@ -436,16 +441,13 @@ export const updateOrInsertDataVersion = async (data) => {
     }, this);
   }
   if (data.quoctes) {
+
     data.quoctes.forEach(async (item) => {
       let strSql = "";
-      if (item.customerGroupId === null) {
-        strSql = `id = ${item.id} and customerId = ${item.customerId} and customerGroupId IS NULL and productId = ${item.productId} and unitId = ${item.unitId}`
-        
-      } else {
-        strSql = `id = ${item.id} and customerId IS NULL and customerGroupId = ${item.customerGroupId} and productId = ${item.productId} and unitId = ${item.unitId}`
-      }
+      strSql = `detailId = ${item.detailId}`;
+
       const avaiabledData = await SqlService.select('quoctes', '*', strSql, []);
-        
+
       db.transaction(
         tx => {
 
@@ -458,37 +460,50 @@ export const updateOrInsertDataVersion = async (data) => {
                   customerGroupId,
                   title,
                   date,
+                  detailId,
                   unitId,
                   productId,
                   price
                 ) 
                 values (
                   ${item.id},
-                  ${item.customerId},
-                  ${item.customerGroupId},
+                  '${item.customerId}',
+                  '${item.customerGroupId}',
                   '${item.title}',
                   '${item.date}',
+                  ${item.detailId},
                   ${item.unitId},
                   ${item.productId},
                   ${item.price}
                 )
-              `);
+              `,
+                null,
+                null,
+                (e) => {
+                  console.log('lỗi insert quoctes = ', e);
+                }
+            );
           } else {
             tx.executeSql(`
               update quoctes 
               set date = '${item.date}',
               title = '${item.title}',
-              price = ${item.price}
-              where id = ${item.id} and 
-                    customerId = ${item.customerId} and
-                    customerGroupId = ${item.customerGroupId} and
-                    productId = ${item.productId} and
-                    unitId = ${item.unitId}
-              `);
+              price = ${item.price},
+              customerId = ${item.customerId},
+              customerGroupId = ${item.customerGroupId},
+              productId = ${item.productId},
+              unitId = ${item.unitId}
+              where detailId = ${item.detailId}
+              `,
+                null,
+                null,
+                (e) => {
+                  console.log('lỗi update quoctes = ', e);
+                }
+              );
           }
         },
-        null,
-        e => console.log('errors quoctes = ', e)
+        null
       );
     },
       this);
@@ -629,9 +644,16 @@ export const checkDataVersion = async (userId, store) => {
           customers,
           quoctes,
           userId
-        });
+        }); 
+        
         await updateOrInsertDataVersion(data.data);
-        store.dispatch(loadMenusData());
+        await store.dispatch(loadCustomerListDataFromSqlite());
+        await store.dispatch(loadCustomerGroupListDataFromSqlite());
+        await store.dispatch(loadCategoriesDataFromSqlite());
+        await store.dispatch(loadProductListDataFromSqlite());
+        await store.dispatch(loadUnits());
+        await store.dispatch(loadTypeCargo());
+        await store.dispatch(loadMenusData());
 
         // await getCurrentDataVersion().then(
         //   newData =>
@@ -640,8 +662,8 @@ export const checkDataVersion = async (userId, store) => {
         // SqlService.query(`select * from 'quoctes'`, null).then(
         //   result => console.log("quoctes = ", result)
         // );
-        const a = await SqlService.select('quoctes', '*');
-        console.log("a = ", a);
+        // const a = await SqlService.select('quoctes', '*');
+        // console.log("a = ", a);
 
         // SqlService.select('roles', '*').then(
         //   result => console.log("roles = ", result)
