@@ -47,7 +47,7 @@ QuocteRouter.post('/new', async (req, res) => {
                         });
                     //thêm các báo giá chi tiết
                     quocteDetails.forEach(async ({ id, unitId, salePrice }) => {
-                       await t('quocteDetails')
+                        await t('quocteDetails')
                             .returning('*')
                             .insert({
                                 quocteId: newQuocte[0].id,
@@ -57,7 +57,7 @@ QuocteRouter.post('/new', async (req, res) => {
                             });
                     });
 
-                    
+
                     //để cập nhật dataversion mới
                     newDataversion = await t('dataVersions')
                         .returning('*')
@@ -74,14 +74,14 @@ QuocteRouter.post('/new', async (req, res) => {
             }).then(
                 async () => {
                     //không có lỗi nào xuất hiện, server sẽ gửi tới client nhóm khách hàng vừa được insert, và dataVersion mới nhất
-                    
-                    data =  await Knex.raw(`
+
+                    data = await Knex.raw(`
                         SELECT q."id", q."customerId", q."customerGroupId", q."title", q."date", 
                             qd."id" AS "detailId", qd."productId", qd."unitId", qd."price" FROM "quoctes" AS q
                         INNER JOIN "quocteDetails" AS qd ON q."id" = qd."quocteId"
                         WHERE q."id" = ${newQuocte[0].id};                      
                     `);
-                    
+
                     res.json({
                         success: true,
                         quocte: data.rows,
@@ -138,52 +138,39 @@ QuocteRouter.post('/update', async (req, res) => {
                             customerGroupId: QuocteGroupId,
                             customerId: customerId,
                             title: title || '',
-                            date:  moment(date, 'DD-MM-YYYY')
+                            date: moment(date, 'DD-MM-YYYY')
                         });
                     quocteDetails.forEach(async (detail) => {
                         await t('quocteDetails')
-                        .returning('*')
-                        .whereRaw(`id = ${detail.detailId}`)
-                        .update({
-                            productId: detail.productId, 
-                            unitId: detail.unitId,
-                            quocteId: detail.quoc,
-                            price:  detail.price
-                        });
-
-                       await t('quocteDetails')
                             .returning('*')
-                            .insert({
-                                quocteId: newQuocte[0].id,
-                                productId: id,
-                                unitId: unitId,
-                                price: salePrice
+                            .whereRaw(`id = ${detail.detailId}`)
+                            .update({
+                                productId: detail.productId,
+                                unitId: detail.unitId,
+                                quocteId: detail.quocteId,
+                                price: detail.price
                             });
                     });
-                    await t('quocteDetails')
-                        .returning('*')
-                        .whereRaw(`id = ${Id}`)
-                        .update({
-                            customerGroupId: QuocteGroupId,
-                            customerId: customerId,
-                            title: title || '',
-                            date:  moment(date, 'DD-MM-YYYY')
-                        });
-
                 } catch (e) {
                     t.rollback();
                     console.log(e);
                     res.status(400).json({ success: false, error: e });
                 }
             }).then(
-                () => {
+                async () => {
+                    data = await Knex.raw(`
+                        SELECT q."id", q."customerId", q."customerGroupId", q."title", q."date", 
+                            qd."id" AS "detailId", qd."productId", qd."unitId", qd."price" FROM "quoctes" AS q
+                        INNER JOIN "quocteDetails" AS qd ON q."id" = qd."quocteId"
+                        WHERE q."id" = ${newQuocte[0].id};                      
+                    `);
+
                     res.json({
                         success: true,
-                        customer: data,
+                        quocte: data.rows,
                         dataversion: newDataversion
                     });
-                }
-                )
+                })
                 .catch(
                 e => {
                     res.status(400).json({ success: false, error: e });
