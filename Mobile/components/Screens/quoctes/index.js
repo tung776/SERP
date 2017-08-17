@@ -61,7 +61,7 @@ class QuocteList extends React.Component {
                             return (
                                 <TouchableWithoutFeedback
                                     key={item.key} onPress={() => {
-                                        Actions.QuocteEdit({ quocte: item });
+                                        Actions.editQuocte({ quocte: item });
                                     }}
                                 >
                                     <View style={styles.listItem}>

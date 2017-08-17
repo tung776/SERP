@@ -21,6 +21,7 @@ import ProductEdit from '../components/Screens/Products/ProductEdit';
 import ComminSoon from '../components/commons/CommingSoon';
 
 import NewQuocte from '../components/Screens/quoctes/newQuocte';
+import EditQuocte from '../components/Screens/quoctes/editQuocte';
 import quoctes from '../components/Screens/quoctes/index';
 
 import CustomerGroups from '../components/Screens/CustomerGroups';
@@ -45,6 +46,7 @@ const RouterComponent = () => (
             >
                 <Scene key="quoctes" component={quoctes} title="Danh sách báo giá" />
                 <Scene key="newQuocte" component={NewQuocte} title="tạo báo giá" />
+                <Scene key="editQuocte" component={EditQuocte} title="tạo báo giá" />
                 <Scene key="productSelector" component={productSelector} title="productSelector" />
 
                 <Scene key="Home" component={Home} title="Home" />

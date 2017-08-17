@@ -63,6 +63,7 @@ export default (state = INITIAL_STATE, action) => {
             let quocteDetails = [];
             action.payload.forEach((item) => {
                 quocteDetails.push({
+                    detailId: item.detailId,
                     unitId: item.unitId,
                     productId: item.productId,
                     price: item.price

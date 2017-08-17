@@ -83,11 +83,9 @@ export const loadQuocteDataFromSqlite = (quocteId) => async (dispatch) => {
     dispatch({
         type: QUOCTE_PENDING
     });
-    console.log(`go in load ${quocteId} from sqlite`);
 
     SqlService.query(`select * from quoctes where id = ${quocteId}`).then(
         result => {
-            console.log(`quocteId = ${quocteId} and result = `, result);
             dispatch({
                 type: QUOCTE_LOADED_SQLITE,
                 payload: result
