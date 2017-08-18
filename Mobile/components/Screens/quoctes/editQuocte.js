@@ -26,7 +26,6 @@ class EditQuocte extends React.Component {
         editMode: false
     }
     componentWillMount() {
-        this.props.resetSelectedProducts();
         this.props.loadQuocteDataFromSqlite(this.props.quocte.id);
 
         if (!this.props.customers || this.props.customers.length == 0) {
@@ -97,7 +96,7 @@ class EditQuocte extends React.Component {
             };
             selectedProducts.push(temp);
         })
-        Actions.productSelector({selectedProducts: selectedProducts});
+        Actions.productSelector({ProductSelected: selectedProducts});
     }
 
     renderProductList() {

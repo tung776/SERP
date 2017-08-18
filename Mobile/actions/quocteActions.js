@@ -5,7 +5,7 @@ import {
     ADD_FLASH_MESSAGE, SUCCESS_MESSAGE, ERROR_MESSAGE,
     QUOCTE_LOADED_SQLITE, QUOCTE_DELETE_SUCCESS,
     RESET_QUOCTE_FORM, QUOCTE_LIST_LOADED_SQLITE,
-    QUOCTE_DETAIL_CHANGE
+    QUOCTE_DETAIL_CHANGE, RESET_PRODUCT_FORM
 } from './index';
 import { URL } from '../../env';
 import axios from 'axios';
@@ -103,6 +103,10 @@ export const loadQuocteDataFromSqlite = (quocteId) => async (dispatch) => {
 export const resetData = () => (dispatch) => {
     dispatch({
         type: RESET_QUOCTE_FORM
+    });
+    dispatch({
+        type: RESET_PRODUCT_FORM,
+        payload: null
     });
 };
 

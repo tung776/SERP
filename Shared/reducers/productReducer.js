@@ -31,7 +31,11 @@ const INITIAL_STATE = {
 
 export default (state = INITIAL_STATE, action) => {
     switch (action.type) {
-        case RESET_PRODUCT_FORM:
+        case RESET_PRODUCT_FORM: {
+            let convertedData = [];
+            if (action.payload && action.payload.selectedProducts) {
+                convertedData = toggleSelectDataSource([...action.payload.selectedProducts], action.payload.selectedProducts);
+            } 
             return {
                 ...state,
                 Id: '',
@@ -45,11 +49,13 @@ export default (state = INITIAL_STATE, action) => {
                 IsAvaiable: true,
                 Name: '',
                 Description: '',
+                products: convertedData || [],
                 selectedProducts: action.payload.selectedProducts || [],
                 loading: false,
                 loaded: false,
                 error: '',
             };
+        }
         case RESET_SELECTED_PRODUCT: 
             return {
                 ...state,

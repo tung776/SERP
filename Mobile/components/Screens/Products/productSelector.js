@@ -11,7 +11,7 @@ import { connect } from 'react-redux';
 import stylesCommon from '../../../styles';
 import { Ionicons } from '@expo/vector-icons';
 import { loadProductListDataFromSqlite, loadProductByNameFromSqlite, 
-    toggleProductToSelectList, 
+    toggleProductToSelectList, resetData
 } from '../../../actions/productActions';
 import { Spinner } from '../../commons/Spinner';
 import SqlService from '../../../database/sqliteService';
@@ -26,12 +26,13 @@ class ProductSelector extends React.Component {
     }
 
     componentWillMount() {
-        console.log('this.props.selectedProducts = ', this.props.selectedProducts);
-        if(this.props.selectedProducts) {
-            this.props.selectedProducts.forEach((item) => {
-                this.props.toggleProductToSelectList(item);
-            });
-        }
+        console.log('this.props.ProductSelected = ', this.props.ProductSelected);
+        // if(this.props.ProductSelected) {
+        //     this.props.ProductSelected.forEach((item) => {
+        //         this.props.toggleProductToSelectList(item);
+        //     });
+        // }
+        this.props.resetData(this.props.ProductSelected);
         this.onAddOrRemove = this.onAddOrRemove.bind(this);
     }
 
@@ -210,6 +211,7 @@ const mapStateToProps = (state, ownProps) => {
     return { loading, loaded, products, selectedPoducts };
 };
 export default connect(mapStateToProps, {
+    resetData,
     loadProductListDataFromSqlite,
     loadProductByNameFromSqlite,
     toggleProductToSelectList
