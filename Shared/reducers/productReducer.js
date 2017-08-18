@@ -3,7 +3,8 @@ import {
     PRODUCT_CHANGE_SUCCESS, PRODUCT_CHANGE,
     PRODUCT_LOADED_SQLITE, PRODUCT_LIST_LOADED_SQLITE,
     LOAD_UNIT_SUCCESS, LOAD_TYPE_CARGO_SUCCESS,
-    RESET_PRODUCT_FORM, TOGGLE_PRODUCT_TO_SELECT_LIST
+    RESET_PRODUCT_FORM, TOGGLE_PRODUCT_TO_SELECT_LIST,
+    RESET_SELECTED_PRODUCT
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -49,6 +50,11 @@ export default (state = INITIAL_STATE, action) => {
                 loaded: false,
                 error: '',
             };
+        case RESET_SELECTED_PRODUCT: 
+            return {
+                ...state,
+                selectedProducts: []
+            }
         case PRODUCT_PENDING:
             return { ...state, loading: true, loaded: false, error: '' };
 
@@ -56,8 +62,9 @@ export default (state = INITIAL_STATE, action) => {
             return { ...state, [action.payload.prop]: action.payload.value };
 
         case PRODUCT_LIST_LOADED_SQLITE: {
+            console.log('state.selectedProducts', state.selectedProducts);
             const convertedData = toggleSelectDataSource([...action.payload], state.selectedProducts);
-            
+            console.log('cenvertedData = ', convertedData);
             return { ...state, products: convertedData, loaded: true, loading: false };
         }
         case TOGGLE_PRODUCT_TO_SELECT_LIST: {
@@ -140,11 +147,7 @@ const toggleSelectDataSource = (source, selectedData) => {
     source.forEach((item) => {
         convert = { ...item, key: item.id, isSelected: false };
         selectedData.forEach((el) => {
-            if ((el.id === item.id) &&
-                (el.customerId === item.customerId) &&
-                (el.customerGroupId === item.customerGroupId) &&
-                (el.productId === item.productId) &&
-                (el.unitId === item.unitId)) {
+            if ((el.id === item.id) ) {
 
                 convert = { ...item, key: item.id, isSelected: true };
             }
@@ -174,6 +177,7 @@ const addOrRemoveToSelectedProducts = (product, selectedList) => {
         //nếu chưa tồn tại trong ds chọn thì thêm vào
         let clone = [...selectedList];
         clone.push(product);
+        console.log('clone = ', clone);
         return clone;
     }
 }

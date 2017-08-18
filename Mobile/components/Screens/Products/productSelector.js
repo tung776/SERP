@@ -22,6 +22,11 @@ class ProductSelector extends React.Component {
     }
     constructor(props) {
         super(props);
+        
+    }
+
+    componentWillMount() {
+        console.log('this.props.selectedProducts = ', this.props.selectedProducts);
         if(this.props.selectedProducts) {
             this.props.selectedProducts.forEach((item) => {
                 this.props.toggleProductToSelectList(item);

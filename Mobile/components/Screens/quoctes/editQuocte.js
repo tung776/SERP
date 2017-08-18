@@ -9,9 +9,10 @@ import stylesCommon from '../../../styles';
 import { Ionicons } from '@expo/vector-icons';
 import { loadCustomerGroupListDataFromSqlite } from '../../../actions/customerGroupAction';
 import { loadCustomerListDataFromSqlite } from '../../../actions/customerAction';
-import { loadUnits, toggleProductToSelectList } from '../../../actions/productActions';
+import { loadUnits, toggleProductToSelectList, resetSelectedProducts } from '../../../actions/productActions';
 import { loadQuocteDataFromSqlite, QuocteUpdate } from '../../../actions/quocteActions';
 import db from '../../../database/sqliteConfig';
+import moment from '../../../../Shared/utils/moment';
 
 class EditQuocte extends React.Component {
     state = {
@@ -21,10 +22,12 @@ class EditQuocte extends React.Component {
         id: '',
         date: '',
         title: '',
-        quocteDetails: []
+        quocteDetails: [],
+        editMode: false
     }
     componentWillMount() {
-        this.props.loadQuocteDataFromSqlite(quocte.id);
+        this.props.resetSelectedProducts();
+        this.props.loadQuocteDataFromSqlite(this.props.quocte.id);
 
         if (!this.props.customers || this.props.customers.length == 0) {
             this.props.loadCustomerListDataFromSqlite();
@@ -38,16 +41,17 @@ class EditQuocte extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        this.setState({ quocteDetails: nextProps.selectedProducts });
+        this.setState({ 
+            id: nextProps.id,
+            date: nextProps.date,
+            title: nextProps.title,
+            customerId: nextProps.customerId,
+            customerGroupId: nextProps.customerGroupId,
+            quocteDetails: nextProps.quocteDetails 
+        });
     }
 
     onSave() {
-        const {
-            customerId,
-            customerGroupId,
-            date,
-            selectedProducts
-        } = this.props;
         Alert.alert(
             'Xác Nhận',
             'Bạn chắc chắn muốn lưu báo giá',
@@ -85,7 +89,15 @@ class EditQuocte extends React.Component {
     }
 
     onSelectProduct() {
-        Actions.productSelector(this.props.selectedProducts);
+        let selectedProducts = [];
+        this.state.quocteDetails.forEach((product) => {
+            const temp = {
+                ...product,
+                id: product.productId
+            };
+            selectedProducts.push(temp);
+        })
+        Actions.productSelector({selectedProducts: selectedProducts});
     }
 
     renderProductList() {
@@ -101,7 +113,7 @@ class EditQuocte extends React.Component {
                                     style={{ flexDirection: 'row', height: 80, borderBottomWidth: 3, borderBottomColor: '#bdc3c7', backgroundColor: '#ecf0f1', padding: 5 }}
                                 >
                                     <TouchableWithoutFeedback
-
+                                        disabled={!this.state.editMode}
                                         key={item.key} onPress={() =>
                                             this.props.toggleProductToSelectList(item)
                                         }
@@ -120,6 +132,7 @@ class EditQuocte extends React.Component {
                                         <View style={{ flexDirection: 'row', alignContent: 'center', alignItems: 'center' }}>
 
                                             <Picker
+                                                enabled={this.state.editMode}
                                                 style={{ flex: 1, alignItems: 'center' }}
                                                 selectedValue={item.unitId}
                                                 onValueChange={
@@ -134,15 +147,16 @@ class EditQuocte extends React.Component {
 
                                             <View style={{ flex: 1 }}>
                                                 <TextInput
+                                                    editable={this.state.editMode}
                                                     disableFullscreenUI
                                                     underlineColorAndroid={'transparent'}
                                                     style={styles.textInput}
                                                     blurOnSubmit
-                                                    value={`${item.salePrice}`}
+                                                    value={`${item.price}`}
                                                     onChangeText={text => {
                                                         this.state.quocteDetails.forEach((product) => {
                                                             if (product.id == item.id) {
-                                                                product.salePrice = text
+                                                                product.price = text
                                                             }
                                                         });
                                                         this.setState({ quocteDetails: this.state.quocteDetails });
@@ -178,8 +192,9 @@ class EditQuocte extends React.Component {
                         <Text style={styles.label} >Ngày tháng</Text>
                         <View style={styles.groupControl}>
                             <DatePicker
+                                enabled={this.state.editMode}
                                 style={{ width: 200 }}
-                                date={this.state.date}
+                                date={moment(this.state.date) }
                                 mode="date"
                                 placeholder="Chọn ngày lập báo giá"
                                 format="DD-MM-YYYY"
@@ -207,6 +222,7 @@ class EditQuocte extends React.Component {
                         <Text style={styles.label} >Nhóm Khách hàng</Text>
                         <View style={styles.groupControl}>
                             <Picker
+                                enabled={this.state.editMode}
                                 selectedValue={this.state.customerGroupId}
                                 onValueChange={
                                     (itemValue, itemIndex) => this.setState({ customerGroupId: itemValue, customerId: null })
@@ -224,6 +240,7 @@ class EditQuocte extends React.Component {
                         <Text style={styles.label} >Khách Hàng</Text>
                         <View style={styles.groupControl}>
                             <Picker
+                                enabled={this.state.editMode}
                                 selectedValue={this.state.customerId}
                                 onValueChange={
                                     (itemValue, itemIndex) => this.setState({ customerId: itemValue, customerGroupId: null })
@@ -241,6 +258,7 @@ class EditQuocte extends React.Component {
                         <Text style={styles.label} >Tiêu đề</Text>
                         <View style={styles.groupControl}>
                             <TextInput
+                                editable={this.state.editMode}
                                 disableFullscreenUI
                                 underlineColorAndroid={'transparent'}
                                 style={styles.textInput}
@@ -258,8 +276,11 @@ class EditQuocte extends React.Component {
         }
         return <View />;
     }
-    //Tham khảo select (picker) react native: 
-    //https://facebook.github.io/react-native/docs/picker.html
+
+    editModeToggle() {
+        this.setState({ editMode: !this.state.editMode });
+    }
+
     render() {
         return (
             <View style={styles.container}>
@@ -281,6 +302,7 @@ class EditQuocte extends React.Component {
 
                     {this.renderProductList()}
                     <TouchableOpacity
+                        disabled={!this.state.editMode}
                         style={{ padding: 2, alignSelf: 'center', position: 'absolute', right: 5, bottom: 5 }}
                         onPress={this.onSelectProduct.bind(this)}
                     >
@@ -290,24 +312,37 @@ class EditQuocte extends React.Component {
                 <Footer>
                     <View style={styles.FooterGroupButton} >
                         <TouchableOpacity
+                            style={[styles.Btn, { backgroundColor: '#2ecc71' }]}
+                            onPress={this.editModeToggle.bind(this)}
+                        >
+                            <Ionicons name="ios-apps-outline" size={25} color="#FFFFFF" />
+                            {this.state.editMode ? (<Text style={styles.titleButton}>Hủy</Text>) :
+                                (<Text style={styles.titleButton}>Sửa</Text>)
+                            }
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            disabled={!this.state.editMode}
                             style={styles.Btn}
                             onPress={this.onSave.bind(this)}
                         >
                             <Ionicons name="ios-checkmark-circle" size={25} color="#FFFFFF" />
                         </TouchableOpacity>
                         <TouchableOpacity
+                            disabled={!this.state.editMode}
                             style={styles.Btn}
                             onPress={() => Actions.pop()}
                         >
                             <Ionicons name="ios-print-outline" size={25} color="#FFFFFF" />
                         </TouchableOpacity>
                         <TouchableOpacity
+                            disabled={!this.state.editMode}
                             style={styles.Btn}
                             onPress={() => Actions.pop()}
                         >
                             <Ionicons name="ios-send-outline" size={25} color="#FFFFFF" />
                         </TouchableOpacity>
                         <TouchableOpacity
+                            disabled={!this.state.editMode}
                             style={styles.Btn}
                             onPress={() => Actions.pop()}
                         >
@@ -416,6 +451,8 @@ const mapStateToProps = (state, ownProps) => {
     const {
         customerId,
         customerGroupId,
+        id,
+        title,
         date,
         quocteDetails,
         loaded,
@@ -430,6 +467,8 @@ const mapStateToProps = (state, ownProps) => {
         customerId,
         customerGroupId,
         date,
+        id,
+        title,
         quocteDetails,
         loaded,
         units,
@@ -446,5 +485,6 @@ export default connect(mapStateToProps, {
     loadCustomerGroupListDataFromSqlite,
     loadCustomerListDataFromSqlite,
     toggleProductToSelectList,
-    QuocteUpdate
+    QuocteUpdate,
+    resetSelectedProducts
 })(EditQuocte);

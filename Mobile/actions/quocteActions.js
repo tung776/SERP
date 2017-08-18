@@ -84,7 +84,12 @@ export const loadQuocteDataFromSqlite = (quocteId) => async (dispatch) => {
         type: QUOCTE_PENDING
     });
 
-    SqlService.query(`select * from quoctes where id = ${quocteId}`).then(
+    SqlService.query(`
+        select q.id, q.title, q.date, q.customerId, q.customerGroupId, q.detailId, q.price, q.productId, q.unitId, p.name 
+        from quoctes as q
+        inner join products as p on q.productId = p.id
+        where q.id = ${quocteId}
+    `).then(
         result => {
             dispatch({
                 type: QUOCTE_LOADED_SQLITE,
@@ -237,23 +242,25 @@ export const QuocteUpdate = (quocte) => async (dispatch) => {
                                 }
                             );
 
-                            tx.executeSql(`
-                            update quoctes 
-                            set date = '${res.data.quocte[0].date}',
-                            title = '${res.data.quocte[0].title}',
-                            price = ${res.data.quocte[0].price}
-                            where id = ${res.data.quocte[0].id} and 
-                                    customerId = ${res.data.quocte[0].customerId} and
-                                    customerGroupId = ${res.data.quocte[0].customerGroupId} and
-                                    productId = ${res.data.quocte[0].productId} and
-                                    unitId = ${res.data.quocte[0].unitId}
-                            `,
-                                null,
-                                null,
-                                (e) => {
-                                    console.log('lỗi update quoctes = ', e);
-                                }
-                            );
+                            res.data.quocte.forEach((quocte) => {
+                                tx.executeSql(`
+                                update quoctes 
+                                set customerId = ${res.data.quocte[0].customerId},
+                                customerGroupId = ${res.data.quocte[0].customerGroupId},
+                                date = '${res.data.quocte[0].date}',
+                                title = '${res.data.quocte[0].title}',
+                                price = ${res.data.quocte[0].price},
+                                productId = ${res.data.quocte[0].productId}
+                                where detailId = ${res.data.detailId}
+                                `,
+                                    null,
+                                    null,
+                                    (e) => {
+                                        console.log('lỗi update quoctes = ', e);
+                                    }
+                                );
+                            })
+
                             tx.executeSql('select * from quoctes',
                                 null,
                                 (_, { rows: { _array } }) => {

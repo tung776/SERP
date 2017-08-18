@@ -102,7 +102,7 @@ QuocteRouter.post('/new', async (req, res) => {
 });
 QuocteRouter.post('/update', async (req, res) => {
     const {
-        Id,
+        id,
         customerId,
         customerGroupId,
         title,
@@ -162,7 +162,7 @@ QuocteRouter.post('/update', async (req, res) => {
                         SELECT q."id", q."customerId", q."customerGroupId", q."title", q."date", 
                             qd."id" AS "detailId", qd."productId", qd."unitId", qd."price" FROM "quoctes" AS q
                         INNER JOIN "quocteDetails" AS qd ON q."id" = qd."quocteId"
-                        WHERE q."id" = ${newQuocte[0].id};                      
+                        WHERE q."id" = ${id};                      
                     `);
 
                     res.json({

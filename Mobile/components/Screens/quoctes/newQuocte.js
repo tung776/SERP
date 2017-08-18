@@ -83,7 +83,7 @@ class NewQuocte extends React.Component {
     }
 
     onSelectProduct() {
-        Actions.productSelector(this.props.selectedProducts);
+        Actions.productSelector({selectedProducts: this.state.quocteDetails});
     }
 
     renderProductList() {

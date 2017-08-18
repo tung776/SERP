@@ -60,17 +60,21 @@ export default (state = INITIAL_STATE, action) => {
         }
 
         case QUOCTE_LOADED_SQLITE:
+        console.log('action.payload = ', action.payload);
             let quocteDetails = [];
             action.payload.forEach((item) => {
                 quocteDetails.push({
                     detailId: item.detailId,
                     unitId: item.unitId,
                     productId: item.productId,
-                    price: item.price
+                    price: item.price,
+                    name: item.name,
+                    key: item.detailId
                 });
             });
             return {
                 ...state,
+                id: action.payload[0].id,
                 customerId: action.payload[0].customerId,
                 customerGroupId: action.payload[0].customerGroupId,
                 date: action.payload[0].date,
