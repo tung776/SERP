@@ -75,7 +75,7 @@ export default (state = INITIAL_STATE, action) => {
         }
         case TOGGLE_PRODUCT_TO_SELECT_LIST: {
             const newSelectedProductsList = addOrRemoveToSelectedProducts(action.payload, state.selectedProducts);
-            
+            console.log('selectedProducts = ', newSelectedProductsList);
             const convertedData = toggleSelectDataSource([...state.products], [...newSelectedProductsList]);
             
             return {

@@ -10,8 +10,8 @@ const INITIAL_STATE = {
     customerId: '',
     date: '',
     title: '',
-    quocteDetails: [],
-    quocteList: [],
+    saleOderDetails: [],
+    saleOrderList: [],
     loading: false,
     loaded: false,
     error: '',
@@ -28,7 +28,7 @@ export default (state = INITIAL_STATE, action) => {
                 customerId: '',
                 date: '',
                 title: '',
-                quocteDetails: [],
+                saleOrderDetails: [],
                 error: ''
             };
         case SALE_ORDER_CHANGE:
@@ -38,14 +38,14 @@ export default (state = INITIAL_STATE, action) => {
             if (action.payload) {
                 return {
                     ...state,
-                    quocteList: [{ ...action.payload, key: action.payload.id }],
+                    saleOrderList: [{ ...action.payload, key: action.payload.id }],
                     loading: false,
                     loaded: true
                 }
             }
             return {
                 ...state,
-                quocteList: null,
+                saleOrderList: null,
                 loading: false,
                 loaded: true
             }
@@ -53,15 +53,15 @@ export default (state = INITIAL_STATE, action) => {
         case SELECTED_PRODUCT_TO_SALE_ORDER_DETAIL: {
             return {
                 ...state,
-                quocteDetails: action.payload
+                saleOrderDetails: action.payload
             };
         }
 
         case SALE_ORDER_LOADED_SQLITE:
         console.log('action.payload = ', action.payload);
-            let quocteDetails = [];
+            let saleOrderDetails = [];
             action.payload.forEach((item) => {
-                quocteDetails.push({
+                saleOrderDetails.push({
                     detailId: item.detailId,
                     unitId: item.unitId,
                     productId: item.productId,
@@ -76,7 +76,7 @@ export default (state = INITIAL_STATE, action) => {
                 customerId: action.payload[0].customerId,
                 date: action.payload[0].date,
                 title: action.payload[0].title,
-                quocteDetails: quocteDetails,
+                saleOrderDetails: saleOrderDetails,
                 error: '',
                 loading: false,
                 loaded: true
@@ -90,7 +90,7 @@ export default (state = INITIAL_STATE, action) => {
                 customerId: '',
                 date: '',
                 title: '',
-                quocteDetails: [],
+                saleOrderDetails: [],
                 error: '',
                 loading: false,
             };

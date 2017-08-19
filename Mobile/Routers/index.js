@@ -46,8 +46,8 @@ const RouterComponent = () => (
                 key="main"
                 animation='fade'
             >
-                <Scene key="newSaleOrder" component={newSaleOrder} title="Lập hóa đơn" />
                 <Scene key="quoctes" component={quoctes} title="Danh sách báo giá" />
+                <Scene key="newSaleOrder" component={newSaleOrder} title="Lập hóa đơn" />
                 <Scene key="newQuocte" component={NewQuocte} title="tạo báo giá" />
                 <Scene key="editQuocte" component={EditQuocte} title="tạo báo giá" />
                 <Scene key="productSelector" component={productSelector} title="productSelector" />

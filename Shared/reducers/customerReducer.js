@@ -32,7 +32,7 @@ const INITIAL_STATE = {
 export default (state = INITIAL_STATE, action) => {
     switch (action.type) {
         case CUSTOMER_PENDING:
-            return { ...state, debt: action.payload[0] };
+            return { ...state };
         case RESET_CUSTOMER_FORM:
             return {
                 ...state,
@@ -51,12 +51,13 @@ export default (state = INITIAL_STATE, action) => {
                 BankName: '',
                 TaxCode: '',
                 Fax: '',
+                debt: action.payload[0],
                 error: ''
             };
         case CUSTOMER_CHANGE:
             return { ...state, [action.payload.prop]: action.payload.value };
         case CUSTOMER_DEBT_LOADED_SQLITE:
-            return { ...state, [action.payload.prop]: action.payload.value };
+            return { ...state, debt: action.payload.value };
         case CUSTOMER_LIST_LOADED_SQLITE: {
             const convertedData = [];
             action.payload.forEach((item) => {

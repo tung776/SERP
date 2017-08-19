@@ -53,6 +53,10 @@ class NewSaleOrder extends React.Component {
         );
     }
 
+    onSelectProduct() {
+        Actions.productSelector({ProductSelected: this.state.saleOderDetails});
+    }
+
     caculatePriceOnUnitChanged(product, newUnitId) {
         let oldPrice = product.salePrice;
         let newRate = 1;
@@ -74,11 +78,7 @@ class NewSaleOrder extends React.Component {
         this.setState({
             saleOderDetails: this.state.saleOderDetails,
         });
-    }
-
-    onSelectProduct() {
-        Actions.productSelector({ProductSelected: this.state.saleOderDetails});
-    }
+    }    
 
     renderProductList() {
         if (this.state.saleOderDetails) {

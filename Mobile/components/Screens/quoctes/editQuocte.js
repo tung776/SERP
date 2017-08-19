@@ -88,15 +88,15 @@ class EditQuocte extends React.Component {
     }
 
     onSelectProduct() {
-        let selectedProducts = [];
+        const selectedProducts = [];
         this.state.quocteDetails.forEach((product) => {
             const temp = {
                 ...product,
                 id: product.productId
             };
             selectedProducts.push(temp);
-        })
-        Actions.productSelector({ProductSelected: selectedProducts});
+        });
+        Actions.productSelector({ ProductSelected: selectedProducts });
     }
 
     renderProductList() {
@@ -155,7 +155,7 @@ class EditQuocte extends React.Component {
                                                     onChangeText={text => {
                                                         this.state.quocteDetails.forEach((product) => {
                                                             if (product.id == item.id) {
-                                                                product.price = text
+                                                                product.price = text;
                                                             }
                                                         });
                                                         this.setState({ quocteDetails: this.state.quocteDetails });
@@ -185,6 +185,7 @@ class EditQuocte extends React.Component {
 
     renderHeaderQuocte() {
         if (this.state.isExpanded) {
+            console.log(moment(this.state.date).format('L'));
             return (
                 <ScrollView>
                     <View style={styles.controlContainer}>
@@ -193,7 +194,7 @@ class EditQuocte extends React.Component {
                             <DatePicker
                                 enabled={this.state.editMode}
                                 style={{ width: 200 }}
-                                date={moment(this.state.date) }
+                                date={moment(this.state.date).format('L')}
                                 mode="date"
                                 placeholder="Chọn ngày lập báo giá"
                                 format="DD-MM-YYYY"
