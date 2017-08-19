@@ -1,51 +1,51 @@
 import { Alert } from 'react-native';
 import {
-    QUOCTE_PENDING, QUOCTE_CHANGE,
-    QUOCTE_CHANGE_FAIL, QUOCTE_CHANGE_SUCCESS,
+    SALE_ORDER_PENDING, SALE_ORDER_CHANGE,
+    SALE_ORDER_CHANGE_FAIL, SALE_ORDER_CHANGE_SUCCESS,
     ADD_FLASH_MESSAGE, SUCCESS_MESSAGE, ERROR_MESSAGE,
-    QUOCTE_LOADED_SQLITE, QUOCTE_DELETE_SUCCESS,
-    RESET_QUOCTE_FORM, QUOCTE_LIST_LOADED_SQLITE,
-    QUOCTE_DETAIL_CHANGE, RESET_PRODUCT_FORM
+    SALE_ORDER_LOADED_SQLITE, SALE_ORDER_DELETE_SUCCESS,
+    RESET_SALE_ORDER_FORM, SALE_ORDER_LIST_LOADED_SQLITE,
+    SALE_ORDER_DETAIL_CHANGE, RESET_PRODUCT_FORM
 } from './index';
 import { URL } from '../../env';
 import axios from 'axios';
-import { NewQuocteValidator } from '../validators';
+import { NewSaleOrderValidator } from '../validators';
 import { AsyncStorage } from 'react-native';
 import { SQLite } from 'expo';
 import SqlService from '../database/sqliteService';
 import { Actions } from 'react-native-router-flux';
 import db from '../database/sqliteConfig';
 
-export const loadQuocteListDataFromSqlite = () => async (dispatch) => {
+export const loadSaleOrderListDataFromSqlite = () => async (dispatch) => {
     dispatch({
-        type: QUOCTE_PENDING
+        type: SALE_ORDER_PENDING
     });
-    SqlService.query('select id, customerId, customerGroupId from quoctes').then(
+    SqlService.query('select id, customerId, customerGroupId from saleOrders').then(
         result => {
-            console.log('loadQuocteListDataFromSqlite result = ', result)
+            console.log('loadSaleOrderListDataFromSqlite result = ', result)
             dispatch({
-                type: QUOCTE_LIST_LOADED_SQLITE,
+                type: SALE_ORDER_LIST_LOADED_SQLITE,
                 payload: result
             });
         }
     );
 };
 
-export const loadQuocteByCustomerOrCustomerGroupIdFromSqlite = (customerId = null, customerGroupId = null) => (dispatch) => {
+export const loadSaleOrderByCustomerOrCustomerGroupIdFromSqlite = (customerId = null, customerGroupId = null) => (dispatch) => {
     /*
         Phương thức này sẽ trả về danh sách các sản phẩm có tên gần nhất với tên sản phẩm được cung cấp
     */
     dispatch({
-        type: QUOCTE_PENDING
+        type: SALE_ORDER_PENDING
     });
     console.log(`go to search actions, customerId = ${customerId} and groupId = ${customerGroupId}`);
     let strSql = '';
     if (customerId !== null) {
         strSql = `select
          id, title, date, customerId, customerGroupId 
-         from quoctes 
+         from saleOrders 
          where id IN (
-                    SELECT max(id) FROM quoctes  
+                    SELECT max(id) FROM saleOrders  
                     GROUP BY customerGroupId, customerId
                 ) 
         and customerId = ${customerId}
@@ -53,9 +53,9 @@ export const loadQuocteByCustomerOrCustomerGroupIdFromSqlite = (customerId = nul
     } else {
         strSql = `
         select id, title, date, customerId, customerGroupId 
-        from quoctes 
+        from saleOrders 
         where id IN (
-                    SELECT max(id) FROM quoctes  
+                    SELECT max(id) FROM saleOrders  
                     GROUP BY customerGroupId, customerId
                 ) 
         and customerGroupId = ${customerGroupId}
@@ -66,12 +66,12 @@ export const loadQuocteByCustomerOrCustomerGroupIdFromSqlite = (customerId = nul
             console.log('search result = ', result);
             if (result[0]) {
                 dispatch({
-                    type: QUOCTE_LIST_LOADED_SQLITE,
+                    type: SALE_ORDER_LIST_LOADED_SQLITE,
                     payload: result[0]
                 });
             } else {
                 dispatch({
-                    type: QUOCTE_LIST_LOADED_SQLITE,
+                    type: SALE_ORDER_LIST_LOADED_SQLITE,
                     payload: null
                 });
             }
@@ -79,20 +79,20 @@ export const loadQuocteByCustomerOrCustomerGroupIdFromSqlite = (customerId = nul
     );
 };
 
-export const loadQuocteDataFromSqlite = (quocteId) => async (dispatch) => {
+export const loadSaleOrderDataFromSqlite = (quocteId) => async (dispatch) => {
     dispatch({
-        type: QUOCTE_PENDING
+        type: SALE_ORDER_PENDING
     });
 
     SqlService.query(`
         select q.id, q.title, q.date, q.customerId, q.customerGroupId, q.detailId, q.price, q.productId, q.unitId, p.name 
-        from quoctes as q
+        from saleOrders as q
         inner join products as p on q.productId = p.id
         where q.id = ${quocteId}
     `).then(
         result => {
             dispatch({
-                type: QUOCTE_LOADED_SQLITE,
+                type: SALE_ORDER_LOADED_SQLITE,
                 payload: result
             });
         }
@@ -102,7 +102,7 @@ export const loadQuocteDataFromSqlite = (quocteId) => async (dispatch) => {
 
 export const resetData = () => (dispatch) => {
     dispatch({
-        type: RESET_QUOCTE_FORM
+        type: RESET_SALE_ORDER_FORM
     });
     dispatch({
         type: RESET_PRODUCT_FORM,
@@ -110,20 +110,20 @@ export const resetData = () => (dispatch) => {
     });
 };
 
-export const QuocteChange = ({ prop, value }) => ({
-    type: QUOCTE_CHANGE,
+export const SaleOrderChange = ({ prop, value }) => ({
+    type: SALE_ORDER_CHANGE,
     payload: { prop, value }
 });
 
-export const QuocteDetailChange = ({ index, prop, value }) => ({
-    type: QUOCTE_DETAIL_CHANGE,
+export const SaleOrderDetailChange = ({ index, prop, value }) => ({
+    type: SALE_ORDER_DETAIL_CHANGE,
     payload: { index, prop, value }
 });
 
 
-export const QuocteDelete = (quocteId) => async (dispatch) => {
+export const SaleOrderDelete = (quocteId) => async (dispatch) => {
     dispatch({
-        type: QUOCTE_PENDING
+        type: SALE_ORDER_PENDING
     });
 
     const apiUrl = `${URL}/api/quocte/delete`;
@@ -136,18 +136,18 @@ export const QuocteDelete = (quocteId) => async (dispatch) => {
                 tx => {
                     tx.executeSql(`
                         UPDATE dataVersions 
-                        SET quoctes = '${res.data.dataversion[0].quoctes}'                  
+                        SET saleOrders = '${res.data.dataversion[0].saleOrders}'                  
                         WHERE id = '1';
                     `);
                     tx.executeSql(
-                        `DELETE FROM quoctes 
+                        `DELETE FROM saleOrders 
                         WHERE id = '${quocteId}';`
                     );
-                    tx.executeSql('select * from quoctes',
+                    tx.executeSql('select * from saleOrders',
                         null,
                         (_, { rows: { _array } }) => {
                             dispatch({
-                                type: QUOCTE_LIST_LOADED_SQLITE,
+                                type: SALE_ORDER_LIST_LOADED_SQLITE,
                                 payload: _array
                             });
                         },
@@ -161,11 +161,11 @@ export const QuocteDelete = (quocteId) => async (dispatch) => {
             );
             Actions.pop();
             dispatch({
-                type: QUOCTE_DELETE_SUCCESS
+                type: SALE_ORDER_DELETE_SUCCESS
             });
             dispatch({
                 type: ADD_FLASH_MESSAGE,
-                payload: { message: 'Bạn đã xóa báo giá thành công', TypeMessage: SUCCESS_MESSAGE }
+                payload: { message: 'Bạn đã xóa hóa đơn bán thành công', TypeMessage: SUCCESS_MESSAGE }
             });
             Alert.alert(
                 'Thông Báo',
@@ -180,21 +180,21 @@ export const QuocteDelete = (quocteId) => async (dispatch) => {
             console.log('error: ', err);
             if (err.response) {
                 dispatch({
-                    type: QUOCTE_CHANGE_FAIL,
+                    type: SALE_ORDER_CHANGE_FAIL,
                     payload: err.response.data.error
                 });
                 dispatch({
                     type: ADD_FLASH_MESSAGE,
-                    payload: { message: `Xóa báo giá thất bại: ${err.response.data.error}`, TypeMessage: ERROR_MESSAGE }
+                    payload: { message: `Xóa hóa đơn bán thất bại: ${err.response.data.error}`, TypeMessage: ERROR_MESSAGE }
                 });
             } else {
                 dispatch({
-                    type: QUOCTE_CHANGE_FAIL,
+                    type: SALE_ORDER_CHANGE_FAIL,
                     payload: err
                 });
                 dispatch({
                     type: ADD_FLASH_MESSAGE,
-                    payload: { message: `Xóa báo giá thất bại: ${err}`, TypeMessage: ERROR_MESSAGE }
+                    payload: { message: `Xóa hóa đơn bán thất bại: ${err}`, TypeMessage: ERROR_MESSAGE }
                 });
             }
             Alert.alert(
@@ -208,14 +208,14 @@ export const QuocteDelete = (quocteId) => async (dispatch) => {
         );
 };
 
-export const QuocteUpdate = (quocte) => async (dispatch) => {
+export const SaleOrderUpdate = (quocte) => async (dispatch) => {
     dispatch({
-        type: QUOCTE_PENDING
+        type: SALE_ORDER_PENDING
     });
-    const { isValid, errors } = NewQuocteValidator(quocte);
+    const { isValid, errors } = NewSaleOrderValidator(quocte);
     if (!isValid) {
         dispatch({
-            type: QUOCTE_CHANGE_FAIL,
+            type: SALE_ORDER_CHANGE_FAIL,
             payload: errors
         });
         Alert.alert(
@@ -237,7 +237,7 @@ export const QuocteUpdate = (quocte) => async (dispatch) => {
                         tx => {
                             tx.executeSql(`
                             update dataVersions 
-                            set quoctes = ${res.data.dataversion[0].quoctes} 
+                            set saleOrders = ${res.data.dataversion[0].saleOrders} 
                             where id = 1`,
                                 null,
                                 null,
@@ -248,7 +248,7 @@ export const QuocteUpdate = (quocte) => async (dispatch) => {
 
                             res.data.quocte.forEach((quocte) => {
                                 tx.executeSql(`
-                                update quoctes 
+                                update saleOrders 
                                 set customerId = ${res.data.quocte[0].customerId},
                                 customerGroupId = ${res.data.quocte[0].customerGroupId},
                                 date = '${res.data.quocte[0].date}',
@@ -260,16 +260,16 @@ export const QuocteUpdate = (quocte) => async (dispatch) => {
                                     null,
                                     null,
                                     (e) => {
-                                        console.log('lỗi update quoctes = ', e);
+                                        console.log('lỗi update saleOrders = ', e);
                                     }
                                 );
                             })
 
-                            tx.executeSql('select * from quoctes',
+                            tx.executeSql('select * from saleOrders',
                                 null,
                                 (_, { rows: { _array } }) => {
                                     dispatch({
-                                        type: QUOCTE_LIST_LOADED_SQLITE,
+                                        type: SALE_ORDER_LIST_LOADED_SQLITE,
                                         payload: _array
                                     });
                                 },
@@ -288,12 +288,12 @@ export const QuocteUpdate = (quocte) => async (dispatch) => {
                 }
                 Actions.pop({ reLoad: true });
                 dispatch({
-                    type: QUOCTE_CHANGE_SUCCESS,
+                    type: SALE_ORDER_CHANGE_SUCCESS,
                     payload: res.data.quocte[0]
                 });
                 dispatch({
                     type: ADD_FLASH_MESSAGE,
-                    payload: { message: 'Bạn đã tạo báo giá thành công', TypeMessage: SUCCESS_MESSAGE }
+                    payload: { message: 'Bạn đã tạo hóa đơn bán thành công', TypeMessage: SUCCESS_MESSAGE }
                 });
                 Alert.alert(
                     'Thông Báo',
@@ -308,21 +308,21 @@ export const QuocteUpdate = (quocte) => async (dispatch) => {
                 console.log('error: ', err);
                 if (err.response) {
                     dispatch({
-                        type: QUOCTE_CHANGE_FAIL,
+                        type: SALE_ORDER_CHANGE_FAIL,
                         payload: err.response.data.error
                     });
                     dispatch({
                         type: ADD_FLASH_MESSAGE,
-                        payload: { message: `Tạo báo giá thất bại: ${err.response.data.error}`, TypeMessage: ERROR_MESSAGE }
+                        payload: { message: `Tạo hóa đơn bán thất bại: ${err.response.data.error}`, TypeMessage: ERROR_MESSAGE }
                     });
                 } else {
                     dispatch({
-                        type: QUOCTE_CHANGE_FAIL,
+                        type: SALE_ORDER_CHANGE_FAIL,
                         payload: err
                     });
                     dispatch({
                         type: ADD_FLASH_MESSAGE,
-                        payload: { message: `Tạo báo giá thất bại: ${err}`, TypeMessage: ERROR_MESSAGE }
+                        payload: { message: `Tạo hóa đơn bán thất bại: ${err}`, TypeMessage: ERROR_MESSAGE }
                     });
                 }
                 Alert.alert(
@@ -337,14 +337,14 @@ export const QuocteUpdate = (quocte) => async (dispatch) => {
     }
 };
 
-export const AddNewQuocte = (quocte) => async (dispatch) => {
+export const AddNewSaleOrder = (quocte) => async (dispatch) => {
     dispatch({
-        type: QUOCTE_PENDING
+        type: SALE_ORDER_PENDING
     });
-    const { isValid, errors } = NewQuocteValidator(quocte);
+    const { isValid, errors } = NewSaleOrderValidator(quocte);
     if (!isValid) {
         dispatch({
-            type: QUOCTE_CHANGE_FAIL,
+            type: SALE_ORDER_CHANGE_FAIL,
             payload: errors
         });
         Alert.alert(
@@ -364,12 +364,12 @@ export const AddNewQuocte = (quocte) => async (dispatch) => {
                 db.transaction(
                     tx => {
                         tx.executeSql(`UPDATE dataVersions 
-                            SET quoctes = '${res.data.dataversion[0].quoctes}'                    
+                            SET saleOrders = '${res.data.dataversion[0].saleOrders}'                    
                             WHERE id = 1;`
                         );
                         console.log('res.data.quocte = ', res.data.quocte);
                         res.data.quocte.forEach((item) => {
-                            const strSql = `insert into quoctes 
+                            const strSql = `insert into saleOrders 
                                     (
                                         id,
                                         customerId,
@@ -399,16 +399,16 @@ export const AddNewQuocte = (quocte) => async (dispatch) => {
 
 
                         // tx.executeSql(
-                        //     'select * from quoctes',
+                        //     'select * from saleOrders',
                         //     null,
                         //     (_, { rows: { _array } }) => {
                         //         dispatch({
-                        //             type: QUOCTE_LIST_LOADED_SQLITE,
+                        //             type: SALE_ORDER_LIST_LOADED_SQLITE,
                         //             payload: _array
                         //         });
                         //     },
                         //     (e) => {
-                        //         console.log('error read quoctes data from sqlite = ', e);
+                        //         console.log('error read saleOrders data from sqlite = ', e);
                         //     }
                         // );
                     },
@@ -417,12 +417,12 @@ export const AddNewQuocte = (quocte) => async (dispatch) => {
                 );
 
                 dispatch({
-                    type: QUOCTE_CHANGE_SUCCESS,
+                    type: SALE_ORDER_CHANGE_SUCCESS,
                     payload: res.data.quocte[0]
                 });
                 dispatch({
                     type: ADD_FLASH_MESSAGE,
-                    payload: { message: 'Bạn đã tạo báo giá thành công', TypeMessage: SUCCESS_MESSAGE }
+                    payload: { message: 'Bạn đã tạo hóa đơn bán thành công', TypeMessage: SUCCESS_MESSAGE }
                 });
                 Alert.alert(
                     'Thông Báo',
@@ -437,21 +437,21 @@ export const AddNewQuocte = (quocte) => async (dispatch) => {
                 console.log('error: ', err);
                 if (err.response) {
                     dispatch({
-                        type: QUOCTE_CHANGE_FAIL,
+                        type: SALE_ORDER_CHANGE_FAIL,
                         payload: err.response.data.error
                     });
                     dispatch({
                         type: ADD_FLASH_MESSAGE,
-                        payload: { message: `Tạo báo giá thất bại: ${err.response.data.error}`, TypeMessage: ERROR_MESSAGE }
+                        payload: { message: `Tạo hóa đơn bán thất bại: ${err.response.data.error}`, TypeMessage: ERROR_MESSAGE }
                     });
                 } else {
                     dispatch({
-                        type: QUOCTE_CHANGE_FAIL,
+                        type: SALE_ORDER_CHANGE_FAIL,
                         payload: err
                     });
                     dispatch({
                         type: ADD_FLASH_MESSAGE,
-                        payload: { message: `Tạo báo giá thất bại: ${err}`, TypeMessage: ERROR_MESSAGE }
+                        payload: { message: `Tạo hóa đơn bán thất bại: ${err}`, TypeMessage: ERROR_MESSAGE }
                     });
                 }
                 Alert.alert(

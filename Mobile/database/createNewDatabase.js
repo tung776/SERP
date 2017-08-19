@@ -40,6 +40,8 @@ export const resetDatabase = (tx) => {
   tx.executeSql(
     'drop table if exists quoctes;');
   tx.executeSql(
+    'drop table if exists debtCustomers;');
+  tx.executeSql(
     'drop table if exists dataVersions;');
 };
 
@@ -148,14 +150,14 @@ export const createDatabaseSqlite = async () => {
            customerGroupId integer,
            date text,
            title text,
-           detailId,
+           detailId integer,
            unitId integer,
            productId integer,
            price real
           );`, null,
         null,
         e => console.log('quoctes error: ', e)
-      );
+      );      
 
       tx.executeSql(`create table if not exists
          customers (
@@ -179,6 +181,22 @@ export const createDatabaseSqlite = async () => {
         null,
         e => console.log('customers error: ', e)
       );
+
+      tx.executeSql(`create table if not exists
+      debtCustomers (
+        id integer,
+        customerId integer,           
+        createdDate text,
+        title text,
+        newDebt real,
+        oldDebt real,
+        minus real,
+        plus real
+       );`, null,
+     null,
+     e => console.log('quoctes error: ', e)
+   );
+
       tx.executeSql(`create table if not exists
          dataVersions (
            id integer primary key not null,
@@ -192,7 +210,8 @@ export const createDatabaseSqlite = async () => {
            products integer,
            customerGroups integer,
            customers integer,
-           quoctes integer
+           quoctes integer,
+           debtCustomers integer
           );`, null,
         null,
         e => console.log('dataVersions error: ', e)
@@ -212,7 +231,7 @@ export const updateOrInsertDataVersion = async (data) => {
   const newDataVersion = [
     data.id, data.menusVersion, data.userMenusVersion, data.categoriesVersion,
     data.rolesVersion, data.unitsVersion, data.typeCargoesVersion, data.warehousesVersion, data.productsVersion,
-    data.customerGroupsVersion, data.customersVersion, data.quoctesVersion
+    data.customerGroupsVersion, data.customersVersion, data.quoctesVersion, data.debtCustomersVersion
   ];
 
   if (avaiabledDataVersion.length == 0) {
@@ -220,7 +239,7 @@ export const updateOrInsertDataVersion = async (data) => {
       tx => {
         tx.executeSql(`
           insert into dataVersions 
-            (id, menus, userMenus, categories, roles, units, typeCargoes, warehouses, products, customerGroups, customers, quoctes) 
+            (id, menus, userMenus, categories, roles, units, typeCargoes, warehouses, products, customerGroups, customers, quoctes, debtCustomers) 
             values (
               '${data.id}', 
               '${data.menusVersion}', 
@@ -233,7 +252,8 @@ export const updateOrInsertDataVersion = async (data) => {
               '${data.productsVersion}', 
               '${data.customerGroupsVersion}', 
               '${data.customersVersion}',
-              '${data.quoctesVersion}'
+              '${data.quoctesVersion}',
+              '${data.debtCustomersVersion}'
             )
         `);
       },
@@ -254,6 +274,7 @@ export const updateOrInsertDataVersion = async (data) => {
       if (data.customerGroupsVersion) { sql += `customerGroups = '${data.customerGroupsVersion}',`; }
       if (data.customersVersion) { sql += `customers = '${data.customersVersion}',`; }
       if (data.quoctesVersion) { sql += `quoctes = '${data.quoctesVersion}',`; }
+      if (data.debtCustomersVersion) { sql += `debtCustomers = '${data.debtCustomersVersion}',`; }
       console.log('sql = ', sql);
       sql = sql.slice(0, sql.length - 1);
       console.log('sql = ', sql);
@@ -566,6 +587,45 @@ export const updateOrInsertDataVersion = async (data) => {
       }
     }, this);
   }
+  
+  if (data.debtCustomers) {
+    data.debtCustomers.forEach(async (item) => {
+      const avaiabledData = await SqlService.select('debtCustomers', '*', `id = '${item.id}'`);
+      if (avaiabledData.length == 0) {
+        SqlService.insert('debtCustomers', [
+          'id',
+          'customerId',
+          'createdDate',
+          'title',
+          'newDebt',
+          'oldDebt',
+          'minus',
+          'plus'
+        ], [
+            item.id, item.customerId, item.createdDate, item.title,
+            item.newDebt, item.oldDebt, item.minus, item.plus
+          ]);
+      } else {
+        db.transaction(
+          tx => {
+            tx.executeSql(`
+              update debtCustomers 
+              set customerId = ${item.customerId},
+              createdDate = ${item.createdDate},
+              title = ${item.title},
+              newDebt = ${item.newDebt},
+              oldDebt = ${item.oldDebt},
+              minus = ${item.minus},
+              plus = ${item.plus}
+              where id = ${item.id} 
+              `);
+          },
+          null,
+          e => console.log('error when update debtCustomers', e)
+        );
+      }
+    }, this);
+  }
 
   if (data.products) {
     data.products.forEach(async (item) => {
@@ -622,14 +682,15 @@ export const checkDataVersion = async (userId, store) => {
             products: 0,
             customerGroups: 0,
             customers: 0,
-            quoctes: 0
+            quoctes: 0,
+            debtCustomers: 0
           };
         }
         const { id, menus, userMenus,
           roles, units, typeCargoes,
           warehouses, categories,
           products, customerGroups,
-          customers, quoctes } = currentVersion[0];
+          customers, quoctes, debtCustomers } = currentVersion[0];
         const data = await axios.post(`${URL}/api/data/checkDataVersion`, {
           id,
           menus,
@@ -643,6 +704,7 @@ export const checkDataVersion = async (userId, store) => {
           customerGroups,
           customers,
           quoctes,
+          debtCustomers,
           userId
         }); 
         

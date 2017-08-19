@@ -4,7 +4,8 @@ import {
     CUSTOMER_CHANGE_FAIL, CUSTOMER_CHANGE_SUCCESS,
     ADD_FLASH_MESSAGE, SUCCESS_MESSAGE, ERROR_MESSAGE,
     CUSTOMER_LOADED_SQLITE, CUSTOMER_DELETE_SUCCESS,
-    RESET_CUSTOMER_FORM, CUSTOMER_LIST_LOADED_SQLITE
+    RESET_CUSTOMER_FORM, CUSTOMER_LIST_LOADED_SQLITE,
+    CUSTOMER_DEBT_LOADED_SQLITE
 } from './index';
 import { URL } from '../../env';
 import axios from 'axios';
@@ -28,6 +29,26 @@ export const loadCustomerListDataFromSqlite = () => async (dispatch) => {
             });
         }
     );
+};
+export const loadDebtCustomersFromSqlite = (customerId) => async (dispatch) => {
+    dispatch({
+        type: CUSTOMER_PENDING
+    });
+    await SqlService.query(`select * from debtCustomers where customerId = ${customerId}`).then(
+        result => {
+            console.log('debtCustomers = ', result);
+            dispatch({
+                type: CUSTOMER_DEBT_LOADED_SQLITE,
+                payload: result
+            });
+        }
+    );
+};
+export const loadDebtCustomersFromServer = () => async (dispatch) => {
+    dispatch({
+        type: CUSTOMER_PENDING
+    });
+   
 };
 
 export const loadCustomerByNameFromSqlite = (name) => (dispatch) => {

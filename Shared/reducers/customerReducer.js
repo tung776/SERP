@@ -2,7 +2,7 @@ import {
     ADD_CUSTOMER, CUSTOMER_PENDING, CUSTOMER_CHANGE_FAIL,
     CUSTOMER_CHANGE_SUCCESS, CUSTOMER_CHANGE,
     CUSTOMER_LOADED_SQLITE, CUSTOMER_LIST_LOADED_SQLITE, CUSTOMER_DELETE_SUCCESS,
-    RESET_CUSTOMER_FORM
+    RESET_CUSTOMER_FORM, CUSTOMER_DEBT_LOADED_SQLITE
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -24,6 +24,7 @@ const INITIAL_STATE = {
     loading: false,
     loaded: false,
     error: '',
+    debt: null,
     customers: []
     // uploading: false
 };
@@ -31,7 +32,7 @@ const INITIAL_STATE = {
 export default (state = INITIAL_STATE, action) => {
     switch (action.type) {
         case CUSTOMER_PENDING:
-            return { ...state, loading: true, error: '' };
+            return { ...state, debt: action.payload[0] };
         case RESET_CUSTOMER_FORM:
             return {
                 ...state,
@@ -53,6 +54,8 @@ export default (state = INITIAL_STATE, action) => {
                 error: ''
             };
         case CUSTOMER_CHANGE:
+            return { ...state, [action.payload.prop]: action.payload.value };
+        case CUSTOMER_DEBT_LOADED_SQLITE:
             return { ...state, [action.payload.prop]: action.payload.value };
         case CUSTOMER_LIST_LOADED_SQLITE: {
             const convertedData = [];

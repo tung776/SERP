@@ -8,7 +8,7 @@ dataRoutes.post('/checkDataVersion', async function (req, res) {
         id, menus, userMenus, roles,
         categories, units, warehouses,
         products, customerGroups, customers, userId, typeCargoes,
-        quoctes
+        quoctes, debtCustomers
      } = req.body;
     try {
         let shouldUpdate = {};
@@ -85,6 +85,11 @@ dataRoutes.post('/checkDataVersion', async function (req, res) {
         if (dataVersion[0].customers != customers) {
             shouldUpdate.customers = await Knex.select().from('customers');
             shouldUpdate.customersVersion = dataVersion[0].customers;
+
+        }
+        if (dataVersion[0].debtCustomers != debtCustomers) {
+            shouldUpdate.debtCustomers = await Knex.select().from('debtCustomers');
+            shouldUpdate.debtCustomersVersion = dataVersion[0].debtCustomers;
 
         }
         if (dataVersion[0].customerGroups != customerGroups) {

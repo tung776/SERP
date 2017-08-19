@@ -117,10 +117,10 @@ exports.up = function (knex, Promise) {
             table.integer('customerId').notNullable().references('id').inTable('customers');
             table.date('createdDate').notNullable();
             table.string('title').notNullable();
-            table.float('newDebt').defaultTo(0);
-            table.float('oldDebt').defaultTo(0);
-            table.float('minus').defaultTo(0);
-            table.float('plus').defaultTo(0);
+            table.float('newDebt').defaultTo(0);//nợ mới
+            table.float('oldDebt').defaultTo(0);//nợ cũ
+            table.float('minus').defaultTo(0);//phát sinh giảm
+            table.float('plus').defaultTo(0);//phát sinh tăng
             table.timestamps();
         })
         .createTableIfNotExists('paymentCustomers', (table) => {
@@ -221,7 +221,7 @@ exports.up = function (knex, Promise) {
             Mỗi hóa đơn sẽ đi kèm một bản ghi trong sổ nợ khách hàng (debtCustomers) plus = tổng tiền hóa đơn
             Như vậy 1 hóa đơn đã dc thanh toán sẽ phát sinh 2 record trong sổ nợ
             1 cho phát sinh tăng
-            1 cho phát sinh giảm
+            1 cho phát sinh giảm (nếu khách hàng thanh toán)
             Khi điều chỉnh hóa đơn cũng dồng thời phải điều chỉnh phiếu thu (nếu có) và sổ nợ
             */
             table.increments();
