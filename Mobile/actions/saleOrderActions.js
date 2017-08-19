@@ -16,29 +16,29 @@ import SqlService from '../database/sqliteService';
 import { Actions } from 'react-native-router-flux';
 import db from '../database/sqliteConfig';
 
-export const loadSaleOrderListDataFromSqlite = () => async (dispatch) => {
+export const loadSaleOrderListDataFromServer = () => async (dispatch) => {
     dispatch({
         type: SALE_ORDER_PENDING
     });
-    SqlService.query('select id, customerId, customerGroupId from saleOrders').then(
-        result => {
-            console.log('loadSaleOrderListDataFromSqlite result = ', result)
-            dispatch({
-                type: SALE_ORDER_LIST_LOADED_SQLITE,
-                payload: result
-            });
-        }
-    );
+    // SqlService.query('select id, customerId, customerGroupId from saleOrders').then(
+    //     result => {
+    //         console.log('loadSaleOrderListDataFromSqlite result = ', result)
+    //         dispatch({
+    //             type: SALE_ORDER_LIST_LOADED_SQLITE,
+    //             payload: result
+    //         });
+    //     }
+    // );
 };
 
-export const loadSaleOrderByCustomerOrCustomerGroupIdFromSqlite = (customerId = null, customerGroupId = null) => (dispatch) => {
+export const loadSaleOrderByCustomerOrCustomerGroupIdFromServer = (customerId = null) => (dispatch) => {
     /*
         Phương thức này sẽ trả về danh sách các sản phẩm có tên gần nhất với tên sản phẩm được cung cấp
     */
     dispatch({
         type: SALE_ORDER_PENDING
     });
-    console.log(`go to search actions, customerId = ${customerId} and groupId = ${customerGroupId}`);
+    console.log(`go to search actions, customerId = ${customerId}`);
     let strSql = '';
     if (customerId !== null) {
         strSql = `select
