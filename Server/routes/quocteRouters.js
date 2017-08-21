@@ -53,7 +53,7 @@ QuocteRouter.post('/new', async (req, res) => {
                                 quocteId: newQuocte[0].id,
                                 productId: id,
                                 unitId: unitId,
-                                price: salePrice
+                                salePrice: salePrice
                             });
                     });
 
@@ -77,7 +77,7 @@ QuocteRouter.post('/new', async (req, res) => {
 
                     data = await Knex.raw(`
                         SELECT q."id", q."customerId", q."customerGroupId", q."title", q."date", 
-                            qd."id" AS "detailId", qd."productId", qd."unitId", qd."price" FROM "quoctes" AS q
+                            qd."id" AS "detailId", qd."productId", qd."unitId", qd."salePrice" FROM "quoctes" AS q
                         INNER JOIN "quocteDetails" AS qd ON q."id" = qd."quocteId"
                         WHERE q."id" = ${newQuocte[0].id};                      
                     `);
@@ -148,7 +148,7 @@ QuocteRouter.post('/update', async (req, res) => {
                                 productId: detail.productId,
                                 unitId: detail.unitId,
                                 quocteId: detail.quocteId,
-                                price: detail.price
+                                salePrice: detail.salePrice
                             });
                     });
                 } catch (e) {
@@ -160,7 +160,7 @@ QuocteRouter.post('/update', async (req, res) => {
                 async () => {
                     data = await Knex.raw(`
                         SELECT q."id", q."customerId", q."customerGroupId", q."title", q."date", 
-                            qd."id" AS "detailId", qd."productId", qd."unitId", qd."price" FROM "quoctes" AS q
+                            qd."id" AS "detailId", qd."productId", qd."unitId", qd."salePrice" FROM "quoctes" AS q
                         INNER JOIN "quocteDetails" AS qd ON q."id" = qd."quocteId"
                         WHERE q."id" = ${id};                      
                     `);

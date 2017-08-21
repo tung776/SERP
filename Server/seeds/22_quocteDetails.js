@@ -9,75 +9,75 @@ exports.seed = function (knex, Promise) {
                     quocteId: 1,                    
                     productId: 1,
                     unitId: 1,
-                    price: 53000
+                    salePrice: 53000
                 },
                 {
                     quocteId: 1,                    
                     productId: 2,
                     unitId: 8,
-                    price: 4300000
+                    salePrice: 4300000
                 },
                 {
                     quocteId: 2,                    
                     productId: 1,
                     unitId: 1,
-                    price: 55000
+                    salePrice: 55000
                 },
                 {
                     quocteId: 2,                    
                     productId: 2,
                     unitId: 8,
-                    price: 4500000
+                    salePrice: 4500000
                 },
                 {
                     quocteId: 3,                    
                     productId: 1,
                     unitId: 1,
-                    price: 54000,
+                    salePrice: 54000,
                 },
                 {
                     quocteId: 3,                    
                     productId: 2,
                     unitId: 8,
-                    price: 4350000
+                    salePrice: 4350000
                 },
                 {
                     quocteId: 4,                    
                     productId: 1,
                     unitId: 1,
-                    price: 55000,
+                    salePrice: 55000,
                 },
                 {
                     quocteId: 4,                    
                     productId: 2,
                     unitId: 8,
-                    price: 4600000
+                    salePrice: 4600000
                 },
                 //khách mây tre đan
                 {
                     quocteId: 5,                    
                     productId: 1,
                     unitId: 1,
-                    price: 59000
+                    salePrice: 59000
                 },
                 {
                     quocteId: 5,                    
                     productId: 2,
                     unitId: 8,
-                    price: 4590000
+                    salePrice: 4590000
                 },
                 //khách lẻ
                 {
                     quocteId: 6,                    
                     productId: 1,
                     unitId: 1,
-                    price: 54000
+                    salePrice: 54000
                 },
                 {
                     quocteId: 6,                    
                     productId: 2,
                     unitId: 8,
-                    price: 4550000
+                    salePrice: 4550000
                 },            
             ]);
         });

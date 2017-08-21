@@ -67,7 +67,7 @@ export default (state = INITIAL_STATE, action) => {
                     detailId: item.detailId,
                     unitId: item.unitId,
                     productId: item.productId,
-                    price: item.price,
+                    salePrice: item.salePrice,
                     name: item.name,
                     key: item.detailId
                 });

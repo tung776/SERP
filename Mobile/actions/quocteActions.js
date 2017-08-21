@@ -85,15 +85,36 @@ export const loadQuocteDataFromSqlite = (quocteId) => async (dispatch) => {
     });
 
     SqlService.query(`
-        select q.id, q.title, q.date, q.customerId, q.customerGroupId, q.detailId, q.price, q.productId, q.unitId, p.name 
+        select q.id, q.title, q.date, q.customerId, q.customerGroupId, q.detailId, q.salePrice, q.productId, q.unitId, p.name 
         from quoctes as q
         inner join products as p on q.productId = p.id
         where q.id = ${quocteId}
     `).then(
         result => {
+            console.log('result search quoctes = ', result);
             dispatch({
                 type: QUOCTE_LOADED_SQLITE,
                 payload: result
+            });
+            let selectedProducts = [];
+            result.forEach((item) => {
+                
+                const temp = {
+                    id: item.productId,
+                    detailId: item.detailId,
+                    salePrice: item.salePrice,
+                    unitId: item.unitId,
+                    name: item.name,
+                    key: item.productId
+                };
+                selectedProducts.push(temp);
+            });
+            console.log('selectedProducts on quocteActions: ', selectedProducts);
+            //thay thế mảng selectedProduct trong state.products.seclectedProducts 
+            //bằng kết quả tìm thấy trong sqlite
+            dispatch({
+                type: RESET_PRODUCT_FORM,
+                payload: {selectedProducts}
             });
         }
     );
@@ -253,7 +274,7 @@ export const QuocteUpdate = (quocte) => async (dispatch) => {
                                 customerGroupId = ${res.data.quocte[0].customerGroupId},
                                 date = '${res.data.quocte[0].date}',
                                 title = '${res.data.quocte[0].title}',
-                                price = ${res.data.quocte[0].price},
+                                salePrice = ${res.data.quocte[0].salePrice},
                                 productId = ${res.data.quocte[0].productId}
                                 where detailId = ${res.data.detailId}
                                 `,
@@ -379,7 +400,7 @@ export const AddNewQuocte = (quocte) => async (dispatch) => {
                                         detailId
                                         unitId,
                                         productId,
-                                        price
+                                        salePrice
                                     ) 
                                     values (
                                             ${item.id},
@@ -390,7 +411,7 @@ export const AddNewQuocte = (quocte) => async (dispatch) => {
                                             ${item.detailId},
                                             ${item.unitId}, 
                                             ${item.productId}, 
-                                            ${item.price}
+                                            ${item.salePrice}
                                         )
                                     `;
 

@@ -57,7 +57,7 @@ dataRoutes.post('/checkDataVersion', async function (req, res) {
 
             // shouldUpdate.quoctes = await Knex.raw(`
             //     SELECT "q"."id", "q"."customerId", "q"."title", "q"."date", 
-            //         "qd"."productId", "qd"."unitId", "qd"."price" FROM "quoctes" AS "q"
+            //         "qd"."productId", "qd"."unitId", "qd"."salePrice" FROM "quoctes" AS "q"
             //     INNER JOIN "quocteDetails" AS "qd" on "q"."id" = "qd"."quocteId"
             //     WHERE "q"."id" IN (
             //         SELECT max(id) FROM "quoctes"  
@@ -67,7 +67,7 @@ dataRoutes.post('/checkDataVersion', async function (req, res) {
             // `)
             const result = await Knex.raw(`
                 SELECT q."id", q."customerId", q."customerGroupId", q."title", q."date", 
-                    qd."id" AS "detailId", qd."productId", qd."unitId", qd."price" FROM "quoctes" AS q
+                    qd."id" AS "detailId", qd."productId", qd."unitId", qd."salePrice" FROM "quoctes" AS q
                 INNER JOIN "quocteDetails" AS qd ON q."id" = qd."quocteId"
                 WHERE q."id" IN (
                     SELECT max(id) FROM "quoctes"  

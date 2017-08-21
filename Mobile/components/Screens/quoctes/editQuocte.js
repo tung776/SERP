@@ -40,13 +40,16 @@ class EditQuocte extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
+        //Phương thức loadQuocteDataFromSqlite sẽ lấy dữ liệu trong bảng
+        //sqlite, đồng thời phủ đầy mảng state.products.selectedProducts.
+        console.log('nextProps.selectedProducts = ', nextProps.selectedProducts)
         this.setState({ 
             id: nextProps.id,
             date: nextProps.date,
             title: nextProps.title,
             customerId: nextProps.customerId,
             customerGroupId: nextProps.customerGroupId,
-            quocteDetails: nextProps.quocteDetails 
+            quocteDetails: nextProps.selectedProducts
         });
     }
 
@@ -92,7 +95,8 @@ class EditQuocte extends React.Component {
         this.state.quocteDetails.forEach((product) => {
             const temp = {
                 ...product,
-                id: product.productId
+                id: product.id,
+                key: product.id
             };
             selectedProducts.push(temp);
         });
@@ -151,11 +155,11 @@ class EditQuocte extends React.Component {
                                                     underlineColorAndroid={'transparent'}
                                                     style={styles.textInput}
                                                     blurOnSubmit
-                                                    value={`${item.price}`}
+                                                    value={`${item.salePrice}`}
                                                     onChangeText={text => {
                                                         this.state.quocteDetails.forEach((product) => {
                                                             if (product.id == item.id) {
-                                                                product.price = text;
+                                                                product.salePrice = text;
                                                             }
                                                         });
                                                         this.setState({ quocteDetails: this.state.quocteDetails });

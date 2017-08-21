@@ -209,7 +209,7 @@ exports.up = function (knex, Promise) {
             table.integer('quocteId').notNullable().references('id').inTable('quoctes');
             table.integer('productId').notNullable().references('id').inTable('products');
             table.integer('unitId').notNullable().references('id').inTable('units');            
-            table.float('price').defaultTo(0);            
+            table.float('salePrice').defaultTo(0);            
         })
         .createTableIfNotExists('saleOrders', (table) => {
             /*
@@ -243,7 +243,7 @@ exports.up = function (knex, Promise) {
             table.integer('unitId').notNullable().references('id').inTable('units');
             table.integer('warehourseId').notNullable().references('id').inTable('warehouses');
             table.float('quantity').defaultTo(0);
-            table.float('price').defaultTo(0);
+            table.float('salePrice').defaultTo(0);
             table.float('total').defaultTo(0);
         })
         .createTableIfNotExists('purchaseOrders', (table) => {
@@ -277,7 +277,7 @@ exports.up = function (knex, Promise) {
             table.integer('unitId').notNullable().references('id').inTable('units');
             table.integer('warehourseId').notNullable().references('id').inTable('warehouses');
             table.float('quantity').defaultTo(0);
-            table.float('price').defaultTo(0);
+            table.float('salePrice').defaultTo(0);
             table.float('total').defaultTo(0);
         })
         .createTableIfNotExists('formulationTypes', (table) => {

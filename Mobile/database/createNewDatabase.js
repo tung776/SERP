@@ -153,7 +153,7 @@ export const createDatabaseSqlite = async () => {
            detailId integer,
            unitId integer,
            productId integer,
-           price real
+           salePrice real
           );`, null,
         null,
         e => console.log('quoctes error: ', e)
@@ -484,7 +484,7 @@ export const updateOrInsertDataVersion = async (data) => {
                   detailId,
                   unitId,
                   productId,
-                  price
+                  salePrice
                 ) 
                 values (
                   ${item.id},
@@ -495,7 +495,7 @@ export const updateOrInsertDataVersion = async (data) => {
                   ${item.detailId},
                   ${item.unitId},
                   ${item.productId},
-                  ${item.price}
+                  ${item.salePrice}
                 )
               `,
                 null,
@@ -509,7 +509,7 @@ export const updateOrInsertDataVersion = async (data) => {
               update quoctes 
               set date = '${item.date}',
               title = '${item.title}',
-              price = ${item.price},
+              salePrice = ${item.salePrice},
               customerId = ${item.customerId},
               customerGroupId = ${item.customerGroupId},
               productId = ${item.productId},

@@ -32,6 +32,7 @@ const INITIAL_STATE = {
 export default (state = INITIAL_STATE, action) => {
     switch (action.type) {
         case RESET_PRODUCT_FORM: {
+            console.log('action.payload.selectedProducts = ', action.payload.selectedProducts);
             let convertedData = [];
             if (action.payload && action.payload.selectedProducts) {
                 convertedData = toggleSelectDataSource([...action.payload.selectedProducts], action.payload.selectedProducts);
