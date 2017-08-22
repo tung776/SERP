@@ -152,11 +152,11 @@ const toggleSelectDataSource = (source, selectedData) => {
     let convertedData = [];
     let convert;
     source.forEach((item) => {
-        convert = { ...item, key: item.id, isSelected: false };
+        convert = { ...item, key: item.id, isSelected: false, quantity: 0 };
         selectedData.forEach((el) => {
             if ((el.id === item.id) ) {
 
-                convert = { ...item, key: item.id, isSelected: true };
+                convert = { ...item, key: item.id, isSelected: true, quantity: 0 };
             }
         });
         convertedData.push(convert);

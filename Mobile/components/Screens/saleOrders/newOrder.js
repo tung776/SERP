@@ -15,13 +15,16 @@ import db from '../../../database/sqliteConfig';
 class NewSaleOrder extends React.Component {
     state = {
         isExpanded: true,
-        customerId: null,
-        debtCustomers: {},
+        customerId: '',
+        debtCustomers: [],
         date: '',
         title: '',
         total: 0,
-        totalIncluVat:0,
+        totalIncludeVat: 0,
         vat: 0,
+        pay: 0,
+        newDebt: 0,
+        oldebt: 0,
         saleOderDetails: []
     }
     componentWillMount() {
@@ -35,11 +38,18 @@ class NewSaleOrder extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        this.setState({ saleOderDetails: nextProps.selectedProducts, debtCustomers: nextProps.debtCustomers });
+        const oldebt = nextProps.debtCustomers ? nextProps.debtCustomers[0].newDebt : [];
+        console.log('nextProps.debtCustomers = ', nextProps.debtCustomers);
+        console.log('oldebt = ', oldebt);
+        this.setState({
+            saleOderDetails: nextProps.selectedProducts,
+            debtCustomers: nextProps.debtCustomers,
+            oldebt: oldebt
+        });
     }
 
     onSave() {
-        
+
         Alert.alert(
             'Xác Nhận',
             'Bạn chắc chắn muốn lưu hóa đơn',
@@ -54,7 +64,17 @@ class NewSaleOrder extends React.Component {
     }
 
     onSelectProduct() {
-        Actions.productSelector({ProductSelected: this.state.saleOderDetails});
+        Actions.productSelector({ ProductSelected: this.state.saleOderDetails });
+    }
+
+    caculateOrder() {
+        let _total, _totalIncludeVat, _newDebt;
+        this.state.saleOderDetails.forEach((order) => {
+            const temp = order.salePrice * order.quantity;
+            _total = _total + temp;
+        });
+        _totalIncludeVat = _total * 0.1;
+        _newDebt = this.state.oldebt + _totalIncludeVat - this.state.pay;
     }
 
     caculatePriceOnUnitChanged(product, newUnitId) {
@@ -78,7 +98,7 @@ class NewSaleOrder extends React.Component {
         this.setState({
             saleOderDetails: this.state.saleOderDetails,
         });
-    }    
+    }
 
     renderProductList() {
         if (this.state.saleOderDetails) {
@@ -110,6 +130,27 @@ class NewSaleOrder extends React.Component {
                                             </View>
                                         </View>
                                         <View style={{ flexDirection: 'row', alignContent: 'center', alignItems: 'center' }}>
+
+                                            <View style={{ flex: 1 }}>
+                                                <TextInput
+                                                    disableFullscreenUI
+                                                    underlineColorAndroid={'transparent'}
+                                                    style={styles.textInput}
+                                                    blurOnSubmit
+                                                    value={`${item.quantity}`}
+                                                    onChangeText={text => {
+                                                        this.state.saleOderDetails.forEach((product) => {
+                                                            if (product.id == item.id) {
+                                                                product.quantity = text
+                                                            }
+                                                        });
+                                                        this.setState({ saleOderDetails: this.state.saleOderDetails });
+                                                    }}
+                                                    type="Text"
+                                                    name="Description"
+                                                    placeholder="Số Lượng"
+                                                />
+                                            </View>
 
                                             <Picker
                                                 style={{ flex: 1, alignItems: 'center' }}
@@ -242,7 +283,7 @@ class NewSaleOrder extends React.Component {
         return (
             <View style={styles.container}>
                 <Header>
-                    <Text style={styles.headTitle} >Tạo Báo Giá</Text>
+                    <Text style={styles.headTitle} >Tạo Hóa Đơn Bán</Text>
                 </Header>
                 <View style={styles.body}>
                     <TouchableOpacity
@@ -264,6 +305,45 @@ class NewSaleOrder extends React.Component {
                     >
                         <Ionicons name="ios-add-circle" size={55} color="rgba(52, 152, 219,0.7)" />
                     </TouchableOpacity>
+
+                    <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
+                        <Text style={styles.label} >Tổng Tiền</Text>
+                        <Text>{this.state.total}</Text>
+                    </View>
+                    <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
+                        <Text style={styles.label} >VAT</Text>
+                        <Text>{this.state.vat}</Text>
+                    </View>
+                    <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
+                        <Text style={styles.label} >Tổng Tiền gồm VAT</Text>
+                        <Text>{this.state.totalIncludeVat}</Text>
+                    </View>
+                    <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
+                        <Text style={styles.label} >Nợ Cũ</Text>
+                        <Text>{this.state.oldebt}</Text>
+                    </View>
+                    <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
+                        <Text style={styles.label} >Thanh Toán</Text>
+                        <View style={styles.groupControl}>
+                            <TextInput
+                                disableFullscreenUI
+                                underlineColorAndroid={'transparent'}
+                                style={styles.textInput}
+                                blurOnSubmit
+                                value={`${this.state.pay}`}
+                                onChangeText={text => this.setState({ pay: text })}
+                                type="Text"
+                                name="pay"
+                                placeholder="Thanh Toán"
+                            />
+                        </View>
+                    </View>
+                    <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
+                        <Text style={styles.label} >Tổng Nợ</Text>
+                        <Text style={styles.label} >{this.state.newDebt}</Text>
+                        
+                    </View>
+
                 </View>
                 <Footer>
                     <View style={styles.FooterGroupButton} >

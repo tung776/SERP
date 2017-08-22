@@ -76,7 +76,7 @@ export const loadProductListDataFromSqlite = (categoryId) => async (dispatch) =>
         result => {
             const products = [];
             result.forEach((item) => {
-                const convertedData = { ...item, key: item.id };
+                const convertedData = { ...item, key: item.id, quantity: 0 };
                 products.push(convertedData);
             });
             dispatch({

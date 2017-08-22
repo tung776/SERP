@@ -88,7 +88,14 @@ dataRoutes.post('/checkDataVersion', async function (req, res) {
 
         }
         if (dataVersion[0].debtCustomers != debtCustomers) {
-            shouldUpdate.debtCustomers = await Knex.select().from('debtCustomers');
+            const result = await Knex.raw(`
+                SELECT * FROM "debtCustomers"                 
+                WHERE "id" IN (
+                    SELECT max(id) FROM "debtCustomers"  
+                    GROUP BY "customerId" 
+                );                           
+            `);
+            shouldUpdate.debtCustomers = result.rows;
             shouldUpdate.debtCustomersVersion = dataVersion[0].debtCustomers;
 
         }

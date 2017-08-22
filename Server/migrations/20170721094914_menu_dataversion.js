@@ -115,7 +115,7 @@ exports.up = function (knex, Promise) {
             */
             table.increments();
             table.integer('customerId').notNullable().references('id').inTable('customers');
-            table.date('createdDate').notNullable();
+            table.date('createdDate').notNullable().defaultTo(knex.fn.now());;
             table.string('title').notNullable();
             table.float('newDebt').defaultTo(0);//nợ mới
             table.float('oldDebt').defaultTo(0);//nợ cũ
@@ -127,7 +127,7 @@ exports.up = function (knex, Promise) {
             table.increments();
             table.integer('debtCustomerId').references('id').inTable('debtCustomers');
             table.integer('customerId').references('id').inTable('customers');
-            table.date('createdDate').notNullable();
+            table.date('createdDate').notNullable().defaultTo(knex.fn.now());;
             table.string('title');
             table.string('description');
             table.float('amount').defaultTo(0);
@@ -156,7 +156,7 @@ exports.up = function (knex, Promise) {
             */
             table.increments();
             table.integer('supplierId').notNullable().references('id').inTable('suppliers');
-            table.date('createdDate').notNullable();
+            table.date('createdDate').notNullable().defaultTo(knex.fn.now());;
             table.string('title').notNullable();
             table.float('newDebt').defaultTo(0);
             table.float('oldDebt').defaultTo(0);
@@ -169,7 +169,7 @@ exports.up = function (knex, Promise) {
             table.integer('debtSupplierId').references('id').inTable('debtSuppliers');
             table.integer('supplierId').references('id').inTable('suppliers');
             table.string('title');
-            table.date('createdDate').notNullable();
+            table.date('createdDate').notNullable().defaultTo(knex.fn.now());;
             table.string('description');
             table.float('amount').defaultTo(0);
         })
@@ -235,6 +235,7 @@ exports.up = function (knex, Promise) {
             table.float('total').defaultTo(0);
             table.float('vat').defaultTo(0);
             table.float('totalIncludeVat').defaultTo(0);
+            table.date('date').notNullable().defaultTo(knex.fn.now());
         })
         .createTableIfNotExists('saleOderDetails', (table) => {
             table.increments();
@@ -269,6 +270,7 @@ exports.up = function (knex, Promise) {
             table.float('total').defaultTo(0);
             table.float('vat').defaultTo(0);
             table.float('totalIncludeVat').defaultTo(0);
+            table.date('date').notNullable().defaultTo(knex.fn.now());
         })
         .createTableIfNotExists('purchaseOrderDetails', (table) => {
             table.increments();

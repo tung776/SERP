@@ -194,7 +194,7 @@ export const createDatabaseSqlite = async () => {
         plus real
        );`, null,
      null,
-     e => console.log('quoctes error: ', e)
+     e => console.log('debtCustomers error: ', e)
    );
 
       tx.executeSql(`create table if not exists
@@ -721,9 +721,9 @@ export const checkDataVersion = async (userId, store) => {
         //   newData =>
         //     console.log("dataversion after updateOrInsert =", newData)
         // );
-        // SqlService.query(`select * from 'quoctes'`, null).then(
-        //   result => console.log("quoctes = ", result)
-        // );
+        SqlService.query(`select * from 'debtCustomers'`, null).then(
+          result => console.log("debtCustomers = ", result)
+        );
         // const a = await SqlService.select('quoctes', '*');
         // console.log("a = ", a);
 
