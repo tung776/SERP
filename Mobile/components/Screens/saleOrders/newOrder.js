@@ -11,6 +11,7 @@ import { loadCustomerListDataFromSqlite, loadDebtCustomersFromSqlite } from '../
 import { loadUnits, toggleProductToSelectList } from '../../../actions/productActions';
 import { resetData, AddNewSaleOrder } from '../../../actions/saleOrderActions';
 import db from '../../../database/sqliteConfig';
+import { formatMoney, formatNumber, unformat } from '../../../../Shared/utils/format';
 
 class NewSaleOrder extends React.Component {
     state = {
@@ -39,16 +40,25 @@ class NewSaleOrder extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
+        const oldebt = nextProps.debt ? nextProps.debt.newDebt : 0;
+
         this.setState({
             saleOderDetails: nextProps.selectedProducts,
             debtCustomers: nextProps.debt,
-            oldebt: nextProps.debt ? nextProps.debt.newDebt : 0
+            oldebt
         });
-        this.caculateOrder();
+
+        const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(oldebt, this.state.pay,
+            this.state.saleOderDetails);
+        this.setState({
+            total,
+            newDebt,
+            totalIncludeVat,
+            vat,
+        });
     }
 
     onSave() {
-
         Alert.alert(
             'Xác Nhận',
             'Bạn chắc chắn muốn lưu hóa đơn',
@@ -66,20 +76,23 @@ class NewSaleOrder extends React.Component {
         Actions.productSelector({ ProductSelected: this.state.saleOderDetails });
     }
 
-    caculateOrder() {
-        let _total = 0, _totalIncludeVat = 0, _newDebt = 0;
-        this.state.saleOderDetails.forEach((order) => {
+    caculateOrder(debt = 0, pay = 0, saleOderDetails = []) {
+        let total = 0,
+            totalIncludeVat = 0,
+            newDebt = 0;
+
+        saleOderDetails.forEach((order) => {
             const temp = order.salePrice * order.quantity;
-            _total = _total + temp;
+            total += temp;
         });
-        const _vat = _total * 0.1;
-        _totalIncludeVat = _total + _vat;
-        _newDebt = this.state.oldebt + _totalIncludeVat - this.state.pay;
+        const vat = total * 0.1;
+        totalIncludeVat = total + vat;
+        newDebt = debt + totalIncludeVat - pay;
         return {
-            total: _total,
-            newDebt: _newDebt,
-            totalIncludeVat: _totalIncludeVat,
-            vat: _vat
+            total,
+            newDebt,
+            totalIncludeVat,
+            vat
         };
     }
 
@@ -100,9 +113,13 @@ class NewSaleOrder extends React.Component {
                 item.unitId = newUnitId;
             }
         });
-
+        const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.state.oldebt, this.state.pay, this.state.saleOderDetails);
         this.setState({
             saleOderDetails: this.state.saleOderDetails,
+            total,
+            totalIncludeVat,
+            vat,
+            newDebt
         });
     }
 
@@ -143,14 +160,21 @@ class NewSaleOrder extends React.Component {
                                                     underlineColorAndroid={'transparent'}
                                                     style={styles.textInput}
                                                     blurOnSubmit
-                                                    value={`${item.quantity}`}
+                                                    value={formatNumber(item.quantity)}
                                                     onChangeText={text => {
                                                         this.state.saleOderDetails.forEach((product) => {
                                                             if (product.id == item.id) {
-                                                                product.quantity = text
+                                                                product.quantity = text;
                                                             }
                                                         });
-                                                        this.setState({ saleOderDetails: this.state.saleOderDetails });
+                                                        const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.state.oldebt, this.state.pay, this.state.saleOderDetails);
+                                                        this.setState({ 
+                                                            saleOderDetails: this.state.saleOderDetails,
+                                                            total,
+                                                            totalIncludeVat,
+                                                            vat,
+                                                            newDebt
+                                                        });
                                                     }}
                                                     type="Text"
                                                     name="Description"
@@ -175,16 +199,23 @@ class NewSaleOrder extends React.Component {
                                                 <TextInput
                                                     disableFullscreenUI
                                                     underlineColorAndroid={'transparent'}
-                                                    style={[styles.textInput, {textAlign: 'right'}]}
+                                                    style={[styles.textInput, { textAlign: 'right' }]}
                                                     blurOnSubmit
-                                                    value={`${item.salePrice}`}
+                                                    value={formatNumber(item.salePrice)}
                                                     onChangeText={text => {
                                                         this.state.saleOderDetails.forEach((product) => {
                                                             if (product.id == item.id) {
-                                                                product.salePrice = text
+                                                                product.salePrice = text;
                                                             }
                                                         });
-                                                        this.setState({ saleOderDetails: this.state.saleOderDetails });
+                                                        const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.state.oldebt, this.state.pay, this.state.saleOderDetails);
+                                                        this.setState({ 
+                                                            saleOderDetails: this.state.saleOderDetails,
+                                                            total,
+                                                            totalIncludeVat,
+                                                            vat,
+                                                            newDebt
+                                                        });
                                                     }}
                                                     type="Text"
                                                     name="Description"
@@ -250,7 +281,7 @@ class NewSaleOrder extends React.Component {
                                 onValueChange={
                                     (itemValue, itemIndex) => {
                                         this.props.loadDebtCustomersFromSqlite(itemValue);
-                                        this.setState({ customerId: itemValue })
+                                        this.setState({ customerId: itemValue });
                                     }
                                 }
                             >
@@ -290,31 +321,42 @@ class NewSaleOrder extends React.Component {
                 <View style={{ height: 180 }}>
                     <View style={styles.totalControlGroup}>
                         <Text style={styles.label} >Tổng Tiền</Text>
-                        <Text style={styles.label}>{this.state.total}</Text>
+                        <Text style={styles.label}>{formatNumber(this.state.total)}</Text>
                     </View>
                     <View style={styles.totalControlGroup}>
                         <Text style={styles.label} >VAT</Text>
-                        <Text style={styles.label}>{this.state.vat}</Text>
+                        <Text style={styles.label}>{formatNumber(this.state.vat)}</Text>
                     </View>
                     <View style={styles.totalControlGroup}>
                         <Text style={styles.label} >Tổng Tiền gồm VAT</Text>
-                        <Text style={styles.label}>{this.state.totalIncludeVat}</Text>
+                        <Text style={styles.label}>{formatNumber(this.state.totalIncludeVat)}</Text>
                     </View>
                     <View style={styles.totalControlGroup}>
                         <Text style={styles.label} >Nợ Cũ</Text>
-                        <Text style={styles.label}>{this.state.oldebt}</Text>
+                        <Text style={styles.label}>{formatNumber(this.state.oldebt)}</Text>
                     </View>
                     <View style={styles.totalControlGroup}>
                         <Text style={styles.label} >Thanh Toán</Text>
-                        <View style={[styles.groupControl, { width: 180}]}>
+                        <View style={[styles.groupControl, { width: 180 }]}>
                             <TextInput
                                 disableFullscreenUI
-                                keyboardType = 'numeric'
+                                keyboardType='numeric'
                                 underlineColorAndroid={'transparent'}
-                                style={[styles.textInput, {textAlign: 'right', fontSize: 15}]}
+                                style={[styles.textInput, { textAlign: 'right', fontSize: 15 }]}
                                 blurOnSubmit
-                                value={`${this.state.pay}`}
-                                onChangeText={text => this.setState({ pay: text })}
+                                value={formatNumber(this.state.pay)}
+                                onChangeText={text => {
+                                    const pay = unformat(text);
+                                    console.log('pay = ', pay);
+                                    const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.state.oldebt, pay, this.state.saleOderDetails);
+                                    this.setState({
+                                        pay,
+                                        total,
+                                        newDebt,
+                                        totalIncludeVat,
+                                        vat
+                                    });
+                                }}
                                 type="Text"
                                 name="pay"
                                 placeholder="Thanh Toán"
@@ -323,16 +365,16 @@ class NewSaleOrder extends React.Component {
                     </View>
                     <View style={styles.totalControlGroup}>
                         <Text style={styles.label} >Tổng Nợ</Text>
-                        <Text style={styles.label} >{this.state.newDebt}</Text>
+                        <Text style={styles.label} >{formatNumber(this.state.newDebt)}</Text>
 
                     </View>
                 </View>
             );
-        } else {
-            return (
-                <View />
-            )
         }
+        return (
+            <View />
+        )
+
     }
     //Tham khảo select (picker) react native: 
     //https://facebook.github.io/react-native/docs/picker.html
@@ -370,10 +412,10 @@ class NewSaleOrder extends React.Component {
                     </TouchableOpacity>
 
                     <TouchableOpacity
-                        style={{ padding: 2, alignSelf: 'center', position: 'absolute', right: 5, bottom: 30 }}
+                        style={{ padding: 2, alignSelf: 'center', position: 'absolute', right: 10, bottom: 0 }}
                         onPress={this.onSelectProduct.bind(this)}
                     >
-                        <Ionicons name="ios-add-circle" size={55} color="rgba(52, 152, 219,0.7)" />
+                        <Ionicons name="ios-add-circle" size={35} color="#ecf0f1" />
                     </TouchableOpacity>
 
 
@@ -496,10 +538,10 @@ const styles = {
         flexDirection: 'row',
         justifyContent: 'space-between',
     },
-    totalControlGroup: { 
-        flex: 1, 
-        flexDirection: 'row', 
-        justifyContent: 'space-between' ,
+    totalControlGroup: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
         borderBottomWidth: 1,
         borderBottomColor: '#ecf0f1'
     }
