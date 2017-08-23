@@ -15,6 +15,7 @@ import db from '../../../database/sqliteConfig';
 class NewSaleOrder extends React.Component {
     state = {
         isExpanded: true,
+        isExpandedTotal: true,
         customerId: '',
         debtCustomers: [],
         date: '',
@@ -38,14 +39,12 @@ class NewSaleOrder extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const oldebt = nextProps.debtCustomers ? nextProps.debtCustomers[0].newDebt : [];
-        console.log('nextProps.debtCustomers = ', nextProps.debtCustomers);
-        console.log('oldebt = ', oldebt);
         this.setState({
             saleOderDetails: nextProps.selectedProducts,
-            debtCustomers: nextProps.debtCustomers,
-            oldebt: oldebt
+            debtCustomers: nextProps.debt,
+            oldebt: nextProps.debt ? nextProps.debt.newDebt : 0
         });
+        this.caculateOrder();
     }
 
     onSave() {
@@ -68,13 +67,20 @@ class NewSaleOrder extends React.Component {
     }
 
     caculateOrder() {
-        let _total, _totalIncludeVat, _newDebt;
+        let _total = 0, _totalIncludeVat = 0, _newDebt = 0;
         this.state.saleOderDetails.forEach((order) => {
             const temp = order.salePrice * order.quantity;
             _total = _total + temp;
         });
-        _totalIncludeVat = _total * 0.1;
+        const _vat = _total * 0.1;
+        _totalIncludeVat = _total + _vat;
         _newDebt = this.state.oldebt + _totalIncludeVat - this.state.pay;
+        return {
+            total: _total,
+            newDebt: _newDebt,
+            totalIncludeVat: _totalIncludeVat,
+            vat: _vat
+        };
     }
 
     caculatePriceOnUnitChanged(product, newUnitId) {
@@ -131,7 +137,7 @@ class NewSaleOrder extends React.Component {
                                         </View>
                                         <View style={{ flexDirection: 'row', alignContent: 'center', alignItems: 'center' }}>
 
-                                            <View style={{ flex: 1 }}>
+                                            <View style={{ flex: 0.5 }}>
                                                 <TextInput
                                                     disableFullscreenUI
                                                     underlineColorAndroid={'transparent'}
@@ -169,7 +175,7 @@ class NewSaleOrder extends React.Component {
                                                 <TextInput
                                                     disableFullscreenUI
                                                     underlineColorAndroid={'transparent'}
-                                                    style={styles.textInput}
+                                                    style={[styles.textInput, {textAlign: 'right'}]}
                                                     blurOnSubmit
                                                     value={`${item.salePrice}`}
                                                     onChangeText={text => {
@@ -277,6 +283,57 @@ class NewSaleOrder extends React.Component {
         }
         return <View />;
     }
+
+    renderToTal() {
+        if (this.state.isExpandedTotal) {
+            return (
+                <View style={{ height: 180 }}>
+                    <View style={styles.totalControlGroup}>
+                        <Text style={styles.label} >Tổng Tiền</Text>
+                        <Text style={styles.label}>{this.state.total}</Text>
+                    </View>
+                    <View style={styles.totalControlGroup}>
+                        <Text style={styles.label} >VAT</Text>
+                        <Text style={styles.label}>{this.state.vat}</Text>
+                    </View>
+                    <View style={styles.totalControlGroup}>
+                        <Text style={styles.label} >Tổng Tiền gồm VAT</Text>
+                        <Text style={styles.label}>{this.state.totalIncludeVat}</Text>
+                    </View>
+                    <View style={styles.totalControlGroup}>
+                        <Text style={styles.label} >Nợ Cũ</Text>
+                        <Text style={styles.label}>{this.state.oldebt}</Text>
+                    </View>
+                    <View style={styles.totalControlGroup}>
+                        <Text style={styles.label} >Thanh Toán</Text>
+                        <View style={[styles.groupControl, { width: 180}]}>
+                            <TextInput
+                                disableFullscreenUI
+                                keyboardType = 'numeric'
+                                underlineColorAndroid={'transparent'}
+                                style={[styles.textInput, {textAlign: 'right', fontSize: 15}]}
+                                blurOnSubmit
+                                value={`${this.state.pay}`}
+                                onChangeText={text => this.setState({ pay: text })}
+                                type="Text"
+                                name="pay"
+                                placeholder="Thanh Toán"
+                            />
+                        </View>
+                    </View>
+                    <View style={styles.totalControlGroup}>
+                        <Text style={styles.label} >Tổng Nợ</Text>
+                        <Text style={styles.label} >{this.state.newDebt}</Text>
+
+                    </View>
+                </View>
+            );
+        } else {
+            return (
+                <View />
+            )
+        }
+    }
     //Tham khảo select (picker) react native: 
     //https://facebook.github.io/react-native/docs/picker.html
     render() {
@@ -299,50 +356,26 @@ class NewSaleOrder extends React.Component {
                     {this.renderHeaderQuocte()}
 
                     {this.renderProductList()}
+
+                    {this.renderToTal()}
+
                     <TouchableOpacity
-                        style={{ padding: 2, alignSelf: 'center', position: 'absolute', right: 5, bottom: 5 }}
+                        style={styles.Btn}
+                        onPress={() => this.setState({ isExpandedTotal: !this.state.isExpandedTotal })}
+                    >
+                        {this.state.isExpandedTotal ?
+                            <Ionicons name="ios-arrow-dropdown-outline" size={25} color="#FFFFFF" /> :
+                            <Ionicons name="ios-arrow-dropup-outline" size={25} color="#FFFFFF" />
+                        }
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        style={{ padding: 2, alignSelf: 'center', position: 'absolute', right: 5, bottom: 30 }}
                         onPress={this.onSelectProduct.bind(this)}
                     >
                         <Ionicons name="ios-add-circle" size={55} color="rgba(52, 152, 219,0.7)" />
                     </TouchableOpacity>
 
-                    <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
-                        <Text style={styles.label} >Tổng Tiền</Text>
-                        <Text>{this.state.total}</Text>
-                    </View>
-                    <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
-                        <Text style={styles.label} >VAT</Text>
-                        <Text>{this.state.vat}</Text>
-                    </View>
-                    <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
-                        <Text style={styles.label} >Tổng Tiền gồm VAT</Text>
-                        <Text>{this.state.totalIncludeVat}</Text>
-                    </View>
-                    <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
-                        <Text style={styles.label} >Nợ Cũ</Text>
-                        <Text>{this.state.oldebt}</Text>
-                    </View>
-                    <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
-                        <Text style={styles.label} >Thanh Toán</Text>
-                        <View style={styles.groupControl}>
-                            <TextInput
-                                disableFullscreenUI
-                                underlineColorAndroid={'transparent'}
-                                style={styles.textInput}
-                                blurOnSubmit
-                                value={`${this.state.pay}`}
-                                onChangeText={text => this.setState({ pay: text })}
-                                type="Text"
-                                name="pay"
-                                placeholder="Thanh Toán"
-                            />
-                        </View>
-                    </View>
-                    <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
-                        <Text style={styles.label} >Tổng Nợ</Text>
-                        <Text style={styles.label} >{this.state.newDebt}</Text>
-                        
-                    </View>
 
                 </View>
                 <Footer>
@@ -463,11 +496,12 @@ const styles = {
         flexDirection: 'row',
         justifyContent: 'space-between',
     },
-    QuocteDetailItemContainer: {
-        flexDirection: 'row',
-    },
-    quocteDetailRemoveBtn: {
-
+    totalControlGroup: { 
+        flex: 1, 
+        flexDirection: 'row', 
+        justifyContent: 'space-between' ,
+        borderBottomWidth: 1,
+        borderBottomColor: '#ecf0f1'
     }
 };
 const mapStateToProps = (state, ownProps) => {
@@ -479,7 +513,7 @@ const mapStateToProps = (state, ownProps) => {
         error
     } = state.saleOrders;
     const { selectedProducts } = state.products;
-    const { customers, debtCustomers } = state.customers;
+    const { customers, debt } = state.customers;
     const { units } = state.products;
     return {
         customerId,
@@ -490,7 +524,7 @@ const mapStateToProps = (state, ownProps) => {
         error,
         customers,
         selectedProducts,
-        debtCustomers
+        debt
     };
 };
 export default connect(mapStateToProps, {

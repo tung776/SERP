@@ -57,7 +57,7 @@ export default (state = INITIAL_STATE, action) => {
         case CUSTOMER_CHANGE:
             return { ...state, [action.payload.prop]: action.payload.value };
         case CUSTOMER_DEBT_LOADED_SQLITE:
-            return { ...state, debt: action.payload.value };
+            return { ...state, debt: action.payload[0] };
         case CUSTOMER_LIST_LOADED_SQLITE: {
             const convertedData = [];
             action.payload.forEach((item) => {
