@@ -51,15 +51,9 @@ class NewSaleOrder extends React.Component {
             nextProps.quocteList.forEach((quocte)=> {
                 if(orderItem.id === quocte.productId){
                     orderItem.salePrice = quocte.salePrice;
-                    orderItem.unitId= quocte.unitId
+                    orderItem.unitId= quocte.unitId;
                 }
-            })
-        })
-        this.setState({
-            saleOderDetails,
-            debtCustomers: nextProps.debt,
-            oldebt,
-            quoctes: nextProps.quocteList
+            });
         });
 
         const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(oldebt, this.state.pay,
@@ -69,6 +63,10 @@ class NewSaleOrder extends React.Component {
             newDebt,
             totalIncludeVat,
             vat,
+            saleOderDetails,
+            debtCustomers: nextProps.debt,
+            oldebt,
+            quoctes: nextProps.quocteList
         });
     }
 
@@ -86,7 +84,7 @@ class NewSaleOrder extends React.Component {
                         } = this.state;
                         this.props.AddNewSaleOrder({
                             date, title, customerId, total, totalIncludeVat, vat, pay,
-                            newDebt,oldebt, saleOderDetails, debtCustomerId: debtCustomers.id,
+                            newDebt,oldebt, saleOderDetails, debtCustomerId: this.state.debtCustomers.id,
                             user: this.props.user
                         });
                     }
@@ -132,11 +130,12 @@ class NewSaleOrder extends React.Component {
     }
 
     caculatePriceOnUnitChanged(product, newUnitId) {
-        let oldPrice = product.salePrice;
+        let oldPrice = unformat(product.salePrice);
         let newRate = 1;
         this.props.units.forEach((unit) => {
             if (unit.id == product.unitId) {
-                oldPrice = Math.round(product.salePrice / unit.rate, 1000);
+                oldPrice = unformat(product.salePrice) / unit.rate;
+                oldPrice = Math.round(oldPrice);
             }
             if (unit.id == newUnitId) {
                 newRate = unit.rate;
@@ -144,7 +143,7 @@ class NewSaleOrder extends React.Component {
         });
         this.state.saleOderDetails.forEach((item) => {
             if (item.id === product.id) {
-                item.salePrice = Math.round(oldPrice * newRate, 1000);
+                item.salePrice = Math.round(oldPrice * newRate);
                 item.unitId = newUnitId;
             }
         });

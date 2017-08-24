@@ -44,7 +44,6 @@ export const toggleProductToSelectList = (product) => async (dispatch) => {
 export const loadTypeCargo = () => async (dispatch) => {
     SqlService.query('select * from typeCargoes').then(
         result => {
-            console.log('result = ', result);
             dispatch({
                 type: LOAD_TYPE_CARGO_SUCCESS,
                 payload: result

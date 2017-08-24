@@ -34,6 +34,7 @@ export default (state = INITIAL_STATE, action) => {
         case CUSTOMER_PENDING:
             return { ...state };
         case RESET_CUSTOMER_FORM:
+            const debt = action.payload ? action.payload[0] : {}
             return {
                 ...state,
                 Id: '',
@@ -51,7 +52,7 @@ export default (state = INITIAL_STATE, action) => {
                 BankName: '',
                 TaxCode: '',
                 Fax: '',
-                debt: action.payload[0],
+                debt,
                 error: ''
             };
         case CUSTOMER_CHANGE:

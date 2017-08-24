@@ -149,22 +149,22 @@ export const SaleOrderDelete = (order) => async (dispatch) => {
                                     plus
                                 ) 
                                 values (
-                                        ${item.id},
-                                        ${item.customerId}, 
-                                        '${item.createdDate}', 
-                                        '${item.title}', 
-                                        ${item.newDebt}, 
-                                        ${item.oldDebt},
-                                        ${item.minus}, 
-                                        ${item.plus}
+                                        ${res.data.debtCustomers[0].id},
+                                        ${res.data.debtCustomers[0].customerId}, 
+                                        '${res.data.debtCustomers[0].createdDate}', 
+                                        '${res.data.debtCustomers[0].title}', 
+                                        ${res.data.debtCustomers[0].newDebt}, 
+                                        ${res.data.debtCustomers[0].oldDebt},
+                                        ${res.data.debtCustomers[0].minus}, 
+                                        ${res.data.debtCustomers[0].plus}
                                     )
                                 `;
 
                     tx.executeSql(strSql);
                 },
                 err => console.log('Đã có lỗi: ', err),
-                null
-            );
+                null;
+                });
             Actions.pop();
             dispatch({
                 type: SALE_ORDER_DELETE_SUCCESS
@@ -258,24 +258,22 @@ export const SaleOrderUpdate = (order) => async (dispatch) => {
                                         plus
                                     ) 
                                     values (
-                                            ${item.id},
-                                            ${item.customerId}, 
-                                            '${item.createdDate}', 
-                                            '${item.title}', 
-                                            ${item.newDebt}, 
-                                            ${item.oldDebt},
-                                            ${item.minus}, 
-                                            ${item.plus}
+                                            ${res.data.debtCustomers[0].id},
+                                            ${res.data.debtCustomers[0].customerId}, 
+                                            '${res.data.debtCustomers[0].createdDate}', 
+                                            '${res.data.debtCustomers[0].title}', 
+                                            ${res.data.debtCustomers[0].newDebt}, 
+                                            ${res.data.debtCustomers[0].oldDebt},
+                                            ${res.data.debtCustomers[0].minus}, 
+                                            ${res.data.debtCustomers[0].plus}
                                         )
                                     `;
 
                         tx.executeSql(strSql);
-
                         },
                         (e) => console.log('error ?????', e),
                         null
                     );
-
                 } catch (e) {
                     console.log(e);
                 }
@@ -373,14 +371,14 @@ export const AddNewSaleOrder = (order) => async (dispatch) => {
                                         plus
                                     ) 
                                     values (
-                                            ${item.id},
-                                            ${item.customerId}, 
-                                            '${item.createdDate}', 
-                                            '${item.title}', 
-                                            ${item.newDebt}, 
-                                            ${item.oldDebt},
-                                            ${item.minus}, 
-                                            ${item.plus}
+                                            ${res.data.debtCustomers[0].id},
+                                            ${res.data.debtCustomers[0].customerId}, 
+                                            '${res.data.debtCustomers[0].createdDate}', 
+                                            '${res.data.debtCustomers[0].title}', 
+                                            ${res.data.debtCustomers[0].newDebt}, 
+                                            ${res.data.debtCustomers[0].oldDebt},
+                                            ${res.data.debtCustomers[0].minus}, 
+                                            ${res.data.debtCustomers[0].plus}
                                         )
                                     `;
 

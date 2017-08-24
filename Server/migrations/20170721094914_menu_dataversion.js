@@ -238,7 +238,7 @@ exports.up = function (knex, Promise) {
         .createTableIfNotExists('saleOderDetails', (table) => {
             table.increments();
             table.integer('saleOrderId').notNullable().references('id').inTable('saleOrders');
-            table.integer('productId').notNullable().unique().references('id').inTable('products');
+            table.integer('productId').notNullable().references('id').inTable('products');
             table.integer('unitId').notNullable().references('id').inTable('units');
             table.float('quantity').defaultTo(0);
             table.float('salePrice').defaultTo(0);
@@ -397,6 +397,7 @@ exports.up = function (knex, Promise) {
             table.integer('customerGroups').notNullable().defaultTo(1);
             table.integer('customers').notNullable().defaultTo(1);
             table.integer('quoctes').notNullable().defaultTo(1);
+            table.integer('debtCustomers').notNullable().defaultTo(1);
         });
 };
 

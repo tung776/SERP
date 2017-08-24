@@ -42,7 +42,6 @@ class EditQuocte extends React.Component {
     componentWillReceiveProps(nextProps) {
         //Phương thức loadQuocteDataFromSqlite sẽ lấy dữ liệu trong bảng
         //sqlite, đồng thời phủ đầy mảng state.products.selectedProducts.
-        console.log('nextProps.selectedProducts = ', nextProps.selectedProducts)
         this.setState({ 
             id: nextProps.id,
             date: nextProps.date,
@@ -189,7 +188,6 @@ class EditQuocte extends React.Component {
 
     renderHeaderQuocte() {
         if (this.state.isExpanded) {
-            console.log(moment(this.state.date).format('L'));
             return (
                 <ScrollView>
                     <View style={styles.controlContainer}>

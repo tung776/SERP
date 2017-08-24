@@ -66,7 +66,6 @@ class Customers extends React.Component {
     }
 
     onSearchPressed() {
-        console.log(this.state.searchText);
         this.props.loadCustomerByNameFromSqlite(this.state.searchText);
     }
 

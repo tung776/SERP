@@ -8,30 +8,6 @@ import moment from '../../Shared/utils/moment';
 
 const SaleOrderRouter = Router();
 
-const stringConvert = ({
-    CategoryId,
-    UnitId,
-    TypeCargoId,
-    IsPublic,
-    PurchasePrice,
-    SalePrice,
-    MinQuantity,
-    IsAvaiable,
-    Name,
-    Description
-    }) => ({
-        CategoryId: parseInt(CategoryId),
-        UnitId: parseInt(UnitId),
-        TypeCargoId: parseInt(TypeCargoId),
-        IsPublic: JSON.parse(IsPublic),
-        IsAvaiable: JSON.parse(IsAvaiable),
-        PurchasePrice: parseFloat(PurchasePrice),
-        SalePrice: parseFloat(SalePrice),
-        MinQuantity: parseFloat(MinQuantity),
-        Name,
-        Description
-    });
-
 SaleOrderRouter.post('/new', async (req, res) => {
     debugger;
     let {
@@ -42,7 +18,7 @@ SaleOrderRouter.post('/new', async (req, res) => {
 
     console.log({
         date, title, customerId, total, totalIncludeVat, vat, pay,
-        newDebt, oldebt, saleOderDetails,
+        newDebt, oldebt, saleOderDetails, user
     });
     debugger;
     const { isValid, errors } = NewSaleOrderValidator({
@@ -71,18 +47,17 @@ SaleOrderRouter.post('/new', async (req, res) => {
                             id: 1,
                             debtCustomers
                         });
-                    order = await t('saleOrders')
+                    const order = await t('saleOrders')
                         .returning('*')
                         .insert({
                             customerId: customerId,
-                            userId: user.Id,
+                            userId: user.id,
                             debtCustomerId: debtCustomerId,
-                            orderTypeId: 0,
+                            orderTypeId: 1,
                             title: title,
                             total: total,
                             vat: vat,
                             totalIncludeVat: totalIncludeVat,
-                            minQuantity: MinQuantity,
                             date: moment(date, 'DD-MM-YYYY')
                         });
                     debugger;
@@ -91,7 +66,7 @@ SaleOrderRouter.post('/new', async (req, res) => {
                             .returning('*')
                             .insert({
                                 saleOrderId: order[0].id,
-                                productId: detail.productId,
+                                productId: detail.id,
                                 unitId: detail.unitId,
                                 quantity: detail.quantity,
                                 salePrice: detail.salePrice,

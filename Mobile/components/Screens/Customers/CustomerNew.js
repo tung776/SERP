@@ -107,7 +107,6 @@ class CustomerNew extends React.Component {
 
     render() {
         const { error, CustomerChange } = this.props;
-        console.log('this.props.Name = ', this.props.Name);
         return (
             <View style={styles.container}>
                 <Header>

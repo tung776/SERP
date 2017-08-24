@@ -26,7 +26,6 @@ class ProductSelector extends React.Component {
     }
 
     componentWillMount() {
-        console.log('this.props.ProductSelected = ', this.props.ProductSelected);
         // if(this.props.ProductSelected) {
         //     this.props.ProductSelected.forEach((item) => {
         //         this.props.toggleProductToSelectList(item);
@@ -41,7 +40,6 @@ class ProductSelector extends React.Component {
     }
 
     onAddOrRemove(product) {
-        console.log('go addOrRemove, product = ', product);
         this.props.toggleProductToSelectList(product)
     }
     onRemove(product) {
@@ -89,7 +87,6 @@ class ProductSelector extends React.Component {
     }
 
     onSearch() {
-        console.log(this.state.searchText);
         this.props.loadProductByNameFromSqlite(this.state.searchText);
     }
 

@@ -30,12 +30,9 @@ class QuocteList extends React.Component {
     }
     constructor(props) {
         super(props);
-
     }
     componentWillMount() {
-        // console.log(this.props.customers.length)
         if (this.props.customers.length == 0) {
-            console.log('go to load customer');
             this.props.loadCustomerListDataFromSqlite();
         }
         if (this.props.customerGroups.length == 0) {

@@ -88,7 +88,6 @@ class ProductList extends React.Component {
     }
 
     onSearch() {
-        console.log(this.state.searchText);
         this.props.loadProductByNameFromSqlite(this.state.searchText);
     }
 

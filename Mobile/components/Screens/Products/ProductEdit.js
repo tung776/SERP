@@ -97,9 +97,6 @@ class ProductEdit extends React.Component {
     //Tham khảo select (picker) react native: 
     //https://facebook.github.io/react-native/docs/picker.html
     render() {
-        console.log('this.props.loaded = ', this.props.loaded);
-        // console.log('this.props = ', this.props);
-
         return (
             <View style={styles.container}>
                 <Header>
