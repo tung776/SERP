@@ -36,7 +36,7 @@ SaleOrderRouter.post('/new', async (req, res) => {
     debugger;
     let {
         date, title, customerId, total, totalIncludeVat, vat, pay,
-        newDebt, oldebt, saleOderDetails, debtCustomerId
+        newDebt, oldebt, saleOderDetails, debtCustomerId, user
     } = req.body;
 
 
@@ -75,7 +75,7 @@ SaleOrderRouter.post('/new', async (req, res) => {
                         .returning('*')
                         .insert({
                             customerId: customerId,
-                            userId: userId,
+                            userId: user.Id,
                             debtCustomerId: debtCustomerId,
                             orderTypeId: 0,
                             title: title,

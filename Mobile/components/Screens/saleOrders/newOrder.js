@@ -86,7 +86,8 @@ class NewSaleOrder extends React.Component {
                         } = this.state;
                         this.props.AddNewSaleOrder({
                             date, title, customerId, total, totalIncludeVat, vat, pay,
-                            newDebt,oldebt, saleOderDetails, debtCustomerId: debtCustomers.id
+                            newDebt,oldebt, saleOderDetails, debtCustomerId: debtCustomers.id,
+                            user: this.props.user
                         });
                     }
                 },
@@ -590,6 +591,7 @@ const mapStateToProps = (state, ownProps) => {
     const { customers, debt } = state.customers;
     const { units } = state.products;
     const { quocteList } = state.quoctes;
+    const { isAuthenticated, user } = state.auth;
     return {
         customerId,
         date,
@@ -600,7 +602,8 @@ const mapStateToProps = (state, ownProps) => {
         customers,
         selectedProducts,
         debt,
-        quocteList
+        quocteList,
+        user
     };
 };
 export default connect(mapStateToProps, {
