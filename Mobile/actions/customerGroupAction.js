@@ -21,7 +21,6 @@ export const loadCustomerGroupListDataFromSqlite = () => async (dispatch) => {
     });
     SqlService.query('select * from customerGroups').then(        
         result => {
-            console.log('go to load customerGroup = ', result);
             dispatch({
                 type: CUSTOMER_GROUP_LIST_LOADED_SQLITE,
                 payload: result
@@ -34,7 +33,6 @@ export const loadCustomerGroupDataFromSqlite = (customerGroupId) => async (dispa
     dispatch({
         type: CUSTOMER_GROUP_PENDING
     });
-    console.log(`go in load ${customerGroupId} from sqlite`);
     
     SqlService.query(`select * from customerGroups where id = ${customerGroupId}`).then(
         result => {

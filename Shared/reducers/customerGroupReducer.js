@@ -52,7 +52,6 @@ export default (state = INITIAL_STATE, action) => {
         case CUSTOMER_GROUP_CHANGE_FAIL:
             return { ...state, error: action.payload, loading: false };
         case CUSTOMER_GROUP_CHANGE_SUCCESS:
-            // console.log(action.payload);
             return {
                 ...state,
                 Name: '',

@@ -36,11 +36,15 @@ export default (state = INITIAL_STATE, action) => {
         case QUOCTE_CHANGE:
             return { ...state, [action.payload.prop]: action.payload.value };
         case QUOCTE_LIST_LOADED_SQLITE: {
-
+            const list = [];
+            action.payload.forEach((quocte) => {
+                const temp = {...quocte, key: quocte.id};
+                list.push(temp);
+            })
             if (action.payload) {
                 return {
                     ...state,
-                    quocteList: [{ ...action.payload, key: action.payload.id }],
+                    quocteList: list,
                     loading: false,
                     loaded: true
                 }
@@ -60,7 +64,6 @@ export default (state = INITIAL_STATE, action) => {
         }
 
         case QUOCTE_LOADED_SQLITE:
-        console.log('action.payload = ', action.payload);
             let quocteDetails = [];
             action.payload.forEach((item) => {
                 quocteDetails.push({
@@ -87,7 +90,6 @@ export default (state = INITIAL_STATE, action) => {
         case QUOCTE_CHANGE_FAIL:
             return { ...state, error: action.payload, loading: false };
         case QUOCTE_CHANGE_SUCCESS:
-            // console.log(action.payload);
             return {
                 ...state,
                 customerId: '',

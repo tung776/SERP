@@ -58,7 +58,6 @@ export default (state = INITIAL_STATE, action) => {
         }
 
         case SALE_ORDER_LOADED_SQLITE:
-        console.log('action.payload = ', action.payload);
             let saleOrderDetails = [];
             action.payload.forEach((item) => {
                 saleOrderDetails.push({
@@ -84,7 +83,6 @@ export default (state = INITIAL_STATE, action) => {
         case SALE_ORDER_CHANGE_FAIL:
             return { ...state, error: action.payload, loading: false };
         case SALE_ORDER_CHANGE_SUCCESS:
-            // console.log(action.payload);
             return {
                 ...state,
                 customerId: '',

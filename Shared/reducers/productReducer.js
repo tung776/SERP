@@ -32,7 +32,6 @@ const INITIAL_STATE = {
 export default (state = INITIAL_STATE, action) => {
     switch (action.type) {
         case RESET_PRODUCT_FORM: {
-            console.log('action.payload.selectedProducts = ', action.payload.selectedProducts);
             let convertedData = [];
             if (action.payload && action.payload.selectedProducts) {
                 convertedData = toggleSelectDataSource([...action.payload.selectedProducts], action.payload.selectedProducts);
@@ -69,14 +68,12 @@ export default (state = INITIAL_STATE, action) => {
             return { ...state, [action.payload.prop]: action.payload.value };
 
         case PRODUCT_LIST_LOADED_SQLITE: {
-            console.log('state.selectedProducts', state.selectedProducts);
             const convertedData = toggleSelectDataSource([...action.payload], state.selectedProducts);
-            console.log('cenvertedData = ', convertedData);
             return { ...state, products: convertedData, loaded: true, loading: false };
         }
         case TOGGLE_PRODUCT_TO_SELECT_LIST: {
             const newSelectedProductsList = addOrRemoveToSelectedProducts(action.payload, state.selectedProducts);
-            console.log('selectedProducts = ', newSelectedProductsList);
+            
             const convertedData = toggleSelectDataSource([...state.products], [...newSelectedProductsList]);
             
             return {
@@ -184,7 +181,6 @@ const addOrRemoveToSelectedProducts = (product, selectedList) => {
         //nếu chưa tồn tại trong ds chọn thì thêm vào
         let clone = [...selectedList];
         clone.push(product);
-        console.log('clone = ', clone);
         return clone;
     }
 }

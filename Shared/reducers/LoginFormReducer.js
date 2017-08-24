@@ -24,7 +24,6 @@ export default (state = INITIAL_STATE, action) => {
         case LOGIN_USER_FAIL:
             return { ...state, error: action.payload, loading: false };
         case LOGIN_USER_SUCCESS:
-            // console.log(action.payload);
             return { ...state, user: action.payload.user, error: '', loading: false };
         case LOGOUT_REQUEST:
             return { ...state, user: null, error: '', loading: false, identifier: '', password: '' };

@@ -24,10 +24,8 @@ export default (state = INITIAL_STATE, action) => {
         case RESET_CATEGORY_FORM:
             return { ...state, Name: '', ImageUrl: '', Description: '', Id: '', error: '' };
         case CATEGORY_CHANGE:
-            // console.log(action.payload)
             return { ...state, [action.payload.prop]: action.payload.value };
         case CATEGORY_LOADED_SQLITE:
-            // console.log(action.payload)
             return { ...state, categories: action.payload, loaded: true, loading: false };
         case ADD_CATEGORY:
             debugger;
@@ -42,7 +40,6 @@ export default (state = INITIAL_STATE, action) => {
         case CATEGORY_CHANGE_FAIL:
             return { ...state, error: action.payload, loading: false };
         case CATEGORY_CHANGE_SUCCESS:
-            // console.log(action.payload);
             return {
                 ...state,
                 Name: action.payload.Name,

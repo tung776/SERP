@@ -50,11 +50,11 @@ class QuocteList extends React.Component {
 
     renderQuocteList() {
 
-        if (this.props.quocteList) {
+        if (this.props.quocteList.length > 0) {
             return (
                 <FlatList
                     style={styles.listQuocte}
-                    data={this.props.quocteList}
+                    data={[this.props.quocteList[0]]}
                     renderItem={({ item }) => {
                         if (item) {
                             // moment.locale('vi');

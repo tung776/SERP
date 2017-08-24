@@ -22,7 +22,6 @@ export const loadQuocteListDataFromSqlite = () => async (dispatch) => {
     });
     SqlService.query('select id, customerId, customerGroupId from quoctes').then(
         result => {
-            console.log('loadQuocteListDataFromSqlite result = ', result)
             dispatch({
                 type: QUOCTE_LIST_LOADED_SQLITE,
                 payload: result
@@ -38,36 +37,37 @@ export const loadQuocteByCustomerOrCustomerGroupIdFromSqlite = (customerId = nul
     dispatch({
         type: QUOCTE_PENDING
     });
-    console.log(`go to search actions, customerId = ${customerId} and groupId = ${customerGroupId}`);
     let strSql = '';
-    if (customerId !== null) {
+    // if (customerId !== null) {
         strSql = `select
-         id, title, date, customerId, customerGroupId 
-         from quoctes 
+         id, title, date, customerId, customerGroupId, salePrice, productId, unitId
+         from quoctes          
          where id IN (
                     SELECT max(id) FROM quoctes  
                     GROUP BY customerGroupId, customerId
                 ) 
-        and customerId = ${customerId}
+        and customerId = ${customerId} 
+        or customerGroupId = ${customerGroupId} 
+        order by customerId desc 
          `;
-    } else {
-        strSql = `
-        select id, title, date, customerId, customerGroupId 
-        from quoctes 
-        where id IN (
-                    SELECT max(id) FROM quoctes  
-                    GROUP BY customerGroupId, customerId
-                ) 
-        and customerGroupId = ${customerGroupId}
-        `;
-    }
+    // } 
+    // else {
+    //     strSql = `
+    //     select id, title, date, customerId, customerGroupId 
+    //     from quoctes 
+    //     where id IN (
+    //                 SELECT max(id) FROM quoctes  
+    //                 GROUP BY customerGroupId, customerId
+    //             ) 
+    //     and customerGroupId = ${customerGroupId}
+    //     `;
+    // }
     SqlService.query(strSql).then(
         result => {
-            console.log('search result = ', result);
-            if (result[0]) {
+            if (result) {
                 dispatch({
                     type: QUOCTE_LIST_LOADED_SQLITE,
-                    payload: result[0]
+                    payload: result
                 });
             } else {
                 dispatch({
@@ -91,7 +91,6 @@ export const loadQuocteDataFromSqlite = (quocteId) => async (dispatch) => {
         where q.id = ${quocteId}
     `).then(
         result => {
-            console.log('result search quoctes = ', result);
             dispatch({
                 type: QUOCTE_LOADED_SQLITE,
                 payload: result
@@ -109,7 +108,6 @@ export const loadQuocteDataFromSqlite = (quocteId) => async (dispatch) => {
                 };
                 selectedProducts.push(temp);
             });
-            console.log('selectedProducts on quocteActions: ', selectedProducts);
             //thay thế mảng selectedProduct trong state.products.seclectedProducts 
             //bằng kết quả tìm thấy trong sqlite
             dispatch({
@@ -388,7 +386,6 @@ export const AddNewQuocte = (quocte) => async (dispatch) => {
                             SET quoctes = '${res.data.dataversion[0].quoctes}'                    
                             WHERE id = 1;`
                         );
-                        console.log('res.data.quocte = ', res.data.quocte);
                         res.data.quocte.forEach((item) => {
                             const strSql = `insert into quoctes 
                                     (

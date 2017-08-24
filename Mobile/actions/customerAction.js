@@ -22,7 +22,6 @@ export const loadCustomerListDataFromSqlite = () => async (dispatch) => {
     });
     await SqlService.query('select * from customers').then(
         result => {
-            console.log('customers = ', result);
             dispatch({
                 type: CUSTOMER_LIST_LOADED_SQLITE,
                 payload: result
@@ -36,7 +35,6 @@ export const loadDebtCustomersFromSqlite = (customerId) => async (dispatch) => {
     });
     await SqlService.query(`select * from debtCustomers where customerId = ${customerId}`).then(
         result => {
-            console.log('debtCustomers = ', result);
             dispatch({
                 type: CUSTOMER_DEBT_LOADED_SQLITE,
                 payload: result
@@ -58,7 +56,6 @@ export const loadCustomerByNameFromSqlite = (name) => (dispatch) => {
     dispatch({
         type: CUSTOMER_PENDING
     });
-    console.log('go ro search actions');
     SqlService.query(`select * from customers where name like '%${name}%'`).then(
         result => {
             dispatch({
@@ -73,11 +70,9 @@ export const loadCustomerDataFromSqlite = (customerId) => async (dispatch) => {
     dispatch({
         type: CUSTOMER_PENDING
     });
-    console.log(`go in load ${customerId} from sqlite`);
 
     SqlService.query(`select * from customers where id = ${customerId}`).then(
         result => {
-            console.log(`customerId = ${customerId} and result = `, result);
             dispatch({
                 type: CUSTOMER_LOADED_SQLITE,
                 payload: result[0]
@@ -348,7 +343,6 @@ export const AddNewCustomer = (customer) => async (dispatch) => {
                             SET customers = '${res.data.dataversion[0].customers}'                    
                             WHERE id = 1;`
                         );
-                        console.log('res.data.customer[0] = ', res.data.customer[0]);
                         const strSql = `insert into customers 
                                     (
                                         id,

@@ -7,8 +7,12 @@ import Footer from '../../commons/Footer';
 import { connect } from 'react-redux';
 import stylesCommon from '../../../styles';
 import { Ionicons } from '@expo/vector-icons';
-import { loadCustomerListDataFromSqlite, loadDebtCustomersFromSqlite } from '../../../actions/customerAction';
+import { 
+    loadCustomerListDataFromSqlite, 
+    loadDebtCustomersFromSqlite
+ } from '../../../actions/customerAction';
 import { loadUnits, toggleProductToSelectList } from '../../../actions/productActions';
+import { loadQuocteByCustomerOrCustomerGroupIdFromSqlite } from '../../../actions/quocteActions';
 import { resetData, AddNewSaleOrder } from '../../../actions/saleOrderActions';
 import db from '../../../database/sqliteConfig';
 import { formatMoney, formatNumber, unformat } from '../../../../Shared/utils/format';
@@ -18,7 +22,7 @@ class NewSaleOrder extends React.Component {
         isExpanded: true,
         isExpandedTotal: true,
         customerId: '',
-        debtCustomers: [],
+        debtCustomers: {},
         date: '',
         title: '',
         total: 0,
@@ -27,7 +31,8 @@ class NewSaleOrder extends React.Component {
         pay: 0,
         newDebt: 0,
         oldebt: 0,
-        saleOderDetails: []
+        saleOderDetails: [],
+        quoctes:[]
     }
     componentWillMount() {
         this.props.resetData();
@@ -41,15 +46,24 @@ class NewSaleOrder extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         const oldebt = nextProps.debt ? nextProps.debt.newDebt : 0;
-
+        const saleOderDetails = nextProps.selectedProducts;
+        saleOderDetails.forEach((orderItem) => {
+            nextProps.quocteList.forEach((quocte)=> {
+                if(orderItem.id === quocte.productId){
+                    orderItem.salePrice = quocte.salePrice;
+                    orderItem.unitId= quocte.unitId
+                }
+            })
+        })
         this.setState({
-            saleOderDetails: nextProps.selectedProducts,
+            saleOderDetails,
             debtCustomers: nextProps.debt,
-            oldebt
+            oldebt,
+            quoctes: nextProps.quocteList
         });
 
         const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(oldebt, this.state.pay,
-            this.state.saleOderDetails);
+            saleOderDetails);
         this.setState({
             total,
             newDebt,
@@ -65,7 +79,16 @@ class NewSaleOrder extends React.Component {
             [
                 {
                     text: 'Xác Nhận',
-                    onPress: () => this.props.AddNewSaleOrder(this.state)
+                    onPress: () => {
+                        const {
+                            date, title, customerId, total, totalIncludeVat, vat, pay,
+                            newDebt,oldebt, saleOderDetails
+                        } = this.state;
+                        this.props.AddNewSaleOrder({
+                            date, title, customerId, total, totalIncludeVat, vat, pay,
+                            newDebt,oldebt, saleOderDetails, debtCustomerId: debtCustomers.id
+                        });
+                    }
                 },
                 { text: 'Hủy', onPress: () => console.log('cancel Pressed') },
             ]
@@ -74,6 +97,17 @@ class NewSaleOrder extends React.Component {
 
     onSelectProduct() {
         Actions.productSelector({ ProductSelected: this.state.saleOderDetails });
+    }
+
+    onCustomerChanged(customerId) {
+        this.props.loadDebtCustomersFromSqlite(customerId);
+        this.props.customers.forEach((customer) => {
+            if(customer.id === customerId) {
+                this.props.loadQuocteByCustomerOrCustomerGroupIdFromSqlite(customerId, customer.customerGroupId);
+            }
+
+        })
+        this.setState({ customerId });
     }
 
     caculateOrder(debt = 0, pay = 0, saleOderDetails = []) {
@@ -101,7 +135,7 @@ class NewSaleOrder extends React.Component {
         let newRate = 1;
         this.props.units.forEach((unit) => {
             if (unit.id == product.unitId) {
-                oldPrice = Math.floor(product.salePrice / unit.rate);
+                oldPrice = Math.round(product.salePrice / unit.rate, 1000);
             }
             if (unit.id == newUnitId) {
                 newRate = unit.rate;
@@ -109,7 +143,7 @@ class NewSaleOrder extends React.Component {
         });
         this.state.saleOderDetails.forEach((item) => {
             if (item.id === product.id) {
-                item.salePrice = Math.floor(oldPrice * newRate);
+                item.salePrice = Math.round(oldPrice * newRate, 1000);
                 item.unitId = newUnitId;
             }
         });
@@ -154,7 +188,7 @@ class NewSaleOrder extends React.Component {
                                         </View>
                                         <View style={{ flexDirection: 'row', alignContent: 'center', alignItems: 'center' }}>
 
-                                            <View style={{ flex: 0.5 }}>
+                                            <View style={{ flex: 0.4 }}>
                                                 <TextInput
                                                     disableFullscreenUI
                                                     underlineColorAndroid={'transparent'}
@@ -183,7 +217,7 @@ class NewSaleOrder extends React.Component {
                                             </View>
 
                                             <Picker
-                                                style={{ flex: 1, alignItems: 'center' }}
+                                                style={{ flex: 1.3, alignItems: 'center' }}
                                                 selectedValue={item.unitId}
                                                 onValueChange={
                                                     (itemValue, itemIndex) => this.caculatePriceOnUnitChanged(item, itemValue)
@@ -280,8 +314,7 @@ class NewSaleOrder extends React.Component {
                                 selectedValue={this.state.customerId}
                                 onValueChange={
                                     (itemValue, itemIndex) => {
-                                        this.props.loadDebtCustomersFromSqlite(itemValue);
-                                        this.setState({ customerId: itemValue });
+                                        this.onCustomerChanged(itemValue);
                                     }
                                 }
                             >
@@ -347,7 +380,6 @@ class NewSaleOrder extends React.Component {
                                 value={formatNumber(this.state.pay)}
                                 onChangeText={text => {
                                     const pay = unformat(text);
-                                    console.log('pay = ', pay);
                                     const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.state.oldebt, pay, this.state.saleOderDetails);
                                     this.setState({
                                         pay,
@@ -557,6 +589,7 @@ const mapStateToProps = (state, ownProps) => {
     const { selectedProducts } = state.products;
     const { customers, debt } = state.customers;
     const { units } = state.products;
+    const { quocteList } = state.quoctes;
     return {
         customerId,
         date,
@@ -566,7 +599,8 @@ const mapStateToProps = (state, ownProps) => {
         error,
         customers,
         selectedProducts,
-        debt
+        debt,
+        quocteList
     };
 };
 export default connect(mapStateToProps, {
@@ -575,5 +609,6 @@ export default connect(mapStateToProps, {
     loadCustomerListDataFromSqlite,
     toggleProductToSelectList,
     loadDebtCustomersFromSqlite,
-    AddNewSaleOrder
+    AddNewSaleOrder,
+    loadQuocteByCustomerOrCustomerGroupIdFromSqlite
 })(NewSaleOrder);

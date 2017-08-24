@@ -226,12 +226,10 @@ exports.up = function (knex, Promise) {
             */
             table.increments();
             table.integer('customerId').notNullable().references('id').inTable('customers');
-            table.integer('quocteId').notNullable().references('id').inTable('quoctes');
             table.integer('userId').notNullable().references('id').inTable('users');
-            table.integer('paymentCustomerId').nullable().references('id').inTable('paymentCustomers');
             table.integer('debtCustomerId').notNullable().references('id').inTable('debtCustomers');
             table.integer('orderTypeId').notNullable().references('id').inTable('orderTypes');
-            table.string('note').defaultTo("");
+            table.string('title').defaultTo("");
             table.float('total').defaultTo(0);
             table.float('vat').defaultTo(0);
             table.float('totalIncludeVat').defaultTo(0);
@@ -242,7 +240,6 @@ exports.up = function (knex, Promise) {
             table.integer('saleOrderId').notNullable().references('id').inTable('saleOrders');
             table.integer('productId').notNullable().unique().references('id').inTable('products');
             table.integer('unitId').notNullable().references('id').inTable('units');
-            table.integer('warehourseId').notNullable().references('id').inTable('warehouses');
             table.float('quantity').defaultTo(0);
             table.float('salePrice').defaultTo(0);
             table.float('total').defaultTo(0);

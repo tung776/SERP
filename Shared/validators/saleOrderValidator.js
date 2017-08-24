@@ -1,11 +1,11 @@
 import isEmpty from 'lodash/isEmpty';
 import Validator from 'validator';
 
-export const NewQuocteValidator = ({ date }) => {
+export const NewSaleOrderValidator = ({ date, customerId }) => {
     // console.log(NameCustomer, Description);
     const errors = {};
     if (Validator.isEmpty(date)) {
-        errors.date = 'Bạn chưa điền ngày lập báo giá';
+        errors.customerid = 'Bạn chưa điền tên khách hàng';
     }
     return {
         errors,

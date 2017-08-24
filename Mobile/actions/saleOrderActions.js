@@ -22,7 +22,6 @@ export const loadSaleOrderListDataFromServer = () => async (dispatch) => {
     });
     // SqlService.query('select id, customerId, customerGroupId from saleOrders').then(
     //     result => {
-    //         console.log('loadSaleOrderListDataFromSqlite result = ', result)
     //         dispatch({
     //             type: SALE_ORDER_LIST_LOADED_SQLITE,
     //             payload: result
@@ -38,7 +37,6 @@ export const loadSaleOrderByCustomerOrCustomerGroupIdFromServer = (customerId = 
     dispatch({
         type: SALE_ORDER_PENDING
     });
-    console.log(`go to search actions, customerId = ${customerId}`);
     let strSql = '';
     if (customerId !== null) {
         strSql = `select
@@ -63,7 +61,6 @@ export const loadSaleOrderByCustomerOrCustomerGroupIdFromServer = (customerId = 
     }
     SqlService.query(strSql).then(
         result => {
-            console.log('search result = ', result);
             if (result[0]) {
                 dispatch({
                     type: SALE_ORDER_LIST_LOADED_SQLITE,
@@ -96,7 +93,7 @@ export const loadSaleOrderDataFromSqlite = (quocteId) => async (dispatch) => {
                 payload: result
             });
         }
-    );
+        );
 };
 
 
@@ -121,40 +118,49 @@ export const SaleOrderDetailChange = ({ index, prop, value }) => ({
 });
 
 
-export const SaleOrderDelete = (quocteId) => async (dispatch) => {
+export const SaleOrderDelete = (order) => async (dispatch) => {
     dispatch({
         type: SALE_ORDER_PENDING
     });
 
     const apiUrl = `${URL}/api/quocte/delete`;
 
-    axios.post(apiUrl, { Id: quocteId }).then(
+    axios.post(apiUrl, { Id: order.id }).then(
         (res) => {
             //Dữ liệu đã được lưu thành công trên server,
             //Tiến hàng lưu dữ liệu lên sqlite cho mục đích offline
             db.transaction(
                 tx => {
-                    tx.executeSql(`
-                        UPDATE dataVersions 
-                        SET saleOrders = '${res.data.dataversion[0].saleOrders}'                  
-                        WHERE id = '1';
-                    `);
-                    tx.executeSql(
-                        `DELETE FROM saleOrders 
-                        WHERE id = '${quocteId}';`
+                    tx => {
+                        tx.executeSql(`UPDATE dataVersions 
+                        SET debtCustomers = '${res.data.dataversion[0].debtCustomers}'                    
+                        WHERE id = 1;`
                     );
-                    tx.executeSql('select * from saleOrders',
-                        null,
-                        (_, { rows: { _array } }) => {
-                            dispatch({
-                                type: SALE_ORDER_LIST_LOADED_SQLITE,
-                                payload: _array
-                            });
-                        },
-                        (e) => {
-                            console.log('error = ', e);
-                        }
-                    );
+                    tx.executeSql(`delete from debtCustomers where id = ${order.debtCustomerId}`);
+                    const strSql = `insert into debtCustomers 
+                                (
+                                    id,
+                                    customerId,
+                                    createdDate,
+                                    title,
+                                    newDebt,
+                                    oldDebt,
+                                    minus,
+                                    plus
+                                ) 
+                                values (
+                                        ${item.id},
+                                        ${item.customerId}, 
+                                        '${item.createdDate}', 
+                                        '${item.title}', 
+                                        ${item.newDebt}, 
+                                        ${item.oldDebt},
+                                        ${item.minus}, 
+                                        ${item.plus}
+                                    )
+                                `;
+
+                    tx.executeSql(strSql);
                 },
                 err => console.log('Đã có lỗi: ', err),
                 null
@@ -208,11 +214,11 @@ export const SaleOrderDelete = (quocteId) => async (dispatch) => {
         );
 };
 
-export const SaleOrderUpdate = (quocte) => async (dispatch) => {
+export const SaleOrderUpdate = (order) => async (dispatch) => {
     dispatch({
         type: SALE_ORDER_PENDING
     });
-    const { isValid, errors } = NewSaleOrderValidator(quocte);
+    const { isValid, errors } = NewSaleOrderValidator(order);
     if (!isValid) {
         dispatch({
             type: SALE_ORDER_CHANGE_FAIL,
@@ -226,57 +232,44 @@ export const SaleOrderUpdate = (quocte) => async (dispatch) => {
             ]
         );
     } else {
-        const apiUrl = `${URL}/api/quocte/update`;
+        const apiUrl = `${URL}/api/order/update`;
 
-        axios.post(apiUrl, quocte).then(
+        axios.post(apiUrl, order).then(
             (res) => {
                 //Dữ liệu đã được lưu thành công trên server,
                 //Tiến hàng lưu dữ liệu lên sqlite cho mục đích offline
                 try {
                     db.transaction(
                         tx => {
-                            tx.executeSql(`
-                            update dataVersions 
-                            set saleOrders = ${res.data.dataversion[0].saleOrders} 
-                            where id = 1`,
-                                null,
-                                null,
-                                (e) => {
-                                    console.log('lỗi update dataVersions = ', e);
-                                }
-                            );
+                            tx.executeSql(`UPDATE dataVersions 
+                            SET debtCustomers = '${res.data.dataversion[0].debtCustomers}'                    
+                            WHERE id = 1;`
+                        );
+                        tx.executeSql(`delete from debtCustomers where id = ${order.debtCustomerId}`);
+                        const strSql = `insert into debtCustomers 
+                                    (
+                                        id,
+                                        customerId,
+                                        createdDate,
+                                        title,
+                                        newDebt,
+                                        oldDebt,
+                                        minus,
+                                        plus
+                                    ) 
+                                    values (
+                                            ${item.id},
+                                            ${item.customerId}, 
+                                            '${item.createdDate}', 
+                                            '${item.title}', 
+                                            ${item.newDebt}, 
+                                            ${item.oldDebt},
+                                            ${item.minus}, 
+                                            ${item.plus}
+                                        )
+                                    `;
 
-                            res.data.quocte.forEach((quocte) => {
-                                tx.executeSql(`
-                                update saleOrders 
-                                set customerId = ${res.data.quocte[0].customerId},
-                                customerGroupId = ${res.data.quocte[0].customerGroupId},
-                                date = '${res.data.quocte[0].date}',
-                                title = '${res.data.quocte[0].title}',
-                                price = ${res.data.quocte[0].price},
-                                productId = ${res.data.quocte[0].productId}
-                                where detailId = ${res.data.detailId}
-                                `,
-                                    null,
-                                    null,
-                                    (e) => {
-                                        console.log('lỗi update saleOrders = ', e);
-                                    }
-                                );
-                            })
-
-                            tx.executeSql('select * from saleOrders',
-                                null,
-                                (_, { rows: { _array } }) => {
-                                    dispatch({
-                                        type: SALE_ORDER_LIST_LOADED_SQLITE,
-                                        payload: _array
-                                    });
-                                },
-                                (e) => {
-                                    console.log('error = ', e);
-                                }
-                            );
+                        tx.executeSql(strSql);
 
                         },
                         (e) => console.log('error ?????', e),
@@ -337,11 +330,11 @@ export const SaleOrderUpdate = (quocte) => async (dispatch) => {
     }
 };
 
-export const AddNewSaleOrder = (quocte) => async (dispatch) => {
+export const AddNewSaleOrder = (order) => async (dispatch) => {
     dispatch({
         type: SALE_ORDER_PENDING
     });
-    const { isValid, errors } = NewSaleOrderValidator(quocte);
+    const { isValid, errors } = NewSaleOrderValidator(order);
     if (!isValid) {
         dispatch({
             type: SALE_ORDER_CHANGE_FAIL,
@@ -355,70 +348,50 @@ export const AddNewSaleOrder = (quocte) => async (dispatch) => {
             ]
         );
     } else {
-        const apiUrl = `${URL}/api/quocte/new`;
+        const apiUrl = `${URL}/api/order/new`;
 
-        axios.post(apiUrl, quocte).then(
+        axios.post(apiUrl, order).then(
             (res) => {
                 //Dữ liệu đã được lưu thành công trên server,
                 //Tiến hàng lưu dữ liệu lên sqlite cho mục đích offline
                 db.transaction(
                     tx => {
                         tx.executeSql(`UPDATE dataVersions 
-                            SET saleOrders = '${res.data.dataversion[0].saleOrders}'                    
+                            SET debtCustomers = '${res.data.dataversion[0].debtCustomers}'                    
                             WHERE id = 1;`
                         );
-                        console.log('res.data.quocte = ', res.data.quocte);
-                        res.data.quocte.forEach((item) => {
-                            const strSql = `insert into saleOrders 
+                        tx.executeSql(`delete from debtCustomers where id = ${order.debtCustomerId}`);
+                        const strSql = `insert into debtCustomers 
                                     (
                                         id,
                                         customerId,
-                                        customerGroupId,
+                                        createdDate,
                                         title,
-                                        date,
-                                        detailId
-                                        unitId,
-                                        productId,
-                                        price
+                                        newDebt,
+                                        oldDebt,
+                                        minus,
+                                        plus
                                     ) 
                                     values (
                                             ${item.id},
                                             ${item.customerId}, 
-                                            ${item.customerGroupId}, 
+                                            '${item.createdDate}', 
                                             '${item.title}', 
-                                            '${item.date}', 
-                                            ${item.detailId},
-                                            ${item.unitId}, 
-                                            ${item.productId}, 
-                                            ${item.price}
+                                            ${item.newDebt}, 
+                                            ${item.oldDebt},
+                                            ${item.minus}, 
+                                            ${item.plus}
                                         )
                                     `;
 
-                            tx.executeSql(strSql);
-                        })
-
-
-                        // tx.executeSql(
-                        //     'select * from saleOrders',
-                        //     null,
-                        //     (_, { rows: { _array } }) => {
-                        //         dispatch({
-                        //             type: SALE_ORDER_LIST_LOADED_SQLITE,
-                        //             payload: _array
-                        //         });
-                        //     },
-                        //     (e) => {
-                        //         console.log('error read saleOrders data from sqlite = ', e);
-                        //     }
-                        // );
+                        tx.executeSql(strSql);
                     },
                     (e) => console.log('Lỗi update sqlite: ', e),
                     null
                 );
 
                 dispatch({
-                    type: SALE_ORDER_CHANGE_SUCCESS,
-                    payload: res.data.quocte[0]
+                    type: SALE_ORDER_CHANGE_SUCCESS
                 });
                 dispatch({
                     type: ADD_FLASH_MESSAGE,
