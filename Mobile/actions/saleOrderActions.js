@@ -77,24 +77,19 @@ export const loadSaleOrderByCustomerOrCustomerGroupIdFromServer = (customerId = 
     );
 };
 
-export const loadSaleOrderDataFromSqlite = (quocteId) => async (dispatch) => {
+export const loadSaleOrderById = (orderId) => async (dispatch) => {
     dispatch({
         type: SALE_ORDER_PENDING
     });
 
-    SqlService.query(`
-        select q.id, q.title, q.date, q.customerId, q.customerGroupId, q.detailId, q.price, q.productId, q.unitId, p.name 
-        from saleOrders as q
-        inner join products as p on q.productId = p.id
-        where q.id = ${quocteId}
-    `).then(
-        result => {
+    axios.post(`${URL}/api/order/getById`, { orderId }).then(
+        res => {
             dispatch({
                 type: SALE_ORDER_LOADED_SQLITE,
-                payload: result
+                payload: res.data
             });
         }
-        );
+    );
 };
 
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, ScrollView, TextInput, TouchableOpacity, TouchableWithoutFeedback, Picker, Alert, FlatList } from 'react-native';
+import { View, Text, ScrollView, TextInput, TouchableOpacity, TouchableWithoutFeedback, Picker, Alert, FlatList, NativeModules } from 'react-native';
 import DatePicker from 'react-native-datepicker';
 import { Actions } from 'react-native-router-flux';
 import Header from '../../commons/Header';
@@ -16,7 +16,9 @@ import { loadQuocteByCustomerOrCustomerGroupIdFromSqlite } from '../../../action
 import { resetData, AddNewSaleOrder } from '../../../actions/saleOrderActions';
 import db from '../../../database/sqliteConfig';
 import { formatMoney, formatNumber, unformat } from '../../../../Shared/utils/format';
-import { RNPrint } from 'NativeModules';
+import RNHTMLtoPDF from 'react-native-html-to-pdf';
+
+const { RNPrint } = NativeModules;
 
 class NewSaleOrder extends React.Component {
     state = {
@@ -106,7 +108,7 @@ class NewSaleOrder extends React.Component {
                 this.props.loadQuocteByCustomerOrCustomerGroupIdFromSqlite(customerId, customer.customerGroupId);
             }
 
-        })
+        });
         this.setState({ customerId });
     }
 
@@ -406,7 +408,7 @@ class NewSaleOrder extends React.Component {
         }
         return (
             <View />
-        )
+        );
 
     }
     //Tham khảo select (picker) react native: 
@@ -463,10 +465,24 @@ class NewSaleOrder extends React.Component {
                         </TouchableOpacity>
                         <TouchableOpacity
                             style={styles.Btn}
-                            onPress={() => {
-                                RNPrint.print('htmlString').then((jobName) => {
+                            onPress={async () => {
+
+                                let options = {
+                                    html: '<h1>Heading 1</h1><h2>Heading 2</h2><h3>Heading 3</h3>',
+                                    fileName: 'test'
+                                };
+                                try {
+                                    console.log('begin printing!!!!!!!!!!!!!');
+                                    // const results = await RNHTMLtoPDF.convert(options).catch(
+                                    //     e => console.log(e)
+                                    // );
+                                    // console.log('result = ', results);
+                                    const jobName = await RNPrint.print('results.filePath');
                                     console.log(`Printing ${jobName} complete!`);
-                                });
+                                }
+                                catch (e) {
+                                    console.log('errors: ', e);
+                                }
                             }}
                         >
                             <Ionicons name="ios-print-outline" size={25} color="#FFFFFF" />

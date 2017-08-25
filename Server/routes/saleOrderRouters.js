@@ -9,11 +9,40 @@ import moment from '../../Shared/utils/moment';
 const SaleOrderRouter = Router();
 
 SaleOrderRouter.post('/getByCustomerId', async (req, res) => {
-    const { customerId } = req.body;
+    const { orderId } = req.body;
+
+    try {        
+        const saleOrder = await Knex('saleOrders')
+            .where({ id: orderId });
+
+        const saleOrderDetails = await Knex.raw(`
+            SELECT o."id" AS "detailId", o."saleOrderId", o."productId", o."unitId", o."quantity", o."salePrice", 
+                p."name" FROM "saleOrderDetails" AS o
+            INNER JOIN "products" AS p ON o."productId" = p."id"
+            WHERE o."saleOrderId" = ${orderId};                      
+        `);
+
+        res.status(200).json({
+            success: true,
+            saleOrder,
+            saleOrderDetails
+        });
+    }
+    catch(e) {
+        console.log(e);
+        res.status(400).json({
+            success: false
+        });
+    }
+    
+});
+
+SaleOrderRouter.post('/getById', async (req, res) => {
+    const { orderId } = req.body;
 
     try {
         const orders = await Knex('saleOrders')
-            .where({customerId});
+            .where({ id: orderId });
         res.status(200).json({
             success: true,
             orders,

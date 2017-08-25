@@ -52,6 +52,7 @@
 		237E74C990984B6AB107511B /* libRNFetchBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A861182BD03B407C93E0222D /* libRNFetchBlob.a */; };
 		76F50F5DAFA44858AFB8811F /* OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = 5F1A3A7AB5DF4DE0B782239A /* OFL.txt */; };
 		873F2902EA944AF5A4A37148 /* libRNPrint.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D792D668D42046F092EB0BAF /* libRNPrint.a */; };
+		B7EA74E4DD844B6DA5C36553 /* libRNHTMLtoPDF.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FADAF4B443004A86BE09CE9C /* libRNHTMLtoPDF.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -292,6 +293,8 @@
 		5F1A3A7AB5DF4DE0B782239A /* OFL.txt */ = {isa = PBXFileReference; name = "OFL.txt"; path = "../node_modules/native-base/Fonts/OFL.txt"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		A750E4A9419B4BABAC862B27 /* RNPrint.xcodeproj */ = {isa = PBXFileReference; name = "RNPrint.xcodeproj"; path = "../node_modules/react-native-print/ios/RNPrint.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		D792D668D42046F092EB0BAF /* libRNPrint.a */ = {isa = PBXFileReference; name = "libRNPrint.a"; path = "libRNPrint.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		F08CE5DEBF2B4FB5AFF82BC6 /* RNHTMLtoPDF.xcodeproj */ = {isa = PBXFileReference; name = "RNHTMLtoPDF.xcodeproj"; path = "../node_modules/react-native-html-to-pdf/ios/RNHTMLtoPDF.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		FADAF4B443004A86BE09CE9C /* libRNHTMLtoPDF.a */ = {isa = PBXFileReference; name = "libRNHTMLtoPDF.a"; path = "libRNHTMLtoPDF.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -322,6 +325,7 @@
 				AE933F09BF5A4E1CA53DCEBB /* libRNImagePicker.a in Frameworks */,
 				237E74C990984B6AB107511B /* libRNFetchBlob.a in Frameworks */,
 				873F2902EA944AF5A4A37148 /* libRNPrint.a in Frameworks */,
+				B7EA74E4DD844B6DA5C36553 /* libRNHTMLtoPDF.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -492,6 +496,7 @@
 				C0CCD558D34D46B48F6A1166 /* RNImagePicker.xcodeproj */,
 				F1AA9A4B00C840C2A576BA3E /* RNFetchBlob.xcodeproj */,
 				A750E4A9419B4BABAC862B27 /* RNPrint.xcodeproj */,
+				F08CE5DEBF2B4FB5AFF82BC6 /* RNHTMLtoPDF.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1058,6 +1063,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1065,6 +1071,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-image-picker\ios",
 					"$(SRCROOT)\..\node_modules\react-native-fetch-blob\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-print\ios\RNPrint",
+					"$(SRCROOT)\..\node_modules\react-native-html-to-pdf\ios\RNHTMLtoPDF/**",
 				);
 			};
 			name = Debug;
@@ -1089,6 +1096,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1096,6 +1104,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-image-picker\ios",
 					"$(SRCROOT)\..\node_modules\react-native-fetch-blob\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-print\ios\RNPrint",
+					"$(SRCROOT)\..\node_modules\react-native-html-to-pdf\ios\RNHTMLtoPDF/**",
 				);
 			};
 			name = Release;
@@ -1121,6 +1130,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-image-picker\ios",
 					"$(SRCROOT)\..\node_modules\react-native-fetch-blob\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-print\ios\RNPrint",
+					"$(SRCROOT)\..\node_modules\react-native-html-to-pdf\ios\RNHTMLtoPDF/**",
 				);
 			};
 			name = Debug;
@@ -1145,6 +1155,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-image-picker\ios",
 					"$(SRCROOT)\..\node_modules\react-native-fetch-blob\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-print\ios\RNPrint",
+					"$(SRCROOT)\..\node_modules\react-native-html-to-pdf\ios\RNHTMLtoPDF/**",
 				);
 			};
 			name = Release;
@@ -1178,6 +1189,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1185,6 +1197,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-image-picker\ios",
 					"$(SRCROOT)\..\node_modules\react-native-fetch-blob\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-print\ios\RNPrint",
+					"$(SRCROOT)\..\node_modules\react-native-html-to-pdf\ios\RNHTMLtoPDF/**",
 				);
 			};
 			name = Debug;
@@ -1218,6 +1231,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1225,6 +1239,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-image-picker\ios",
 					"$(SRCROOT)\..\node_modules\react-native-fetch-blob\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-print\ios\RNPrint",
+					"$(SRCROOT)\..\node_modules\react-native-html-to-pdf\ios\RNHTMLtoPDF/**",
 				);
 			};
 			name = Release;
@@ -1253,6 +1268,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 			};
 			name = Debug;
@@ -1277,6 +1293,7 @@
 				TVOS_DEPLOYMENT_TARGET = 10.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",

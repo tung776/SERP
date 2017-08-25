@@ -104,6 +104,8 @@ ADDED from F:\SERP\android\app\src\main\AndroidManifest.xml:27:9-69
 		ADDED from F:\SERP\android\app\src\main\AndroidManifest.xml:27:19-67
 uses-sdk
 INJECTED from F:\SERP\android\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
+MERGED from [android:react-native-html-to-pdf:unspecified] F:\SERP\node_modules\react-native-html-to-pdf\android\build\intermediates\bundles\default\AndroidManifest.xml:7:5-9:41
+MERGED from [android:react-native-print:unspecified] F:\SERP\node_modules\react-native-print\android\build\intermediates\bundles\default\AndroidManifest.xml:7:5-9:41
 MERGED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\0365c0ac0c5a42d799e3f2cf5a9eedc5dee14c45\output\AndroidManifest.xml:7:5-9:41
 MERGED from [com.facebook.fresco:animated-webp:1.0.1] C:\Users\thanhtung776\.android\build-cache\29ea106db95dcc49364e383847c1c1311d2909f5\output\AndroidManifest.xml:5:5-7:41
 MERGED from [com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta1] C:\Users\thanhtung776\.android\build-cache\2934d8d16c1a2d7a761e033d19edac227c8f0724\output\AndroidManifest.xml:20:5-22:41

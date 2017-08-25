@@ -9,7 +9,7 @@ import stylesCommon from '../../../styles';
 import { Ionicons } from '@expo/vector-icons';
 import { loadCustomerListDataFromSqlite } from '../../../actions/customerAction';
 import { loadUnits, toggleProductToSelectList, resetSelectedProducts } from '../../../actions/productActions';
-import { loadSaleOrderDataFromSqlite, SaleOrderUpdate } from '../../../actions/saleOrderActions';
+import { loadSaleOrderById, SaleOrderUpdate } from '../../../actions/saleOrderActions';
 import db from '../../../database/sqliteConfig';
 import moment from '../../../../Shared/utils/moment';
 
@@ -32,7 +32,7 @@ class EditSaleOrder extends React.Component {
         editMode: false
     }
     componentWillMount() {
-        this.props.loadSaleOrderDataFromSqlite(this.props.saleOrder.id);
+        this.props.loadSaleOrderById(this.props.saleOrder.id);
 
         if (!this.props.customers || this.props.customers.length == 0) {
             this.props.loadCustomerListDataFromSqlite();
@@ -631,7 +631,7 @@ const mapStateToProps = (state, ownProps) => {
     };
 };
 export default connect(mapStateToProps, {
-    loadSaleOrderDataFromSqlite,
+    loadSaleOrderById,
     loadUnits,
     loadCustomerListDataFromSqlite,
     toggleProductToSelectList,

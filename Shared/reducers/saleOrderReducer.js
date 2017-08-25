@@ -64,22 +64,23 @@ export default (state = INITIAL_STATE, action) => {
 
         case SALE_ORDER_LOADED_SQLITE:
             let saleOrderDetails = [];
-            action.payload.forEach((item) => {
+            action.payload.saleOrderDetails.forEach((item) => {
                 saleOrderDetails.push({
-                    detailId: item.detailId,
+                    id: item.id,
                     unitId: item.unitId,
                     productId: item.productId,
-                    price: item.price,
+                    salePrice: item.salePrice,
+                    quantity: item.quantity,
                     name: item.name,
-                    key: item.detailId
+                    key: item.id
                 });
             });
             return {
                 ...state,
-                id: action.payload[0].id,
-                customerId: action.payload[0].customerId,
-                date: action.payload[0].date,
-                title: action.payload[0].title,
+                id: action.payload.order[0].id,
+                customerId: action.payload.order[0].customerId,
+                date: action.payload.order[0].date,
+                title: action.payload.order[0].title,
                 saleOrderDetails: saleOrderDetails,
                 error: '',
                 loading: false,
