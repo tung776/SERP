@@ -11,57 +11,43 @@ import { connect } from 'react-redux';
 import stylesCommon from '../../../styles';
 import { Ionicons } from '@expo/vector-icons';
 import {
-    loadQuocteListDataFromSqlite,
-    loadQuocteByCustomerOrCustomerGroupIdFromSqlite
-} from '../../../actions/quocteActions.js';
-import { loadCustomerGroupListDataFromSqlite } from '../../../actions/customerGroupAction';
+    loadSaleOrderListDataFromServerByCustomerId
+} from '../../../actions/saleOrderActions';
 import { loadCustomerListDataFromSqlite } from '../../../actions/customerAction';
 import { Spinner } from '../../commons/Spinner';
 import SqlService from '../../../database/sqliteService';
 import moment from '../../../../Shared/utils/moment';
 
-class QuocteList extends React.Component {
+class SaleOrderList extends React.Component {
     state = {
         customerId: null,
-        customerGroupId: null,
         error: null,
-        products: [],
+        saleOrderList: [],
         loaded: false
     }
-    constructor(props) {
-        super(props);
 
-    }
     componentWillMount() {
-        // console.log(this.props.customers.length)
         if (this.props.customers.length == 0) {
-            console.log('go to load customer');
             this.props.loadCustomerListDataFromSqlite();
         }
-        if (this.props.customerGroups.length == 0) {
-            this.props.loadCustomerGroupListDataFromSqlite();
-        }
     }
-
 
     addNewGroupBtnPress() {
         Actions.main();
     }
 
-    renderQuocteList() {
-
-        if (this.props.quocteList) {
+    renderSaleOrderList() {
+        if (this.props.saleOrderList) {
             return (
                 <FlatList
-                    style={styles.listQuocte}
-                    data={this.props.quocteList}
+                    style={styles.listSaleOrder}
+                    data={this.props.saleOrderList}
                     renderItem={({ item }) => {
                         if (item) {
-                            // moment.locale('vi');
                             return (
                                 <TouchableWithoutFeedback
                                     key={item.key} onPress={() => {
-                                        Actions.editQuocte({ quocte: item });
+                                        Actions.editSaleOrder({ saleOrder: item });
                                     }}
                                 >
                                     <View style={styles.listItem}>
@@ -84,7 +70,7 @@ class QuocteList extends React.Component {
     }
 
     onSearch() {
-        if (this.state.customerId === null && this.state.customerGroupId === null ) {
+        if (this.state.customerId === null ) {
             return Alert.alert(
                 'Báo lỗi',
                 'Bạn chưa chọn nhóm khách hàng hoặc khách hàng',
@@ -96,7 +82,7 @@ class QuocteList extends React.Component {
                 ]
             );
         }
-        this.props.loadQuocteByCustomerOrCustomerGroupIdFromSqlite(this.state.customerId, this.state.customerGroupId);
+        this.props.loadSaleOrderListDataFromServerByCustomerId(this.state.customerId);
     }
 
     render() {
@@ -110,29 +96,10 @@ class QuocteList extends React.Component {
                         <View style={styles.groupControl} >
                             <Picker
                                 style={{ flex: 1 }}
-                                selectedValue={this.state.customerGroupId}
-                                onValueChange={
-                                    (itemValue, itemIndex) => this.setState({
-                                        customerGroupId: itemValue,
-                                        customerId: null
-                                    })
-                                }
-                            >
-                                <Picker.Item key={0} label="" value={null} />
-                                {this.props.customerGroups && this.props.customerGroups.map((item) => (
-                                    <Picker.Item key={item.id} label={item.name} value={item.id} />
-                                ))
-                                }
-                            </Picker>
-                        </View>
-                        <View style={styles.groupControl} >
-                            <Picker
-                                style={{ flex: 1 }}
                                 selectedValue={this.state.customerId}
                                 onValueChange={
                                     (itemValue, itemIndex) => this.setState({
-                                        customerId: itemValue,
-                                        customerGroupId: null
+                                        customerId: itemValue
                                     })
                                 }
                             >
@@ -151,10 +118,10 @@ class QuocteList extends React.Component {
                         </TouchableOpacity>
                     </View>
 
-                    {this.renderQuocteList()}
+                    {this.renderSaleOrderList()}
                 </View>
                 <Footer>
-                    <TouchableOpacity style={styles.addNewGroupBtn} onPress={() => { Actions.newQuocte(); }}>
+                    <TouchableOpacity style={styles.addNewGroupBtn} onPress={() => { Actions.newSaleOrder(); }}>
                         <Ionicons name="ios-add-circle" size={32} color="#FFFFFF" />
                         <Text style={{ alignSelf: 'center', paddingLeft: 10, fontSize: 16, color: '#FFFFFF', fontWeight: '600' }}>Thêm Báo Giá</Text>
                     </TouchableOpacity>
@@ -216,7 +183,7 @@ const styles = {
         borderRadius: 5,
         backgroundColor: 'rgba(236, 240, 241,1.0)'
     },
-    listQuocte: {
+    listSaleOrder: {
         flex: 1
     },
     groupControl: {
@@ -235,20 +202,16 @@ const styles = {
     },
 };
 const mapStateToProps = (state, ownProps) => {
-    const { loading, loaded, quocteList } = state.quoctes;
-    const { customerGroups } = state.customerGroups;
+    const { loading, loaded, saleOrderList } = state.saleOrders;
     const { customers } = state.customers;
     return {
         loading,
         loaded,
-        quocteList,
-        customerGroups,
+        saleOrderList,
         customers
     };
 };
 export default connect(mapStateToProps, {
-    loadQuocteListDataFromSqlite,
-    loadQuocteByCustomerOrCustomerGroupIdFromSqlite,
-    loadCustomerGroupListDataFromSqlite,
+    loadSaleOrderListDataFromServerByCustomerId,
     loadCustomerListDataFromSqlite,
-})(QuocteList);
+})(SaleOrderList);

@@ -16,18 +16,19 @@ import SqlService from '../database/sqliteService';
 import { Actions } from 'react-native-router-flux';
 import db from '../database/sqliteConfig';
 
-export const loadSaleOrderListDataFromServer = () => async (dispatch) => {
+export const loadSaleOrderListDataFromServerByCustomerId = (customerId) => async (dispatch) => {
     dispatch({
         type: SALE_ORDER_PENDING
     });
-    // SqlService.query('select id, customerId, customerGroupId from saleOrders').then(
-    //     result => {
-    //         dispatch({
-    //             type: SALE_ORDER_LIST_LOADED_SQLITE,
-    //             payload: result
-    //         });
-    //     }
-    // );
+
+    axios.post(`${URL}/api/order/getByCustomerId`, { customerId }).then(
+        res => {
+            dispatch({
+                type: SALE_ORDER_LIST_LOADED_SQLITE,
+                payload: res.data.orders
+            });
+        }
+    );
 };
 
 export const loadSaleOrderByCustomerOrCustomerGroupIdFromServer = (customerId = null) => (dispatch) => {
@@ -123,7 +124,7 @@ export const SaleOrderDelete = (order) => async (dispatch) => {
         type: SALE_ORDER_PENDING
     });
 
-    const apiUrl = `${URL}/api/quocte/delete`;
+    const apiUrl = `${URL}/api/order/delete`;
 
     axios.post(apiUrl, { Id: order.id }).then(
         (res) => {

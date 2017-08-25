@@ -34,11 +34,16 @@ export default (state = INITIAL_STATE, action) => {
         case SALE_ORDER_CHANGE:
             return { ...state, [action.payload.prop]: action.payload.value };
         case SALE_ORDER_LIST_LOADED_SQLITE: {
-
+            const saleOrderList = [];
+            
             if (action.payload) {
+                action.payload.forEach((order) => {
+                    const temp = {...order, key: order.id}
+                    saleOrderList.push(temp);
+                })
                 return {
                     ...state,
-                    saleOrderList: [{ ...action.payload, key: action.payload.id }],
+                    saleOrderList,
                     loading: false,
                     loaded: true
                 }

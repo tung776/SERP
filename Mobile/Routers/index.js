@@ -34,8 +34,9 @@ import CustomerEdit from '../components/Screens/Customers/CustomerEdit';
 import customerSearch from '../components/Screens/Customers';
 import CustomerNew from '../components/Screens/Customers/CustomerNew';
 import productSelector from '../components/Screens/Products/productSelector';
-
+import saleOrders from '../components/Screens/saleOrders/index';
 import newSaleOrder from '../components/Screens/saleOrders/newOrder';
+import editSaleOrder from '../components/Screens/saleOrders/editOrder';
 
 const RouterComponent = () => (
     <Router hideNavBar="true" sceneStyle={{ backgroundColor: '#F7F7F7' }} >
@@ -48,6 +49,7 @@ const RouterComponent = () => (
             >
             <Scene key="quoctes" component={quoctes} title="Danh sách báo giá" />
                 <Scene key="newSaleOrder" component={newSaleOrder} title="Lập hóa đơn" />
+                <Scene key="editSaleOrder" component={editSaleOrder} title="Sửa hóa đơn" />
                 <Scene key="newQuocte" component={NewQuocte} title="tạo báo giá" />
                 <Scene key="editQuocte" component={EditQuocte} title="tạo báo giá" />
                 <Scene key="productSelector" component={productSelector} title="productSelector" />
@@ -80,7 +82,7 @@ const RouterComponent = () => (
                 <Scene key="customerEdit" component={CustomerEdit} title="Sửa khách hàng" />
 
                 <Scene key="saleOrderReturnning" component={ComminSoon} title="..." />
-                <Scene key="searchSaleOrder" component={ComminSoon} title="..." />
+                <Scene key="searchSaleOrder" component={saleOrders} title="..." />
                 <Scene key="newOrderType" component={ComminSoon} title="..." />
 
                 <Scene key="newCustomer" component={ComminSoon} title="..." />
