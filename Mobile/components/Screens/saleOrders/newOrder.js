@@ -201,7 +201,7 @@ class NewSaleOrder extends React.Component {
                                                     onChangeText={text => {
                                                         this.state.saleOderDetails.forEach((product) => {
                                                             if (product.id == item.id) {
-                                                                product.quantity = text;
+                                                                product.quantity = unformat(text);
                                                             }
                                                         });
                                                         const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.state.oldebt, this.state.pay, this.state.saleOderDetails);
@@ -242,7 +242,7 @@ class NewSaleOrder extends React.Component {
                                                     onChangeText={text => {
                                                         this.state.saleOderDetails.forEach((product) => {
                                                             if (product.id == item.id) {
-                                                                product.salePrice = text;
+                                                                product.salePrice = unformat(text);
                                                             }
                                                         });
                                                         const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.state.oldebt, this.state.pay, this.state.saleOderDetails);
@@ -473,10 +473,10 @@ class NewSaleOrder extends React.Component {
                                 };
                                 try {
                                     console.log('begin printing!!!!!!!!!!!!!');
-                                    // const results = await RNHTMLtoPDF.convert(options).catch(
-                                    //     e => console.log(e)
-                                    // );
-                                    // console.log('result = ', results);
+                                    const results = await RNHTMLtoPDF.convert(options).catch(
+                                        e => console.log(e)
+                                    );
+                                    console.log('result = ', results);
                                     const jobName = await RNPrint.print('results.filePath');
                                     console.log(`Printing ${jobName} complete!`);
                                 }

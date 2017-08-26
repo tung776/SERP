@@ -1,7 +1,7 @@
 {
-  "expoServerPort": 19000,
-  "packagerPort": 19001,
-  "packagerPid": 11864,
+  "expoServerPort": null,
+  "packagerPort": null,
+  "packagerPid": null,
   "expoServerNgrokUrl": "https://q6-pik.tung776.serp.exp.direct",
   "packagerNgrokUrl": "https://packager.q6-pik.tung776.serp.exp.direct",
   "ngrokPid": 11976

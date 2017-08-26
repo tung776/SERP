@@ -84,6 +84,7 @@ export const loadSaleOrderById = (orderId) => async (dispatch) => {
 
     axios.post(`${URL}/api/order/getById`, { orderId }).then(
         res => {
+            console.log('res = ', res.data);
             dispatch({
                 type: SALE_ORDER_LOADED_SQLITE,
                 payload: res.data

@@ -8,53 +8,53 @@ import moment from '../../Shared/utils/moment';
 
 const SaleOrderRouter = Router();
 
-SaleOrderRouter.post('/getByCustomerId', async (req, res) => {
+SaleOrderRouter.post('/getById', async (req, res) => {
     const { orderId } = req.body;
 
-    try {        
+    try {
+        console.log('id = ', orderId);
         const saleOrder = await Knex('saleOrders')
             .where({ id: orderId });
 
         const saleOrderDetails = await Knex.raw(`
-            SELECT o."id" AS "detailId", o."saleOrderId", o."productId", o."unitId", o."quantity", o."salePrice", 
-                p."name" FROM "saleOrderDetails" AS o
-            INNER JOIN "products" AS p ON o."productId" = p."id"
-            WHERE o."saleOrderId" = ${orderId};                      
+            SELECT "id" , "saleOrderId", "productId", "unitId", "quantity", "salePrice" 
+            FROM "saleOderDetails" 
+            WHERE "saleOrderId" = ${orderId};                      
         `);
-
+        console.log('saleOrderDetails = ', saleOrderDetails);
         res.status(200).json({
             success: true,
             saleOrder,
-            saleOrderDetails
+            saleOrderDetails: saleOrderDetails.rows
         });
     }
-    catch(e) {
+    catch (e) {
         console.log(e);
         res.status(400).json({
             success: false
         });
     }
-    
+
 });
 
-SaleOrderRouter.post('/getById', async (req, res) => {
-    const { orderId } = req.body;
+SaleOrderRouter.post('/getByCustomerId', async (req, res) => {
+    const { customerId } = req.body;
 
     try {
         const orders = await Knex('saleOrders')
-            .where({ id: orderId });
+            .where({ customerId });
         res.status(200).json({
             success: true,
             orders,
         });
     }
-    catch(e) {
+    catch (e) {
         console.log(e);
         res.status(400).json({
             success: false
         });
     }
-    
+
 });
 
 SaleOrderRouter.post('/new', async (req, res) => {
@@ -67,6 +67,7 @@ SaleOrderRouter.post('/new', async (req, res) => {
         date, title, customerId, total, totalIncludeVat, vat, pay,
         newDebt, oldebt, saleOderDetails,
     });
+    console.log('saleOderDetails = ', saleOderDetails);
     console.log('isValid = ', isValid);
     console.log('errors = ', errors);
     if (isValid) {
@@ -76,19 +77,6 @@ SaleOrderRouter.post('/new', async (req, res) => {
             Knex.transaction(async (t) => {
                 try {
 
-                    const dataVersion = await Knex('dataVersions').where('id', 1);
-
-                    let { debtCustomers } = dataVersion[0];
-
-                    debtCustomers++;
-
-                    newDataversion = await t('dataVersions')
-                        .returning('*')
-                        .whereRaw('id = 1')
-                        .update({
-                            id: 1,
-                            debtCustomers
-                        });
                     data = await t('debtCustomers')
                         .returning('*')
                         .insert({
@@ -115,19 +103,37 @@ SaleOrderRouter.post('/new', async (req, res) => {
                             date: moment(date, 'DD-MM-YYYY')
                         });
 
-                    saleOderDetails.forEach(async (detail) => {
-                        await t('saleOderDetails')
+                    console.log('order = ', order);
+
+                    saleOderDetails.forEach(async ({ id, unitId, quantity, salePrice }) => {
+
+                        const total = quantity * salePrice;
+                        const temp = await t('saleOderDetails')
                             .returning('*')
                             .insert({
                                 saleOrderId: order[0].id,
-                                productId: detail.id,
-                                unitId: detail.unitId,
-                                quantity: detail.quantity,
-                                salePrice: detail.salePrice,
-                                total: detail.quantity * detail.salePrice
+                                productId: id,
+                                unitId,
+                                quantity,
+                                salePrice,
+                                total
                             });
+                        console.log('saleOderDetail = ', temp);
                     });
 
+                    const dataVersion = await Knex('dataVersions').where('id', 1);
+
+                    let { debtCustomers } = dataVersion[0];
+
+                    debtCustomers++;
+
+                    newDataversion = await t('dataVersions')
+                        .returning('*')
+                        .whereRaw('id = 1')
+                        .update({
+                            id: 1,
+                            debtCustomers
+                        });
 
                 } catch (e) {
                     t.rollback();

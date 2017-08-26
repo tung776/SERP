@@ -12,6 +12,7 @@ import { loadUnits, toggleProductToSelectList, resetSelectedProducts } from '../
 import { loadSaleOrderById, SaleOrderUpdate } from '../../../actions/saleOrderActions';
 import db from '../../../database/sqliteConfig';
 import moment from '../../../../Shared/utils/moment';
+import { formatMoney, formatNumber, unformat } from '../../../../Shared/utils/format';
 
 class EditSaleOrder extends React.Component {
     state = {
@@ -32,6 +33,8 @@ class EditSaleOrder extends React.Component {
         editMode: false
     }
     componentWillMount() {
+        console.log('saleOrder = ', this.props.saleOrder);
+
         this.props.loadSaleOrderById(this.props.saleOrder.id);
 
         if (!this.props.customers || this.props.customers.length == 0) {
@@ -45,27 +48,32 @@ class EditSaleOrder extends React.Component {
     componentWillReceiveProps(nextProps) {
         const oldebt = nextProps.debt ? nextProps.debt.newDebt : 0;
         let saleOderDetails = nextProps.saleOderDetails;
+        const {id, date, title, customerId, total, totalIncludeVat, vat} = nextProps;
+        console.log('nexprops = ', {id, date, title, customerId, total, totalIncludeVat, vat});
+        // saleOderDetails = nextProps.selectedProducts;
+        // saleOderDetails.forEach((orderItem) => {
+        //     nextProps.quocteList.forEach((quocte) => {
+        //         if (orderItem.id === quocte.productId) {
+        //             orderItem.salePrice = quocte.salePrice;
+        //             orderItem.unitId = quocte.unitId;
+        //         }
+        //     });
+        // });
 
-        saleOderDetails = nextProps.selectedProducts;
-        saleOderDetails.forEach((orderItem) => {
-            nextProps.quocteList.forEach((quocte) => {
-                if (orderItem.id === quocte.productId) {
-                    orderItem.salePrice = quocte.salePrice;
-                    orderItem.unitId = quocte.unitId;
-                }
-            });
-        });
-
-        const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(oldebt, this.state.pay,
-            saleOderDetails);
+        // const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(oldebt, this.state.pay,
+        //     saleOderDetails);
         this.setState({
-            total,
-            newDebt,
-            totalIncludeVat,
-            vat,
+            id: nextProps.id,
+            date: nextProps.date,
+            title: nextProps.title,
+            customerId: nextProps.customerId,
+            total: nextProps.total,
+            newDebt: nextProps.newDebt,
+            totalIncludeVat: nextProps.totalIncludeVat,
+            vat: nextProps.vat,
             saleOderDetails,
             debtCustomers: nextProps.debt,
-            oldebt,
+            oldebt: nextProps.oldebt,
             quoctes: nextProps.quocteList
         });
     }
@@ -155,6 +163,10 @@ class EditSaleOrder extends React.Component {
             vat,
             newDebt
         });
+    }
+
+    editModeToggle() {
+        this.setState({ editMode: !this.state.editMode });
     }
 
     renderProductList() {
@@ -602,6 +614,13 @@ const styles = {
     },
     saleOrderDetailRemoveBtn: {
 
+    },
+    totalControlGroup: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        borderBottomWidth: 1,
+        borderBottomColor: '#ecf0f1'
     }
 };
 const mapStateToProps = (state, ownProps) => {
@@ -625,8 +644,6 @@ const mapStateToProps = (state, ownProps) => {
         error,
         customers,
         selectedProducts,
-        debt,
-        quocteList,
         user
     };
 };
