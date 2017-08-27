@@ -4,6 +4,7 @@ import {
     SALE_ORDER_LOADED_SQLITE, SALE_ORDER_LIST_LOADED_SQLITE, SALE_ORDER_DELETE_SUCCESS,
     RESET_SALE_ORDER_FORM, SALE_ORDER_DETAIL_CHANGE, SELECTED_PRODUCT_TO_SALE_ORDER_DETAIL
 } from '../actions/types';
+import moment from '../utils/moment';
 
 const INITIAL_STATE = {
     id: '',
@@ -13,7 +14,10 @@ const INITIAL_STATE = {
     total: '',
     totalIncludeVat: '',
     vat: '',
-    saleOderDetails: [],
+    newDebt:'',
+    oldDebt: '',
+    pay: '',
+    saleOrderDetails: [],
     saleOrderList: [],
     loading: false,
     loaded: false,
@@ -78,15 +82,21 @@ export default (state = INITIAL_STATE, action) => {
                     key: item.id
                 });
             });
+            const date = moment(action.payload.saleOrder[0].date, 'YYYY-MM-DD').toDate();
+            console.log(date);
             return {
                 ...state,
                 id: action.payload.saleOrder[0].id,
                 customerId: action.payload.saleOrder[0].customerId,
-                date: action.payload.saleOrder[0].date,
+                date,
                 title: action.payload.saleOrder[0].title,
                 total: action.payload.saleOrder[0].total,
                 totalIncludeVat: action.payload.saleOrder[0].totalIncludeVat,
                 vat: action.payload.saleOrder[0].vat,
+                debtCustomerId: action.payload.saleOrder[0].debtCustomerId,
+                newDebt: action.payload.saleOrder[0].newDebt,
+                oldDebt: action.payload.saleOrder[0].oldDebt,
+                pay: action.payload.saleOrder[0].minus,
                 saleOrderDetails: saleOrderDetails,
                 error: '',
                 loading: false,

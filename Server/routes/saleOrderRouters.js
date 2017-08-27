@@ -13,18 +13,24 @@ SaleOrderRouter.post('/getById', async (req, res) => {
 
     try {
         console.log('id = ', orderId);
-        const saleOrder = await Knex('saleOrders')
-            .where({ id: orderId });
+        const saleOrder = await await Knex.raw(`
+            SELECT s."id", s."date" , s."customerId", s."userId", s."debtCustomerId", s."orderTypeId", 
+            s."title", s."total", s."totalIncludeVat", s."vat", d."newDebt", d."oldDebt", d."minus"
+            FROM "saleOrders" as s
+            INNER JOIN "debtCustomers" AS d ON d."id" = s."debtCustomerId" 
+            WHERE s."id" = ${orderId};                      
+        `);
 
         const saleOrderDetails = await Knex.raw(`
-            SELECT "id" , "saleOrderId", "productId", "unitId", "quantity", "salePrice" 
-            FROM "saleOderDetails" 
-            WHERE "saleOrderId" = ${orderId};                      
+            SELECT s."id" , s."saleOrderId", s."productId", s."unitId", s."quantity", s."salePrice", p."name" 
+            FROM "saleOderDetails" as s
+            INNER JOIN "products" AS p ON p."id" = s."productId" 
+            WHERE s."saleOrderId" = ${orderId};                      
         `);
         console.log('saleOrderDetails = ', saleOrderDetails);
         res.status(200).json({
             success: true,
-            saleOrder,
+            saleOrder: saleOrder.rows,
             saleOrderDetails: saleOrderDetails.rows
         });
     }

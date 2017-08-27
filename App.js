@@ -46,7 +46,7 @@ function cacheFonts(fonts) {
 let store;
 if (__DEV__) {
   store = createStore(Reducers, compose(
-    applyMiddleware(ReduxThunk/*, reduxLogger*/)));
+    applyMiddleware(ReduxThunk, reduxLogger)));
 } else {
   store = createStore(Reducers, compose(
     applyMiddleware(ReduxThunk)));
