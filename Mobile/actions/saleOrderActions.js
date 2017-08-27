@@ -89,6 +89,23 @@ export const loadSaleOrderById = (orderId) => async (dispatch) => {
                 type: SALE_ORDER_LOADED_SQLITE,
                 payload: res.data
             });
+            let selectedProducts = [];
+            res.data.forEach((item) => {
+                
+                const temp = {
+                    id: item.productId,
+                    detailId: item.detailId,
+                    salePrice: item.salePrice,
+                    unitId: item.unitId,
+                    name: item.name,
+                    key: item.productId
+                };
+                selectedProducts.push(temp);
+            });
+            dispatch({
+                type: RESET_PRODUCT_FORM,
+                payload: {selectedProducts}
+            });
         }
     );
 };

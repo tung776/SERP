@@ -27,13 +27,12 @@ class EditSaleOrder extends React.Component {
         vat: 0,
         pay: 0,
         newDebt: 0,
-        oldebt: 0,
+        oldDebt: 0,
         saleOrderDetails: [],
         quoctes: [],
         editMode: false
     }
     componentWillMount() {
-        console.log('saleOrder = ', this.props.saleOrder);
 
         this.props.loadSaleOrderById(this.props.saleOrder.id);
 
@@ -46,15 +45,30 @@ class EditSaleOrder extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
+        
+        let saleOrderDetails = [];
         if(nextProps.selectedProducts && nextProps.selectedProducts.length > 0) {
-            const saleOrderDetails = [...nextProps.selectedProducts];
-            const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.props.oldDebt, this.props.pay, saleOrderDetails);
-            this.props.SaleOrderChange({ prop: "saleOrderDetails", value: saleOrderDetails });
-            this.props.SaleOrderChange({ prop: "total", value: total });
-            this.props.SaleOrderChange({ prop: "newDebt", value: newDebt });
-            this.props.SaleOrderChange({ prop: "totalIncludeVat", value: totalIncludeVat });
-            this.props.SaleOrderChange({ prop: "vat", value: vat });
+            saleOrderDetails = nextProps.selectedProducts;
+        } else {
+            saleOrderDetails = nextProps.saleOrderDetails;
         }
+        
+        const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.state.oldDebt, this.state.pay,
+            saleOrderDetails);
+        this.setState({
+            id: nextProps.id,
+            customerId: nextProps.customerId,
+            date: nextProps.date,
+            total,
+            newDebt,
+            totalIncludeVat,
+            vat,
+            pay: nextProps.pay,
+            saleOrderDetails,
+            debtCustomers: nextProps.debt,
+            oldDebt: nextProps.oldDebt,
+            quoctes: nextProps.quocteList
+        });
     }
 
     onSave() {
@@ -68,7 +82,7 @@ class EditSaleOrder extends React.Component {
                         const {
                             date, title, customerId, total, totalIncludeVat, vat, pay,
                             newDebt, oldebt, saleOrderDetails
-                        } = this.props;
+                        } = this.state;
                         this.props.AddNewSaleOrder({
                             date, title, customerId, total, totalIncludeVat, vat, pay,
                             newDebt, oldebt, saleOrderDetails, debtCustomerId: this.state.debtCustomers.id,
@@ -82,7 +96,7 @@ class EditSaleOrder extends React.Component {
     }
 
     onSelectProduct() {
-        Actions.productSelector({ ProductSelected: this.props.saleOrderDetails });
+        Actions.productSelector({ ProductSelected: this.state.saleOrderDetails });
     }
 
     onCustomerChanged(customerId) {
@@ -128,7 +142,7 @@ class EditSaleOrder extends React.Component {
                 newRate = unit.rate;
             }
         });
-        const saleOrderDetails = [...this.props.saleOrderDetails];
+        const saleOrderDetails = [...this.state.saleOrderDetails];
         saleOrderDetails.forEach((item) => {
             if (item.id === product.id) {
                 item.salePrice = Math.round(oldPrice * newRate);
@@ -136,12 +150,14 @@ class EditSaleOrder extends React.Component {
             }
         });
         
-        const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.props.oldDebt, this.props.pay, saleOrderDetails);
-        this.props.SaleOrderChange({ prop: "saleOrderDetails", value: saleOrderDetails });
-        this.props.SaleOrderChange({ prop: "total", value: total });
-        this.props.SaleOrderChange({ prop: "newDebt", value: newDebt });
-        this.props.SaleOrderChange({ prop: "totalIncludeVat", value: totalIncludeVat });
-        this.props.SaleOrderChange({ prop: "vat", value: vat });
+        const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.state.oldDebt, this.state.pay, saleOrderDetails);
+        this.setState({
+            total,
+            newDebt,
+            totalIncludeVat,
+            vat,
+            saleOrderDetails
+        });
     }
 
     editModeToggle() {
@@ -149,11 +165,11 @@ class EditSaleOrder extends React.Component {
     }
 
     renderProductList() {
-        if (this.props.saleOrderDetails) {
+        if (this.state.saleOrderDetails) {
             return (
                 <FlatList
                     style={{ marginTop: 10, marginBottom: 10 }}
-                    data={this.props.saleOrderDetails}
+                    data={this.state.saleOrderDetails}
                     renderItem={({ item }) => {
                         if (item) {
                             return (
@@ -188,18 +204,20 @@ class EditSaleOrder extends React.Component {
                                                     blurOnSubmit
                                                     value={formatNumber(item.quantity)}
                                                     onChangeText={text => {
-                                                        const saleOrderDetails = [...this.props.saleOrderDetails];
+                                                        const saleOrderDetails = [...this.state.saleOrderDetails];
                                                         saleOrderDetails.forEach((product) => {
                                                             if (product.id == item.id) {
                                                                 product.quantity = text;
                                                             }
                                                         });
-                                                        const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.props.newDebt, this.props.pay, saleOrderDetails);
-                                                        this.props.SaleOrderChange({ prop: "saleOrderDetails", value: saleOrderDetails });
-                                                        this.props.SaleOrderChange({ prop: "total", value: total });
-                                                        this.props.SaleOrderChange({ prop: "newDebt", value: newDebt });
-                                                        this.props.SaleOrderChange({ prop: "totalIncludeVat", value: totalIncludeVat });
-                                                        this.props.SaleOrderChange({ prop: "vat", value: vat });
+                                                        const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.state.newDebt, this.state.pay, saleOrderDetails);
+                                                        this.setState({
+                                                            total,
+                                                            newDebt,
+                                                            totalIncludeVat,
+                                                            vat,
+                                                            saleOrderDetails
+                                                        });
                                                     }}
                                                     type="Text"
                                                     name="Description"
@@ -230,18 +248,20 @@ class EditSaleOrder extends React.Component {
                                                     blurOnSubmit
                                                     value={formatNumber(item.salePrice)}
                                                     onChangeText={text => {
-                                                        const saleOrderDetails = [...this.props.saleOrderDetails];
+                                                        const saleOrderDetails = [...this.state.saleOrderDetails];
                                                         saleOrderDetails.forEach((product) => {
                                                             if (product.id == item.id) {
                                                                 product.salePrice = text;
                                                             }
                                                         });
-                                                        const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.props.newDebt, this.props.pay, saleOrderDetails);
-                                                        this.props.SaleOrderChange({prop: 'saleOrderDetails', value: saleOrderDetails});
-                                                        this.props.SaleOrderChange({ prop: "total", value: total });
-                                                        this.props.SaleOrderChange({ prop: "newDebt", value: newDebt });
-                                                        this.props.SaleOrderChange({ prop: "totalIncludeVat", value: totalIncludeVat });
-                                                        this.props.SaleOrderChange({ prop: "vat", value: vat });
+                                                        const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.state.newDebt, this.state.pay, saleOrderDetails);
+                                                        this.setState({
+                                                            total,
+                                                            newDebt,
+                                                            totalIncludeVat,
+                                                            vat,
+                                                            saleOrderDetails
+                                                        });
                                                     }}
                                                     type="Text"
                                                     name="Description"
@@ -276,7 +296,7 @@ class EditSaleOrder extends React.Component {
                             <DatePicker
                                 enabled={this.state.editMode}
                                 style={{ width: 200 }}
-                                date={this.props.date}
+                                date={this.state.date}
                                 mode="date"
                                 placeholder="Chọn ngày lập hóa đơn"
                                 format="DD-MM-YYYY"
@@ -297,7 +317,7 @@ class EditSaleOrder extends React.Component {
                                     // ... You can check the source to find the other keys.
                                 }}
                                 onDateChange={(date) => { 
-                                    this.props.SaleOrderChange({prop: 'date', value: date})
+                                    this.setState({ date })
                                 }}
                             />
                         </View>
@@ -307,10 +327,10 @@ class EditSaleOrder extends React.Component {
                         <View style={styles.groupControl}>
                             <Picker
                                 enabled={false}
-                                selectedValue={this.props.customerId}
+                                selectedValue={this.state.customerId}
                                 onValueChange={
                                     (itemValue, itemIndex) => {
-                                        this.props.SaleOrderChange({prop: 'customerId', value: itemValue})
+                                        this.setState({ customerId: itemValue})
                                     }
                                 }
                             >
@@ -331,8 +351,8 @@ class EditSaleOrder extends React.Component {
                                 underlineColorAndroid={'transparent'}
                                 style={styles.textInput}
                                 blurOnSubmit
-                                value={this.props.title}
-                                onChangeText={text => this.props.SaleOrderChange({prop: 'title', value: text})}
+                                value={this.state.title}
+                                onChangeText={text => this.setState({ title: title })}
                                 type="Text"
                                 name="title"
                                 placeholder="Tiêu đề hóa đơn"
@@ -351,19 +371,19 @@ class EditSaleOrder extends React.Component {
                 <View style={{ height: 180 }}>
                     <View style={styles.totalControlGroup}>
                         <Text style={styles.label} >Tổng Tiền</Text>
-                        <Text style={styles.label}>{formatNumber(this.props.total)}</Text>
+                        <Text style={styles.label}>{formatNumber(this.state.total)}</Text>
                     </View>
                     <View style={styles.totalControlGroup}>
                         <Text style={styles.label} >VAT</Text>
-                        <Text style={styles.label}>{formatNumber(this.props.vat)}</Text>
+                        <Text style={styles.label}>{formatNumber(this.state.vat)}</Text>
                     </View>
                     <View style={styles.totalControlGroup}>
                         <Text style={styles.label} >Tổng Tiền gồm VAT</Text>
-                        <Text style={styles.label}>{formatNumber(this.props.totalIncludeVat)}</Text>
+                        <Text style={styles.label}>{formatNumber(this.state.totalIncludeVat)}</Text>
                     </View>
                     <View style={styles.totalControlGroup}>
                         <Text style={styles.label} >Nợ Cũ</Text>
-                        <Text style={styles.label}>{formatNumber(this.props.oldDebt)}</Text>
+                        <Text style={styles.label}>{formatNumber(this.state.oldDebt)}</Text>
                     </View>
                     <View style={styles.totalControlGroup}>
                         <Text style={styles.label} >Thanh Toán</Text>
@@ -375,15 +395,16 @@ class EditSaleOrder extends React.Component {
                                 underlineColorAndroid={'transparent'}
                                 style={[styles.textInput, { textAlign: 'right', fontSize: 15 }]}
                                 blurOnSubmit
-                                value={formatNumber(this.props.pay)}
+                                value={formatNumber(this.state.pay)}
                                 onChangeText={text => {
                                     const pay = unformat(text);
-                                    const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.props.oldebt, pay, this.props.saleOrderDetails);
-                                    this.props.SaleOrderChange({prop: 'pay', value: pay});
-                                    this.props.SaleOrderChange({prop: 'total', value: total});
-                                    this.props.SaleOrderChange({prop: 'totalIncludeVat', value: totalIncludeVat});
-                                    this.props.SaleOrderChange({prop: 'vat', value: vat});
-                                    this.props.SaleOrderChange({prop: 'newDebt', value: newDebt});
+                                    const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.state.oldebt, pay, this.state.saleOrderDetails);
+                                    this.setState({
+                                        total,
+                                        newDebt,
+                                        totalIncludeVat,
+                                        vat
+                                    });
                                    
                                 }}
                                 type="Text"
@@ -394,7 +415,7 @@ class EditSaleOrder extends React.Component {
                     </View>
                     <View style={styles.totalControlGroup}>
                         <Text style={styles.label} >Tổng Nợ</Text>
-                        <Text style={styles.label} >{formatNumber(this.props.newDebt)}</Text>
+                        <Text style={styles.label} >{formatNumber(this.state.newDebt)}</Text>
 
                     </View>
                 </View>
@@ -408,7 +429,6 @@ class EditSaleOrder extends React.Component {
     //Tham khảo select (picker) react native: 
     //https://facebook.github.io/react-native/docs/picker.html
     render() {
-        console.log(this.props);
         return (
             <View style={styles.container}>
                 <Header>
