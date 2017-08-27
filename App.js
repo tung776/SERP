@@ -58,10 +58,10 @@ export default class serp extends React.Component {
   state = { appIsReady: false }
 
   async componentWillMount() {
-    await Expo.Font.loadAsync({
-      Roboto: require('native-base/Fonts/Roboto.ttf'),
-      Roboto_medium: require('native-base/Fonts/Roboto_medium.ttf'),
-    });
+    // await Expo.Font.loadAsync({
+    //   Roboto: require('native-base/Fonts/Roboto.ttf'),
+    //   Roboto_medium: require('native-base/Fonts/Roboto_medium.ttf'),
+    // });
 
     const imageAssets = cacheImages([
       require('./Shared/images/Logo.png')

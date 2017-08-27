@@ -1,6 +1,6 @@
 {
   "expo": {
-    "sdkVersion": "17.0.0",
+    "sdkVersion": "20.0.0",
     "icon": "./Shared/images/Logo.png",
     "android": {
       "package": "com.soncattuong.serp"
@@ -23,11 +23,11 @@
     },
     "name": "SERP",
     "slug": "serp",
-    "version": "0.0.1"
-    // "isDetached": true,
-    // "detach": {
-    //   "scheme": "expad92b93b61634a0aad431a250cc80214",
-    //   "androidExpoViewUrl": "https://s3.amazonaws.com/exp-exponent-view-code/android-v1.16.1-sdk17.0.0-87570a36-13ff-4017-9b89-6c9930b78572.tar.gz"
-    // }
+    "version": "0.0.1",
+    "isDetached": true,
+    "detach": {
+      "scheme": "expdc48b5fcded34a9386b83d3aefc5b6eb",
+      "androidExpoViewUrl": "https://s3.amazonaws.com/exp-exponent-view-code/android-v1.19.1-sdk20.0.0-5b613054-1239-439f-9c3a-0aad67cbe39a.tar.gz"
+    }
   }
 }

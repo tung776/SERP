@@ -70,3 +70,12 @@ Download that .tar.gz file and extract it.
 Go to your project’s .expo-source/android directory and replace it with the android directory from the file you downloaded.
 Go to MainActivity.java and replace Arrays.asList("[OLD SDK VERSION]") with Arrays.asList("[NEW SDK VERSION]").
 Go to build.gradle and replace compile('host.exp.exponent:expoview:[OLD SDK VERSION]@aar') { with compile('host.exp.exponent:expoview:[NEW SDK VERSION]@aar') {.
+
+
+
+
+
+
+
+
+react-native bundle --platform android --dev false --entry-file index.android.js --bundle-output android/app/src/main/assets/main.bundle --assets-dest android/app/src/main/res/

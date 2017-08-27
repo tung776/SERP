@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-  compileSdkVersion 24
-  buildToolsVersion '25.0.0'
+  compileSdkVersion 25
+  buildToolsVersion '25.0.2'
 
   defaultConfig {
     applicationId "com.soncattuong.serp"
     minSdkVersion 19
-    targetSdkVersion 24
+    targetSdkVersion 25
     versionCode 1
     versionName "1.0"
     multiDexEnabled true
@@ -18,10 +18,21 @@ android {
       'appAuthRedirectScheme': 'com.soncattuong.serp'
     ]
   }
+  signingConfigs {
+        release {
+            if (project.hasProperty('MYAPP_RELEASE_STORE_FILE')) {
+                storeFile file(MYAPP_RELEASE_STORE_FILE)
+                storePassword MYAPP_RELEASE_STORE_PASSWORD
+                keyAlias MYAPP_RELEASE_KEY_ALIAS
+                keyPassword MYAPP_RELEASE_KEY_PASSWORD
+            }
+        }
+    }
   buildTypes {
     release {
       minifyEnabled false
       proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+      signingConfig signingConfigs.release
     }
   }
   dexOptions {
@@ -49,15 +60,15 @@ repositories{
 }
 
 dependencies {
-    compile project(':react-native-html-to-pdf')
     compile project(':react-native-print')
+    compile project(':react-native-html-to-pdf')
   compile fileTree(dir: 'libs', include: ['*.jar'])
   testCompile 'junit:junit:4.12'
-  compile 'com.android.support:appcompat-v7:24.1.1'
-  compile 'com.android.support:multidex:1.0.0'
+  compile 'com.android.support:appcompat-v7:25.3.1'
+  compile 'com.android.support:multidex:1.0.1'
 
   
-  compile('host.exp.exponent:expoview:17.0.0@aar') {
+  compile('host.exp.exponent:expoview:20.0.0@aar') {
     exclude group: 'com.facebook.android', module: 'facebook-android-sdk'
     exclude group: 'com.facebook.android', module: 'audience-network-sdk'
     exclude group: 'io.nlopez.smartlocation', module: 'library'

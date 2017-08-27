@@ -8,9 +8,9 @@ import java.util.Arrays;
 import java.util.List;
 
 // Needed for `react-native link`
-import com.facebook.react.ReactApplication;
-import com.christopherdro.htmltopdf.RNHTMLtoPDFPackage;
+// import com.facebook.react.ReactApplication;
 import com.rnprint.RNPrint.RNPrintPackage;
+import com.christopherdro.htmltopdf.RNHTMLtoPDFPackage;
 
 public class MainApplication extends MultiDexApplication {
 
@@ -22,8 +22,8 @@ public class MainApplication extends MultiDexApplication {
 
         // Needed for `react-native link`
         // new MainReactPackage(),
-            new RNHTMLtoPDFPackage(),
-            new RNPrintPackage()
+            new RNPrintPackage(),
+            new RNHTMLtoPDFPackage()
     );
   }
 }

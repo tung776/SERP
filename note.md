@@ -1,3 +1,61 @@
+### triển khai ứng dụng android không cần development server ###
+1. Gõ lệnh sau:
+```
+react-native bundle --platform android --dev false --entry-file index.android.js --bundle-output android/app/src/main/assets/main.bundle --assets-dest android/app/src/main/res/
+```
+Câu lệnh trên sẽ thực hiện bundle javascript thành main.bundle
+2. Tạo file my-release-key.keystore
+thêm đường dẫn vào biến môi trường window Path chỏ tới: C:\Program Files\Java\jdkx.x.x_x\bin
+
+gõ lệnh sau trong cmd:
+
+```
+keytool -genkey -v -keystore my-release-key.keystore -alias my-key-alias -keyalg RSA -keysize 2048 -validity 10000
+```
+
+nhập mật khẩu (tung1982) để tạo ra file my-release-key.keystore
+3. Sửa lại file SERP\android\gradle.properties:
+```
+MYAPP_RELEASE_STORE_FILE=my-release-key.keystore
+MYAPP_RELEASE_KEY_ALIAS=my-key-alias
+MYAPP_RELEASE_STORE_PASSWORD=tung1982
+MYAPP_RELEASE_KEY_PASSWORD=tung1982
+```
+4. Sửa file SERP\android\app\build.gradle:
+```
+...
+android {
+    ...
+    defaultConfig { ... }
+    signingConfigs {
+        release {
+            if (project.hasProperty('MYAPP_RELEASE_STORE_FILE')) {
+                storeFile file(MYAPP_RELEASE_STORE_FILE)
+                storePassword MYAPP_RELEASE_STORE_PASSWORD
+                keyAlias MYAPP_RELEASE_KEY_ALIAS
+                keyPassword MYAPP_RELEASE_KEY_PASSWORD
+            }
+        }
+    }
+    buildTypes {
+        release {
+            ...
+            signingConfig signingConfigs.release
+        }
+    }
+}
+...
+```
+5. coppy file my-release-key.keystore vào thư mục android\app:
+6. gõ lệnh sau trong cmd: 
+```
+cd android && ./gradlew assembleRelease
+```
+file apk sẽ năm trong thư mục android/app/build/outputs/apk/app-release.apk
+7. Chi thiết thao khảo tại:
+https://facebook.github.io/react-native/docs/signed-apk-android.html
+
+
 ###     Ngày 16/7/2017: ###
 #### Sử dụng react-native-popup-menu ####
 ```

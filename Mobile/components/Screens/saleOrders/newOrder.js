@@ -477,7 +477,7 @@ class NewSaleOrder extends React.Component {
                                         e => console.log(e)
                                     );
                                     console.log('result = ', results);
-                                    const jobName = await RNPrint.print('results.filePath');
+                                    const jobName = await RNPrint.print(results.filePath);
                                     console.log(`Printing ${jobName} complete!`);
                                 }
                                 catch (e) {
