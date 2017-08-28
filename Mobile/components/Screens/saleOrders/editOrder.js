@@ -180,7 +180,7 @@ class EditSaleOrder extends React.Component {
         this.setState({ editMode: !this.state.editMode });
     }
 
-    onPrintInvoice() {
+    async onPrintInvoice() {
         if (this.state.id == '') {
             Alert.alert(
                 'Thông Báo',
@@ -555,8 +555,54 @@ class EditSaleOrder extends React.Component {
                         <TouchableOpacity
                             disabled={!this.state.editMode}
                             style={styles.Btn}
-                            onPress={() => {
-                                this.onPrintInvoice.bind(this);
+                            onPress={async () => {
+                                if (this.state.id == '') {
+                                    Alert.alert(
+                                        'Thông Báo',
+                                        'Bạn cần lưu hóa đơn trước khi in',
+                                        [                    
+                                            { text: 'Ok' },
+                                        ]
+                                    );
+                                } else {
+                                    this.state.saleOrderDetails.forEach((order) => {
+                                        this.props.units.forEach((unit) => {
+                                            console.log('unit = ', unit);
+                                            console.log('order = ', order);
+                                            if (order.unitId == unit.Id) {
+                                                order.unitName = unit.Name
+                                            }
+                                        })
+                                    });
+                                    console.log('saleOrderDetails = ', this.state.saleOrderDetails);
+                                    console.log('this.props.units = ', this.props.units);
+
+                                    let customerName = '';
+                                    this.props.customers.forEach((customer) => {
+                                        if (customer.id == this.state.customerId) {
+                                            customerName = customer.name;
+                                        }
+                                    });
+                                    let options = {
+                                        html: invoiceTemplate(customerName, this.state.id,
+                                            this.state.date, this.state.total, this.state.totalIncludeVat,
+                                            this.state.vat, this.state.oldebt, this.state.pay, this.state.newDebt, this.state.saleOrderDetails),
+                                        fileName: `invoice-${customerName}-${this.date}`,
+                                        directory: 'saleInvoices'
+                                    };
+                                    console.log('options = ', options);
+                                    try {
+                                        console.log('begin printing!!!!!!!!!!!!!');
+                                        const results = await RNHTMLtoPDF.convert(options).catch(
+                                            e => console.log(e)
+                                        );
+                                        const jobName = await RNPrint.print(results.filePath);
+                                        console.log(`Printing ${jobName} complete!`);
+                                    }
+                                    catch (e) {
+                                        console.log('errors: ', e);
+                                    }
+                                }
                             }}
                         >
                             <Ionicons name="ios-print-outline" size={25} color="#FFFFFF" />
@@ -683,6 +729,7 @@ const styles = {
 };
 const mapStateToProps = (state, ownProps) => {
     const {
+        id,
         customerId,
         date,
         saleOrderDetails,
@@ -702,6 +749,7 @@ const mapStateToProps = (state, ownProps) => {
     const { units } = state.products;
     const { isAuthenticated, user } = state.auth;
     return {
+        id,
         customerId,
         date,
         saleOrderDetails,

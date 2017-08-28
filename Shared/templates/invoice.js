@@ -1,4 +1,5 @@
-import logo from '../images/Logo.png'
+import logo from '../images/Logo.png';
+
 export default Invoice = (
     customerName,
     id,
@@ -7,9 +8,11 @@ export default Invoice = (
     totalIncludeVat,
     vat,
     oldDebt,
+    pay,
     newDebt,
     OrderDetail
 ) => {
+    console.log('logo = ', logo);
     let htmlOrderDetail = '';
     OrderDetail.forEach((order) => {
         const totalPrice = order.salePrice * order.quantity;
@@ -28,8 +31,8 @@ export default Invoice = (
     <html>
     
     <head>
-        <meta charset="utf-8">
-        <title>Invoice</title>
+        <meta charset="utf-8"/>
+        <title>Hóa Đơn</title>
         <style>
             /* reset */
     
@@ -37,10 +40,6 @@ export default Invoice = (
                 border: 0;
                 box-sizing: content-box;
                 color: inherit;
-                font-family: inherit;
-                font-size: inherit;
-                font-style: inherit;
-                font-weight: inherit;
                 line-height: inherit;
                 list-style: none;
                 margin: 0;
@@ -118,7 +117,6 @@ export default Invoice = (
             /* page */
     
             html {
-                font: 16px/1 'Open Sans', sans-serif;
                 overflow: auto;
                 padding: 0.5in;
             }
@@ -384,7 +382,7 @@ export default Invoice = (
     
     <body>
         <header>
-            <h1>Invoice</h1>
+            <h1>Hóa Đơn</h1>
             <address contenteditable>
                 <p>CÔNG TY CỔ PHẦN KIM KHÍ HÓA CHẤT CÁT TƯỜNG</p>
                 <p>Địa chỉ: 152 Giải Phóng - Cửa Bắc - Nam Định</p>
@@ -392,10 +390,9 @@ export default Invoice = (
                 <p>email: sale@soncattuong.com</p>
                 <p>website: www.soncattuong.com</p>
             </address>
-            <span><img alt="" src="${logo}"><input type="file" accept="image/*"></span>
+            <span><img alt="" src="Logo.png"/><input type="file" accept="image/*"/></span>
         </header>
         <article>
-            <h1>Recipient</h1>
             <address contenteditable>
                 <p>${customerName}</p>
             </address>

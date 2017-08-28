@@ -84,6 +84,7 @@ export default (state = INITIAL_STATE, action) => {
             });
             const date = moment(action.payload.saleOrder[0].date, 'YYYY-MM-DD').toDate();
             console.log(date);
+            console.log('saleOrder = ', action.payload.saleOrder[0]);
             return {
                 ...state,
                 id: action.payload.saleOrder[0].id,

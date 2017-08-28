@@ -90,15 +90,16 @@ export const loadSaleOrderById = (orderId) => async (dispatch) => {
                 payload: res.data
             });
             let selectedProducts = [];
-            res.data.forEach((item) => {
+            res.data.saleOrderDetails.forEach((item) => {
                 
                 const temp = {
                     id: item.productId,
-                    detailId: item.detailId,
+                    detailId: item.id,
                     salePrice: item.salePrice,
                     unitId: item.unitId,
                     name: item.name,
-                    key: item.productId
+                    key: item.productId,
+                    quantity: item.quantity
                 };
                 selectedProducts.push(temp);
             });
