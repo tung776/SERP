@@ -73,9 +73,8 @@ SaleOrderRouter.post('/new', async (req, res) => {
         date, title, customerId, total, totalIncludeVat, vat, pay,
         newDebt, oldebt, saleOderDetails,
     });
+    let order = []
     console.log('saleOderDetails = ', saleOderDetails);
-    console.log('isValid = ', isValid);
-    console.log('errors = ', errors);
     if (isValid) {
         let newDataversion;
         let data;
@@ -95,7 +94,7 @@ SaleOrderRouter.post('/new', async (req, res) => {
                             plus: totalIncludeVat
                         });
 
-                    const order = await t('saleOrders')
+                    order = await t('saleOrders')
                         .returning('*')
                         .insert({
                             customerId: customerId,
@@ -151,7 +150,8 @@ SaleOrderRouter.post('/new', async (req, res) => {
                     res.json({
                         success: true,
                         debtCustomers: data,
-                        dataversion: newDataversion
+                        dataversion: newDataversion,
+                        saleOrder: order
                     });
                 }
                 )

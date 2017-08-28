@@ -1,5 +1,7 @@
 import React from 'react';
-import { View, Text, ScrollView, TextInput, TouchableOpacity, TouchableWithoutFeedback, Picker, Alert, FlatList } from 'react-native';
+import { View, Text, ScrollView, TextInput, 
+    TouchableOpacity, TouchableWithoutFeedback, 
+    Picker, Alert, FlatList, NativeModules } from 'react-native';
 import DatePicker from 'react-native-datepicker';
 import { Actions } from 'react-native-router-flux';
 import Header from '../../commons/Header';
@@ -8,12 +10,25 @@ import { connect } from 'react-redux';
 import stylesCommon from '../../../styles';
 import { Ionicons } from '@expo/vector-icons';
 import { loadCustomerListDataFromSqlite } from '../../../actions/customerAction';
-import { loadUnits, toggleProductToSelectList, resetSelectedProducts } from '../../../actions/productActions';
-import { loadSaleOrderById, SaleOrderUpdate, SaleOrderChange } from '../../../actions/saleOrderActions';
+import { 
+    loadUnits, 
+    toggleProductToSelectList, 
+    resetSelectedProducts 
+} from '../../../actions/productActions';
+import { 
+    loadSaleOrderById, 
+    SaleOrderUpdate, 
+    SaleOrderChange } from '../../../actions/saleOrderActions';
 import db from '../../../database/sqliteConfig';
 import moment from '../../../../Shared/utils/moment';
-import { formatMoney, formatNumber, unformat } from '../../../../Shared/utils/format';
+import { 
+    formatMoney, 
+    formatNumber, 
+    unformat } from '../../../../Shared/utils/format';
+import RNHTMLtoPDF from 'react-native-html-to-pdf';
+import invoiceTemplate from '../../../../Shared/templates/invoice';
 
+const { RNPrint } = NativeModules;
 class EditSaleOrder extends React.Component {
     state = {
         isExpanded: true,
@@ -45,14 +60,14 @@ class EditSaleOrder extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        
+
         let saleOrderDetails = [];
-        if(nextProps.selectedProducts && nextProps.selectedProducts.length > 0) {
+        if (nextProps.selectedProducts && nextProps.selectedProducts.length > 0) {
             saleOrderDetails = nextProps.selectedProducts;
         } else {
             saleOrderDetails = nextProps.saleOrderDetails;
         }
-        
+
         const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.state.oldDebt, this.state.pay,
             saleOrderDetails);
         this.setState({
@@ -149,7 +164,7 @@ class EditSaleOrder extends React.Component {
                 item.unitId = newUnitId;
             }
         });
-        
+
         const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.state.oldDebt, this.state.pay, saleOrderDetails);
         this.setState({
             total,
@@ -162,6 +177,51 @@ class EditSaleOrder extends React.Component {
 
     editModeToggle() {
         this.setState({ editMode: !this.state.editMode });
+    }
+
+    onPrintInvoice() {
+        if (this.state.id == '') {
+            Alert.alert(
+                'Thông Báo',
+                'Bạn cần lưu hóa đơn trước khi in',
+                [
+                    { text: 'Ok' },
+                ]
+            );
+        } else {
+            let saleOrderDetails = [...this.state.saleOderDetails];
+            saleOrderDetails.forEach((order) => {
+                this.props.units((unit) => {
+                    if (order.unitId == unit.id) {
+                        order.unitName = unit.name
+                    }
+                })
+            })
+            let customerName = '';
+            this.props.customers.forEach((customer) => {
+                if (customer.id == this.state.customerId) {
+                    customerName = customer.name;
+                }
+            })
+            let options = {
+                html: invoiceTemplate(customerName, this.state.id,
+                    this.state.date, this.state.total, this.state.totalIncludeVat,
+                    this.state.vat, this.state.oldebt, this.state.newDebt, saleOrderDetails),
+                fileName: `invoice-${customerName}-${this.date}`,
+                directory: 'saleInvoices'
+            };
+            try {
+                console.log('begin printing!!!!!!!!!!!!!');
+                const results = await RNHTMLtoPDF.convert(options).catch(
+                    e => console.log(e)
+                );
+                const jobName = await RNPrint.print(results.filePath);
+                console.log(`Printing ${jobName} complete!`);
+            }
+            catch (e) {
+                console.log('errors: ', e);
+            }
+        }
     }
 
     renderProductList() {
@@ -316,7 +376,7 @@ class EditSaleOrder extends React.Component {
                                     }
                                     // ... You can check the source to find the other keys.
                                 }}
-                                onDateChange={(date) => { 
+                                onDateChange={(date) => {
                                     this.setState({ date })
                                 }}
                             />
@@ -330,7 +390,7 @@ class EditSaleOrder extends React.Component {
                                 selectedValue={this.state.customerId}
                                 onValueChange={
                                     (itemValue, itemIndex) => {
-                                        this.setState({ customerId: itemValue})
+                                        this.setState({ customerId: itemValue })
                                     }
                                 }
                             >
@@ -405,7 +465,7 @@ class EditSaleOrder extends React.Component {
                                         totalIncludeVat,
                                         vat
                                     });
-                                   
+
                                 }}
                                 type="Text"
                                 name="pay"
@@ -495,9 +555,7 @@ class EditSaleOrder extends React.Component {
                             disabled={!this.state.editMode}
                             style={styles.Btn}
                             onPress={() => {
-                                RNPrint.print('htmlString').then((jobName) => {
-                                    console.log(`Printing ${jobName} complete!`);
-                                });
+                                this.onPrintInvoice.bind(this);
                             }}
                         >
                             <Ionicons name="ios-print-outline" size={25} color="#FFFFFF" />

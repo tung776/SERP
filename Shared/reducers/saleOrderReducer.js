@@ -107,6 +107,7 @@ export default (state = INITIAL_STATE, action) => {
         case SALE_ORDER_CHANGE_SUCCESS:
             return {
                 ...state,
+                id: action.payload.saleOrder[0].id,
                 customerId: '',
                 date: '',
                 title: '',

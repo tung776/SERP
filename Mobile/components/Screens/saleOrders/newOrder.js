@@ -17,11 +17,13 @@ import { resetData, AddNewSaleOrder } from '../../../actions/saleOrderActions';
 import db from '../../../database/sqliteConfig';
 import { formatMoney, formatNumber, unformat } from '../../../../Shared/utils/format';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
+import invoiceTemplate from '../../../../Shared/templates/invoice';
 
 const { RNPrint } = NativeModules;
 
 class NewSaleOrder extends React.Component {
     state = {
+        id: '',
         isExpanded: true,
         isExpandedTotal: true,
         customerId: '',
@@ -48,6 +50,7 @@ class NewSaleOrder extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
+
         const oldebt = nextProps.debt ? nextProps.debt.newDebt : 0;
         const saleOderDetails = nextProps.selectedProducts;
         saleOderDetails.forEach((orderItem) => {
@@ -62,6 +65,7 @@ class NewSaleOrder extends React.Component {
         const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(oldebt, this.state.pay,
             saleOderDetails);
         this.setState({
+            id: nextProps.id,
             total,
             newDebt,
             totalIncludeVat,
@@ -158,6 +162,51 @@ class NewSaleOrder extends React.Component {
             vat,
             newDebt
         });
+    }
+
+    onPrintInvoice() {
+        if (this.state.id == '') {
+            Alert.alert(
+                'Thông Báo',
+                'Bạn cần lưu hóa đơn trước khi in',
+                [                    
+                    { text: 'Ok' },
+                ]
+            );
+        } else {
+            let saleOrderDetails = [...this.state.saleOderDetails];
+            saleOrderDetails.forEach((order) => {
+                this.props.units((unit) => {
+                    if (order.unitId == unit.id) {
+                        order.unitName = unit.name
+                    }
+                })
+            })
+            let customerName = '';
+            this.props.customers.forEach((customer) => {
+                if (customer.id == this.state.customerId) {
+                    customerName = customer.name;
+                }
+            })
+            let options = {
+                html: invoiceTemplate(customerName, this.state.id,
+                    this.state.date, this.state.total, this.state.totalIncludeVat,
+                    this.state.vat, this.state.oldebt, this.state.newDebt, saleOrderDetails),
+                fileName: `invoice-${customerName}-${this.date}`,
+                directory: 'saleInvoices'
+            };
+            try {
+                console.log('begin printing!!!!!!!!!!!!!');
+                const results = await RNHTMLtoPDF.convert(options).catch(
+                    e => console.log(e)
+                );
+                const jobName = await RNPrint.print(results.filePath);
+                console.log(`Printing ${jobName} complete!`);
+            }
+            catch (e) {
+                console.log('errors: ', e);
+            }
+        }
     }
 
     renderProductList() {
@@ -466,23 +515,7 @@ class NewSaleOrder extends React.Component {
                         <TouchableOpacity
                             style={styles.Btn}
                             onPress={async () => {
-
-                                let options = {
-                                    html: '<h1>Heading 1</h1><h2>Heading 2</h2><h3>Heading 3</h3>',
-                                    fileName: 'test'
-                                };
-                                try {
-                                    console.log('begin printing!!!!!!!!!!!!!');
-                                    const results = await RNHTMLtoPDF.convert(options).catch(
-                                        e => console.log(e)
-                                    );
-                                    console.log('result = ', results);
-                                    const jobName = await RNPrint.print(results.filePath);
-                                    console.log(`Printing ${jobName} complete!`);
-                                }
-                                catch (e) {
-                                    console.log('errors: ', e);
-                                }
+                                this.onPrintInvoice.bind(this);
                             }}
                         >
                             <Ionicons name="ios-print-outline" size={25} color="#FFFFFF" />
@@ -601,6 +634,7 @@ const styles = {
 };
 const mapStateToProps = (state, ownProps) => {
     const {
+        id,
         customerId,
         date,
         saleOderDetails,
