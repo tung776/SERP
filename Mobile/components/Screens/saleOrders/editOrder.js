@@ -31,6 +31,7 @@ import invoiceTemplate from '../../../../Shared/templates/invoice';
 const { RNPrint } = NativeModules;
 class EditSaleOrder extends React.Component {
     state = {
+        id: '',
         isExpanded: true,
         isExpandedTotal: true,
         customerId: '',
