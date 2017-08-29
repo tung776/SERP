@@ -24,28 +24,7 @@
 		}
 		/* content editable */
 
-		*[contenteditable] {
-			border-radius: 0.25em;
-			min-width: 1em;
-			outline: 0;
-		}
 
-		*[contenteditable] {
-			cursor: pointer;
-		}
-
-		*[contenteditable]:hover,
-		*[contenteditable]:focus,
-		td:hover *[contenteditable],
-		td:focus *[contenteditable],
-		img.hover {
-			background: #DEF;
-			box-shadow: 0 0 1em 0.5em #DEF;
-		}
-
-		span[contenteditable] {
-			display: inline-block;
-		}
 		/* heading */
 
 		h1 {
@@ -358,47 +337,81 @@
 
 <body>
 	<header>
-		<h1>Invoice</h1>
-		<address contenteditable>
+		<h1>Hóa Đơn</h1>
+		<address >
 			<p>CÔNG TY CỔ PHẦN KIM KHÍ HÓA CHẤT CÁT TƯỜNG</p>
 			<p>Địa chỉ: 152 Giải Phóng - Cửa Bắc - Nam Định</p>
 			<p>phone: 0912250315 - 0916698845 - 0916678845</p>
 			<p>email: sale@soncattuong.com</p>
 			<p>website: www.soncattuong.com</p>
 		</address>
-		<span><img alt="" src="logo.png"><input type="file" accept="image/*"></span>
+		<span><img alt="" src="logo.png"></span>
 	</header>
 	<article>
-		<h1>Recipient</h1>
-		<address contenteditable>
+		<address >
 			<p>Tư Sim</p>
 		</address>
 		<table class="meta">
 			<tr>
-				<th><span contenteditable>Số Hóa Đơn #</span></th>
-				<td><span contenteditable>1</span></td>
+				<th><span >Số Hóa Đơn #</span></th>
+				<td><span >1</span></td>
 			</tr>
 			<tr>
-				<th><span contenteditable>Ngày Lập</span></th>
-				<td><span contenteditable>24-08-1017</span></td>
+				<th><span >Ngày Lập</span></th>
+				<td><span >24-08-1017</span></td>
 			</tr>
 
 		</table>
 		<table class="inventory">
 			<thead>
 				<tr>
-					<th style = "width: 220px"><span contenteditable>Tên sản phẩm</span></th>
-					<th style = "width: 75px"><span contenteditable>Số lượng</span></th>
-					<th style = "width: 90px"><span contenteditable>Qui cách</span></th>
-					<th style = "width: 110px"><span contenteditable>Giá bán</span></th>
-					<th><span contenteditable>Thành Tiền</span></th>
+					<th style = "width: 220px"><span >Tên sản phẩm</span></th>
+					<th style = "width: 75px"><span >Số lượng</span></th>
+					<th style = "width: 90px"><span >Qui cách</span></th>
+					<th style = "width: 110px"><span >Giá bán</span></th>
+					<th><span >Thành Tiền</span></th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr>
-					<td><span contenteditable>Lót PU - 08</span></td>
-					<td><span data-prefix></span><span contenteditable>1</span></td>
-					<td><span contenteditable>Thùng 16kg</span></td>
+					<td><span >Lót PU - 08</span></td>
+					<td><span data-prefix></span><span >1</span></td>
+					<td><span >Thùng 16kg</span></td>
+					<td><span data-prefix></span><span>848 000</span></td>
+					<td><span data-prefix></span><span>8 480 000</span></td>
+				</tr>
+				<tr>
+					<td><span >Lót PU - 08</span></td>
+					<td><span data-prefix></span><span >1</span></td>
+					<td><span >Thùng 16kg</span></td>
+					<td><span data-prefix></span><span>848 000</span></td>
+					<td><span data-prefix></span><span>8 480 000</span></td>
+				</tr>
+				<tr>
+					<td><span >Lót PU - 08</span></td>
+					<td><span data-prefix></span><span >1</span></td>
+					<td><span >Thùng 16kg</span></td>
+					<td><span data-prefix></span><span>848 000</span></td>
+					<td><span data-prefix></span><span>8 480 000</span></td>
+				</tr>
+				<tr>
+					<td><span >Lót PU - 08</span></td>
+					<td><span data-prefix></span><span >1</span></td>
+					<td><span >Thùng 16kg</span></td>
+					<td><span data-prefix></span><span>848 000</span></td>
+					<td><span data-prefix></span><span>8 480 000</span></td>
+				</tr>
+				<tr>
+					<td><span >Lót PU - 08</span></td>
+					<td><span data-prefix></span><span >1</span></td>
+					<td><span >Thùng 16kg</span></td>
+					<td><span data-prefix></span><span>848 000</span></td>
+					<td><span data-prefix></span><span>8 480 000</span></td>
+				</tr>
+				<tr>
+					<td><span >Lót PU - 08</span></td>
+					<td><span data-prefix></span><span >1</span></td>
+					<td><span >Thùng 16kg</span></td>
 					<td><span data-prefix></span><span>848 000</span></td>
 					<td><span data-prefix></span><span>8 480 000</span></td>
 				</tr>
@@ -406,27 +419,27 @@
 		</table>
 		<table class="balance">
 			<tr>
-				<th><span contenteditable>Tổng Tiền</span></th>
+				<th><span >Tổng Tiền</span></th>
 				<td><span data-prefix></span><span>8 480 000</span></td>
 			</tr>
 			<tr>
-				<th><span contenteditable>VAT</span></th>
-				<td><span data-prefix></span><span contenteditable>848 000</span></td>
+				<th><span >VAT</span></th>
+				<td><span data-prefix></span><span >848 000</span></td>
 			</tr>
 			<tr>
-				<th><span contenteditable>Tổng tiền (gồm vat)</span></th>
+				<th><span >Tổng tiền (gồm vat)</span></th>
 				<td><span data-prefix></span><span>9 328 000</span></td>
 			</tr>
 			<tr>
-				<th><span contenteditable>Nợ cũ</span></th>
+				<th><span >Nợ cũ</span></th>
 				<td><span data-prefix></span><span>20 000 000</span></td>
 			</tr>
 			<tr>
-				<th><span contenteditable>Thanh Toán</span></th>
+				<th><span >Thanh Toán</span></th>
 				<td><span data-prefix></span><span>15 000 000</span></td>
 			</tr>
 			<tr>
-				<th><span contenteditable>Còn lại</span></th>
+				<th><span >Còn lại</span></th>
 				<td><span data-prefix></span><span>14 328 000</span></td>
 			</tr>
 		</table>
@@ -434,9 +447,9 @@
 	<table class="inventory">
 		<thead>
 			<tr>
-				<th><span contenteditable>Người Nhận</span></th>
-				<th><span contenteditable>Thủ Kho</span></th>
-				<th><span contenteditable>Người Bán</span></th>
+				<th><span >Người Nhận</span></th>
+				<th><span >Thủ Kho</span></th>
+				<th><span >Người Bán</span></th>
 			</tr>
 		</thead>
 	</table>	

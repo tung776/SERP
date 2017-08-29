@@ -1,4 +1,4 @@
-import logo from '../images/Logo.png';
+import Expo from 'expo';
 
 export default Invoice = (
     customerName,
@@ -12,31 +12,33 @@ export default Invoice = (
     newDebt,
     OrderDetail
 ) => {
+    const logo = Expo.Asset.fromModule(require('../images/Logo.png')).uri;
     console.log('logo = ', logo);
     let htmlOrderDetail = '';
     OrderDetail.forEach((order) => {
         const totalPrice = order.salePrice * order.quantity;
         htmlOrderDetail += `
         <tr>
-            <td><span contenteditable>${order.name}</span></td>
-            <td><span data-prefix></span><span contenteditable>${order.quantity}</span></td>
-            <td><span contenteditable>order.unitName</span></td>
+            <td><span >${order.name}</span></td>
+            <td><span data-prefix></span><span >${order.quantity}</span></td>
+            <td><span >order.unitName</span></td>
             <td><span data-prefix></span><span>${order.salePrice}</span></td>
             <td><span data-prefix></span><span>${totalPrice}</span></td>
         </tr>
         `
     });
     return `
-    <!doctype html>
     <html>
     
     <head>
         <meta charset="utf-8"/>
         <title>Hóa Đơn</title>
+        <link href="${Expo.Asset.fromModule(require('./Roboto-Regular.ttf')).uri}" rel="stylesheet"/>
         <style>
             /* reset */
-    
+           
             * {
+                font-family: 'Roboto', sans-serif;
                 border: 0;
                 box-sizing: content-box;
                 color: inherit;
@@ -46,35 +48,11 @@ export default Invoice = (
                 padding: 0;
                 text-decoration: none;
                 vertical-align: top;
-            }
-            /* content editable */
-    
-            *[contenteditable] {
-                border-radius: 0.25em;
-                min-width: 1em;
-                outline: 0;
-            }
-    
-            *[contenteditable] {
-                cursor: pointer;
-            }
-    
-            *[contenteditable]:hover,
-            *[contenteditable]:focus,
-            td:hover *[contenteditable],
-            td:focus *[contenteditable],
-            img.hover {
-                background: #DEF;
-                box-shadow: 0 0 1em 0.5em #DEF;
-            }
-    
-            span[contenteditable] {
-                display: inline-block;
-            }
+            }   
+            
             /* heading */
     
             h1 {
-                font: bold 100% sans-serif;
                 letter-spacing: 0.5em;
                 text-align: center;
                 text-transform: uppercase;
@@ -82,7 +60,6 @@ export default Invoice = (
             /* table */
     
             table {
-                font-size: 75%;
                 table-layout: fixed;
                 width: 100%;
             }
@@ -172,21 +149,11 @@ export default Invoice = (
                 margin: 0 0 0.25em;
             }
     
-            header span,
-            header img {
-                display: block;
-                float: right;
-            }
-    
+
             header span {
                 max-height: 25%;
                 max-width: 55%;
                 position: relative;
-            }
-    
-            header img {
-                max-height: 30%;
-                max-width: 30%;
             }
     
             header input {
@@ -303,55 +270,6 @@ export default Invoice = (
                 border-color: #999;
                 border-bottom-style: solid;
             }
-            /* javascript */
-    
-            .add,
-            .cut {
-                border-width: 1px;
-                display: block;
-                font-size: .8rem;
-                padding: 0.25em 0.5em;
-                float: left;
-                text-align: center;
-                width: 0.6em;
-            }
-    
-            .add,
-            .cut {
-                background: #9AF;
-                box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-                background-image: -moz-linear-gradient(#00ADEE 5%, #0078A5 100%);
-                background-image: -webkit-linear-gradient(#00ADEE 5%, #0078A5 100%);
-                border-radius: 0.5em;
-                border-color: #0076A3;
-                color: #FFF;
-                cursor: pointer;
-                font-weight: bold;
-                text-shadow: 0 -1px 2px rgba(0, 0, 0, 0.333);
-            }
-    
-            .add {
-                margin: -2.5em 0 0;
-            }
-    
-            .add:hover {
-                background: #00ADEE;
-            }
-    
-            .cut {
-                opacity: 0;
-                position: absolute;
-                top: 0;
-                left: -1.5em;
-            }
-    
-            .cut {
-                -webkit-transition: opacity 100ms ease-in;
-            }
-    
-            tr:hover .cut {
-                opacity: 1;
-            }
     
             @media print {
                 * {
@@ -367,11 +285,7 @@ export default Invoice = (
                 }
                 span:empty {
                     display: none;
-                }
-                .add,
-                .cut {
-                    display: none;
-                }
+                }                
             }
     
             @page {
@@ -380,41 +294,43 @@ export default Invoice = (
         </style>
     </head>
     
-    <body>
+    <body style = "font: ">
         <header>
             <h1>Hóa Đơn</h1>
-            <address contenteditable>
+            <div style = "float: left; font-style: normal; line-height: 1.25; margin: 0 1em 1em 0;" >
                 <p>CÔNG TY CỔ PHẦN KIM KHÍ HÓA CHẤT CÁT TƯỜNG</p>
                 <p>Địa chỉ: 152 Giải Phóng - Cửa Bắc - Nam Định</p>
                 <p>Điệnthoại: 0912250315 - 0916698845 - 0916678845</p>
                 <p>email: sale@soncattuong.com</p>
                 <p>website: www.soncattuong.com</p>
-            </address>
-            <span><img alt="" src="Logo.png"/><input type="file" accept="image/*"/></span>
+            </div>
+            <span style = "max-height: 25%; max-width: 55%; position: relative; display: block; float: right;">
+                <img style = "max-height: 30%; max-width: 30%;" alt="" src="${logo}"/>
+            </span>
         </header>
         <article>
-            <address contenteditable>
+            <div >
                 <p>${customerName}</p>
-            </address>
+            </div>
             <table class="meta">
                 <tr>
-                    <th><span contenteditable>Số Hóa Đơn #</span></th>
-                    <td><span contenteditable>${id}</span></td>
+                    <th><span >Số Hóa Đơn #</span></th>
+                    <td><span >${id}</span></td>
                 </tr>
                 <tr>
-                    <th><span contenteditable>Ngày Lập</span></th>
-                    <td><span contenteditable>${date}</span></td>
+                    <th><span >Ngày Lập</span></th>
+                    <td><span >${date}</span></td>
                 </tr>
     
             </table>
             <table class="inventory">
                 <thead>
                     <tr>
-                        <th style = "width: 220px"><span contenteditable>Tên sản phẩm</span></th>
-                        <th style = "width: 75px"><span contenteditable>Số lượng</span></th>
-                        <th style = "width: 90px"><span contenteditable>Qui cách</span></th>
-                        <th style = "width: 110px"><span contenteditable>Giá bán</span></th>
-                        <th><span contenteditable>Thành Tiền</span></th>
+                        <th style = "width: 220px"><span >Tên sản phẩm</span></th>
+                        <th style = "width: 75px"><span >Số lượng</span></th>
+                        <th style = "width: 90px"><span >Qui cách</span></th>
+                        <th style = "width: 110px"><span >Giá bán</span></th>
+                        <th><span >Thành Tiền</span></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -423,27 +339,27 @@ export default Invoice = (
             </table>
             <table class="balance">
                 <tr>
-                    <th><span contenteditable>Tổng Tiền</span></th>
+                    <th><span >Tổng Tiền</span></th>
                     <td><span data-prefix></span><span>${total}</span></td>
                 </tr>
                 <tr>
-                    <th><span contenteditable>VAT</span></th>
-                    <td><span data-prefix></span><span contenteditable>${vat}</span></td>
+                    <th><span >VAT</span></th>
+                    <td><span data-prefix></span><span >${vat}</span></td>
                 </tr>
                 <tr>
-                    <th><span contenteditable>Tổng tiền (gồm vat)</span></th>
+                    <th><span >Tổng tiền (gồm vat)</span></th>
                     <td><span data-prefix></span><span>${totalIncludeVat}</span></td>
                 </tr>
                 <tr>
-                    <th><span contenteditable>Nợ cũ</span></th>
+                    <th><span >Nợ cũ</span></th>
                     <td><span data-prefix></span><span>${oldDebt}</span></td>
                 </tr>
                 <tr>
-                    <th><span contenteditable>Thanh Toán</span></th>
+                    <th><span >Thanh Toán</span></th>
                     <td><span data-prefix></span><span>${pay}</span></td>
                 </tr>
                 <tr>
-                    <th><span contenteditable>Còn lại</span></th>
+                    <th><span >Còn lại</span></th>
                     <td><span data-prefix></span><span>${newDebt}</span></td>
                 </tr>
             </table>
@@ -451,9 +367,9 @@ export default Invoice = (
         <table class="inventory">
             <thead>
                 <tr>
-                    <th><span contenteditable>Người Nhận</span></th>
-                    <th><span contenteditable>Thủ Kho</span></th>
-                    <th><span contenteditable>Người Bán</span></th>
+                    <th><span >Người Nhận</span></th>
+                    <th><span >Thủ Kho</span></th>
+                    <th><span >Người Bán</span></th>
                 </tr>
             </thead>
         </table>

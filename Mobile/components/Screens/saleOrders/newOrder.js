@@ -543,13 +543,14 @@ class NewSaleOrder extends React.Component {
                                             this.state.date, this.state.total, this.state.totalIncludeVat,
                                             this.state.vat, this.state.oldebt, this.state.pay, this.state.newDebt, saleOrderDetails),
                                         fileName: `invoice-${customerName}-${this.date}`,
-                                        directory: 'saleInvoices'
+                                        directory: 'saleInvoices',
+                                        fonts: ['/fonts/TimesNewRoman.ttf', '/fonts/Verdana.ttf']
                                     };
                                     try {
-                                        console.log('begin printing!!!!!!!!!!!!!');
                                         const results = await RNHTMLtoPDF.convert(options).catch(
                                             e => console.log(e)
                                         );
+                                        console.log('results = ', results);
                                         const jobName = await RNPrint.print(results.filePath);
                                         console.log(`Printing ${jobName} complete!`);
                                     }

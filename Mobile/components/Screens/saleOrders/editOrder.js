@@ -1,4 +1,5 @@
 import React from 'react';
+import Expo from 'expo';
 import { View, Text, ScrollView, TextInput, 
     TouchableOpacity, TouchableWithoutFeedback, 
     Picker, Alert, FlatList, NativeModules } from 'react-native';
@@ -567,15 +568,11 @@ class EditSaleOrder extends React.Component {
                                 } else {
                                     this.state.saleOrderDetails.forEach((order) => {
                                         this.props.units.forEach((unit) => {
-                                            console.log('unit = ', unit);
-                                            console.log('order = ', order);
                                             if (order.unitId == unit.Id) {
                                                 order.unitName = unit.Name
                                             }
-                                        })
+                                        });
                                     });
-                                    console.log('saleOrderDetails = ', this.state.saleOrderDetails);
-                                    console.log('this.props.units = ', this.props.units);
 
                                     let customerName = '';
                                     this.props.customers.forEach((customer) => {
@@ -583,19 +580,31 @@ class EditSaleOrder extends React.Component {
                                             customerName = customer.name;
                                         }
                                     });
+                                    const roboFont = Expo.Asset.fromModule(require('../../../../Shared/templates/Roboto-Regular.ttf')).uri;
+                                    const VerdanaFont = Expo.Asset.fromModule(require('../../../assets/fonts/Verdana.ttf')).uri;
+
                                     let options = {
-                                        html: invoiceTemplate(customerName, this.state.id,
-                                            this.state.date, this.state.total, this.state.totalIncludeVat,
-                                            this.state.vat, this.state.oldebt, this.state.pay, this.state.newDebt, this.state.saleOrderDetails),
-                                        fileName: `invoice-${customerName}-${this.date}`,
-                                        directory: 'saleInvoices'
+                                        html: `
+                                            <h1 class = "test">Công ty cổ phần kim khí hóa chất Cát Tường</h1>
+                                            <h2 style = "color: blue">35 Diên hồng - phường Quang Trung - tp Nam Định</h2>
+                                            <h3 class = "test">Kính chúc quý khách an khang mạnh khỏe</h3>
+                                        `,
+                                        fonts: [roboFont]
                                     };
-                                    console.log('options = ', options);
+                                    // let options = {
+                                    //     html: invoiceTemplate(customerName, this.state.id,
+                                    //         this.state.date, this.state.total, this.state.totalIncludeVat,
+                                    //         this.state.vat, this.state.oldebt, this.state.pay, this.state.newDebt, this.state.saleOrderDetails),
+                                    //     fileName: `invoice-${customerName}-${this.date}`,
+                                    //     base64: true,
+                                    //     directory: "saleInvoices",
+                                    //     fonts: [roboFont]
+                                    // };
                                     try {
-                                        console.log('begin printing!!!!!!!!!!!!!');
                                         const results = await RNHTMLtoPDF.convert(options).catch(
                                             e => console.log(e)
                                         );
+                                        console.log('filePath = ', results.filePath);
                                         const jobName = await RNPrint.print(results.filePath);
                                         console.log(`Printing ${jobName} complete!`);
                                     }
