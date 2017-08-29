@@ -53,6 +53,14 @@ cd android && ./gradlew assembleRelease
 ```
 file apk sẽ năm trong thư mục android/app/build/outputs/apk/app-release.apk
 7. Chi thiết thao khảo tại:
+
+
+xóa dữ liệu tại:
+F:\soncattuong\SERP\android\app\build\intermediates\assets\release
+F:\soncattuong\SERP\android\app\build\tmp
+C:\Users\thanhtung776\.android\build-cache
+C:\Users\thanhtung776\.android\cache
+
 https://facebook.github.io/react-native/docs/signed-apk-android.html
 
 

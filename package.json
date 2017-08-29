@@ -13,7 +13,8 @@
     "test": "jest",
     "build:mobile": "exp build:android",
     "detach": "exp detach",
-    "getLink": "exp build:status"
+    "getLink": "exp build:status",
+    "clear-cache": "rm -rf $TMPDIR/react-* && npm cache clean"
   },
   "main": "./node_modules/react-native-scripts/build/bin/crna-entry.js",
   "dependencies": {
