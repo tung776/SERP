@@ -27,7 +27,8 @@ import {
     formatNumber, 
     unformat } from '../../../../Shared/utils/format';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
-import invoiceTemplate from '../../../../Shared/templates/invoice';
+import invoiceTemplate from '../../../../Shared/templates/saleOrderTemplate';
+import pdfMake from '../../../../Shared/utils/pdfmake.min';
 
 const { RNPrint } = NativeModules;
 class EditSaleOrder extends React.Component {
@@ -566,31 +567,32 @@ class EditSaleOrder extends React.Component {
                                         ]
                                     );
                                 } else {
-                                    this.state.saleOrderDetails.forEach((order) => {
-                                        this.props.units.forEach((unit) => {
-                                            if (order.unitId == unit.Id) {
-                                                order.unitName = unit.Name
-                                            }
-                                        });
-                                    });
+                                    pdfMake.createPdf(invoiceTemplate).download('invoice.pdf');
+                                    // this.state.saleOrderDetails.forEach((order) => {
+                                    //     this.props.units.forEach((unit) => {
+                                    //         if (order.unitId == unit.Id) {
+                                    //             order.unitName = unit.Name
+                                    //         }
+                                    //     });
+                                    // });
 
-                                    let customerName = '';
-                                    this.props.customers.forEach((customer) => {
-                                        if (customer.id == this.state.customerId) {
-                                            customerName = customer.name;
-                                        }
-                                    });
-                                    const roboFont = Expo.Asset.fromModule(require('../../../../Shared/templates/Roboto-Regular.ttf')).uri;
-                                    const VerdanaFont = Expo.Asset.fromModule(require('../../../assets/fonts/Verdana.ttf')).uri;
+                                    // let customerName = '';
+                                    // this.props.customers.forEach((customer) => {
+                                    //     if (customer.id == this.state.customerId) {
+                                    //         customerName = customer.name;
+                                    //     }
+                                    // });
+                                    // const roboFont = Expo.Asset.fromModule(require('../../../../Shared/templates/Roboto-Regular.ttf')).uri;
+                                    // const VerdanaFont = Expo.Asset.fromModule(require('../../../assets/fonts/Verdana.ttf')).uri;
 
-                                    let options = {
-                                        html: `
-                                            <h1 class = "test">Công ty cổ phần kim khí hóa chất Cát Tường</h1>
-                                            <h2 style = "color: blue">35 Diên hồng - phường Quang Trung - tp Nam Định</h2>
-                                            <h3 class = "test">Kính chúc quý khách an khang mạnh khỏe</h3>
-                                        `,
-                                        fonts: [roboFont]
-                                    };
+                                    // let options = {
+                                    //     html: `
+                                    //         <h1 class = "test">Công ty cổ phần kim khí hóa chất Cát Tường</h1>
+                                    //         <h2 style = "color: blue">35 Diên hồng - phường Quang Trung - tp Nam Định</h2>
+                                    //         <h3 class = "test">Kính chúc quý khách an khang mạnh khỏe</h3>
+                                    //     `,
+                                    //     fonts: [roboFont]
+                                    // };
                                     // let options = {
                                     //     html: invoiceTemplate(customerName, this.state.id,
                                     //         this.state.date, this.state.total, this.state.totalIncludeVat,
@@ -600,17 +602,17 @@ class EditSaleOrder extends React.Component {
                                     //     directory: "saleInvoices",
                                     //     fonts: [roboFont]
                                     // };
-                                    try {
-                                        const results = await RNHTMLtoPDF.convert(options).catch(
-                                            e => console.log(e)
-                                        );
-                                        console.log('filePath = ', results.filePath);
-                                        const jobName = await RNPrint.print(results.filePath);
-                                        console.log(`Printing ${jobName} complete!`);
-                                    }
-                                    catch (e) {
-                                        console.log('errors: ', e);
-                                    }
+                                    // try {
+                                    //     const results = await RNHTMLtoPDF.convert(options).catch(
+                                    //         e => console.log(e)
+                                    //     );
+                                    //     console.log('filePath = ', results.filePath);
+                                    //     const jobName = await RNPrint.print(results.filePath);
+                                    //     console.log(`Printing ${jobName} complete!`);
+                                    // }
+                                    // catch (e) {
+                                    //     console.log('errors: ', e);
+                                    // }
                                 }
                             }}
                         >
