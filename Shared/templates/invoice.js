@@ -36,7 +36,6 @@ export default Invoice = (
             /* reset */
            
             * {
-                font: 55px/1 VU Arial;
                 font-family: VU Arial;
                 border: 0;
                 box-sizing: content-box;
@@ -103,7 +102,6 @@ export default Invoice = (
             }
     
             body {
-                font: 80px/1 VU Arial;
                 font-family: VU Arial;
                 box-sizing: border-box;
                 height: 11in;
@@ -295,28 +293,85 @@ export default Invoice = (
         </style>
     </head>
     
-    <body >
-        <header>
-            <h1>Hóa Đơn</h1>
-            <div style = "float: left; font-style: normal; line-height: 1.25; margin: 0 1em 1em 0;" >
-                <p>CÔNG TY CỔ PHẦN KIM KHÍ HÓA CHẤT CÁT TƯỜNG</p>
-                <p>Địa chỉ: 152 Giải Phóng - Cửa Bắc - Nam Định</p>
-                <p>Điệnthoại: 0912250315 - 0916698845 - 0916678845</p>
-                <p>email: sale@soncattuong.com</p>
-                <p>website: www.soncattuong.com</p>
-            </div>
-        </header>
-        
+    <body>
+    <header>
+        <h1>Hóa Đơn</h1>
+        <div style = "float: left; font-style: normal; line-height: 1.25; margin: 0 1em 1em 0;" >
+            <p>CÔNG TY CỔ PHẦN KIM KHÍ HÓA CHẤT CÁT TƯỜNG</p>
+            <p>Địa chỉ: 152 Giải Phóng - Cửa Bắc - Nam Định</p>
+            <p>Điệnthoại: 0912250315 - 0916698845 - 0916678845</p>
+            <p>email: sale@soncattuong.com</p>
+            <p>website: www.soncattuong.com</p>
+        </div>
+        <span style = "max-height: 25%; max-width: 55%; position: relative; display: block; float: right;">
+        </span>
+    </header>
+    <article>
+        <div >
+            <p>${customerName}</p>
+        </div>
+        <table class="meta">
+            <tr>
+                <th><span >Số Hóa Đơn #</span></th>
+                <td><span >${id}</span></td>
+            </tr>
+            <tr>
+                <th><span >Ngày Lập</span></th>
+                <td><span >${date}</span></td>
+            </tr>
+
+        </table>
         <table class="inventory">
             <thead>
                 <tr>
-                    <th><span >Người Nhận</span></th>
-                    <th><span >Thủ Kho</span></th>
-                    <th><span >Người Bán</span></th>
+                    <th style = "width: 220px"><span >Tên sản phẩm</span></th>
+                    <th style = "width: 75px"><span >Số lượng</span></th>
+                    <th style = "width: 90px"><span >Qui cách</span></th>
+                    <th style = "width: 110px"><span >Giá bán</span></th>
+                    <th><span >Thành Tiền</span></th>
                 </tr>
             </thead>
+            <tbody>
+                ${htmlOrderDetail}
+            </tbody>
         </table>
-    </body>
+        <table class="balance">
+            <tr>
+                <th><span >Tổng Tiền</span></th>
+                <td><span data-prefix></span><span>${total}</span></td>
+            </tr>
+            <tr>
+                <th><span >VAT</span></th>
+                <td><span data-prefix></span><span >${vat}</span></td>
+            </tr>
+            <tr>
+                <th><span >Tổng tiền (gồm vat)</span></th>
+                <td><span data-prefix></span><span>${totalIncludeVat}</span></td>
+            </tr>
+            <tr>
+                <th><span >Nợ cũ</span></th>
+                <td><span data-prefix></span><span>${oldDebt}</span></td>
+            </tr>
+            <tr>
+                <th><span >Thanh Toán</span></th>
+                <td><span data-prefix></span><span>${pay}</span></td>
+            </tr>
+            <tr>
+                <th><span >Còn lại</span></th>
+                <td><span data-prefix></span><span>${newDebt}</span></td>
+            </tr>
+        </table>
+    </article>
+    <table class="inventory">
+        <thead>
+            <tr>
+                <th><span >Người Nhận</span></th>
+                <th><span >Thủ Kho</span></th>
+                <th><span >Người Bán</span></th>
+            </tr>
+        </thead>
+    </table>
+</body>
     
     </html>
     `

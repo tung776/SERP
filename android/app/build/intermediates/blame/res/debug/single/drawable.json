@@ -44,12 +44,12 @@
         "source": "C:\\Users\\thanhtung776\\.android\\build-cache\\645df1b8341c0149d924cb48dc6d51a2cd0b3877\\output\\res\\drawable\\abc_ic_go_search_api_material.xml"
     },
     {
-        "merged": "F:\\soncattuong\\SERP\\android\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\common_google_signin_btn_text_light.xml",
-        "source": "C:\\Users\\thanhtung776\\.android\\build-cache\\3a318bfdf474b5fb0b10f0a5001f7eb54753b5df\\output\\res\\drawable\\common_google_signin_btn_text_light.xml"
-    },
-    {
         "merged": "F:\\soncattuong\\SERP\\android\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\com_facebook_button_send_background.xml",
         "source": "C:\\Users\\thanhtung776\\.android\\build-cache\\f8268f69fbd1a513f36976e50552b394c2755dba\\output\\res\\drawable\\com_facebook_button_send_background.xml"
+    },
+    {
+        "merged": "F:\\soncattuong\\SERP\\android\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\common_google_signin_btn_text_light.xml",
+        "source": "C:\\Users\\thanhtung776\\.android\\build-cache\\3a318bfdf474b5fb0b10f0a5001f7eb54753b5df\\output\\res\\drawable\\common_google_signin_btn_text_light.xml"
     },
     {
         "merged": "F:\\soncattuong\\SERP\\android\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_switch_thumb_material.xml",

@@ -495,11 +495,13 @@ class NewSaleOrder extends React.Component {
                                             customerName = customer.name;
                                         }
                                     });
-                                    const vuarial = 'http://192.168.56.1:19001/assets/Mobile/assets/fonts/vuarial.ttf';
-                                    // const vuarial = Expo.Asset.fromModule(require('../../../assets/fonts/vuarial.ttf')).uri;
+                                    // const vuarial = 'http://192.168.56.1:19001/assets/Mobile/assets/fonts/vuarial.ttf';
+                                    const vuarial = Expo.Asset.fromModule(require('../../../assets/fonts/vuarial.ttf')).uri;
+                                    let fontPath = vuarial.split("?");
+                                    console.log(fontPath[0]);
                                     // const htmlFilePath = "http://192.168.56.1:19001/assets/Shared/templates/index.html";
                                     
-                                    console.log('font path = ', vuarial);
+                                    console.log('font path = ', fontPath[0]);
                                     
                                     let options = {
                                         html: invoiceTemplate(customerName, this.state.id,
@@ -507,7 +509,7 @@ class NewSaleOrder extends React.Component {
                                             this.state.vat, this.state.oldebt, this.state.pay, this.state.newDebt, saleOrderDetails),
                                         // htmlFilePath,
                                         fileName: "invoice",
-                                        fonts: [vuarial]
+                                        fonts: [fontPath[0]]
                                     };
                                     try {
                                         const results = await RNHTMLtoPDF.convert(options).catch(

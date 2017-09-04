@@ -4,12 +4,12 @@
         "source": "C:\\Users\\thanhtung776\\.android\\build-cache\\645df1b8341c0149d924cb48dc6d51a2cd0b3877\\output\\res\\layout\\notification_action_tombstone.xml"
     },
     {
-        "merged": "F:\\soncattuong\\SERP\\android\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_screen_simple.xml",
-        "source": "C:\\Users\\thanhtung776\\.android\\build-cache\\645df1b8341c0149d924cb48dc6d51a2cd0b3877\\output\\res\\layout\\abc_screen_simple.xml"
-    },
-    {
         "merged": "F:\\soncattuong\\SERP\\android\\app\\build\\intermediates\\res\\merged\\debug\\layout\\support_simple_spinner_dropdown_item.xml",
         "source": "C:\\Users\\thanhtung776\\.android\\build-cache\\645df1b8341c0149d924cb48dc6d51a2cd0b3877\\output\\res\\layout\\support_simple_spinner_dropdown_item.xml"
+    },
+    {
+        "merged": "F:\\soncattuong\\SERP\\android\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_screen_simple.xml",
+        "source": "C:\\Users\\thanhtung776\\.android\\build-cache\\645df1b8341c0149d924cb48dc6d51a2cd0b3877\\output\\res\\layout\\abc_screen_simple.xml"
     },
     {
         "merged": "F:\\soncattuong\\SERP\\android\\app\\build\\intermediates\\res\\merged\\debug\\layout\\notification_template_part_time.xml",
@@ -32,12 +32,12 @@
         "source": "C:\\Users\\thanhtung776\\.android\\build-cache\\882c183ef4d46e1a9a06f6597ae831c944e2258e\\output\\res\\layout\\redbox_item_frame.xml"
     },
     {
-        "merged": "F:\\soncattuong\\SERP\\android\\app\\build\\intermediates\\res\\merged\\debug\\layout\\dev_loading_view.xml",
-        "source": "C:\\Users\\thanhtung776\\.android\\build-cache\\882c183ef4d46e1a9a06f6597ae831c944e2258e\\output\\res\\layout\\dev_loading_view.xml"
-    },
-    {
         "merged": "F:\\soncattuong\\SERP\\android\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_activity_chooser_view.xml",
         "source": "C:\\Users\\thanhtung776\\.android\\build-cache\\645df1b8341c0149d924cb48dc6d51a2cd0b3877\\output\\res\\layout\\abc_activity_chooser_view.xml"
+    },
+    {
+        "merged": "F:\\soncattuong\\SERP\\android\\app\\build\\intermediates\\res\\merged\\debug\\layout\\dev_loading_view.xml",
+        "source": "C:\\Users\\thanhtung776\\.android\\build-cache\\882c183ef4d46e1a9a06f6597ae831c944e2258e\\output\\res\\layout\\dev_loading_view.xml"
     },
     {
         "merged": "F:\\soncattuong\\SERP\\android\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_alert_dialog_material.xml",
