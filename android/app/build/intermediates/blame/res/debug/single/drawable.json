@@ -64,10 +64,6 @@
         "source": "C:\\Users\\thanhtung776\\.android\\build-cache\\645df1b8341c0149d924cb48dc6d51a2cd0b3877\\output\\res\\drawable\\notification_bg_low.xml"
     },
     {
-        "merged": "F:\\soncattuong\\SERP\\android\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\loading_status_bar_background.xml",
-        "source": "C:\\Users\\thanhtung776\\.android\\build-cache\\6cd7bd6ae663b97acdaf0116a5f22c1b005ef3c8\\output\\res\\drawable\\loading_status_bar_background.xml"
-    },
-    {
         "merged": "F:\\soncattuong\\SERP\\android\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_ic_arrow_drop_right_black_24dp.xml",
         "source": "C:\\Users\\thanhtung776\\.android\\build-cache\\645df1b8341c0149d924cb48dc6d51a2cd0b3877\\output\\res\\drawable\\abc_ic_arrow_drop_right_black_24dp.xml"
     },
@@ -174,10 +170,6 @@
     {
         "merged": "F:\\soncattuong\\SERP\\android\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\com_facebook_button_like_background.xml",
         "source": "C:\\Users\\thanhtung776\\.android\\build-cache\\f8268f69fbd1a513f36976e50552b394c2755dba\\output\\res\\drawable\\com_facebook_button_like_background.xml"
-    },
-    {
-        "merged": "F:\\soncattuong\\SERP\\android\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\crop_image_menu_crop_stub.xml",
-        "source": "C:\\Users\\thanhtung776\\.android\\build-cache\\5df379b2fc4934e7d90a37751068f01c245bf059\\output\\res\\drawable\\crop_image_menu_crop_stub.xml"
     },
     {
         "merged": "F:\\soncattuong\\SERP\\android\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_list_selector_background_transition_holo_dark.xml",

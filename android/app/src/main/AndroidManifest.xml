@@ -19,7 +19,7 @@
       </intent-filter>
 
       <intent-filter>
-        <data android:scheme="expdc48b5fcded34a9386b83d3aefc5b6eb"/>
+        <data android:scheme="expbf79830854a04488a0cc44c2c2a645f2"/>
 
         <action android:name="android.intent.action.VIEW"/>
 

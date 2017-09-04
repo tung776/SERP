@@ -12,8 +12,6 @@ export default Invoice = (
     newDebt,
     OrderDetail
 ) => {
-    const logo = Expo.Asset.fromModule(require('../images/Logo.png')).uri;
-    console.log('logo = ', logo);
     let htmlOrderDetail = '';
     OrderDetail.forEach((order) => {
         const totalPrice = order.salePrice * order.quantity;
@@ -33,12 +31,13 @@ export default Invoice = (
     <head>
         <meta charset="utf-8"/>
         <title>Hóa Đơn</title>
-        <link href="${Expo.Asset.fromModule(require('./Roboto-Regular.ttf')).uri}" rel="stylesheet"/>
+        <link href="${Expo.Asset.fromModule(require('../../Mobile/assets/fonts/vuarial.ttf')).uri}" rel="stylesheet"/>
         <style>
             /* reset */
            
             * {
-                font-family: 'Roboto', sans-serif;
+                font: 55px/1 VU Arial;
+                font-family: VU Arial;
                 border: 0;
                 box-sizing: content-box;
                 color: inherit;
@@ -104,6 +103,8 @@ export default Invoice = (
             }
     
             body {
+                font: 80px/1 VU Arial;
+                font-family: VU Arial;
                 box-sizing: border-box;
                 height: 11in;
                 margin: 0 auto;
@@ -294,7 +295,7 @@ export default Invoice = (
         </style>
     </head>
     
-    <body style = "font: ">
+    <body >
         <header>
             <h1>Hóa Đơn</h1>
             <div style = "float: left; font-style: normal; line-height: 1.25; margin: 0 1em 1em 0;" >
@@ -304,66 +305,8 @@ export default Invoice = (
                 <p>email: sale@soncattuong.com</p>
                 <p>website: www.soncattuong.com</p>
             </div>
-            <span style = "max-height: 25%; max-width: 55%; position: relative; display: block; float: right;">
-                <img style = "max-height: 30%; max-width: 30%;" alt="" src="${logo}"/>
-            </span>
         </header>
-        <article>
-            <div >
-                <p>${customerName}</p>
-            </div>
-            <table class="meta">
-                <tr>
-                    <th><span >Số Hóa Đơn #</span></th>
-                    <td><span >${id}</span></td>
-                </tr>
-                <tr>
-                    <th><span >Ngày Lập</span></th>
-                    <td><span >${date}</span></td>
-                </tr>
-    
-            </table>
-            <table class="inventory">
-                <thead>
-                    <tr>
-                        <th style = "width: 220px"><span >Tên sản phẩm</span></th>
-                        <th style = "width: 75px"><span >Số lượng</span></th>
-                        <th style = "width: 90px"><span >Qui cách</span></th>
-                        <th style = "width: 110px"><span >Giá bán</span></th>
-                        <th><span >Thành Tiền</span></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${htmlOrderDetail}
-                </tbody>
-            </table>
-            <table class="balance">
-                <tr>
-                    <th><span >Tổng Tiền</span></th>
-                    <td><span data-prefix></span><span>${total}</span></td>
-                </tr>
-                <tr>
-                    <th><span >VAT</span></th>
-                    <td><span data-prefix></span><span >${vat}</span></td>
-                </tr>
-                <tr>
-                    <th><span >Tổng tiền (gồm vat)</span></th>
-                    <td><span data-prefix></span><span>${totalIncludeVat}</span></td>
-                </tr>
-                <tr>
-                    <th><span >Nợ cũ</span></th>
-                    <td><span data-prefix></span><span>${oldDebt}</span></td>
-                </tr>
-                <tr>
-                    <th><span >Thanh Toán</span></th>
-                    <td><span data-prefix></span><span>${pay}</span></td>
-                </tr>
-                <tr>
-                    <th><span >Còn lại</span></th>
-                    <td><span data-prefix></span><span>${newDebt}</span></td>
-                </tr>
-            </table>
-        </article>
+        
         <table class="inventory">
             <thead>
                 <tr>

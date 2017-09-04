@@ -5,15 +5,89 @@ import dataversionHelper from '../helpers/saveNewDataversion';
 import fs from 'fs';
 import path from 'path';
 import moment from '../../Shared/utils/moment';
+import DocDefinition from '../../Shared/templates/saleOrderTemplate';
 
+const Printer = require('pdfmake');
 const SaleOrderRouter = Router();
+
+SaleOrderRouter.get('/getInvoice/:orderId', async (req, res) => {
+    const orderId = req.params.orderId;
+
+    const saleOrder = await Knex.raw(`
+        SELECT s."id", s."date" , s."customerId", s."userId", s."debtCustomerId", s."orderTypeId", 
+        s."title", s."total", s."totalIncludeVat", s."vat", d."newDebt", d."oldDebt", d."minus"
+        FROM "saleOrders" as s
+        INNER JOIN "debtCustomers" AS d ON d."id" = s."debtCustomerId" 
+        WHERE s."id" = ${orderId};                      
+    `);
+    const saleOrderDetails = await Knex.raw(`
+        SELECT s."id" , s."saleOrderId", s."productId", s."unitId", u."name" AS "unitName", s."quantity", s."salePrice", p."name" 
+        FROM "saleOderDetails" as s
+        INNER JOIN "products" AS p ON p."id" = s."productId" 
+        INNER JOIN "units" AS u ON u."id" = s."unitId" 
+        WHERE s."saleOrderId" = ${orderId};                      
+    `);
+    
+    const {
+        id,
+        customerId,
+        date,
+        total,
+        totalIncludeVat,
+        vat,
+        oldDebt,
+        minus,
+        newDebt,
+    } = saleOrder.rows[0];
+
+    const customer = await Knex('customers')
+    .where({ id: customerId });
+
+    const fontDescriptors = {
+        Roboto: {
+            normal: path.resolve('Shared/templates/fonts/Roboto.ttf'),
+            bold: path.resolve('Shared/templates/fonts/Roboto_medium.ttf'),
+            italics: path.resolve('Shared/templates/fonts/Roboto_medium.ttf'),
+            bolditalics: path.resolve('Shared/templates/fonts/Roboto_medium.ttf'),
+        }
+    };
+
+    const printer = new Printer(fontDescriptors);
+    const docDefin = DocDefinition(
+        id,
+        customer.name,
+        date,
+        total,
+        totalIncludeVat,
+        vat,
+        oldDebt,
+        minus,
+        newDebt,
+        saleOrderDetails.rows
+    );
+    // console.log('docDefin = ', docDefin);
+    let doc = printer.createPdfKitDocument(docDefin);
+    // res.send('success');
+    let chunks = [];
+    let result;
+
+    doc.on('data', function (chunk) {
+        chunks.push(chunk);
+    });
+    doc.on('end', function () {
+        result = Buffer.concat(chunks);
+
+        res.contentType('application/pdf');
+        res.send(result);
+    });
+    doc.end();
+});
 
 SaleOrderRouter.post('/getById', async (req, res) => {
     const { orderId } = req.body;
 
     try {
-        console.log('id = ', orderId);
-        const saleOrder = await await Knex.raw(`
+        const saleOrder = await Knex.raw(`
             SELECT s."id", s."date" , s."customerId", s."userId", s."debtCustomerId", s."orderTypeId", 
             s."title", s."total", s."totalIncludeVat", s."vat", d."newDebt", d."oldDebt", d."minus"
             FROM "saleOrders" as s

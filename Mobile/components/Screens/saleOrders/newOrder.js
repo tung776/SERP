@@ -18,6 +18,7 @@ import db from '../../../database/sqliteConfig';
 import { formatMoney, formatNumber, unformat } from '../../../../Shared/utils/format';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import invoiceTemplate from '../../../../Shared/templates/invoice';
+import Expo from 'expo';
 
 const { RNPrint } = NativeModules;
 
@@ -164,50 +165,6 @@ class NewSaleOrder extends React.Component {
         });
     }
 
-    async onPrintInvoice() {
-        if (this.state.id == '') {
-            Alert.alert(
-                'Thông Báo',
-                'Bạn cần lưu hóa đơn trước khi in',
-                [                    
-                    { text: 'Ok' },
-                ]
-            );
-        } else {
-            let saleOrderDetails = [...this.state.saleOderDetails];
-            saleOrderDetails.forEach((order) => {
-                this.props.units.forEach((unit) => {
-                    if (order.unitId == unit.id) {
-                        order.unitName = unit.name
-                    }
-                })
-            })
-            let customerName = '';
-            this.props.customers.forEach((customer) => {
-                if (customer.id == this.state.customerId) {
-                    customerName = customer.name;
-                }
-            })
-            let options = {
-                html: invoiceTemplate(customerName, this.state.id,
-                    this.state.date, this.state.total, this.state.totalIncludeVat,
-                    this.state.vat, this.state.oldebt, this.state.newDebt, saleOrderDetails),
-                fileName: `invoice-${customerName}-${this.date}`,
-                directory: 'saleInvoices'
-            };
-            try {
-                console.log('begin printing!!!!!!!!!!!!!');
-                const results = await RNHTMLtoPDF.convert(options).catch(
-                    e => console.log(e)
-                );
-                const jobName = await RNPrint.print(results.filePath);
-                console.log(`Printing ${jobName} complete!`);
-            }
-            catch (e) {
-                console.log('errors: ', e);
-            }
-        }
-    }
 
     renderProductList() {
         if (this.state.saleOderDetails) {
@@ -537,14 +494,20 @@ class NewSaleOrder extends React.Component {
                                         if (customer.id == this.state.customerId) {
                                             customerName = customer.name;
                                         }
-                                    })
+                                    });
+                                    const vuarial = 'http://192.168.56.1:19001/assets/Mobile/assets/fonts/vuarial.ttf';
+                                    // const vuarial = Expo.Asset.fromModule(require('../../../assets/fonts/vuarial.ttf')).uri;
+                                    // const htmlFilePath = "http://192.168.56.1:19001/assets/Shared/templates/index.html";
+                                    
+                                    console.log('font path = ', vuarial);
+                                    
                                     let options = {
                                         html: invoiceTemplate(customerName, this.state.id,
                                             this.state.date, this.state.total, this.state.totalIncludeVat,
                                             this.state.vat, this.state.oldebt, this.state.pay, this.state.newDebt, saleOrderDetails),
-                                        fileName: `invoice-${customerName}-${this.date}`,
-                                        directory: 'saleInvoices',
-                                        fonts: ['/fonts/TimesNewRoman.ttf', '/fonts/Verdana.ttf']
+                                        // htmlFilePath,
+                                        fileName: "invoice",
+                                        fonts: [vuarial]
                                     };
                                     try {
                                         const results = await RNHTMLtoPDF.convert(options).catch(

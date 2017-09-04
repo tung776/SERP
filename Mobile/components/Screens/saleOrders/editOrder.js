@@ -1,8 +1,10 @@
 import React from 'react';
 import Expo from 'expo';
-import { View, Text, ScrollView, TextInput, 
-    TouchableOpacity, TouchableWithoutFeedback, 
-    Picker, Alert, FlatList, NativeModules } from 'react-native';
+import {
+    View, Text, ScrollView, TextInput,
+    TouchableOpacity, TouchableWithoutFeedback,
+    Picker, Alert, FlatList, NativeModules
+} from 'react-native';
 import DatePicker from 'react-native-datepicker';
 import { Actions } from 'react-native-router-flux';
 import Header from '../../commons/Header';
@@ -11,24 +13,26 @@ import { connect } from 'react-redux';
 import stylesCommon from '../../../styles';
 import { Ionicons } from '@expo/vector-icons';
 import { loadCustomerListDataFromSqlite } from '../../../actions/customerAction';
-import { 
-    loadUnits, 
-    toggleProductToSelectList, 
-    resetSelectedProducts 
+import {
+    loadUnits,
+    toggleProductToSelectList,
+    resetSelectedProducts
 } from '../../../actions/productActions';
-import { 
-    loadSaleOrderById, 
-    SaleOrderUpdate, 
-    SaleOrderChange } from '../../../actions/saleOrderActions';
+import {
+    loadSaleOrderById,
+    SaleOrderUpdate,
+    SaleOrderChange
+} from '../../../actions/saleOrderActions';
 import db from '../../../database/sqliteConfig';
 import moment from '../../../../Shared/utils/moment';
-import { 
-    formatMoney, 
-    formatNumber, 
-    unformat } from '../../../../Shared/utils/format';
+import {
+    formatMoney,
+    formatNumber,
+    unformat
+} from '../../../../Shared/utils/format';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
-import invoiceTemplate from '../../../../Shared/templates/saleOrderTemplate';
-import pdfMake from '../../../../Shared/utils/pdfmake.min';
+// var PdfPrinter = require('pdfmake/src/printer');
+import { URL } from '../../../../env';
 
 const { RNPrint } = NativeModules;
 class EditSaleOrder extends React.Component {
@@ -51,7 +55,6 @@ class EditSaleOrder extends React.Component {
         editMode: false
     }
     componentWillMount() {
-
         this.props.loadSaleOrderById(this.props.saleOrder.id);
 
         if (!this.props.customers || this.props.customers.length == 0) {
@@ -63,7 +66,6 @@ class EditSaleOrder extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-
         let saleOrderDetails = [];
         if (nextProps.selectedProducts && nextProps.selectedProducts.length > 0) {
             saleOrderDetails = nextProps.selectedProducts;
@@ -102,8 +104,17 @@ class EditSaleOrder extends React.Component {
                             newDebt, oldebt, saleOrderDetails
                         } = this.state;
                         this.props.AddNewSaleOrder({
-                            date, title, customerId, total, totalIncludeVat, vat, pay,
-                            newDebt, oldebt, saleOrderDetails, debtCustomerId: this.state.debtCustomers.id,
+                            date,
+                            title,
+                            customerId,
+                            total,
+                            totalIncludeVat,
+                            vat,
+                            pay,
+                            newDebt,
+                            oldebt,
+                            saleOrderDetails,
+                            debtCustomerId: this.state.debtCustomers.id,
                             user: this.props.user
                         });
                     }
@@ -123,8 +134,7 @@ class EditSaleOrder extends React.Component {
             if (customer.id === customerId) {
                 this.props.loadQuocteByCustomerOrCustomerGroupIdFromSqlite(customerId, customer.customerGroupId);
             }
-
-        })
+        });
         this.setState({ customerId });
     }
 
@@ -180,51 +190,6 @@ class EditSaleOrder extends React.Component {
 
     editModeToggle() {
         this.setState({ editMode: !this.state.editMode });
-    }
-
-    async onPrintInvoice() {
-        if (this.state.id == '') {
-            Alert.alert(
-                'Thông Báo',
-                'Bạn cần lưu hóa đơn trước khi in',
-                [
-                    { text: 'Ok' },
-                ]
-            );
-        } else {
-            let saleOrderDetails = [...this.state.saleOderDetails];
-            saleOrderDetails.forEach((order) => {
-                this.props.units((unit) => {
-                    if (order.unitId == unit.id) {
-                        order.unitName = unit.name
-                    }
-                })
-            })
-            let customerName = '';
-            this.props.customers.forEach((customer) => {
-                if (customer.id == this.state.customerId) {
-                    customerName = customer.name;
-                }
-            })
-            let options = {
-                html: invoiceTemplate(customerName, this.state.id,
-                    this.state.date, this.state.total, this.state.totalIncludeVat,
-                    this.state.vat, this.state.oldebt, this.state.newDebt, saleOrderDetails),
-                fileName: `invoice-${customerName}-${this.date}`,
-                directory: 'saleInvoices'
-            };
-            try {
-                console.log('begin printing!!!!!!!!!!!!!');
-                const results = await RNHTMLtoPDF.convert(options).catch(
-                    e => console.log(e)
-                );
-                const jobName = await RNPrint.print(results.filePath);
-                console.log(`Printing ${jobName} complete!`);
-            }
-            catch (e) {
-                console.log('errors: ', e);
-            }
-        }
     }
 
     renderProductList() {
@@ -380,7 +345,7 @@ class EditSaleOrder extends React.Component {
                                     // ... You can check the source to find the other keys.
                                 }}
                                 onDateChange={(date) => {
-                                    this.setState({ date })
+                                    this.setState({ date });
                                 }}
                             />
                         </View>
@@ -393,7 +358,7 @@ class EditSaleOrder extends React.Component {
                                 selectedValue={this.state.customerId}
                                 onValueChange={
                                     (itemValue, itemIndex) => {
-                                        this.setState({ customerId: itemValue })
+                                        this.setState({ customerId: itemValue });
                                     }
                                 }
                             >
@@ -415,7 +380,7 @@ class EditSaleOrder extends React.Component {
                                 style={styles.textInput}
                                 blurOnSubmit
                                 value={this.state.title}
-                                onChangeText={text => this.setState({ title: title })}
+                                onChangeText={text => this.setState({ title })}
                                 type="Text"
                                 name="title"
                                 placeholder="Tiêu đề hóa đơn"
@@ -468,7 +433,6 @@ class EditSaleOrder extends React.Component {
                                         totalIncludeVat,
                                         vat
                                     });
-
                                 }}
                                 type="Text"
                                 name="pay"
@@ -486,8 +450,7 @@ class EditSaleOrder extends React.Component {
         }
         return (
             <View />
-        )
-
+        );
     }
     //Tham khảo select (picker) react native: 
     //https://facebook.github.io/react-native/docs/picker.html
@@ -562,57 +525,26 @@ class EditSaleOrder extends React.Component {
                                     Alert.alert(
                                         'Thông Báo',
                                         'Bạn cần lưu hóa đơn trước khi in',
-                                        [                    
+                                        [
                                             { text: 'Ok' },
                                         ]
                                     );
                                 } else {
-                                    pdfMake.createPdf(invoiceTemplate).download('invoice.pdf');
-                                    // this.state.saleOrderDetails.forEach((order) => {
-                                    //     this.props.units.forEach((unit) => {
-                                    //         if (order.unitId == unit.Id) {
-                                    //             order.unitName = unit.Name
-                                    //         }
-                                    //     });
-                                    // });
+                                    Expo.FileSystem.downloadAsync(
+                                        `${URL}/api/order/getInvoice/${this.state.id}`,
+                                        'file:///data/user/0/com.soncattuong.serp/cache/invoice.pdf'
+                                    )
+                                        .then(({ uri }) => {
+                                            console.log('file path = ', uri);
 
-                                    // let customerName = '';
-                                    // this.props.customers.forEach((customer) => {
-                                    //     if (customer.id == this.state.customerId) {
-                                    //         customerName = customer.name;
-                                    //     }
-                                    // });
-                                    // const roboFont = Expo.Asset.fromModule(require('../../../../Shared/templates/Roboto-Regular.ttf')).uri;
-                                    // const VerdanaFont = Expo.Asset.fromModule(require('../../../assets/fonts/Verdana.ttf')).uri;
+                                            RNPrint.print(uri).then(() => {
+                                                console.log(`Printing complete!`);
+                                            });
+                                        })
+                                        .catch(error => {
+                                            console.error(error);
+                                        });
 
-                                    // let options = {
-                                    //     html: `
-                                    //         <h1 class = "test">Công ty cổ phần kim khí hóa chất Cát Tường</h1>
-                                    //         <h2 style = "color: blue">35 Diên hồng - phường Quang Trung - tp Nam Định</h2>
-                                    //         <h3 class = "test">Kính chúc quý khách an khang mạnh khỏe</h3>
-                                    //     `,
-                                    //     fonts: [roboFont]
-                                    // };
-                                    // let options = {
-                                    //     html: invoiceTemplate(customerName, this.state.id,
-                                    //         this.state.date, this.state.total, this.state.totalIncludeVat,
-                                    //         this.state.vat, this.state.oldebt, this.state.pay, this.state.newDebt, this.state.saleOrderDetails),
-                                    //     fileName: `invoice-${customerName}-${this.date}`,
-                                    //     base64: true,
-                                    //     directory: "saleInvoices",
-                                    //     fonts: [roboFont]
-                                    // };
-                                    // try {
-                                    //     const results = await RNHTMLtoPDF.convert(options).catch(
-                                    //         e => console.log(e)
-                                    //     );
-                                    //     console.log('filePath = ', results.filePath);
-                                    //     const jobName = await RNPrint.print(results.filePath);
-                                    //     console.log(`Printing ${jobName} complete!`);
-                                    // }
-                                    // catch (e) {
-                                    //     console.log('errors: ', e);
-                                    // }
                                 }
                             }}
                         >
