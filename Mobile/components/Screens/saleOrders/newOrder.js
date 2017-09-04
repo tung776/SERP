@@ -495,13 +495,16 @@ class NewSaleOrder extends React.Component {
                                             customerName = customer.name;
                                         }
                                     });
+                                    // const vuarialFont = await Expo.Font.loadAsync({     
+                                    //     vuarial: require('./Mobile/assets/fonts/vuarial.ttf'),
+                                    //   });
                                     // const vuarial = 'http://192.168.56.1:19001/assets/Mobile/assets/fonts/vuarial.ttf';
-                                    const vuarial = Expo.Asset.fromModule(require('../../../assets/fonts/vuarial.ttf')).uri;
+                                    const vuarial = await Expo.Asset.fromModule(require('../../../assets/fonts/vuarial.ttf')).uri;
+                                    console.log("vuarial ", vuarial);
                                     let fontPath = vuarial.split("?");
-                                    console.log(fontPath[0]);
+                                    console.log("fontPath = ", fontPath);
                                     // const htmlFilePath = "http://192.168.56.1:19001/assets/Shared/templates/index.html";
                                     
-                                    console.log('font path = ', fontPath[0]);
                                     
                                     let options = {
                                         html: invoiceTemplate(customerName, this.state.id,

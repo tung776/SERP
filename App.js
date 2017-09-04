@@ -36,13 +36,13 @@ function cacheImages(images) {
     if (typeof image === 'string') {
       return Image.prefetch(image);
     }
-    return Expo.Asset.fromModule(image).downloadAsync();
+    // return Expo.Asset.fromModule(image).downloadAsync();
   });
 }
 
-function cacheFonts(fonts) {
-  return fonts.map(font => Expo.Font.loadAsync(font));
-}
+// function cacheFonts(fonts) {
+//   return fonts.map(font => Expo.Font.loadAsync(font));
+// }
 let store;
 if (__DEV__) {
   store = createStore(Reducers, compose(
@@ -58,24 +58,24 @@ export default class serp extends React.Component {
   state = { appIsReady: false }
 
   async componentWillMount() {
-    await Expo.Font.loadAsync({     
-      vuarial: require('./Mobile/assets/fonts/vuarial.ttf'),
-    });
+    // await Expo.Font.loadAsync({     
+    //   vuarial: require('./Mobile/assets/fonts/vuarial.ttf'),
+    // });
 
-    const imageAssets = cacheImages([
-      require('./Shared/images/Logo.png')
-    ]);
+    // const imageAssets = cacheImages([
+    //   // require('./Shared/images/Shared/images/Logo.png')
+    // ]);
 
-    const fontAssets = cacheFonts([
-      FontAwesome.font,
-      Ionicons.font,
-      require('./Mobile/assets/fonts/vuarial.ttf')
-    ]);
+    // const fontAssets = cacheFonts([
+    //   FontAwesome.font,
+    //   Ionicons.font,
+    //   require('./Mobile/assets/fonts/vuarial.ttf')
+    // ]);
 
-    await Promise.all([
-      ...imageAssets,
-      ...fontAssets,
-    ]);
+    // await Promise.all([
+    //   ...imageAssets,
+    //   ...fontAssets,
+    // ]);
 
     const token = await AsyncStorage.getItem('jwtToken');
 
