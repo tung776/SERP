@@ -19,6 +19,8 @@ import { formatMoney, formatNumber, unformat } from '../../../../Shared/utils/fo
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import invoiceTemplate from '../../../../Shared/templates/invoice';
 import Expo from 'expo';
+import { Asset } from '../../../utils/enhancedAsset';
+import { fontUrl } from '../../../../env';
 
 const { RNPrint } = NativeModules;
 
@@ -38,9 +40,11 @@ class NewSaleOrder extends React.Component {
         newDebt: 0,
         oldebt: 0,
         saleOderDetails: [],
-        quoctes: []
+        quoctes: [],
+        fontLocation: null,
+        appIsReady: false,
     }
-    componentWillMount() {
+    async componentWillMount() {
         this.props.resetData();
         if (!this.props.customers || this.props.customers.length == 0) {
             this.props.loadCustomerListDataFromSqlite();
@@ -77,6 +81,7 @@ class NewSaleOrder extends React.Component {
             quoctes: nextProps.quocteList
         });
     }
+
 
     onSave() {
         Alert.alert(
@@ -424,7 +429,7 @@ class NewSaleOrder extends React.Component {
             <View style={styles.container}>
                 <Header>
                     <Text style={styles.headTitle} >Tạo Hóa Đơn Bán</Text>
-                </Header>
+                </Header>                
                 <View style={styles.body}>
                     <TouchableOpacity
                         style={styles.Btn}
@@ -495,16 +500,6 @@ class NewSaleOrder extends React.Component {
                                             customerName = customer.name;
                                         }
                                     });
-                                    // const vuarialFont = await Expo.Font.loadAsync({     
-                                    //     vuarial: require('./Mobile/assets/fonts/vuarial.ttf'),
-                                    //   });
-                                    // const vuarial = 'http://192.168.56.1:19001/assets/Mobile/assets/fonts/vuarial.ttf';
-                                    const vuarial = await Expo.Asset.fromModule(require('../../../assets/fonts/vuarial.ttf')).uri;
-                                    console.log("vuarial ", vuarial);
-                                    let fontPath = vuarial.split("?");
-                                    console.log("fontPath = ", fontPath);
-                                    // const htmlFilePath = "http://192.168.56.1:19001/assets/Shared/templates/index.html";
-                                    
                                     
                                     let options = {
                                         html: invoiceTemplate(customerName, this.state.id,
@@ -512,7 +507,7 @@ class NewSaleOrder extends React.Component {
                                             this.state.vat, this.state.oldebt, this.state.pay, this.state.newDebt, saleOrderDetails),
                                         // htmlFilePath,
                                         fileName: "invoice",
-                                        fonts: [fontPath[0]]
+                                        fonts: [fontUrl]
                                     };
                                     try {
                                         const results = await RNHTMLtoPDF.convert(options).catch(

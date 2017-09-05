@@ -6,7 +6,7 @@
 
     <uses-sdk
         android:minSdkVersion="19"
-        android:targetSdkVersion="24" />
+        android:targetSdkVersion="25" />
 
     <supports-screens
         android:anyDensity="true"
@@ -72,11 +72,12 @@
     <uses-permission android:name="com.sonyericsson.home.permission.BROADCAST_BADGE" /> <!-- for apex -->
     <uses-permission android:name="com.anddoes.launcher.permission.UPDATE_COUNT" /> <!-- for solid -->
     <uses-permission android:name="com.majeur.launcher.permission.UPDATE_BADGE" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <meta-data
         android:name="android.support.VERSION"
         android:value="25.3.1" />
+
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <uses-feature
         android:glEsVersion="0x00020000"
@@ -102,7 +103,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <intent-filter>
-                <data android:scheme="expbf79830854a04488a0cc44c2c2a645f2" />
+                <data android:scheme="exp450c318af81649e2bad138aa54b59494" />
 
                 <action android:name="android.intent.action.VIEW" />
 

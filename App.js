@@ -25,6 +25,7 @@ import Routers from './Mobile/Routers';
 import Reducers from './Mobile/Reducers';
 import { loadMenusData } from './Mobile/actions/menuAction';
 import SqlService from './Mobile/database/sqliteService';
+import { fontUrl } from './env';
 
 // const db = SQLite.openDatabase({ name: 'SERP3.db' });
 // console.log("__DEV__ = ", __DEV__);
@@ -46,7 +47,7 @@ function cacheImages(images) {
 let store;
 if (__DEV__) {
   store = createStore(Reducers, compose(
-    applyMiddleware(ReduxThunk, reduxLogger)));
+    applyMiddleware(ReduxThunk/*, reduxLogger*/)));
 } else {
   store = createStore(Reducers, compose(
     applyMiddleware(ReduxThunk)));
@@ -62,20 +63,15 @@ export default class serp extends React.Component {
     //   vuarial: require('./Mobile/assets/fonts/vuarial.ttf'),
     // });
 
-    // const imageAssets = cacheImages([
-    //   // require('./Shared/images/Shared/images/Logo.png')
-    // ]);
+    const fontAssets = cacheImages([
+      fontUrl
+    ]);
 
-    // const fontAssets = cacheFonts([
-    //   FontAwesome.font,
-    //   Ionicons.font,
-    //   require('./Mobile/assets/fonts/vuarial.ttf')
-    // ]);
 
-    // await Promise.all([
-    //   ...imageAssets,
-    //   ...fontAssets,
-    // ]);
+    await Promise.all([
+      ...fontUrl,
+      // ...fontAssets,
+    ]);
 
     const token = await AsyncStorage.getItem('jwtToken');
 

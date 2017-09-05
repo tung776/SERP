@@ -15,13 +15,11 @@ ADDED from F:\soncattuong\SERP\android\app\src\main\AndroidManifest.xml:2:1-32:1
 		INJECTED from F:\soncattuong\SERP\android\app\src\main\AndroidManifest.xml
 application
 ADDED from F:\soncattuong\SERP\android\app\src\main\AndroidManifest.xml:5:3-30:17
-MERGED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:65:5-81:19
+MERGED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:65:5-81:19
 MERGED from [com.google.android.gms:play-services-analytics:9.8.0] C:\Users\thanhtung776\.android\build-cache\c11d630344d6249719d3ff07c8c800c5344cf01f\output\AndroidManifest.xml:26:5-19
 MERGED from [com.google.android.gms:play-services-analytics-impl:9.8.0] C:\Users\thanhtung776\.android\build-cache\bf8a4708a52a1fd3160822813237d9a84fb9c2a1\output\AndroidManifest.xml:26:5-19
 MERGED from [com.google.android.gms:play-services-gcm:9.8.0] C:\Users\thanhtung776\.android\build-cache\f3ac88f1a27ebeffde408e59073876441ebf5bdb\output\AndroidManifest.xml:23:5-19
 MERGED from [com.google.android.gms:play-services-iid:9.8.0] C:\Users\thanhtung776\.android\build-cache\2d710cf8de95655585606a666f0a756732a2d804\output\AndroidManifest.xml:23:5-19
-MERGED from [com.facebook.react:react-native:17.0.0] C:\Users\thanhtung776\.android\build-cache\882c183ef4d46e1a9a06f6597ae831c944e2258e\output\AndroidManifest.xml:13:5-20
-MERGED from [com.facebook.soloader:soloader:0.1.0] C:\Users\thanhtung776\.android\build-cache\681239ad349bf67dcae7864f4894a5d6c07f4815\output\AndroidManifest.xml:3:3-17
 MERGED from [com.google.android.gms:play-services-fitness:9.8.0] C:\Users\thanhtung776\.android\build-cache\f256b2eb0c1fdb3ee1930c9a7a9f3e00d8b88d88\output\AndroidManifest.xml:18:5-19
 MERGED from [com.google.android.gms:play-services-location:9.8.0] C:\Users\thanhtung776\.android\build-cache\2943f593f3c4f57030b678b8fcb44ba21dc7b58b\output\AndroidManifest.xml:4:5-19
 MERGED from [com.crashlytics.sdk.android:crashlytics:2.5.5] C:\Users\thanhtung776\.android\build-cache\865e12e878b8983b60ed47ef7b759e269da1ac9c\output\AndroidManifest.xml:11:5-20
@@ -29,7 +27,11 @@ MERGED from [com.crashlytics.sdk.android:crashlytics-core:2.3.8] C:\Users\thanht
 MERGED from [com.crashlytics.sdk.android:answers:1.3.6] C:\Users\thanhtung776\.android\build-cache\1a190a5a67c5620b6a52ccd1f1a4b4a3fe224a90\output\AndroidManifest.xml:11:5-20
 MERGED from [io.fabric.sdk.android:fabric:1.3.10] C:\Users\thanhtung776\.android\build-cache\efe2df83020dc9c866b17c9a1d4d627a7201916f\output\AndroidManifest.xml:27:5-20
 MERGED from [com.crashlytics.sdk.android:beta:1.1.4] C:\Users\thanhtung776\.android\build-cache\1e048326c98f635a54ba084901c533c0d69d2657\output\AndroidManifest.xml:11:5-20
+MERGED from [com.android.support:exifinterface:25.3.1] C:\Users\thanhtung776\.android\build-cache\16c482406f7e7251cdffa566432626098ce57054\output\AndroidManifest.xml:26:5-20
+MERGED from [com.facebook.react:react-native:20.0.0] C:\Users\thanhtung776\.android\build-cache\0df1769238c829a72b62f61c535ebf4a77e24f55\output\AndroidManifest.xml:13:5-20
+MERGED from [com.facebook.soloader:soloader:0.1.0] C:\Users\thanhtung776\.android\build-cache\681239ad349bf67dcae7864f4894a5d6c07f4815\output\AndroidManifest.xml:3:3-17
 MERGED from [org.webkit:android-jsc:r174650] C:\Users\thanhtung776\.android\build-cache\a72d960a91dc5af925844cdf6d4fe6268c6b8d01\output\AndroidManifest.xml:2:3-17
+MERGED from [com.google.android:cameraview:1.0.0] C:\Users\thanhtung776\.android\build-cache\c0c8af23d0207d017201f2d0f1ba4fcbd56374ff\output\AndroidManifest.xml:32:5-20
 MERGED from [com.airbnb.android:lottie:2.0.0-beta3] C:\Users\thanhtung776\.android\build-cache\5e48090073501de1940159540c718d6b82acbfc4\output\AndroidManifest.xml:10:5-20
 MERGED from [com.crashlytics.sdk.android:answers-shim:0.0.6] C:\Users\thanhtung776\.android\build-cache\2c6b665e4173f0a66582cecac89ce1dd4c202fc8\output\AndroidManifest.xml:11:5-20
 MERGED from [com.google.android.gms:play-services-auth:9.8.0] C:\Users\thanhtung776\.android\build-cache\deffd789db414e592120f042d40c1d00663975ed\output\AndroidManifest.xml:19:5-25:19
@@ -106,22 +108,17 @@ uses-sdk
 INJECTED from F:\soncattuong\SERP\android\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 MERGED from [android:react-native-print:unspecified] F:\soncattuong\SERP\node_modules\react-native-print\android\build\intermediates\bundles\default\AndroidManifest.xml:7:5-9:41
 MERGED from [android:react-native-html-to-pdf:unspecified] F:\soncattuong\SERP\node_modules\react-native-html-to-pdf\android\build\intermediates\bundles\default\AndroidManifest.xml:7:5-9:41
-MERGED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:7:5-9:41
+MERGED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:7:5-9:41
 MERGED from [com.facebook.fresco:animated-webp:1.0.1] C:\Users\thanhtung776\.android\build-cache\29ea106db95dcc49364e383847c1c1311d2909f5\output\AndroidManifest.xml:5:5-7:41
 MERGED from [com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta1] C:\Users\thanhtung776\.android\build-cache\2934d8d16c1a2d7a761e033d19edac227c8f0724\output\AndroidManifest.xml:20:5-22:41
 MERGED from [com.google.android.gms:play-services-analytics:9.8.0] C:\Users\thanhtung776\.android\build-cache\c11d630344d6249719d3ff07c8c800c5344cf01f\output\AndroidManifest.xml:17:5-42
 MERGED from [com.google.android.gms:play-services-analytics-impl:9.8.0] C:\Users\thanhtung776\.android\build-cache\bf8a4708a52a1fd3160822813237d9a84fb9c2a1\output\AndroidManifest.xml:17:5-42
-MERGED from [com.theartofdev.edmodo:android-image-cropper:2.3.1] C:\Users\thanhtung776\.android\build-cache\436b8f4c0c50819e7276decac96ade09c506b228\output\AndroidManifest.xml:8:5-10:41
 MERGED from [com.google.android.gms:play-services-gcm:9.8.0] C:\Users\thanhtung776\.android\build-cache\f3ac88f1a27ebeffde408e59073876441ebf5bdb\output\AndroidManifest.xml:17:5-42
 MERGED from [com.google.android.gms:play-services-iid:9.8.0] C:\Users\thanhtung776\.android\build-cache\2d710cf8de95655585606a666f0a756732a2d804\output\AndroidManifest.xml:17:5-42
 MERGED from [com.facebook.fresco:webpsupport:1.0.1] C:\Users\thanhtung776\.android\build-cache\a1b9479847198ae1b2145c2845d4f63a0b47fbe5\output\AndroidManifest.xml:5:5-7:41
 MERGED from [me.leolin:ShortcutBadger:1.1.4] C:\Users\thanhtung776\.android\build-cache\fba9b5ba28e316ae0558a9749dbe86e2d9fdf29a\output\AndroidManifest.xml:7:5-9:41
 MERGED from [com.yqritc:android-scalablevideoview:1.0.1] C:\Users\thanhtung776\.android\build-cache\d170232586344a7c85527af58abd94cf9f0401c7\output\AndroidManifest.xml:8:5-10:41
 MERGED from [com.android.support:multidex:1.0.1] C:\Users\thanhtung776\.android\build-cache\c22d58f0b82a7a345a407b4f00697cff46fb9069\output\AndroidManifest.xml:18:5-42
-MERGED from [com.facebook.react:react-native:17.0.0] C:\Users\thanhtung776\.android\build-cache\882c183ef4d46e1a9a06f6597ae831c944e2258e\output\AndroidManifest.xml:7:5-9:41
-MERGED from [com.facebook.fbui.textlayoutbuilder:textlayoutbuilder:1.0.0] C:\Users\thanhtung776\.android\build-cache\35431b3691053b64f88d4a358bcb95547a47bc51\output\AndroidManifest.xml:14:5-16:41
-MERGED from [com.facebook.soloader:soloader:0.1.0] C:\Users\thanhtung776\.android\build-cache\681239ad349bf67dcae7864f4894a5d6c07f4815\output\AndroidManifest.xml:2:3-70
-MERGED from [com.facebook.fresco:imagepipeline-okhttp3:1.0.1] C:\Users\thanhtung776\.android\build-cache\bb6f91c67932b688fe8609f8f7925bfc9b00c39b\output\AndroidManifest.xml:5:5-7:41
 MERGED from [com.facebook.fresco:imagepipeline-okhttp:1.0.1] C:\Users\thanhtung776\.android\build-cache\97d8c3eb38319748883aac5bff0e00f624f2eae9\output\AndroidManifest.xml:5:5-7:41
 MERGED from [com.google.android.gms:play-services-fitness:9.8.0] C:\Users\thanhtung776\.android\build-cache\f256b2eb0c1fdb3ee1930c9a7a9f3e00d8b88d88\output\AndroidManifest.xml:17:5-42
 MERGED from [com.google.android.gms:play-services-location:9.8.0] C:\Users\thanhtung776\.android\build-cache\2943f593f3c4f57030b678b8fcb44ba21dc7b58b\output\AndroidManifest.xml:3:5-42
@@ -130,8 +127,16 @@ MERGED from [com.crashlytics.sdk.android:crashlytics-core:2.3.8] C:\Users\thanht
 MERGED from [com.crashlytics.sdk.android:answers:1.3.6] C:\Users\thanhtung776\.android\build-cache\1a190a5a67c5620b6a52ccd1f1a4b4a3fe224a90\output\AndroidManifest.xml:7:5-43
 MERGED from [io.fabric.sdk.android:fabric:1.3.10] C:\Users\thanhtung776\.android\build-cache\efe2df83020dc9c866b17c9a1d4d627a7201916f\output\AndroidManifest.xml:23:5-43
 MERGED from [com.crashlytics.sdk.android:beta:1.1.4] C:\Users\thanhtung776\.android\build-cache\1e048326c98f635a54ba084901c533c0d69d2657\output\AndroidManifest.xml:7:5-43
+MERGED from [com.theartofdev.edmodo:android-image-cropper:2.4.7] C:\Users\thanhtung776\.android\build-cache\5df379b2fc4934e7d90a37751068f01c245bf059\output\AndroidManifest.xml:8:5-10:41
+MERGED from [com.android.support:exifinterface:25.3.1] C:\Users\thanhtung776\.android\build-cache\16c482406f7e7251cdffa566432626098ce57054\output\AndroidManifest.xml:20:5-43
+MERGED from [com.facebook.react:react-native:20.0.0] C:\Users\thanhtung776\.android\build-cache\0df1769238c829a72b62f61c535ebf4a77e24f55\output\AndroidManifest.xml:7:5-9:41
+MERGED from [com.facebook.fbui.textlayoutbuilder:textlayoutbuilder:1.0.0] C:\Users\thanhtung776\.android\build-cache\35431b3691053b64f88d4a358bcb95547a47bc51\output\AndroidManifest.xml:14:5-16:41
+MERGED from [com.facebook.soloader:soloader:0.1.0] C:\Users\thanhtung776\.android\build-cache\681239ad349bf67dcae7864f4894a5d6c07f4815\output\AndroidManifest.xml:2:3-70
+MERGED from [com.facebook.fresco:imagepipeline-okhttp3:1.0.1] C:\Users\thanhtung776\.android\build-cache\bb6f91c67932b688fe8609f8f7925bfc9b00c39b\output\AndroidManifest.xml:5:5-7:41
+MERGED from [expolib_v1.com.facebook.fresco:expolib_v1-imagepipeline-okhttp3:1.0.1] C:\Users\thanhtung776\.android\build-cache\26b413c8b24c5a382b3b4c7b63fcf80326c1b8d2\output\AndroidManifest.xml:5:5-7:41
 MERGED from [com.facebook.fresco:fresco:1.0.1] C:\Users\thanhtung776\.android\build-cache\e5b829f72f5f7eb37050c17c262e0e5c26f29355\output\AndroidManifest.xml:5:5-7:41
 MERGED from [com.facebook.fresco:drawee:1.0.1] C:\Users\thanhtung776\.android\build-cache\7b26a76c9839600be7355bbff6e231704635906d\output\AndroidManifest.xml:5:5-7:41
+MERGED from [com.google.android:cameraview:1.0.0] C:\Users\thanhtung776\.android\build-cache\c0c8af23d0207d017201f2d0f1ba4fcbd56374ff\output\AndroidManifest.xml:19:5-21:41
 MERGED from [com.airbnb.android:lottie:2.0.0-beta3] C:\Users\thanhtung776\.android\build-cache\5e48090073501de1940159540c718d6b82acbfc4\output\AndroidManifest.xml:6:5-8:41
 MERGED from [io.branch.sdk.android:library:2.6.1] C:\Users\thanhtung776\.android\build-cache\f58e878636ce46ee5acbe45ff887659168515e7f\output\AndroidManifest.xml:7:5-9:41
 MERGED from [com.crashlytics.sdk.android:answers-shim:0.0.6] C:\Users\thanhtung776\.android\build-cache\2c6b665e4173f0a66582cecac89ce1dd4c202fc8\output\AndroidManifest.xml:7:5-9:41
@@ -176,19 +181,19 @@ MERGED from [io.nlopez.smartlocation:library:3.2.11] C:\Users\thanhtung776\.andr
 		INJECTED from F:\soncattuong\SERP\android\app\src\main\AndroidManifest.xml
 		INJECTED from F:\soncattuong\SERP\android\app\src\main\AndroidManifest.xml
 supports-screens
-ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:11:5-17:24
+ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:11:5-17:24
 	android:largeScreens
-		ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:13:9-36
+		ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:13:9-36
 	android:smallScreens
-		ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:15:9-36
+		ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:15:9-36
 	android:normalScreens
-		ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:14:9-37
+		ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:14:9-37
 	android:xlargeScreens
-		ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:16:9-37
+		ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:16:9-37
 	android:anyDensity
-		ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:12:9-34
+		ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:12:9-34
 uses-permission#android.permission.INTERNET
-ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:19:5-67
+ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:19:5-67
 MERGED from [com.google.android.gms:play-services-analytics:9.8.0] C:\Users\thanhtung776\.android\build-cache\c11d630344d6249719d3ff07c8c800c5344cf01f\output\AndroidManifest.xml:20:5-66
 MERGED from [com.google.android.gms:play-services-analytics-impl:9.8.0] C:\Users\thanhtung776\.android\build-cache\bf8a4708a52a1fd3160822813237d9a84fb9c2a1\output\AndroidManifest.xml:20:5-66
 MERGED from [com.google.android.gms:play-services-gcm:9.8.0] C:\Users\thanhtung776\.android\build-cache\f3ac88f1a27ebeffde408e59073876441ebf5bdb\output\AndroidManifest.xml:21:5-66
@@ -202,149 +207,152 @@ MERGED from [com.google.android.gms:play-services-ads-lite:9.8.0] C:\Users\thanh
 MERGED from [net.openid:appauth:0.4.1] C:\Users\thanhtung776\.android\build-cache\700912557261ed2444a59aca01094e50d05e32b7\output\AndroidManifest.xml:24:5-67
 MERGED from [com.google.android.gms:play-services-maps:9.8.0] C:\Users\thanhtung776\.android\build-cache\3d4a03e2b696d055f1f00a130b90ac002b253e6c\output\AndroidManifest.xml:20:5-66
 	android:name
-		ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:19:22-64
+		ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:19:22-64
 uses-permission#com.android.launcher.permission.INSTALL_SHORTCUT
-ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:20:5-88
+ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:20:5-88
 	android:name
-		ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:20:22-85
+		ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:20:22-85
 uses-permission#android.permission.SYSTEM_ALERT_WINDOW
-ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:21:5-78
-MERGED from [com.facebook.react:react-native:17.0.0] C:\Users\thanhtung776\.android\build-cache\882c183ef4d46e1a9a06f6597ae831c944e2258e\output\AndroidManifest.xml:11:5-78
+ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:21:5-78
+MERGED from [com.facebook.react:react-native:20.0.0] C:\Users\thanhtung776\.android\build-cache\0df1769238c829a72b62f61c535ebf4a77e24f55\output\AndroidManifest.xml:11:5-78
 	android:name
-		ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:21:22-75
+		ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:21:22-75
 uses-permission#android.permission.WAKE_LOCK
-ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:22:5-68
+ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:22:5-68
 MERGED from [com.google.android.gms:play-services-analytics:9.8.0] C:\Users\thanhtung776\.android\build-cache\c11d630344d6249719d3ff07c8c800c5344cf01f\output\AndroidManifest.xml:24:5-67
 MERGED from [com.google.android.gms:play-services-analytics-impl:9.8.0] C:\Users\thanhtung776\.android\build-cache\bf8a4708a52a1fd3160822813237d9a84fb9c2a1\output\AndroidManifest.xml:24:5-67
 	android:name
-		ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:22:22-65
+		ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:22:22-65
 uses-permission#host.exp.exponent.permission.C2D_MESSAGE
-ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:23:5-80
+ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:23:5-80
 	android:name
-		ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:23:22-77
+		ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:23:22-77
 uses-permission#android.permission.READ_INTERNAL_STORAGE
-ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:24:5-80
+ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:24:5-80
 	android:name
-		ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:24:22-77
+		ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:24:22-77
 uses-permission#android.permission.ACCESS_NETWORK_STATE
-ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:25:5-79
+ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:25:5-79
 MERGED from [com.google.android.gms:play-services-analytics:9.8.0] C:\Users\thanhtung776\.android\build-cache\c11d630344d6249719d3ff07c8c800c5344cf01f\output\AndroidManifest.xml:21:5-78
 MERGED from [com.google.android.gms:play-services-analytics-impl:9.8.0] C:\Users\thanhtung776\.android\build-cache\bf8a4708a52a1fd3160822813237d9a84fb9c2a1\output\AndroidManifest.xml:21:5-78
 MERGED from [com.google.android.gms:play-services-ads-lite:9.8.0] C:\Users\thanhtung776\.android\build-cache\7bbb444f656387ee870cb83a6f643ffcab0a230b\output\AndroidManifest.xml:20:5-78
 MERGED from [com.google.android.gms:play-services-maps:9.8.0] C:\Users\thanhtung776\.android\build-cache\3d4a03e2b696d055f1f00a130b90ac002b253e6c\output\AndroidManifest.xml:19:5-78
 MERGED from [io.nlopez.smartlocation:library:3.2.11] C:\Users\thanhtung776\.android\build-cache\cbf0887a1ea627557adbf0d7f4d046664105b8c0\output\AndroidManifest.xml:13:5-79
 	android:name
-		ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:25:22-76
+		ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:25:22-76
 uses-permission#android.permission.MANAGE_DOCUMENTS
-ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:26:5-75
+ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:26:5-75
 	android:name
-		ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:26:22-72
+		ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:26:22-72
 uses-permission#android.permission.USE_FINGERPRINT
-ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:27:5-74
+ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:27:5-74
 	android:name
-		ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:27:22-71
+		ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:27:22-71
 uses-permission#android.permission.READ_CONTACTS
-ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:30:5-72
+ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:30:5-72
 	android:name
-		ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:30:22-69
+		ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:30:22-69
 uses-permission#android.permission.READ_EXTERNAL_STORAGE
-ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:31:5-80
+ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:31:5-80
 	android:name
-		ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:31:22-77
+		ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:31:22-77
 uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
-ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:32:5-81
+ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:32:5-81
 	android:name
-		ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:32:22-78
+		ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:32:22-78
 uses-permission#android.permission.CAMERA
-ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:33:5-65
+ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:33:5-65
+MERGED from [com.google.android:cameraview:1.0.0] C:\Users\thanhtung776\.android\build-cache\c0c8af23d0207d017201f2d0f1ba4fcbd56374ff\output\AndroidManifest.xml:23:5-65
 	android:name
-		ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:33:22-62
+		ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:33:22-62
 uses-permission#android.permission.ACCESS_COARSE_LOCATION
-ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:34:5-81
+ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:34:5-81
 MERGED from [io.nlopez.smartlocation:library:3.2.11] C:\Users\thanhtung776\.android\build-cache\cbf0887a1ea627557adbf0d7f4d046664105b8c0\output\AndroidManifest.xml:12:5-81
 	android:name
-		ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:34:22-78
+		ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:34:22-78
 uses-permission#android.permission.ACCESS_FINE_LOCATION
-ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:35:5-79
+ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:35:5-79
 MERGED from [io.nlopez.smartlocation:library:3.2.11] C:\Users\thanhtung776\.android\build-cache\cbf0887a1ea627557adbf0d7f4d046664105b8c0\output\AndroidManifest.xml:14:5-79
 	android:name
-		ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:35:22-76
+		ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:35:22-76
 uses-feature#android.hardware.camera
-ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:37:5-39:36
+ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:37:5-39:36
+MERGED from [com.google.android:cameraview:1.0.0] C:\Users\thanhtung776\.android\build-cache\c0c8af23d0207d017201f2d0f1ba4fcbd56374ff\output\AndroidManifest.xml:25:5-27:36
 	android:required
-		ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:39:9-33
+		ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:39:9-33
 	android:name
-		ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:38:9-47
+		ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:38:9-47
 uses-feature#android.hardware.camera.autofocus
-ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:40:5-42:36
+ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:40:5-42:36
+MERGED from [com.google.android:cameraview:1.0.0] C:\Users\thanhtung776\.android\build-cache\c0c8af23d0207d017201f2d0f1ba4fcbd56374ff\output\AndroidManifest.xml:28:5-30:36
 	android:required
-		ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:42:9-33
+		ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:42:9-33
 	android:name
-		ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:41:9-57
+		ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:41:9-57
 uses-feature#android.hardware.location
-ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:43:5-45:36
+ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:43:5-45:36
 	android:required
-		ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:45:9-33
+		ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:45:9-33
 	android:name
-		ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:44:9-49
+		ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:44:9-49
 uses-feature#android.hardware.location.gps
-ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:46:5-48:36
+ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:46:5-48:36
 	android:required
-		ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:48:9-33
+		ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:48:9-33
 	android:name
-		ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:47:9-53
+		ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:47:9-53
 uses-feature#android.hardware.location.network
-ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:49:5-51:36
+ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:49:5-51:36
 	android:required
-		ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:51:9-33
+		ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:51:9-33
 	android:name
-		ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:50:9-57
+		ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:50:9-57
 uses-feature#android.hardware.wifi
-ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:52:5-54:36
+ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:52:5-54:36
 	android:required
-		ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:54:9-33
+		ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:54:9-33
 	android:name
-		ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:53:9-45
+		ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:53:9-45
 uses-feature#android.hardware.microphone
-ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:55:5-57:36
+ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:55:5-57:36
 	android:required
-		ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:57:9-33
+		ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:57:9-33
 	android:name
-		ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:56:9-51
+		ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:56:9-51
 uses-feature#android.hardware.telephony
-ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:58:5-60:36
+ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:58:5-60:36
 	android:required
-		ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:60:9-33
+		ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:60:9-33
 	android:name
-		ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:59:9-50
+		ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:59:9-50
 uses-feature#android.hardware.bluetooth
-ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:61:5-63:36
+ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:61:5-63:36
 	android:required
-		ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:63:9-33
+		ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:63:9-33
 	android:name
-		ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:62:9-50
+		ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:62:9-50
 receiver#host.exp.exponent.notifications.ScheduledNotificationReceiver
-ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:68:9-70:40
+ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:68:9-70:40
 	android:exported
-		ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:70:13-37
+		ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:70:13-37
 	android:name
-		ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:69:13-89
+		ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:69:13-89
 provider#android.support.v4.content.FileProvider
-ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:72:9-80:20
+ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:72:9-80:20
 	android:authorities
-		ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:74:13-60
+		ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:74:13-60
 	android:grantUriPermissions
-		ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:76:13-47
+		ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:76:13-47
 	android:exported
-		ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:75:13-37
+		ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:75:13-37
 	android:name
-		ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:73:13-67
+		ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:73:13-67
 meta-data#android.support.FILE_PROVIDER_PATHS
-ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:77:13-79:58
+ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:77:13-79:58
 	android:resource
-		ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:79:17-55
+		ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:79:17-55
 	android:name
-		ADDED from [host.exp.exponent:expoview:17.0.0] C:\Users\thanhtung776\.android\build-cache\a3f507c5c19c1ab25b462f677a4e17db2c345c35\output\AndroidManifest.xml:78:17-67
+		ADDED from [host.exp.exponent:expoview:20.0.0] C:\Users\thanhtung776\.android\build-cache\8f00c1a97911b1ebb88274885a107f356918d41f\output\AndroidManifest.xml:78:17-67
 uses-permission#com.google.android.c2dm.permission.RECEIVE
 ADDED from [com.google.android.gms:play-services-gcm:9.8.0] C:\Users\thanhtung776\.android\build-cache\f3ac88f1a27ebeffde408e59073876441ebf5bdb\output\AndroidManifest.xml:20:5-81
 MERGED from [com.google.android.gms:play-services-iid:9.8.0] C:\Users\thanhtung776\.android\build-cache\2d710cf8de95655585606a666f0a756732a2d804\output\AndroidManifest.xml:20:5-81
@@ -378,6 +386,23 @@ uses-permission#com.majeur.launcher.permission.UPDATE_BADGE
 ADDED from [me.leolin:ShortcutBadger:1.1.4] C:\Users\thanhtung776\.android\build-cache\fba9b5ba28e316ae0558a9749dbe86e2d9fdf29a\output\AndroidManifest.xml:33:5-83
 	android:name
 		ADDED from [me.leolin:ShortcutBadger:1.1.4] C:\Users\thanhtung776\.android\build-cache\fba9b5ba28e316ae0558a9749dbe86e2d9fdf29a\output\AndroidManifest.xml:33:22-80
+meta-data#android.support.VERSION
+ADDED from [com.android.support:exifinterface:25.3.1] C:\Users\thanhtung776\.android\build-cache\16c482406f7e7251cdffa566432626098ce57054\output\AndroidManifest.xml:22:5-24:34
+MERGED from [com.android.support:customtabs:25.3.1] C:\Users\thanhtung776\.android\build-cache\8276187c816b42672e5fa21a81fe4b89201f358d\output\AndroidManifest.xml:22:5-24:34
+MERGED from [com.android.support:appcompat-v7:25.3.1] C:\Users\thanhtung776\.android\build-cache\645df1b8341c0149d924cb48dc6d51a2cd0b3877\output\AndroidManifest.xml:25:5-27:34
+MERGED from [com.android.support:animated-vector-drawable:25.3.1] C:\Users\thanhtung776\.android\build-cache\e964fcc500ad24f3069cc55152e0f1aafd7cb53a\output\AndroidManifest.xml:22:5-24:34
+MERGED from [com.android.support:support-vector-drawable:25.3.1] C:\Users\thanhtung776\.android\build-cache\3340c48ce1af6f765942591fc21b2bc5270db796\output\AndroidManifest.xml:22:5-24:34
+MERGED from [com.android.support:recyclerview-v7:25.3.1] C:\Users\thanhtung776\.android\build-cache\30c04f9eaa555193ff2f09d6f2699cb2f0157f4b\output\AndroidManifest.xml:22:5-24:34
+MERGED from [com.android.support:support-v4:25.3.1] C:\Users\thanhtung776\.android\build-cache\1efca0018df77891fad4bd185a27aaeba1f971bb\output\AndroidManifest.xml:25:5-27:34
+MERGED from [com.android.support:support-fragment:25.3.1] C:\Users\thanhtung776\.android\build-cache\63558e29c58734f9c0934c685348e6749bf23ec7\output\AndroidManifest.xml:25:5-27:34
+MERGED from [com.android.support:support-media-compat:25.3.1] C:\Users\thanhtung776\.android\build-cache\856cc107f6d31bfc728d759348c0bb6718e5a711\output\AndroidManifest.xml:25:5-27:34
+MERGED from [com.android.support:support-core-ui:25.3.1] C:\Users\thanhtung776\.android\build-cache\a07017ea32c34c511c9ba7f9afa5f1206b999c69\output\AndroidManifest.xml:25:5-27:34
+MERGED from [com.android.support:support-core-utils:25.3.1] C:\Users\thanhtung776\.android\build-cache\5f38df7feb0eeef304cf8ba960941945e932b436\output\AndroidManifest.xml:25:5-27:34
+MERGED from [com.android.support:support-compat:25.3.1] C:\Users\thanhtung776\.android\build-cache\2f3ed3ebb9819e3bd2a2d1881492ceac14bba4aa\output\AndroidManifest.xml:25:5-27:34
+	android:value
+		ADDED from [com.android.support:exifinterface:25.3.1] C:\Users\thanhtung776\.android\build-cache\16c482406f7e7251cdffa566432626098ce57054\output\AndroidManifest.xml:24:9-31
+	android:name
+		ADDED from [com.android.support:exifinterface:25.3.1] C:\Users\thanhtung776\.android\build-cache\16c482406f7e7251cdffa566432626098ce57054\output\AndroidManifest.xml:23:9-47
 uses-permission#android.permission.READ_PHONE_STATE
 IMPLIED from F:\soncattuong\SERP\android\app\src\main\AndroidManifest.xml:2:1-32:12 reason: org.webkit.android_jsc has a targetSdkVersion < 4
 activity#com.google.android.gms.auth.api.signin.internal.SignInHubActivity
@@ -428,22 +453,6 @@ ADDED from [net.openid:appauth:0.4.1] C:\Users\thanhtung776\.android\build-cache
 		ADDED from [net.openid:appauth:0.4.1] C:\Users\thanhtung776\.android\build-cache\700912557261ed2444a59aca01094e50d05e32b7\output\AndroidManifest.xml:34:13-36
 	android:name
 		ADDED from [net.openid:appauth:0.4.1] C:\Users\thanhtung776\.android\build-cache\700912557261ed2444a59aca01094e50d05e32b7\output\AndroidManifest.xml:33:13-74
-meta-data#android.support.VERSION
-ADDED from [com.android.support:customtabs:25.3.1] C:\Users\thanhtung776\.android\build-cache\8276187c816b42672e5fa21a81fe4b89201f358d\output\AndroidManifest.xml:22:5-24:34
-MERGED from [com.android.support:appcompat-v7:25.3.1] C:\Users\thanhtung776\.android\build-cache\645df1b8341c0149d924cb48dc6d51a2cd0b3877\output\AndroidManifest.xml:25:5-27:34
-MERGED from [com.android.support:animated-vector-drawable:25.3.1] C:\Users\thanhtung776\.android\build-cache\e964fcc500ad24f3069cc55152e0f1aafd7cb53a\output\AndroidManifest.xml:22:5-24:34
-MERGED from [com.android.support:support-vector-drawable:25.3.1] C:\Users\thanhtung776\.android\build-cache\3340c48ce1af6f765942591fc21b2bc5270db796\output\AndroidManifest.xml:22:5-24:34
-MERGED from [com.android.support:recyclerview-v7:25.3.1] C:\Users\thanhtung776\.android\build-cache\30c04f9eaa555193ff2f09d6f2699cb2f0157f4b\output\AndroidManifest.xml:22:5-24:34
-MERGED from [com.android.support:support-v4:25.3.1] C:\Users\thanhtung776\.android\build-cache\1efca0018df77891fad4bd185a27aaeba1f971bb\output\AndroidManifest.xml:25:5-27:34
-MERGED from [com.android.support:support-fragment:25.3.1] C:\Users\thanhtung776\.android\build-cache\63558e29c58734f9c0934c685348e6749bf23ec7\output\AndroidManifest.xml:25:5-27:34
-MERGED from [com.android.support:support-media-compat:25.3.1] C:\Users\thanhtung776\.android\build-cache\856cc107f6d31bfc728d759348c0bb6718e5a711\output\AndroidManifest.xml:25:5-27:34
-MERGED from [com.android.support:support-core-ui:25.3.1] C:\Users\thanhtung776\.android\build-cache\a07017ea32c34c511c9ba7f9afa5f1206b999c69\output\AndroidManifest.xml:25:5-27:34
-MERGED from [com.android.support:support-core-utils:25.3.1] C:\Users\thanhtung776\.android\build-cache\5f38df7feb0eeef304cf8ba960941945e932b436\output\AndroidManifest.xml:25:5-27:34
-MERGED from [com.android.support:support-compat:25.3.1] C:\Users\thanhtung776\.android\build-cache\2f3ed3ebb9819e3bd2a2d1881492ceac14bba4aa\output\AndroidManifest.xml:25:5-27:34
-	android:value
-		ADDED from [com.android.support:customtabs:25.3.1] C:\Users\thanhtung776\.android\build-cache\8276187c816b42672e5fa21a81fe4b89201f358d\output\AndroidManifest.xml:24:9-31
-	android:name
-		ADDED from [com.android.support:customtabs:25.3.1] C:\Users\thanhtung776\.android\build-cache\8276187c816b42672e5fa21a81fe4b89201f358d\output\AndroidManifest.xml:23:9-47
 uses-feature#0x00020000
 ADDED from [com.google.android.gms:play-services-maps:9.8.0] C:\Users\thanhtung776\.android\build-cache\3d4a03e2b696d055f1f00a130b90ac002b253e6c\output\AndroidManifest.xml:21:5-77
 	android:glEsVersion

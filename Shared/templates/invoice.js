@@ -1,5 +1,5 @@
 import Expo from 'expo';
-
+import {  formatMoney, formatNumber, unformat } from '../utils/format';
 export default Invoice = (
     customerName,
     id,
@@ -18,10 +18,10 @@ export default Invoice = (
         htmlOrderDetail += `
         <tr>
             <td><span >${order.name}</span></td>
-            <td><span data-prefix></span><span >${order.quantity}</span></td>
-            <td><span >order.unitName</span></td>
-            <td><span data-prefix></span><span>${order.salePrice}</span></td>
-            <td><span data-prefix></span><span>${totalPrice}</span></td>
+            <td><span data-prefix></span><span >${formatNumber(order.quantity)}</span></td>
+            <td><span >${order.unitName}</span></td>
+            <td><span data-prefix></span><span>${formatNumber(order.salePrice)}</span></td>
+            <td><span data-prefix></span><span>${formatNumber(totalPrice)}</span></td>
         </tr>
         `
     });
@@ -31,7 +31,6 @@ export default Invoice = (
     <head>
         <meta charset="utf-8"/>
         <title>Hóa Đơn</title>
-        <link href="${Expo.Asset.fromModule(require('../../Mobile/assets/fonts/vuarial.ttf')).uri}" rel="stylesheet"/>
         <style>
             /* reset */
            
@@ -338,27 +337,27 @@ export default Invoice = (
         <table class="balance">
             <tr>
                 <th><span >Tổng Tiền</span></th>
-                <td><span data-prefix></span><span>${total}</span></td>
+                <td><span data-prefix></span><span>${formatNumber(total)}</span></td>
             </tr>
             <tr>
                 <th><span >VAT</span></th>
-                <td><span data-prefix></span><span >${vat}</span></td>
+                <td><span data-prefix></span><span >${formatNumber(vat)}</span></td>
             </tr>
             <tr>
                 <th><span >Tổng tiền (gồm vat)</span></th>
-                <td><span data-prefix></span><span>${totalIncludeVat}</span></td>
+                <td><span data-prefix></span><span>${formatNumber(totalIncludeVat)}</span></td>
             </tr>
             <tr>
                 <th><span >Nợ cũ</span></th>
-                <td><span data-prefix></span><span>${oldDebt}</span></td>
+                <td><span data-prefix></span><span>${formatNumber(oldDebt)}</span></td>
             </tr>
             <tr>
                 <th><span >Thanh Toán</span></th>
-                <td><span data-prefix></span><span>${pay}</span></td>
+                <td><span data-prefix></span><span>${formatNumber(pay)}</span></td>
             </tr>
             <tr>
                 <th><span >Còn lại</span></th>
-                <td><span data-prefix></span><span>${newDebt}</span></td>
+                <td><span data-prefix></span><span>${formatNumber(newDebt)}</span></td>
             </tr>
         </table>
     </article>

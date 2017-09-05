@@ -1,3 +1,4 @@
 // export const URL = 'http://192.168.43.242:3000';
 export const URL = 'http://192.168.1.8:3000';
+export const fontUrl = 'http://soncattuong.com/fonts/vuarial.ttf'
 // export const URL = 'http://192.168.1.14:3000';
