@@ -33,6 +33,8 @@ import {
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
 // var PdfPrinter = require('pdfmake/src/printer');
 import { URL } from '../../../../env';
+import invoiceTemplate from '../../../../Shared/templates/invoice';
+import loadFontAssets from '../../../utils/loadFontAssets';
 
 const { RNPrint } = NativeModules;
 class EditSaleOrder extends React.Component {
@@ -52,9 +54,10 @@ class EditSaleOrder extends React.Component {
         oldDebt: 0,
         saleOrderDetails: [],
         quoctes: [],
-        editMode: false
+        editMode: false,
+        fontPath: null,
     }
-    componentWillMount() {
+    async componentWillMount() {
         this.props.loadSaleOrderById(this.props.saleOrder.id);
 
         if (!this.props.customers || this.props.customers.length == 0) {
@@ -63,6 +66,8 @@ class EditSaleOrder extends React.Component {
         if (!this.props.units || this.props.units.length == 0) {
             this.props.loadUnits();
         }
+        const fontAsset = await loadFontAssets();
+        this.setState({ fontPath: fontAsset.localUri });
     }
 
     componentWillReceiveProps(nextProps) {
@@ -521,6 +526,8 @@ class EditSaleOrder extends React.Component {
                             disabled={!this.state.editMode}
                             style={styles.Btn}
                             onPress={async () => {
+                                if(!this.state.fontPath) return;
+
                                 if (this.state.id == '') {
                                     Alert.alert(
                                         'Thông Báo',
@@ -530,21 +537,38 @@ class EditSaleOrder extends React.Component {
                                         ]
                                     );
                                 } else {
-                                    Expo.FileSystem.downloadAsync(
-                                        `${URL}/api/order/getInvoice/${this.state.id}`,
-                                        'file:///data/user/0/com.soncattuong.serp/cache/invoice.pdf'
-                                    )
-                                        .then(({ uri }) => {
-                                            console.log('file path = ', uri);
-
-                                            RNPrint.print(uri).then(() => {
-                                                console.log(`Printing complete!`);
-                                            });
+                                    let saleOrderDetails = [...this.state.saleOderDetails];
+                                    saleOrderDetails.forEach((order) => {
+                                        this.props.units.forEach((unit) => {
+                                            if (order.unitId == unit.id) {
+                                                order.unitName = unit.name
+                                            }
                                         })
-                                        .catch(error => {
-                                            console.error(error);
-                                        });
+                                    })
+                                    let customerName = '';
+                                    this.props.customers.forEach((customer) => {
+                                        if (customer.id == this.state.customerId) {
+                                            customerName = customer.name;
+                                        }
+                                    });
 
+                                    let options = {
+                                        html: invoiceTemplate(customerName, this.state.id,
+                                            this.state.date, this.state.total, this.state.totalIncludeVat,
+                                            this.state.vat, this.state.oldebt, this.state.pay, this.state.newDebt, saleOrderDetails),
+                                        // htmlFilePath,
+                                        fileName: "invoice",
+                                        fonts: [this.state.fontPath]
+                                    };
+                                    try {
+                                        const results = await RNHTMLtoPDF.convert(options).catch(
+                                            e => console.log(e)
+                                        );
+                                        const jobName = await RNPrint.print(results.filePath);
+                                    }
+                                    catch (e) {
+                                        console.log('errors: ', e);
+                                    }
                                 }
                             }}
                         >

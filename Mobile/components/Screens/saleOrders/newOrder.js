@@ -19,8 +19,7 @@ import { formatMoney, formatNumber, unformat } from '../../../../Shared/utils/fo
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import invoiceTemplate from '../../../../Shared/templates/invoice';
 import Expo from 'expo';
-import { Asset } from '../../../utils/enhancedAsset';
-import { fontUrl } from '../../../../env';
+import loadFontAssets from '../../../utils/loadFontAssets';
 
 const { RNPrint } = NativeModules;
 
@@ -43,8 +42,7 @@ class NewSaleOrder extends React.Component {
         quoctes: [],
         fontLocation: null,
         appIsReady: false,
-        fontAsset: null,
-        appIsReady: false
+        fontPath: null,
     }
     async componentWillMount() {
         this.props.resetData();
@@ -54,41 +52,9 @@ class NewSaleOrder extends React.Component {
         if (!this.props.units || this.props.units.length == 0) {
             this.props.loadUnits();
         }
-        await this._loadAssetsAsync()
-    }
-
-    async _loadAssetsAsync() {
-        const fontAsset = new Asset({
-          name: 'vuarial',
-          type: 'ttf',
-          // path to the file somewhere on the internet
-          uri: fontUrl,
-        });
-    
-        this.setState({ fontAsset: fontAsset });
-    
-        try {
-          //As the file is remote, we can't calculate its hash beforehand
-          //so we download it without hash
-          //downloadAsyncWithoutHash in enhancedAsset.js
-          /**
-           * @type {Boolean} cache
-           *                    true: downloads asset to app cache
-           *                    false: downloads asset to app data
-           */
-          await fontAsset.downloadAsyncWithoutHash({ cache: true });
-          // console.log(fontAsset);
-          this.setState({ fontAsset: fontAsset });
-        } catch (e) {
-          console.warn(
-            'Không tải được font chữ, các văn bản hoặc tài liệu in ra có thể bị lỗi font chữ'
-          );
-          console.log(e.message);
-        }
-        finally {
-          this.setState({ appIsReady: true });
-        }
-      }
+        const fontAsset = await loadFontAssets();
+        this.setState({ fontPath: fontAsset.localUri });
+    }    
 
     componentWillReceiveProps(nextProps) {
 
@@ -513,6 +479,7 @@ class NewSaleOrder extends React.Component {
                         <TouchableOpacity
                             style={styles.Btn}
                             onPress={async () => {
+                                if(!this.state.fontPath) return;
                                 if (this.state.id == '') {
                                     Alert.alert(
                                         'Thông Báo',
@@ -536,22 +503,20 @@ class NewSaleOrder extends React.Component {
                                             customerName = customer.name;
                                         }
                                     });
-                                    
+
                                     let options = {
                                         html: invoiceTemplate(customerName, this.state.id,
                                             this.state.date, this.state.total, this.state.totalIncludeVat,
                                             this.state.vat, this.state.oldebt, this.state.pay, this.state.newDebt, saleOrderDetails),
                                         // htmlFilePath,
                                         fileName: "invoice",
-                                        fonts: [fontUrl]
+                                        fonts: [this.state.fontPath]
                                     };
                                     try {
                                         const results = await RNHTMLtoPDF.convert(options).catch(
                                             e => console.log(e)
                                         );
-                                        console.log('results = ', results);
                                         const jobName = await RNPrint.print(results.filePath);
-                                        console.log(`Printing ${jobName} complete!`);
                                     }
                                     catch (e) {
                                         console.log('errors: ', e);
