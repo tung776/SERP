@@ -1,5 +1,6 @@
 import { NativeModules } from 'react-native';
 import { Asset } from 'expo';
+import Expo from 'expo';
 
 //Help:
 //Expo's Asset implementation
@@ -24,7 +25,8 @@ import { Asset } from 'expo';
  * @return {Promise}
  */
 Asset.prototype.downloadAsyncWithoutHash = async function({ cache }) {
-  const path = `${this.name}.${this.type}`;
+  const path = `${Expo.FileSystem.documentDirectory}${this.name}.${this.type}`;
+  console.log('path = ', path);
 
   if (this.downloaded) {
     __DEV__ && console.log('asset already downloaded');
@@ -76,7 +78,7 @@ Asset.prototype.downloadAsyncWithoutHash = async function({ cache }) {
           //cache
           //  true: stores file in app cache
           //  false: stores file in app data
-          cache,  //shorthand for cache: cache
+          // cache,  //shorthand for cache: cache
         }
       ));
     }

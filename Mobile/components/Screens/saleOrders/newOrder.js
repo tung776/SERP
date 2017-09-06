@@ -43,6 +43,8 @@ class NewSaleOrder extends React.Component {
         quoctes: [],
         fontLocation: null,
         appIsReady: false,
+        fontAsset: null,
+        appIsReady: false
     }
     async componentWillMount() {
         this.props.resetData();
@@ -52,7 +54,41 @@ class NewSaleOrder extends React.Component {
         if (!this.props.units || this.props.units.length == 0) {
             this.props.loadUnits();
         }
+        await this._loadAssetsAsync()
     }
+
+    async _loadAssetsAsync() {
+        const fontAsset = new Asset({
+          name: 'vuarial',
+          type: 'ttf',
+          // path to the file somewhere on the internet
+          uri: fontUrl,
+        });
+    
+        this.setState({ fontAsset: fontAsset });
+    
+        try {
+          //As the file is remote, we can't calculate its hash beforehand
+          //so we download it without hash
+          //downloadAsyncWithoutHash in enhancedAsset.js
+          /**
+           * @type {Boolean} cache
+           *                    true: downloads asset to app cache
+           *                    false: downloads asset to app data
+           */
+          await fontAsset.downloadAsyncWithoutHash({ cache: true });
+          // console.log(fontAsset);
+          this.setState({ fontAsset: fontAsset });
+        } catch (e) {
+          console.warn(
+            'Không tải được font chữ, các văn bản hoặc tài liệu in ra có thể bị lỗi font chữ'
+          );
+          console.log(e.message);
+        }
+        finally {
+          this.setState({ appIsReady: true });
+        }
+      }
 
     componentWillReceiveProps(nextProps) {
 
