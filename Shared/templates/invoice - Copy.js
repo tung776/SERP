@@ -1,5 +1,5 @@
 import Expo from 'expo';
-
+import {  formatMoney, formatNumber, unformat } from '../utils/format';
 export default Invoice = (
     customerName,
     id,
@@ -10,20 +10,19 @@ export default Invoice = (
     oldDebt,
     pay,
     newDebt,
-    OrderDetail
+    OrderDetail,
+    logo
 ) => {
-    const logo = Expo.Asset.fromModule(require('../images/Logo.png')).uri;
-    console.log('logo = ', logo);
     let htmlOrderDetail = '';
     OrderDetail.forEach((order) => {
         const totalPrice = order.salePrice * order.quantity;
         htmlOrderDetail += `
         <tr>
             <td><span >${order.name}</span></td>
-            <td><span data-prefix></span><span >${order.quantity}</span></td>
-            <td><span >order.unitName</span></td>
-            <td><span data-prefix></span><span>${order.salePrice}</span></td>
-            <td><span data-prefix></span><span>${totalPrice}</span></td>
+            <td><span data-prefix></span><span >${formatNumber(order.quantity)}</span></td>
+            <td><span >${order.unitName}</span></td>
+            <td><span data-prefix></span><span>${formatNumber(order.salePrice)}</span></td>
+            <td><span data-prefix></span><span>${formatNumber(totalPrice)}</span></td>
         </tr>
         `
     });
@@ -33,12 +32,11 @@ export default Invoice = (
     <head>
         <meta charset="utf-8"/>
         <title>Hóa Đơn</title>
-        <link href="${Expo.Asset.fromModule(require('./Roboto-Regular.ttf')).uri}" rel="stylesheet"/>
         <style>
             /* reset */
            
             * {
-                font-family: 'VU Arial';
+                font-family: VU Arial;
                 border: 0;
                 box-sizing: content-box;
                 color: inherit;
@@ -104,7 +102,7 @@ export default Invoice = (
             }
     
             body {
-                font-family: 'VU Arial';
+                font-family: VU Arial;
                 box-sizing: border-box;
                 height: 11in;
                 margin: 0 auto;
@@ -150,7 +148,6 @@ export default Invoice = (
                 margin: 0 0 0.25em;
             }
     
-
             header span {
                 max-height: 25%;
                 max-width: 55%;
@@ -295,86 +292,85 @@ export default Invoice = (
         </style>
     </head>
     
-    <body style = "font: ">
-        <header>
-            <h1>Hóa Đơn</h1>
-            <div style = "float: left; font-style: normal; line-height: 1.25; margin: 0 1em 1em 0;" >
-                <p>CÔNG TY CỔ PHẦN KIM KHÍ HÓA CHẤT CÁT TƯỜNG</p>
-                <p>Địa chỉ: 152 Giải Phóng - Cửa Bắc - Nam Định</p>
-                <p>Điệnthoại: 0912250315 - 0916698845 - 0916678845</p>
-                <p>email: sale@soncattuong.com</p>
-                <p>website: www.soncattuong.com</p>
-            </div>
-            <span style = "max-height: 25%; max-width: 55%; position: relative; display: block; float: right;">
-                <img style = "max-height: 30%; max-width: 30%;" alt="" src="${logo}"/>
-            </span>
-        </header>
-        <article>
-            <div >
-                <p>${customerName}</p>
-            </div>
-            <table class="meta">
-                <tr>
-                    <th><span >Số Hóa Đơn #</span></th>
-                    <td><span >${id}</span></td>
-                </tr>
-                <tr>
-                    <th><span >Ngày Lập</span></th>
-                    <td><span >${date}</span></td>
-                </tr>
-    
-            </table>
-            <table class="inventory">
-                <thead>
-                    <tr>
-                        <th style = "width: 220px"><span >Tên sản phẩm</span></th>
-                        <th style = "width: 75px"><span >Số lượng</span></th>
-                        <th style = "width: 90px"><span >Qui cách</span></th>
-                        <th style = "width: 110px"><span >Giá bán</span></th>
-                        <th><span >Thành Tiền</span></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${htmlOrderDetail}
-                </tbody>
-            </table>
-            <table class="balance">
-                <tr>
-                    <th><span >Tổng Tiền</span></th>
-                    <td><span data-prefix></span><span>${total}</span></td>
-                </tr>
-                <tr>
-                    <th><span >VAT</span></th>
-                    <td><span data-prefix></span><span >${vat}</span></td>
-                </tr>
-                <tr>
-                    <th><span >Tổng tiền (gồm vat)</span></th>
-                    <td><span data-prefix></span><span>${totalIncludeVat}</span></td>
-                </tr>
-                <tr>
-                    <th><span >Nợ cũ</span></th>
-                    <td><span data-prefix></span><span>${oldDebt}</span></td>
-                </tr>
-                <tr>
-                    <th><span >Thanh Toán</span></th>
-                    <td><span data-prefix></span><span>${pay}</span></td>
-                </tr>
-                <tr>
-                    <th><span >Còn lại</span></th>
-                    <td><span data-prefix></span><span>${newDebt}</span></td>
-                </tr>
-            </table>
-        </article>
+    <body>
+    <header>
+        <h1>Hóa Đơn</h1>
+        <div style = "float: left; font-style: normal; line-height: 1.25; margin: 0 1em 1em 0;" >
+            <p>CÔNG TY CỔ PHẦN KIM KHÍ HÓA CHẤT CÁT TƯỜNG</p>
+            <p>Địa chỉ: 152 Giải Phóng - Cửa Bắc - Nam Định</p>
+            <p>Điệnthoại: 0912250315 - 0916698845 - 0916678845</p>
+            <p>email: sale@soncattuong.com</p>
+            <p>website: www.soncattuong.com</p>
+        </div>
+        <span style = "max-height: 25%; max-width: 55%; position: relative; display: block; float: right;">
+            <img style = "display: block;	float: right; max-height: 20%; max-width: 20%;" alt="" src="${logo}"/>
+        </span>
+    </header>
+    <article>
+        <div >
+            <p>${customerName}</p>
+        </div>
+        <table class="meta">
+            <tr>
+                <th><span >Số Hóa Đơn #</span></th>
+                <td><span >${id}</span></td>
+            </tr>
+            <tr>
+                <th><span >Ngày Lập</span></th>
+                <td><span >${date}</span></td>
+            </tr>
+        </table>
         <table class="inventory">
             <thead>
                 <tr>
-                    <th><span >Người Nhận</span></th>
-                    <th><span >Thủ Kho</span></th>
-                    <th><span >Người Bán</span></th>
+                    <th style = "width: 220px"><span >Tên sản phẩm</span></th>
+                    <th style = "width: 75px"><span >Số lượng</span></th>
+                    <th style = "width: 90px"><span >Qui cách</span></th>
+                    <th style = "width: 110px"><span >Giá bán</span></th>
+                    <th><span >Thành Tiền</span></th>
                 </tr>
             </thead>
+            <tbody>
+                ${htmlOrderDetail}
+            </tbody>
         </table>
-    </body>
+        <table class="balance">
+            <tr>
+                <th><span >Tổng Tiền</span></th>
+                <td><span data-prefix></span><span>${formatNumber(total)}</span></td>
+            </tr>
+            <tr>
+                <th><span >VAT</span></th>
+                <td><span data-prefix></span><span >${formatNumber(vat)}</span></td>
+            </tr>
+            <tr>
+                <th><span >Tổng tiền (gồm vat)</span></th>
+                <td><span data-prefix></span><span>${formatNumber(totalIncludeVat)}</span></td>
+            </tr>
+            <tr>
+                <th><span >Nợ cũ</span></th>
+                <td><span data-prefix></span><span>${formatNumber(oldDebt)}</span></td>
+            </tr>
+            <tr>
+                <th><span >Thanh Toán</span></th>
+                <td><span data-prefix></span><span>${formatNumber(pay)}</span></td>
+            </tr>
+            <tr>
+                <th><span >Còn lại</span></th>
+                <td><span data-prefix></span><span>${formatNumber(newDebt)}</span></td>
+            </tr>
+        </table>
+    </article>
+    <table class="inventory">
+        <thead>
+            <tr>
+                <th><span >Người Nhận</span></th>
+                <th><span >Thủ Kho</span></th>
+                <th><span >Người Bán</span></th>
+            </tr>
+        </thead>
+    </table>
+</body>
     
     </html>
     `

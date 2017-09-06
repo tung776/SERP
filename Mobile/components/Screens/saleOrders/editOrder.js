@@ -31,8 +31,6 @@ import {
     unformat
 } from '../../../../Shared/utils/format';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
-// var PdfPrinter = require('pdfmake/src/printer');
-import { URL } from '../../../../env';
 import invoiceTemplate from '../../../../Shared/templates/invoice';
 import loadAsset from '../../../utils/loadAsset';
 import { fontUrl, URL } from '../../../../env';
