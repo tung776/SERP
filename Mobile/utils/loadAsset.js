@@ -1,12 +1,12 @@
 import { Asset } from './enhancedAsset';
-import { fontUrl } from '../../env';
+import { URL } from '../../env';
 
-export default async () => {
-    const fontAsset = new Asset({
-      name: 'vuarial',
-      type: 'ttf',
+export default async (name, type, url) => {
+    const mediaAsset = new Asset({
+      name: name,
+      type: type,
       // path to the file somewhere on the internet
-      uri: fontUrl,
+      uri: url,
     });
 
 
@@ -19,16 +19,16 @@ export default async () => {
        *                    true: downloads asset to app cache
        *                    false: downloads asset to app data
        */
-      await fontAsset.downloadAsyncWithoutHash({ cache: true });
-      // console.log(fontAsset);
+      await mediaAsset.downloadAsyncWithoutHash({ cache: true });
+      // console.log(mediaAsset);
 
     } catch (e) {
       console.warn(
-        'Không tải được font chữ, các văn bản hoặc tài liệu in ra có thể bị lỗi font chữ'
+        'Không tải được hình ảnh'
       );
       console.log(e.message);
     }
     finally {
-      return fontAsset;
+      return mediaAsset;
     }
   }

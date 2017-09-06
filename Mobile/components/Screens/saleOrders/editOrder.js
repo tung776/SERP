@@ -34,7 +34,8 @@ import RNHTMLtoPDF from 'react-native-html-to-pdf';
 // var PdfPrinter = require('pdfmake/src/printer');
 import { URL } from '../../../../env';
 import invoiceTemplate from '../../../../Shared/templates/invoice';
-import loadFontAssets from '../../../utils/loadFontAssets';
+import loadAsset from '../../../utils/loadAsset';
+import { fontUrl, URL } from '../../../../env';
 
 const { RNPrint } = NativeModules;
 class EditSaleOrder extends React.Component {
@@ -56,6 +57,7 @@ class EditSaleOrder extends React.Component {
         quoctes: [],
         editMode: false,
         fontPath: null,
+        logoPath: null
     }
     async componentWillMount() {
         this.props.loadSaleOrderById(this.props.saleOrder.id);
@@ -66,8 +68,12 @@ class EditSaleOrder extends React.Component {
         if (!this.props.units || this.props.units.length == 0) {
             this.props.loadUnits();
         }
-        const fontAsset = await loadFontAssets();
-        this.setState({ fontPath: fontAsset.localUri });
+        const fontAsset = await loadAsset("vuarial", "ttf", fontUrl);
+        const imageAsset = await loadAsset("logo", "png", `${URL}/logo.png`);
+        this.setState({ 
+            fontPath: fontAsset.localUri, 
+            logoPath: imageAsset.localUri 
+        });
     }
 
     componentWillReceiveProps(nextProps) {
@@ -526,7 +532,7 @@ class EditSaleOrder extends React.Component {
                             disabled={!this.state.editMode}
                             style={styles.Btn}
                             onPress={async () => {
-                                if(!this.state.fontPath) return;
+                                if(!this.state.fontPath || !this.state.logoPath) return;
 
                                 if (this.state.id == '') {
                                     Alert.alert(
@@ -555,7 +561,8 @@ class EditSaleOrder extends React.Component {
                                     let options = {
                                         html: invoiceTemplate(customerName, this.state.id,
                                             this.state.date, this.state.total, this.state.totalIncludeVat,
-                                            this.state.vat, this.state.oldebt, this.state.pay, this.state.newDebt, saleOrderDetails),
+                                            this.state.vat, this.state.oldebt, this.state.pay, this.state.newDebt,
+                                            saleOrderDetails, this.state.logoPath),
                                         // htmlFilePath,
                                         fileName: "invoice",
                                         fonts: [this.state.fontPath]
