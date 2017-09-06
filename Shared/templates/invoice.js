@@ -290,30 +290,30 @@ export default Invoice = (
     <body>
     <header>
         <table>
-        <tr >
-            <td style = "width: 450px">
-                <p style = "margin: 0 0 0.25em; font-weight: bold;">CÔNG TY CỔ PHẦN KIM KHÍ HÓA CHẤT CÁT TƯỜNG</p>
-                <p style = "margin: 0 0 0.25em;">Địa chỉ: 152 Giải Phóng - Cửa Bắc - Nam Định</p>
-                <p style = "margin: 0 0 0.25em;">phone: 0912250315 - 0916698845 - 0916678845</p>
-                <p style = "margin: 0 0 0.25em;">website: www.soncattuong.com</p>
+            <tr >
+                <td style = "width: 450px">
+                    <p style = "margin: 0 0 0.25em; font-weight: bold;">CÔNG TY CỔ PHẦN KIM KHÍ HÓA CHẤT CÁT TƯỜNG</p>
+                    <p style = "margin: 0 0 0.25em;">Địa chỉ: 152 Giải Phóng - Cửa Bắc - Nam Định</p>
+                    <p style = "margin: 0 0 0.25em;">phone: 0912250315 - 0916698845 - 0916678845</p>
+                    <p style = "margin: 0 0 0.25em;">website: www.soncattuong.com</p>
 
-            </td>
-            <td> 
-                <span>
-                    <img style = "display: block;	float: right; max-height: 100%; max-width: 33%;" alt="" src="logo.png"/></span> 
-            </td>
-        </tr>
+                </td>
+                <td> 
+                    <span>
+                        <img style = "display: block;	float: right; max-height: 100%; max-width: 33%;" alt="" src="logo.png"/></span> 
+                </td>
+            </tr>
         
         </table>
         <h1>HÓA ĐƠN</h1>
         <table>
-        <tr>
-            <td><p style = "margin: 0 0 0.25em; font-weight: 700; font-size: 22px; text-align: center">${customerName}</p></td>
-            <td>
-                <p style = "margin: 0 0 0.25em; text-align: right">Ngày Lập: ${date}</p>
-                <p style = "margin: 0 0 0.25em; ; text-align: right">Số Hóa Đơn: ${id}</p>
-            </td>
-        </tr>
+            <tr>
+                <td><p style = "margin: 0 0 0.25em; font-weight: 700; font-size: 22px; text-align: center">${customerName}</p></td>
+                <td>
+                    <p style = "margin: 0 0 0.25em; text-align: right">Ngày Lập: ${date}</p>
+                    <p style = "margin: 0 0 0.25em; ; text-align: right">Số Hóa Đơn: ${id}</p>
+                </td>
+            </tr>
         </table>
     </header>
     <article>        
