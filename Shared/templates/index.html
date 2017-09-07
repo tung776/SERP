@@ -1,38 +1,17 @@
-<!doctype html>
-<html>
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/TR/xhtml1" xml:lang="vn" lang="vn">
 
 <head>
-	<meta charset="utf-8">
+	<meta charset="utf-8" />
 	<title>Invoice</title>
 	<style>
 		/* reset */
 
 		* {
 			font-family: "VU Arial";
-			border: 0;
-			box-sizing: content-box;
-			color: inherit;
-			font-family: inherit;
-			font-size: inherit;
-			font-style: inherit;
-			font-weight: inherit;
-			line-height: inherit;
-			list-style: none;
-			margin: 0;
-			padding: 0;
-			text-decoration: none;
-			vertical-align: top;
-		}
-
-		html {
-			font: 16px/1 'Open Sans', "VU Arial";
-			overflow: auto;
-			padding: 0.5in;
-		}
-
-		html {
-			background: #999;
-			cursor: default;
 		}
 
 		body {
@@ -51,7 +30,7 @@
 			box-shadow: 0 0 1in -0.25in rgba(0, 0, 0, 0.5);
 		}
 
-		
+
 		@media print {
 			* {
 				-webkit-print-color-adjust: exact;
@@ -72,122 +51,239 @@
 		@page {
 			margin: 0;
 		}
+
+		table {
+			border-collapse: collapse;
+		}
+
+		table.orderDetail th,
+		table.orderDetail td {
+			border-radius: 0.25em;
+			border-style: solid;
+			border-width: 1px;
+			padding: 0.5em;
+			position: relative;
+			text-align: left;
+			border-color: grey;
+		}
+
+		table.orderDetail th {
+			text-align: center;
+		}
+
+		table.orderDetail tr:nth-child(even) {
+			background-color: #dddddd;
+		}
+
+		table.orderDetail td:nth-child(1) {
+			width: 32%;
+		}
+
+		table.orderDetail td:nth-child(2) {
+			text-align: center;
+			width: 12%;
+		}
+
+		table.orderDetail td:nth-child(3) {
+			text-align: center;
+			width: 15%;
+		}
+
+		table.orderDetail td:nth-child(4) {
+			text-align: right;
+			width: 18%;
+		}
+
+		table.orderDetail td:nth-child(5) {
+			text-align: right;
+			width: 23%;
+		}
+
+		table.subTotal {
+			float: right;
+			margin-bottom: 20px;
+		}
+
+		table.subTotal tr:nth-child(even) td {
+			background-color: #dddddd;
+			
+		}
+		table.subTotal tr:nth-child(even) th:nth-child(2) {
+			background-color: #dddddd;			
+		}
+		table.subTotal th:nth-child(2), td {
+			border-bottom: 1px solid darkgray;			
+		}
+
+		table.subTotal td {
+			padding: 10px;
+			text-align: right;
+		}
+		
+		table.subTotal th {
+			text-align: left;
+		}
+
+		table.footer {
+			width: 100%;
+		}
+
+		table.footer td,
+		th {
+			font-weight: bold;
+			text-align: center
+		}
+
+		.title {
+			text-align: center;
+			font-weight: bold;
+			background-color: lightgrey;
+			padding-top: 5px;
+			padding-bottom: 5px;
+		}
+
+		table.companyProfile td {
+			text-align: left;
+			line-height: 0.5em;
+		}
+
+		table.orderInfor {
+			text-align: center;
+			font-weight: bold;
+		}
 	</style>
 </head>
 
-<body>		
-		<table>
-			<tr >
-				<td style = "width: 450px">
-					<p style = "margin: 0 0 0.25em; font-weight: bold;">CÔNG TY CỔ PHẦN KIM KHÍ HÓA CHẤT CÁT TƯỜNG</p>
-					<p style = "margin: 0 0 0.25em;">Địa chỉ: 152 Giải Phóng - Cửa Bắc - Nam Định</p>
-					<p style = "margin: 0 0 0.25em;">phone: 0912250315 - 0916698845 - 0916678845</p>
-					<p style = "margin: 0 0 0.25em;">website: www.soncattuong.com</p>
-
-				</td>
-				<td> 
-					<span>
-						<img style = "display: block;	float: right; max-height: 100%; max-width: 33%;" alt="" src="logo.png"/></span> 
-				</td>
-			</tr>
-			
-		</table>
-	<h1 style="font-size: 22px; background:dimgrey; color: #FFF; margin: 0 0 1em; padding: 0.5em 0; text-align: center">Hóa Đơn</h1>
-	<table style = "width: 100%; float: right; padding: 10px; margin-bottom: 20px">
+<body>
+	<table class="companyProfile" width="100%">
 		<tr>
-			<td><p style = "margin: 0 0 0.25em; font-weight: 700; font-size: 22px; text-align: center">Tư Sim</p></td>
-			<td>
-				<p style = "margin: 0 0 0.25em; text-align: right">Ngày Lập: ${date}</p>
-				<p style = "margin: 0 0 0.25em; ; text-align: right">Số Hóa Đơn: ${orderId}</p>
+			<td width="75%">
+				<h3>CÔNG TY CỔ PHẦN KIM KHÍ HÓA CHẤT CÁT TƯỜNG</h3>
+				<p>Địa chỉ: 152 Giải Phóng - Cửa Bắc - Nam Định</p>
+				<p>phone: 0912.250.315 - 0916.698.845 - 0916.678.845</p>
+				<p>website: www.soncattuong.com</p>
+			</td>
+			<td width="25%">
+				<img width="100%" src="logo.png" alt="" />
+			</td>
+		</tr>
+
+	</table>
+	<h1 class="title" width: "100%">HÓA ĐƠN</h1>
+	<table class="orderInfor" width="100%">
+		<tr>
+			<td width="50%">
+				<h2>${customerName}</h2>
+			</td>
+			<td width="50%">
+				<p>Ngày Lập: ${date}</p>
+				<p>Số Hóa Đơn: ${id}</p>
 			</td>
 		</tr>
 	</table>
-	
-		
-		<table style = "width: 100%;">
-			<thead style = "font-weight: bold; text-align: center; ">
-				<tr>
-					<th style = "border-width: 1px; border-style: solid; padding: 0.5em;width: 220px border-width: 1px;"><span >Tên sản phẩm</span></th>
-					<th style = "border-width: 1px; border-style: solid; padding: 0.5em;width: 75px border-width: 1px;"><span >Số lượng</span></th>
-					<th style = "border-width: 1px; border-style: solid; padding: 0.5em;width: 90px border-width: 1px;"><span >Qui cách</span></th>
-					<th style = "border-width: 1px; border-style: solid; padding: 0.5em;width: 110px border-width: 1px;"><span >Giá bán</span></th>
-					<th style = "border-width: 1px; border-style: solid; padding: 0.5em;width: 110px border-width: 1px;"><span >Thành Tiền</span></th>
-				</tr>
-			</thead>
-			<tbody >
-				<tr >
-					<td style = "border-width: 1px; border-style: solid; padding: 0.5em;"><span >Lót PU - 08</span></td>
-					<td style = "border-width: 1px; border-style: solid; padding: 0.5em;"><span></span><span >1</span></td>
-					<td style = "border-width: 1px; border-style: solid; padding: 0.5em;"><span >Thùng 16kg</span></td>
-					<td style = "border-width: 1px; border-style: solid; padding: 0.5em; text-align: right"><span></span><span>848 000</span></td>
-					<td style = "border-width: 1px; border-style: solid; padding: 0.5em; text-align: right"><span></span><span>8 480 000</span></td>
-				</tr>
-				<tr >
-					<td style = "border-width: 1px; border-style: solid; padding: 0.5em;"><span >Lót PU - 08</span></td>
-					<td style = "border-width: 1px; border-style: solid; padding: 0.5em;"><span></span><span >1</span></td>
-					<td style = "border-width: 1px; border-style: solid; padding: 0.5em;"><span >Thùng 16kg</span></td>
-					<td style = "border-width: 1px; border-style: solid; padding: 0.5em; text-align: right"><span></span><span>848 000</span></td>
-					<td style = "border-width: 1px; border-style: solid; padding: 0.5em; text-align: right"><span></span><span>8 480 000</span></td>
-				</tr>
-				<tr >
-					<td style = "border-width: 1px; border-style: solid; padding: 0.5em;"><span >Lót PU - 08</span></td>
-					<td style = "border-width: 1px; border-style: solid; padding: 0.5em;"><span></span><span >1</span></td>
-					<td style = "border-width: 1px; border-style: solid; padding: 0.5em;"><span >Thùng 16kg</span></td>
-					<td style = "border-width: 1px; border-style: solid; padding: 0.5em; text-align: right"><span></span><span>848 000</span></td>
-					<td style = "border-width: 1px; border-style: solid; padding: 0.5em; text-align: right"><span></span><span>8 480 000</span></td>
-				</tr>
-				<tr >
-					<td style = "border-width: 1px; border-style: solid; padding: 0.5em;"><span >Lót PU - 08</span></td>
-					<td style = "border-width: 1px; border-style: solid; padding: 0.5em;"><span></span><span >1</span></td>
-					<td style = "border-width: 1px; border-style: solid; padding: 0.5em;"><span >Thùng 16kg</span></td>
-					<td style = "border-width: 1px; border-style: solid; padding: 0.5em; text-align: right"><span></span><span>848 000</span></td>
-					<td style = "border-width: 1px; border-style: solid; padding: 0.5em; text-align: right"><span></span><span>8 480 000</span></td>
-				</tr>
-				<tr >
-					<td style = "border-width: 1px; border-style: solid; padding: 0.5em;"><span >Lót PU - 08</span></td>
-					<td style = "border-width: 1px; border-style: solid; padding: 0.5em;"><span></span><span >1</span></td>
-					<td style = "border-width: 1px; border-style: solid; padding: 0.5em;"><span >Thùng 16kg</span></td>
-					<td style = "border-width: 1px; border-style: solid; padding: 0.5em; text-align: right"><span></span><span>848 000</span></td>
-					<td style = "border-width: 1px; border-style: solid; padding: 0.5em; text-align: right"><span></span><span>8 480 000</span></td>
-				</tr>
-				
-			</tbody>
-		</table>
-		<table style = "width: 70%; margin-bottom: 10px; float:right">
-			<tr style = "">
-				<th style = "padding: 5px; text-align: right; "><span  >Tổng Tiền</span></th>
-				<td style = " padding: 5px;text-align: right; border-bottom: 1px solid #000000"><span  data-prefix></span><span>8 480 000</span></td>				
-			</tr>
-			<tr>
-				<th style = " padding: 5px;text-align: right;"><span >VAT</span></th>
-				<td style = "padding: 5px; text-align: right; border-bottom: 1px solid #000000"><span data-prefix></span><span >848 000</span></td>
-			</tr>
-			<tr>
-				<th style = "padding: 5px; text-align: right;"><span >Tổng tiền (gồm vat)</span></th>
-				<td style = "padding: 5px; text-align: right; border-bottom: 1px solid #000000"><span data-prefix></span><span>9 328 000</span></td>
-			</tr>
-			<tr>
-				<th style = "padding: 5px; text-align: right;"><span >Nợ cũ</span></th>
-				<td style = "text-align: right; border-bottom: 1px solid #000000"><span data-prefix></span><span>20 000 000</span></td>
-			</tr>
-			<tr>
-				<th style = "padding: 5px; text-align: right;"><span >Thanh Toán</span></th>
-				<td style = "padding: 5px; text-align: right; border-bottom: 1px solid #000000"><span data-prefix></span><span>15 000 000</span></td>
-			</tr>
-			<tr>
-				<th style = "padding: 5px; text-align: right;"><span >Còn lại</span></th>
-				<td style = "padding: 5px; text-align: right; border-bottom: 1px solid #000000"><span data-prefix></span><span>14 328 000</span></td>
-			</tr>
-		</table>
-	<table style = "width: 100%; margin-top: 40px">
+
+
+	<table class="orderDetail" width="100%">
 		<thead>
 			<tr>
-				<th style = "text-align: center; font-weight: bold;"><span >Người Nhận</span></th>
-				<th style = "text-align: center; font-weight: bold;"><span >Thủ Kho</span></th>
-				<th style = "text-align: center; font-weight: bold;"><span >Người Bán</span></th>
+				<th>
+					<p><strong>Tên sản phẩm</strong></p>
+				</th>
+				<th>
+					<p><strong>Số lượng</strong></p>
+				</th>
+				<th>
+					<p><strong>Qui cách</strong></p>
+				</th>
+				<th>
+					<p><strong>Giá bán</strong></p>
+				</th>
+				<th>
+					<p><strong>Thành Tiền</strong></p>
+				</th>
 			</tr>
 		</thead>
-	</table>	
+		<tbody>
+			<tr>
+				<td><span>Lót PU - 08</span></td>
+				<td><span></span><span>1</span></td>
+				<td><span>Thùng 16kg</span></td>
+				<td><span></span><span>848 000</span></td>
+				<td><span></span><span>8 480 000</span></td>
+			</tr>
+			<tr>
+				<td><span>Lót PU - 08</span></td>
+				<td><span></span><span>1</span></td>
+				<td><span>Thùng 16kg</span></td>
+				<td><span></span><span>848 000</span></td>
+				<td><span></span><span>8 480 000</span></td>
+			</tr>
+			<tr>
+				<td><span>Lót PU - 08</span></td>
+				<td><span></span><span>1</span></td>
+				<td><span>Thùng 16kg</span></td>
+				<td><span></span><span>848 000</span></td>
+				<td><span></span><span>8 480 000</span></td>
+			</tr>
+			<tr>
+				<td><span>Lót PU - 08</span></td>
+				<td><span></span><span>1</span></td>
+				<td><span>Thùng 16kg</span></td>
+				<td><span></span><span>848 000</span></td>
+				<td><span></span><span>8 480 000</span></td>
+			</tr>
+			<tr>
+				<td><span>Lót PU - 08</span></td>
+				<td><span></span><span>1</span></td>
+				<td><span>Thùng 16kg</span></td>
+				<td><span></span><span>848 000</span></td>
+				<td><span></span><span>8 480 000</span></td>
+			</tr>
+
+		</tbody>
+	</table>
+	<table class="subTotal" width="100%">
+		<tr>
+			<th width="40%"></th>
+			<th width="30%"><span>Tổng Tiền</span></th>
+			<td width="25%"><span></span><span>${formatNumber(total)}</span></td>
+		</tr>
+		<tr>
+			<th width="40%"></th>
+			<th width="30%"><span>VAT</span></th>
+			<td width="30%"><span></span><span>${formatNumber(vat)}</span></td>
+		</tr>
+		<tr>
+			<th width="40%"></th>
+			<th width="30%"><span>Tổng tiền (gồm vat)</span></th>
+			<td width="30%"><span></span><span>${formatNumber(totalIncludeVat)}</span></td>
+		</tr>
+		<tr>
+			<th width="40%"></th>
+			<th width="30%"><span>Nợ cũ</span></th>
+			<td width="30%"><span></span><span>${formatNumber(oldDebt)}</span></td>
+		</tr>
+		<tr>
+			<th width="40%"></th>
+			<th width="30%"><span>Thanh Toán</span></th>
+			<td width="30%"><span></span><span>${formatNumber(pay)}</span></td>
+		</tr>
+		<tr>
+			<th width="40%"></th>
+			<th width="30%"><span>Còn lại</span></th>
+			<td width="30%"><span></span><span>${formatNumber(newDebt)}</span></td>
+		</tr>
+	</table>
+
+	<table class="footer">
+		<thead>
+			<tr>
+				<th><span>Người Nhận</span></th>
+				<th><span>Thủ Kho</span></th>
+				<th><span>Người Bán</span></th>
+			</tr>
+		</thead>
+	</table>
 </body>
 
 </html>

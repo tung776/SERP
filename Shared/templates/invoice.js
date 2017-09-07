@@ -27,347 +27,257 @@ export default Invoice = (
         `
     });
     return `
-    <html>
+    <?xml version="1.0" encoding="UTF-8"?>
+    
+    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+    <html xmlns="http://www.w3.org/TR/xhtml1" xml:lang="vn" lang="vn">
     
     <head>
-        <meta charset="utf-8"/>
-        <title>Hóa Đơn</title>
+        <meta charset="utf-8" />
+        <title>Invoice</title>
         <style>
-            /* reset */
-           
-            * {
-                font-family: VU Arial;
-                border: 0;
-                box-sizing: content-box;
-                color: inherit;
-                line-height: inherit;
-                list-style: none;
-                margin: 0;
-                padding: 0;
-                text-decoration: none;
-                vertical-align: top;
-            }   
-            
-            /* heading */
-    
-            h1 {
-                letter-spacing: 0.5em;
-                text-align: center;
-                text-transform: uppercase;
-            }
-            /* table */
-    
-            table {
-                table-layout: fixed;
-                width: 100%;
-            }
-    
-            table {
-                border-collapse: separate;
-                border: none
-            }
-                
-            
-            /* page */
-    
-            html {
-                overflow: auto;
-                padding: 0.5in;
-            }
-    
-            html {
-                background: #999;
-                cursor: default;
-            }
-    
-            body {
-                font-family: VU Arial;
-                box-sizing: border-box;
-                height: 11in;
-                margin: 0 auto;
-                overflow: hidden;
-                padding: 0.5in;
-                width: 8.5in;
-            }
-    
-            body {
-                background: #FFF;
-                border-radius: 1px;
-                box-shadow: 0 0 1in -0.25in rgba(0, 0, 0, 0.5);
-            }
-            /* header */
-    
-            header {
-                margin: 0 0 2em;
-            }
-    
-            header:after {
-                clear: both;
-                content: "";
-                display: table;
-            }
-    
-            header address {
-                float: left;
-                font-size: 75%;
-                font-style: normal;
-                line-height: 1.25;
-                margin: 0 1em 1em 0;
-            }
-    
-            header address p {
-                margin: 0 0 0.25em;
-            }
-    
-            header span {
-                max-height: 25%;
-                max-width: 55%;
-                position: relative;
-            }
-    
-            header input {
-                cursor: pointer;
-                -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
-                height: 100%;
-                left: 0;
-                opacity: 0;
-                position: absolute;
-                top: 0;
-                width: 100%;
-            }
+		/* reset */
 
-            table.inforOrder td,
-            table.companyInfor td {
-                border: none
-            }
-            table.inforOrder,
-            table.companyInfor {
-                border: none;
-                padding: 5px;
-            }
-            /* article */
-    
-            article,
-            article address,
-            table.meta,
-            table.inventory {
-                margin: 0 0 3em;
-            }
-    
-            article:after {
-                clear: both;
-                content: "";
-                display: table;
-            }
-    
-            article h1 {
-                clip: rect(0 0 0 0);
-                position: absolute;
-            }
-    
-            article address {
-                float: left;
-                font-size: 125%;
-                font-weight: bold;
-            }
-            /* table meta & balance */
-    
-            table.meta,
-            table.balance {
-                float: right;
-                width: 50%;
-            }
-    
-            table.meta:after,
-            table.balance:after {
-                clear: both;
-                content: "";
-                display: table;
-            }
-            /* table meta */
-    
-            table.meta th {
-                width: 40%;
-            }
-    
-            table.meta td {
-                width: 60%;
-            }
-            /* table items */
-    
-            table.inventory {
-                width: 100%;
-                padding: 10px;
-            }
-    
-            table.inventory th {
-                font-weight: bold;
-                text-align: center;
-            }
-            table.inventory th,
-            table.inventory td {
-                border-radius: 0.25em;
-                border-style: solid;
-                border-width: 1px;
-                padding: 0.5em;
-                position: relative;
-                text-align: left;
-                border-color: #DDD;
-            }
-    
-            table.inventory td:nth-child(1) {
-                width: 26%;
-            }
-    
-            table.inventory td:nth-child(2) {
-                width: 38%;
-            }
-    
-            table.inventory td:nth-child(3) {
-                text-align: right;
-                width: 12%;
-            }
-    
-            table.inventory td:nth-child(4) {
-                text-align: left;
-                width: 12%;
-            }
-    
-            table.inventory td:nth-child(5) {
-                text-align: left;
-                width: 12%;
-            }
-            /* table balance */
-            table.balance {
-                float: left;
-                width: 50%;
-            }
-    
-            table.balance th,
-            table.balance td {
-                width: 100%;
-            }
-    
-            table.balance td {
-                text-align: right;
-            }
-            /* aside */
-    
-            aside h1 {
-                border: none;
-                border-width: 0 0 1px;
-                margin: 0 0 1em;
-            }
-    
-            aside h1 {
-                border-color: #999;
-                border-bottom-style: solid;
-            }
-    
-            @media print {
-                * {
-                    -webkit-print-color-adjust: exact;
-                }
-                html {
-                    background: none;
-                    padding: 0;
-                }
-                body {
-                    box-shadow: none;
-                    margin: 0;
-                }
-                span:empty {
-                    display: none;
-                }                
-            }
-    
-            @page {
-                margin: 0;
-            }
-        </style>
+		* {
+			font-family: "VU Arial";
+		}
+
+		body {
+			font-family: "VU Arial";
+			box-sizing: border-box;
+			height: 11in;
+			margin: 0 auto;
+			overflow: hidden;
+			padding: 0.5in;
+			width: 8.5in;
+		}
+
+		body {
+			background: #FFF;
+			border-radius: 1px;
+			box-shadow: 0 0 1in -0.25in rgba(0, 0, 0, 0.5);
+		}
+
+
+		@media print {
+			* {
+				-webkit-print-color-adjust: exact;
+			}
+			html {
+				background: none;
+				padding: 0;
+			}
+			body {
+				box-shadow: none;
+				margin: 0;
+			}
+			span:empty {
+				display: none;
+			}
+		}
+
+		@page {
+			margin: 0;
+		}
+
+		table {
+			border-collapse: collapse;
+		}
+
+		table.orderDetail th,
+		table.orderDetail td {
+			border-radius: 0.25em;
+			border-style: solid;
+			border-width: 1px;
+			padding: 0.5em;
+			position: relative;
+			text-align: left;
+			border-color: grey;
+		}
+
+		table.orderDetail th {
+			text-align: center;
+		}
+
+		table.orderDetail tr:nth-child(even) {
+			background-color: #dddddd;
+		}
+
+		table.orderDetail td:nth-child(1) {
+			width: 32%;
+		}
+
+		table.orderDetail td:nth-child(2) {
+			text-align: center;
+			width: 12%;
+		}
+
+		table.orderDetail td:nth-child(3) {
+			text-align: center;
+			width: 15%;
+		}
+
+		table.orderDetail td:nth-child(4) {
+			text-align: right;
+			width: 18%;
+		}
+
+		table.orderDetail td:nth-child(5) {
+			text-align: right;
+			width: 23%;
+		}
+
+		table.subTotal {
+			float: right;
+			margin-bottom: 20px;
+		}
+
+		table.subTotal tr:nth-child(even) td {
+			background-color: #dddddd;
+			
+		}
+		table.subTotal tr:nth-child(even) th:nth-child(2) {
+			background-color: #dddddd;			
+		}
+		table.subTotal th:nth-child(2), td {
+			border-bottom: 1px solid darkgray;			
+		}
+
+		table.subTotal td {
+			padding: 10px;
+			text-align: right;
+		}
+		
+		table.subTotal th {
+			text-align: left;
+		}
+
+		table.footer {
+			width: 100%;
+		}
+
+		table.footer td,
+		th {
+			font-weight: bold;
+			text-align: center
+		}
+
+		.title {
+			text-align: center;
+			font-weight: bold;
+			background-color: lightgrey;
+			padding-top: 5px;
+			padding-bottom: 5px;
+		}
+
+		table.companyProfile td {
+			text-align: left;
+			line-height: 0.5em;
+		}
+
+		table.orderInfor {
+			text-align: center;
+			font-weight: bold;
+		}
+	</style>
     </head>
     
-    <body>
-    <header>
-        <table>
-            <tr >
-                <td style = "width: 450px">
-                    <p style = "margin: 0 0 0.25em; font-weight: bold;">CÔNG TY CỔ PHẦN KIM KHÍ HÓA CHẤT CÁT TƯỜNG</p>
-                    <p style = "margin: 0 0 0.25em;">Địa chỉ: 152 Giải Phóng - Cửa Bắc - Nam Định</p>
-                    <p style = "margin: 0 0 0.25em;">phone: 0912250315 - 0916698845 - 0916678845</p>
-                    <p style = "margin: 0 0 0.25em;">website: www.soncattuong.com</p>
-
-                </td>
-                <td> 
-                    <span>
-                        <img style = "display: block;	float: right; max-height: 100%; max-width: 33%;" alt="" src="logo.png"/></span> 
-                </td>
-            </tr>
-        
-        </table>
-        <h1>HÓA ĐƠN</h1>
-        <table>
+    <body>	
+        <table class = "companyProfile" width="100%">
             <tr>
-                <td><p style = "margin: 0 0 0.25em; font-weight: 700; font-size: 22px; text-align: center">${customerName}</p></td>
-                <td>
-                    <p style = "margin: 0 0 0.25em; text-align: right">Ngày Lập: ${date}</p>
-                    <p style = "margin: 0 0 0.25em; ; text-align: right">Số Hóa Đơn: ${id}</p>
+                <td width = "75%">
+                <h3>CÔNG TY CỔ PHẦN KIM KHÍ HÓA CHẤT CÁT TƯỜNG</h3>			
+                <p>Địa chỉ: 152 Giải Phóng - Cửa Bắc - Nam Định</p>
+                <p>phone: 0912.250.315 - 0916.698.845 - 0916.678.845</p>
+                <p>website: www.soncattuong.com</p>
+            </td>
+            <td width = "25%">
+                <img width="100%" src="logo.png" alt=""/>
+            </td>    
+            </tr>    
+        </table>
+        <h1 class = "title" width: "100%">HÓA ĐƠN</h1>
+        <table class = "orderInfor" width = "100%">
+            <tr>
+                <td width = "50%">
+                    <h2>Tư Sim</h2>
+                </td>
+                <td width = "50%">
+                    <p >Ngày Lập: ${date}</p>
+                    <p>Số Hóa Đơn: ${id}</p>
                 </td>
             </tr>
         </table>
-    </header>
-    <article>        
-        <table class="inventory">
+    
+    
+        <table class="orderDetail" width="100%">
             <thead>
                 <tr>
-                    <th style = "width: 220px"><span >Tên sản phẩm</span></th>
-                    <th style = "width: 75px"><span >Số lượng</span></th>
-                    <th style = "width: 90px"><span >Qui cách</span></th>
-                    <th style = "width: 110px"><span >Giá bán</span></th>
-                    <th><span >Thành Tiền</span></th>
+                    <th>
+                        <p><strong>Tên sản phẩm</strong></p>
+                    </th>
+                    <th>
+                        <p><strong>Số lượng</strong></p>
+                    </th>
+                    <th>
+                        <p><strong>Qui cách</strong></p>
+                    </th>
+                    <th>
+                        <p><strong>Giá bán</strong></p>
+                    </th>
+                    <th>
+                        <p><strong>Thành Tiền</strong></p>
+                    </th>
                 </tr>
             </thead>
             <tbody>
-                ${htmlOrderDetail}
+                ${htmlOrderDetail}    
             </tbody>
         </table>
-        <table class="balance">
+        <table class="subTotal" width="100%">
             <tr>
-                <th style = "width: 200px"><span >Tổng Tiền</span></th>
-                <td><span data-prefix></span><span>${formatNumber(total)}</span></td>
+                <th width = "40%"></th>
+                <th width = "30%"><span>Tổng Tiền</span></th>
+                <td width = "25%"><span></span><span>${formatNumber(total)}</span></td>
             </tr>
             <tr>
-                <th style = "width: 200px"><span >VAT</span></th>
-                <td><span data-prefix></span><span >${formatNumber(vat)}</span></td>
+                <th width = "40%"></th>
+                <th width = "30%"><span>VAT</span></th>
+                <td width = "30%"><span></span><span>${formatNumber(vat)}</span></td>
             </tr>
             <tr>
-                <th style = "width: 200px"><span >Tổng tiền (gồm vat)</span></th>
-                <td><span data-prefix></span><span>${formatNumber(totalIncludeVat)}</span></td>
+                <th width = "40%"></th>
+                <th width = "30%"><span>Tổng tiền (gồm vat)</span></th>
+                <td width = "30%"><span></span><span>${formatNumber(totalIncludeVat)}</span></td>
             </tr>
             <tr>
-                <th style = "width: 200px"><span >Nợ cũ</span></th>
-                <td><span data-prefix></span><span>${formatNumber(oldDebt)}</span></td>
+                <th width = "40%"></th>
+                <th width = "30%"><span>Nợ cũ</span></th>
+                <td width = "30%"><span></span><span>${formatNumber(oldDebt)}</span></td>
             </tr>
             <tr>
-                <th style = "width: 200px"><span >Thanh Toán</span></th>
-                <td><span data-prefix></span><span>${formatNumber(pay)}</span></td>
+                <th width = "40%"></th>
+                <th width = "30%"><span>Thanh Toán</span></th>
+                <td width = "30%"><span></span><span>${formatNumber(pay)}</span></td>
             </tr>
             <tr>
-                <th style = "width: 200px"><span >Còn lại</span></th>
-                <td><span data-prefix></span><span>${formatNumber(newDebt)}</span></td>
+                <th width = "40%"></th>
+                <th width = "30%"><span>Còn lại</span></th>
+                <td width = "30%"><span></span><span>${formatNumber(newDebt)}</span></td>
             </tr>
         </table>
-    </article>
-    <table class="inventory">
-        <thead>
-            <tr>
-                <th><span >Người Nhận</span></th>
-                <th><span >Thủ Kho</span></th>
-                <th><span >Người Bán</span></th>
-            </tr>
-        </thead>
-    </table>
-</body>
+    
+        <table class="footer">
+            <thead>
+                <tr>
+                    <th><span>Người Nhận</span></th>
+                    <th><span>Thủ Kho</span></th>
+                    <th><span>Người Bán</span></th>
+                </tr>
+            </thead>
+        </table>
+    </body>
     
     </html>
     `
