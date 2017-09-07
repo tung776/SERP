@@ -17,7 +17,7 @@ import { resetData, AddNewSaleOrder } from '../../../actions/saleOrderActions';
 import db from '../../../database/sqliteConfig';
 import { formatMoney, formatNumber, unformat } from '../../../../Shared/utils/format';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
-import invoiceTemplate from '../../../../Shared/templates/invoice';
+import invoiceTemplate, { css } from '../../../../Shared/templates/invoice';
 import Expo from 'expo';
 import loadAsset from '../../../utils/loadAsset';
 import { fontUrl, URL } from '../../../../env';
@@ -509,13 +509,13 @@ class NewSaleOrder extends React.Component {
                                             customerName = customer.name;
                                         }
                                     });
-
+                                    console.log('css = ', css);
                                     let options = {
                                         html: invoiceTemplate(customerName, this.state.id,
                                             this.state.date, this.state.total, this.state.totalIncludeVat,
                                             this.state.vat, this.state.oldebt, this.state.pay, this.state.newDebt, 
                                             saleOrderDetails, this.state.logoPath),
-                                        // htmlFilePath,
+                                        css: css(),
                                         fileName: "invoice",
                                         fonts: [this.state.fontPath]
                                     };
