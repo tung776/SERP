@@ -140,7 +140,7 @@ export default Invoice = (
 		table.subTotal tr:nth-child(even) th:nth-child(2) {
 			background-color: #dddddd;			
 		}
-		table.subTotal th:nth-child(2), td {
+		table.subTotal th:nth-child(2), table.subTotal td  {
 			border-bottom: 1px solid darkgray;			
 		}
 
