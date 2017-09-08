@@ -583,7 +583,6 @@ class EditSaleOrder extends React.Component {
                             disabled={!this.state.editMode}
                             style={styles.Btn}
                             onPress={() => {
-                                console.log('this.state.saleOrderDetails = ', this.state.saleOrderDetails);
                                 let saleOrderDetails = [...this.state.saleOrderDetails];
                                 saleOrderDetails.forEach((order) => {
                                     this.props.units.forEach((unit) => {
@@ -600,9 +599,6 @@ class EditSaleOrder extends React.Component {
                                         customerName = customer.name;
                                     }
                                 });
-                                console.log('customerPhone = ', customerPhone);
-                                if(customerPhone == '') customerPhone = '0916678845';
-                                // if(customerPhone == '') return;
                                 sendMessage(
                                     customerPhone, customerName, moment(this.state.date).format('DD-MM-YYYY'), this.state.total, this.state.totalIncludeVat,
                                     this.state.vat, this.state.oldDebt, this.state.pay, this.state.newDebt, 
@@ -616,7 +612,6 @@ class EditSaleOrder extends React.Component {
                             disabled={!this.state.editMode}
                             style={styles.Btn}
                             onPress={() => {
-                                console.log('this.state.saleOrderDetails = ', this.state.saleOrderDetails);
                                 let saleOrderDetails = [...this.state.saleOrderDetails];
                                 saleOrderDetails.forEach((order) => {
                                     this.props.units.forEach((unit) => {
@@ -633,9 +628,6 @@ class EditSaleOrder extends React.Component {
                                         customerName = customer.name;
                                     }
                                 });
-                                console.log('customerEmail = ', customerEmail);
-                                if(customerEmail == '') customerEmail = 'thanhtung776@gmail.com';
-                                // if(customerEmail == '') return;
                                 sendEmail(
                                     customerEmail, customerName, moment(this.state.date).format('DD-MM-YYYY'), this.state.total, this.state.totalIncludeVat,
                                     this.state.vat, this.state.oldDebt, this.state.pay, this.state.newDebt, 

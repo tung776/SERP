@@ -544,7 +544,6 @@ class NewSaleOrder extends React.Component {
                                         }
                                     })
                                 });
-                                console.log('saleOrderDetails = ', saleOrderDetails);
                                 let customerPhone = '';
                                 let customerName = '';
                                 this.props.customers.forEach((customer) => {
@@ -553,9 +552,6 @@ class NewSaleOrder extends React.Component {
                                         customerName = customer.name;
                                     }
                                 });
-                                console.log('customerPhone = ', customerPhone);
-                                if(customerPhone == '') customerPhone = '0916678845';
-                                // if(customerPhone == '') return;
                                 sendMessage(
                                     customerPhone, customerName, this.state.date, this.state.total, this.state.totalIncludeVat,
                                     this.state.vat, this.state.oldebt, this.state.pay, this.state.newDebt, 
@@ -568,7 +564,6 @@ class NewSaleOrder extends React.Component {
                         <TouchableOpacity
                             style={styles.Btn}
                             onPress={() => {
-                                console.log('this.state.saleOderDetails = ', this.state.saleOderDetails);
                                 let saleOderDetails = [...this.state.saleOderDetails];
                                 saleOderDetails.forEach((order) => {
                                     this.props.units.forEach((unit) => {
@@ -585,9 +580,6 @@ class NewSaleOrder extends React.Component {
                                         customerName = customer.name;
                                     }
                                 });
-                                console.log('customerEmail = ', customerEmail);
-                                if(customerEmail == '') customerEmail = 'thanhtung776@gmail.com';
-                                // if(customerEmail == '') return;
                                 sendEmail(
                                     customerEmail, customerName, this.state.date, this.state.total, this.state.totalIncludeVat,
                                     this.state.vat, this.state.oldebt, this.state.pay, this.state.newDebt, 

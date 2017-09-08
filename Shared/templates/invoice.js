@@ -302,7 +302,6 @@ export const sendMessage = (
 ) => {
     let htmlOrderDetail = '';
     let totalPrice = 0;
-    console.log('OrderDetail = ', OrderDetail);
     OrderDetail.forEach((order) => {
         totalPrice = order.salePrice * order.quantity;
         htmlOrderDetail += `${order.name}: ${formatNumber(order.quantity)} ${order.unitName} x ${formatNumber(order.salePrice)}. `
@@ -341,7 +340,7 @@ export const sendEmail = (
         Hóa Đơn ngày: ${date}: 
 
         ${htmlOrderDetail}
-        
+
         Tổng tiền: ${formatNumber(total)}
         ${totalIncludeVatText} 
         Nợ cũ: ${formatNumber(oldDebt)}
