@@ -1,3 +1,6 @@
+### convert ảnh định dạng 64bit ###
+https://www.base64-image.de/
+
 ### triển khai ứng dụng android không cần development server ###
 1. Gõ lệnh sau:
 ```

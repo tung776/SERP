@@ -5,7 +5,7 @@ import {
     ADD_FLASH_MESSAGE, SUCCESS_MESSAGE, ERROR_MESSAGE,
     SALE_ORDER_LOADED_SQLITE, SALE_ORDER_DELETE_SUCCESS,
     RESET_SALE_ORDER_FORM, SALE_ORDER_LIST_LOADED_SQLITE,
-    SALE_ORDER_DETAIL_CHANGE, RESET_PRODUCT_FORM
+    SALE_ORDER_DETAIL_CHANGE, RESET_PRODUCT_FORM, ADD_SALE_ORDER
 } from './index';
 import { URL } from '../../env';
 import axios from 'axios';
@@ -190,7 +190,7 @@ export const SaleOrderDelete = (order) => async (dispatch) => {
             });
             Alert.alert(
                 'Thông Báo',
-                'Bạn đã lưu dữ liệu thành công',
+                'Bạn đã xóa hóa đơn thành công',
                 [
                     { text: 'OK', onPress: () => console.log('OK Pressed') },
                 ]
@@ -295,11 +295,10 @@ export const SaleOrderUpdate = (order) => async (dispatch) => {
                 Actions.pop({ reLoad: true });
                 dispatch({
                     type: SALE_ORDER_CHANGE_SUCCESS,
-                    payload: res.data.quocte[0]
                 });
                 dispatch({
                     type: ADD_FLASH_MESSAGE,
-                    payload: { message: 'Bạn đã tạo hóa đơn bán thành công', TypeMessage: SUCCESS_MESSAGE }
+                    payload: { message: 'Bạn đã lưu hóa đơn bán thành công', TypeMessage: SUCCESS_MESSAGE }
                 });
                 Alert.alert(
                     'Thông Báo',
@@ -404,7 +403,8 @@ export const AddNewSaleOrder = (order) => async (dispatch) => {
                 );
 
                 dispatch({
-                    type: SALE_ORDER_CHANGE_SUCCESS
+                    type: ADD_SALE_ORDER,
+                    payload: res.data
                 });
                 dispatch({
                     type: ADD_FLASH_MESSAGE,

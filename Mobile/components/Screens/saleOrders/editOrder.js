@@ -558,7 +558,7 @@ class EditSaleOrder extends React.Component {
 
                                     let options = {
                                         html: invoiceTemplate(customerName, this.state.id,
-                                            this.state.date, this.state.total, this.state.totalIncludeVat,
+                                            moment(this.state.date).format('DD-MM-YYYY'), this.state.total, this.state.totalIncludeVat,
                                             this.state.vat, this.state.oldDebt, this.state.pay, this.state.newDebt,
                                             saleOrderDetails, this.state.logoPath),
                                             css: css(),

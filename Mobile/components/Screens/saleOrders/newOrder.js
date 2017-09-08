@@ -511,7 +511,7 @@ class NewSaleOrder extends React.Component {
                                     });
                                     console.log('css = ', css);
                                     let options = {
-                                        html: invoiceTemplate(customerName, this.state.id,
+                                        html: invoiceTemplate(customerName, this.props.id,
                                             this.state.date, this.state.total, this.state.totalIncludeVat,
                                             this.state.vat, this.state.oldebt, this.state.pay, this.state.newDebt, 
                                             saleOrderDetails, this.state.logoPath),
@@ -704,6 +704,7 @@ const mapStateToProps = (state, ownProps) => {
     const { quocteList } = state.quoctes;
     const { isAuthenticated, user } = state.auth;
     return {
+        id,
         customerId,
         date,
         saleOderDetails,

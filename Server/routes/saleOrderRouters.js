@@ -148,7 +148,6 @@ SaleOrderRouter.post('/new', async (req, res) => {
         newDebt, oldebt, saleOderDetails,
     });
     let order = []
-    console.log('saleOderDetails = ', saleOderDetails);
     if (isValid) {
         let newDataversion;
         let data;
@@ -182,7 +181,6 @@ SaleOrderRouter.post('/new', async (req, res) => {
                             date: moment(date, 'DD-MM-YYYY')
                         });
 
-                    console.log('order = ', order);
 
                     saleOderDetails.forEach(async ({ id, unitId, quantity, salePrice }) => {
 
@@ -197,7 +195,6 @@ SaleOrderRouter.post('/new', async (req, res) => {
                                 salePrice,
                                 total
                             });
-                        console.log('saleOderDetail = ', temp);
                     });
 
                     const dataVersion = await Knex('dataVersions').where('id', 1);

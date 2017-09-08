@@ -105,7 +105,7 @@ export default (state = INITIAL_STATE, action) => {
             };
         case SALE_ORDER_CHANGE_FAIL:
             return { ...state, error: action.payload, loading: false };
-        case SALE_ORDER_CHANGE_SUCCESS:
+        case ADD_SALE_ORDER:
             return {
                 ...state,
                 id: action.payload.saleOrder[0].id,
@@ -116,9 +116,20 @@ export default (state = INITIAL_STATE, action) => {
                 error: '',
                 loading: false,
             };
+        case SALE_ORDER_CHANGE_SUCCESS:
+            return {
+                ...state,                
+                error: '',
+                loading: false,
+            };
         case SALE_ORDER_DELETE_SUCCESS:
             return {
                 ...state,
+                id: "",
+                customerId: '',
+                date: '',
+                title: '',
+                saleOrderDetails: [],
                 error: '',
                 loading: false,
             };
