@@ -17,7 +17,7 @@ import { resetData, AddNewSaleOrder } from '../../../actions/saleOrderActions';
 import db from '../../../database/sqliteConfig';
 import { formatMoney, formatNumber, unformat } from '../../../../Shared/utils/format';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
-import invoiceTemplate, { css } from '../../../../Shared/templates/invoice';
+import invoiceTemplate, { css, sendMessage, sendEmail } from '../../../../Shared/templates/invoice';
 import Expo from 'expo';
 import loadAsset from '../../../utils/loadAsset';
 import { fontUrl, URL } from '../../../../env';
@@ -535,13 +535,65 @@ class NewSaleOrder extends React.Component {
                         </TouchableOpacity>
                         <TouchableOpacity
                             style={styles.Btn}
-                            onPress={() => Actions.pop()}
+                            onPress={() => {
+                                let saleOrderDetails = [...this.state.saleOderDetails];
+                                saleOrderDetails.forEach((order) => {
+                                    this.props.units.forEach((unit) => {
+                                        if (order.unitId == unit.id) {
+                                            order.unitName = unit.name
+                                        }
+                                    })
+                                });
+                                console.log('saleOrderDetails = ', saleOrderDetails);
+                                let customerPhone = '';
+                                let customerName = '';
+                                this.props.customers.forEach((customer) => {
+                                    if (customer.id == this.state.customerId) {
+                                        customerPhone = customer.phone;
+                                        customerName = customer.name;
+                                    }
+                                });
+                                console.log('customerPhone = ', customerPhone);
+                                if(customerPhone == '') customerPhone = '0916678845';
+                                // if(customerPhone == '') return;
+                                sendMessage(
+                                    customerPhone, customerName, this.state.date, this.state.total, this.state.totalIncludeVat,
+                                    this.state.vat, this.state.oldebt, this.state.pay, this.state.newDebt, 
+                                    saleOrderDetails
+                                );
+                            }}
                         >
                             <Ionicons name="ios-send-outline" size={25} color="#FFFFFF" />
                         </TouchableOpacity>
                         <TouchableOpacity
                             style={styles.Btn}
-                            onPress={() => Actions.pop()}
+                            onPress={() => {
+                                console.log('this.state.saleOderDetails = ', this.state.saleOderDetails);
+                                let saleOderDetails = [...this.state.saleOderDetails];
+                                saleOderDetails.forEach((order) => {
+                                    this.props.units.forEach((unit) => {
+                                        if (order.unitId == unit.id) {
+                                            order.unitName = unit.name
+                                        }
+                                    })
+                                });
+                                let customerName = '';
+                                let customerEmail = '';
+                                this.props.customers.forEach((customer) => {
+                                    if (customer.id == this.state.customerId) {
+                                        customerEmail = customer.email;
+                                        customerName = customer.name;
+                                    }
+                                });
+                                console.log('customerEmail = ', customerEmail);
+                                if(customerEmail == '') customerEmail = 'thanhtung776@gmail.com';
+                                // if(customerEmail == '') return;
+                                sendEmail(
+                                    customerEmail, customerName, this.state.date, this.state.total, this.state.totalIncludeVat,
+                                    this.state.vat, this.state.oldebt, this.state.pay, this.state.newDebt, 
+                                    saleOderDetails
+                                );
+                            }}
                         >
                             <Ionicons name="ios-mail-outline" size={25} color="#FFFFFF" />
                         </TouchableOpacity>

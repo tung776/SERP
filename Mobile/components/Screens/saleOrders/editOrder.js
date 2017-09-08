@@ -31,7 +31,7 @@ import {
     unformat
 } from '../../../../Shared/utils/format';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
-import invoiceTemplate from '../../../../Shared/templates/invoice';
+import invoiceTemplate, {css, sendEmail, sendMessage} from '../../../../Shared/templates/invoice';
 import loadAsset from '../../../utils/loadAsset';
 import { fontUrl, URL } from '../../../../env';
 
@@ -435,7 +435,7 @@ class EditSaleOrder extends React.Component {
                                 value={formatNumber(this.state.pay)}
                                 onChangeText={text => {
                                     const pay = unformat(text);
-                                    const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.state.oldebt, pay, this.state.saleOrderDetails);
+                                    const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.state.oldDebt, pay, this.state.saleOrderDetails);
                                     this.setState({
                                         total,
                                         newDebt,
@@ -541,7 +541,7 @@ class EditSaleOrder extends React.Component {
                                         ]
                                     );
                                 } else {
-                                    let saleOrderDetails = [...this.state.saleOderDetails];
+                                    let saleOrderDetails = [...this.state.saleOrderDetails];
                                     saleOrderDetails.forEach((order) => {
                                         this.props.units.forEach((unit) => {
                                             if (order.unitId == unit.id) {
@@ -559,11 +559,11 @@ class EditSaleOrder extends React.Component {
                                     let options = {
                                         html: invoiceTemplate(customerName, this.state.id,
                                             this.state.date, this.state.total, this.state.totalIncludeVat,
-                                            this.state.vat, this.state.oldebt, this.state.pay, this.state.newDebt,
+                                            this.state.vat, this.state.oldDebt, this.state.pay, this.state.newDebt,
                                             saleOrderDetails, this.state.logoPath),
-                                        // htmlFilePath,
-                                        fileName: "invoice",
-                                        fonts: [this.state.fontPath]
+                                            css: css(),
+                                            fileName: "invoice",
+                                            fonts: [this.state.fontPath]
                                     };
                                     try {
                                         const results = await RNHTMLtoPDF.convert(options).catch(
@@ -582,14 +582,66 @@ class EditSaleOrder extends React.Component {
                         <TouchableOpacity
                             disabled={!this.state.editMode}
                             style={styles.Btn}
-                            onPress={() => Actions.pop()}
+                            onPress={() => {
+                                console.log('this.state.saleOrderDetails = ', this.state.saleOrderDetails);
+                                let saleOrderDetails = [...this.state.saleOrderDetails];
+                                saleOrderDetails.forEach((order) => {
+                                    this.props.units.forEach((unit) => {
+                                        if (order.unitId == unit.id) {
+                                            order.unitName = unit.name
+                                        }
+                                    })
+                                });
+                                let customerPhone = '';
+                                let customerName = '';
+                                this.props.customers.forEach((customer) => {
+                                    if (customer.id == this.state.customerId) {
+                                        customerPhone = customer.phone;
+                                        customerName = customer.name;
+                                    }
+                                });
+                                console.log('customerPhone = ', customerPhone);
+                                if(customerPhone == '') customerPhone = '0916678845';
+                                // if(customerPhone == '') return;
+                                sendMessage(
+                                    customerPhone, customerName, moment(this.state.date).format('DD-MM-YYYY'), this.state.total, this.state.totalIncludeVat,
+                                    this.state.vat, this.state.oldDebt, this.state.pay, this.state.newDebt, 
+                                    saleOrderDetails
+                                );
+                            }}
                         >
                             <Ionicons name="ios-send-outline" size={25} color="#FFFFFF" />
                         </TouchableOpacity>
                         <TouchableOpacity
                             disabled={!this.state.editMode}
                             style={styles.Btn}
-                            onPress={() => Actions.pop()}
+                            onPress={() => {
+                                console.log('this.state.saleOrderDetails = ', this.state.saleOrderDetails);
+                                let saleOrderDetails = [...this.state.saleOrderDetails];
+                                saleOrderDetails.forEach((order) => {
+                                    this.props.units.forEach((unit) => {
+                                        if (order.unitId == unit.id) {
+                                            order.unitName = unit.name
+                                        }
+                                    })
+                                });
+                                let customerEmail = '';
+                                let customerName = '';
+                                this.props.customers.forEach((customer) => {
+                                    if (customer.id == this.state.customerId) {
+                                        customerEmail = customer.email;
+                                        customerName = customer.name;
+                                    }
+                                });
+                                console.log('customerEmail = ', customerEmail);
+                                if(customerEmail == '') customerEmail = 'thanhtung776@gmail.com';
+                                // if(customerEmail == '') return;
+                                sendEmail(
+                                    customerEmail, customerName, moment(this.state.date).format('DD-MM-YYYY'), this.state.total, this.state.totalIncludeVat,
+                                    this.state.vat, this.state.oldDebt, this.state.pay, this.state.newDebt, 
+                                    saleOrderDetails
+                                );
+                            }}
                         >
                             <Ionicons name="ios-mail-outline" size={25} color="#FFFFFF" />
                         </TouchableOpacity>

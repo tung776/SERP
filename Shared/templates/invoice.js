@@ -1,4 +1,5 @@
 import Expo from 'expo';
+import Communications from 'react-native-communications';
 import {  formatMoney, formatNumber, unformat } from '../utils/format';
 export default Invoice = (
     customerName,
@@ -94,32 +95,32 @@ export default Invoice = (
         <table class="subTotal" width="100%">
             <tr>
                 <th width="40%"></th>
-                <th width="30%"><span>Tổng Tiền</span></th>
+                <td width="30%"><span>Tổng Tiền</span></td>
                 <td width="25%"><span></span><span>${formatNumber(total)}</span></td>
             </tr>
             <tr>
                 <th width="40%"></th>
-                <th width="30%"><span>VAT</span></th>
+                <td width="30%"><span>VAT</span></td>
                 <td width="30%"><span></span><span>${formatNumber(vat)}</span></td>
             </tr>
             <tr>
                 <th width="40%"></th>
-                <th width="30%"><span>Tổng tiền (gồm vat)</span></th>
+                <td width="30%"><span>Tổng tiền (gồm vat)</span></td>
                 <td width="30%"><span></span><span>${formatNumber(totalIncludeVat)}</span></td>
             </tr>
             <tr>
                 <th width="40%"></th>
-                <th width="30%"><span>Nợ cũ</span></th>
+                <td width="30%"><span>Nợ cũ</span></td>
                 <td width="30%"><span></span><span>${formatNumber(oldDebt)}</span></td>
             </tr>
             <tr>
                 <th width="40%"></th>
-                <th width="30%"><span>Thanh Toán</span></th>
+                <td width="30%"><span>Thanh Toán</span></td>
                 <td width="30%"><span></span><span>${formatNumber(pay)}</span></td>
             </tr>
             <tr>
                 <th width="40%"></th>
-                <th width="30%"><span>Còn lại</span></th>
+                <td width="30%"><span>Còn lại</span></td>
                 <td width="30%"><span></span><span>${formatNumber(newDebt)}</span></td>
             </tr>
         </table>
@@ -189,11 +190,9 @@ export const css = () => {
 
     table.orderDetail th,
     table.orderDetail td {
-        border-radius: 0.25em;
         border-style: solid;
         border-width: 1px;
         padding: 1.5em;
-        position: relative;
         text-align: left;
         border-color: #7f8c8d;
     }
@@ -221,12 +220,12 @@ export const css = () => {
     }
 
     table.orderDetail td:nth-child(4) {
-        float: right;
+        text-align: right;
         width: 18%;
     }
 
     table.orderDetail td:nth-child(5) {
-        float: right;
+        text-align: right;
         width: 23%;
     }
 
@@ -287,4 +286,66 @@ export const css = () => {
         text-align: right;
     }
     `
+}
+
+export const sendMessage = (
+    customerPhone,
+    customerName,
+    date,
+    total,
+    totalIncludeVat,
+    vat,
+    oldDebt,
+    pay,
+    newDebt,
+    OrderDetail,
+) => {
+    let htmlOrderDetail = '';
+    let totalPrice = 0;
+    console.log('OrderDetail = ', OrderDetail);
+    OrderDetail.forEach((order) => {
+        totalPrice = order.salePrice * order.quantity;
+        htmlOrderDetail += `${order.name}: ${formatNumber(order.quantity)} ${order.unitName} x ${formatNumber(order.salePrice)}. `
+    });
+    let totalIncludeVatText = '';
+    if(vat > 0) totalIncludeVatText = `Tổng tiền gồm VAT: ${formatNumber(totalIncludeVat)},`
+    Communications.text(customerPhone, `Kính gửi Quí Khách ${customerName} Hóa Đơn ngày: ${date}: 
+    ${htmlOrderDetail}
+    Tổng tiền: ${formatNumber(total)}, ${totalIncludeVatText} Nợ cũ: ${formatNumber(oldDebt)}, Thanh Toán: - ${formatNumber(pay)}, Còn Lại: ${formatNumber(newDebt)}
+    `);
+}
+export const sendEmail = (
+    customerEmail,
+    customerName,
+    date,
+    total,
+    totalIncludeVat,
+    vat,
+    oldDebt,
+    pay,
+    newDebt,
+    OrderDetail,
+) => {
+    let htmlOrderDetail = '';
+    let totalPrice = 0;
+    OrderDetail.forEach((order) => {
+        totalPrice = order.salePrice * order.quantity;
+        htmlOrderDetail += `${order.name}: ${formatNumber(order.quantity)} ${order.unitName} x ${formatNumber(order.salePrice)} = ${formatNumber(totalPrice)}.
+        `
+    });
+    let totalIncludeVatText = '';
+    if(vat > 0) totalIncludeVatText = `Tổng tiền gồm VAT: ${totalIncludeVat},`
+    Communications.email([customerEmail], null, null, 'Hóa Đơn', `Kính gửi Quí Khách ${customerName}
+    
+    
+        Hóa Đơn ngày: ${date}: 
+
+        ${htmlOrderDetail}
+        
+        Tổng tiền: ${formatNumber(total)}
+        ${totalIncludeVatText} 
+        Nợ cũ: ${formatNumber(oldDebt)}
+        Thanh Toán: - ${formatNumber(pay)}
+        Còn Lại: ${formatNumber(newDebt)}
+    `);
 }
