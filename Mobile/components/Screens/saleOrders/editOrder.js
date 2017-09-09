@@ -80,13 +80,14 @@ class EditSaleOrder extends React.Component {
         } else {
             saleOrderDetails = nextProps.saleOrderDetails;
         }
-
+        console.log('nextProps.date = ', moment(nextProps.date, 'yyyy-MM-dd'));
+        
         const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.state.oldDebt, this.state.pay,
             saleOrderDetails);
         this.setState({
             id: nextProps.id,
             customerId: nextProps.customerId,
-            date: nextProps.date,
+            date: moment(nextProps.date, 'yyyy-MM-dd HH:mm').format('DD-MM-YYYY'),
             total,
             newDebt,
             totalIncludeVat,
@@ -116,7 +117,7 @@ class EditSaleOrder extends React.Component {
                         } = this.state;
                         this.props.SaleOrderUpdate({
                             id,
-                            date,
+                            date: moment(date).format('DD-MM-YYYY'),
                             title,
                             customerId,
                             total,
@@ -341,7 +342,7 @@ class EditSaleOrder extends React.Component {
                                 placeholder="Chọn ngày lập hóa đơn"
                                 format="DD-MM-YYYY"
                                 minDate="01-01-2008"
-                                maxDate="01-01-2056"
+                                maxDate="01-01-3056"
                                 confirmBtnText="Xác Nhận"
                                 cancelBtnText="Hủy Bỏ"
                                 customStyles={{

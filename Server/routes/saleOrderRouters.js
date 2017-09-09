@@ -101,7 +101,6 @@ SaleOrderRouter.post('/getById', async (req, res) => {
             INNER JOIN "products" AS p ON p."id" = s."productId" 
             WHERE s."saleOrderId" = ${orderId};                      
         `);
-        console.log('saleOrderDetails = ', saleOrderDetails);
         res.status(200).json({
             success: true,
             saleOrder: saleOrder.rows,
@@ -142,7 +141,8 @@ SaleOrderRouter.post('/new', async (req, res) => {
         date, title, customerId, total, totalIncludeVat, vat, pay,
         newDebt, oldebt, saleOderDetails, debtCustomerId, user
     } = req.body;
-
+    console.log('date = ', moment(date, 'DD-MM-YYYY').format('YYYY-MM-DD'));
+    // return;
     const { isValid, errors } = NewSaleOrderValidator({
         date, title, customerId, total, totalIncludeVat, vat, pay,
         newDebt, oldebt, saleOderDetails,
@@ -159,7 +159,7 @@ SaleOrderRouter.post('/new', async (req, res) => {
                         .returning('*')
                         .insert({
                             customerId: customerId,
-                            createdDate: moment(date, 'DD-MM-YYYY'),
+                            createdDate: moment(date, 'DD-MM-YYYY').format('YYYY-MM-DD'),
                             title: title,
                             newDebt: newDebt,
                             oldDebt: oldebt,
@@ -178,7 +178,7 @@ SaleOrderRouter.post('/new', async (req, res) => {
                             total: total,
                             vat: vat,
                             totalIncludeVat: totalIncludeVat,
-                            date: moment(date, 'DD-MM-YYYY')
+                            date: moment(date, 'DD-MM-YYYY').format('YYYY-MM-DD')
                         });
 
 
@@ -245,6 +245,11 @@ SaleOrderRouter.post('/update', async (req, res) => {
         newDebt, oldebt, saleOrderDetails, debtCustomerId, user
     } = req.body;
 
+    console.log('date = ', date);
+    console.log(' date = ',  moment(date));
+    console.log(`${moment(date).date()}/${moment(date).months()}/${moment(date).year()}`);
+    console.log('saleOrderDetails = ', saleOrderDetails);
+    return;
     const { isValid, errors } = NewSaleOrderValidator({
         date, title, customerId, total, totalIncludeVat, vat, pay,
         newDebt, oldebt, saleOrderDetails,
@@ -272,28 +277,22 @@ SaleOrderRouter.post('/update', async (req, res) => {
 
                     const saleOrder = await Knex('saleOrders')
                         .where({ id: id });
+                    const debt = await Knex('debtCustomers')
+                        .where({ id: debtCustomerId });
 
-                    const So_tien_Dieu_Chinh = totalIncludeVat - saleOrder[0].totalIncludeVat;
-                    console.log('totalIncludeVat = ', totalIncludeVat);
-                    console.log('saleOrder[0].totalIncludeVat = ', saleOrder[0].totalIncludeVat);
-                    console.log('So_tien_Dieu_Chinh = ', So_tien_Dieu_Chinh);
+                    const So_tien_Dieu_Chinh = totalIncludeVat - saleOrder[0].totalIncludeVat - (pay -debt[0].minus);
+                    
                     //Lấy toàn bộ bảng dữ liệu công nợ có liên quan đến bảng công nợ bị xóa
                     const customerDebtBeChanged = await Knex('debtCustomers')
                         .whereRaw(`id > ${saleOrder[0].debtCustomerId} AND "customerId" = ${saleOrder[0].customerId}`);
                     //Điều chỉnh toàn bộ công nợ có liêu quan
-                    console.log('customerDebtBeChanged.length = ', customerDebtBeChanged.length)
                     if(customerDebtBeChanged.length > 0) {
                         customerDebtBeChanged.forEach(async (debt) => {
-                            console.log("debt = ", debt);
-                            if(debt.newDebt.isNaN()) debt.newDebt = 0;
-                            if(debt.oldDebt.isNaN()) debt.oldDebt = 0;
+                            if(debt.newDebt == 'NAN') debt.newDebt = 0;
+                            if(debt.oldDebt == 'NAN') debt.oldDebt = 0;
                             const _newDebt = debt.newDebt + So_tien_Dieu_Chinh;
                             const _oldDebt = debt.oldDebt + So_tien_Dieu_Chinh;
-                            console.log('debt.oldDebt =', debt.oldDebt);
-                            console.log('debt.oldDebt =', _oldDebt);
-
-                            console.log('debt.newDebt =', debt.newDebt);
-                            console.log('debt.newDebt =', _newDebt);
+     
                             await t('debtCustomers')
                                 .returning('*')
                                 .whereRaw(`id = ${debt.id}`)
@@ -322,7 +321,7 @@ SaleOrderRouter.post('/update', async (req, res) => {
                     saleOrderDetails.forEach(async (detail) => {
                         await t('saleOderDetails')
                             .returning('*')
-                            .whereRaw(`id = ${detail.id}`)
+                            .whereRaw(`id = ${detail.detailId}`)
                             .update({
                                 saleOrderId: id,
                                 productId: detail.id,
