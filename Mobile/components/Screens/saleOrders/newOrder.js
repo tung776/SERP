@@ -44,7 +44,6 @@ class NewSaleOrder extends React.Component {
         fontLocation: null,
         appIsReady: false,
         fontPath: null,
-        logoPath: null,
     }
     async componentWillMount() {
         this.props.resetData();
@@ -55,10 +54,8 @@ class NewSaleOrder extends React.Component {
             this.props.loadUnits();
         }
         const fontAsset = await loadAsset("vuarial", "ttf", fontUrl);
-        const imageAsset = await loadAsset("logo", "png", `${URL}/logo.png`);
         this.setState({ 
             fontPath: fontAsset.localUri, 
-            logoPath: imageAsset.localUri 
         });
     }    
 
@@ -485,7 +482,7 @@ class NewSaleOrder extends React.Component {
                         <TouchableOpacity
                             style={styles.Btn}
                             onPress={async () => {
-                                if(!this.state.fontPath || !this.state.logoPath) return;
+                                if(!this.state.fontPath) return;
                                 if (this.state.id == '') {
                                     Alert.alert(
                                         'Thông Báo',
@@ -509,12 +506,11 @@ class NewSaleOrder extends React.Component {
                                             customerName = customer.name;
                                         }
                                     });
-                                    console.log('css = ', css);
                                     let options = {
                                         html: invoiceTemplate(customerName, this.props.id,
                                             this.state.date, this.state.total, this.state.totalIncludeVat,
                                             this.state.vat, this.state.oldebt, this.state.pay, this.state.newDebt, 
-                                            saleOrderDetails, this.state.logoPath),
+                                            saleOrderDetails),
                                         css: css(),
                                         fileName: "invoice",
                                         fonts: [this.state.fontPath]

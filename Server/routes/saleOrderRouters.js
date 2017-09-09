@@ -242,12 +242,12 @@ SaleOrderRouter.post('/update', async (req, res) => {
 
     let {
         id, date, title, customerId, total, totalIncludeVat, vat, pay,
-        newDebt, oldebt, saleOderDetails, debtCustomerId, user
+        newDebt, oldebt, saleOrderDetails, debtCustomerId, user
     } = req.body;
 
     const { isValid, errors } = NewSaleOrderValidator({
         date, title, customerId, total, totalIncludeVat, vat, pay,
-        newDebt, oldebt, saleOderDetails,
+        newDebt, oldebt, saleOrderDetails,
     });
 
     if (isValid) {
@@ -273,23 +273,36 @@ SaleOrderRouter.post('/update', async (req, res) => {
                     const saleOrder = await Knex('saleOrders')
                         .where({ id: id });
 
-                    const customerDebt = await Knex('debtCustomers')
-                        .where({ id: saleOrder[0].debtCustomerId });
-
                     const So_tien_Dieu_Chinh = totalIncludeVat - saleOrder[0].totalIncludeVat;
+                    console.log('totalIncludeVat = ', totalIncludeVat);
+                    console.log('saleOrder[0].totalIncludeVat = ', saleOrder[0].totalIncludeVat);
+                    console.log('So_tien_Dieu_Chinh = ', So_tien_Dieu_Chinh);
                     //Lấy toàn bộ bảng dữ liệu công nợ có liên quan đến bảng công nợ bị xóa
-                    customerDebtBeChanged = await Knex('debtCustomers')
-                        .whereRaw(`id > saleOrder[0].debtCustomerId AND customerId = ${saleOrder[0].customerId}`);
+                    const customerDebtBeChanged = await Knex('debtCustomers')
+                        .whereRaw(`id > ${saleOrder[0].debtCustomerId} AND "customerId" = ${saleOrder[0].customerId}`);
                     //Điều chỉnh toàn bộ công nợ có liêu quan
-                    customerDebtBeChanged.forEach(async (debt) => {
-                        await t('debtCustomers')
-                            .returning('*')
-                            .whereRaw(`id = ${debt.id}`)
-                            .update({
-                                newDebt: debt.newDebt + So_tien_Dieu_Chinh,
-                                oldDebt: debt.oldebt + So_tien_Dieu_Chinh,
-                            });
-                    });
+                    console.log('customerDebtBeChanged.length = ', customerDebtBeChanged.length)
+                    if(customerDebtBeChanged.length > 0) {
+                        customerDebtBeChanged.forEach(async (debt) => {
+                            console.log("debt = ", debt);
+                            if(debt.newDebt.isNaN()) debt.newDebt = 0;
+                            if(debt.oldDebt.isNaN()) debt.oldDebt = 0;
+                            const _newDebt = debt.newDebt + So_tien_Dieu_Chinh;
+                            const _oldDebt = debt.oldDebt + So_tien_Dieu_Chinh;
+                            console.log('debt.oldDebt =', debt.oldDebt);
+                            console.log('debt.oldDebt =', _oldDebt);
+
+                            console.log('debt.newDebt =', debt.newDebt);
+                            console.log('debt.newDebt =', _newDebt);
+                            await t('debtCustomers')
+                                .returning('*')
+                                .whereRaw(`id = ${debt.id}`)
+                                .update({
+                                    newDebt: _newDebt,
+                                    oldDebt: _oldDebt,
+                                });
+                        });
+                    }
 
                     await t('saleOrders')
                         .returning('*')
@@ -306,7 +319,7 @@ SaleOrderRouter.post('/update', async (req, res) => {
                             date: moment(date, 'DD-MM-YYYY')
                         });
 
-                    saleOderDetails.forEach(async (detail) => {
+                    saleOrderDetails.forEach(async (detail) => {
                         await t('saleOderDetails')
                             .returning('*')
                             .whereRaw(`id = ${detail.id}`)
@@ -320,7 +333,7 @@ SaleOrderRouter.post('/update', async (req, res) => {
                             });
                     });
 
-                    await t('debtCustomers')
+                    data = await t('debtCustomers')
                         .returning('*')
                         .whereRaw(`id = ${debtCustomerId}`)
                         .update({
@@ -361,87 +374,102 @@ SaleOrderRouter.post('/update', async (req, res) => {
 
 SaleOrderRouter.post('/delete', async (req, res) => {
 
-    const { id } = req.body;
+    const { id, date, title, customerId, total, totalIncludeVat, vat, pay,
+        newDebt, oldebt, saleOrderDetails, debtCustomerId, user } = req.body;
     let newDataversion;
+    console.log('deleting order ', id);
 
-    Knex.transaction(async (t) => {
-        try {
-            const dataVersion = await Knex('dataVersions').where('id', 1);
-
-            let { debtCustomers } = dataVersion[0];
-
-            debtCustomers++;
-
-            newDataversion = await t('dataVersions')
-                .returning('*')
-                .whereRaw('id = 1')
-                .update({
-                    id: 1,
-                    debtCustomers
-                });
-
-            const saleOrder = await Knex('saleOrders')
-                .where({ id: id });
-            //Lấy thông tin bảng công nợ sẽ bị xóa
-            const customerDebt = await Knex('debtCustomers')
-                .where({ id: saleOrder[0].debtCustomerId });
-
-            const So_tien_Dieu_Chinh = saleOrder[0].pay - saleOrder[0].totalIncludeVat;
-            //Lấy toàn bộ bảng dữ liệu công nợ có liên quan đến bảng công nợ bị xóa
-            customerDebtBeChanged = await Knex('debtCustomers')
-                .whereRaw(`id > saleOrder[0].debtCustomerId AND customerId = ${saleOrder[0].customerId}`);
-            //Điều chỉnh toàn bộ công nợ có liêu quan
-            customerDebtBeChanged.forEach(async (debt) => {
-                await t('debtCustomers')
+    try {
+        Knex.transaction(async (t) => {
+            try {
+                const dataVersion = await Knex('dataVersions').where('id', 1);
+    
+                let { debtCustomers } = dataVersion[0];
+    
+                debtCustomers++;
+                console.log('go 1');
+                newDataversion = await t('dataVersions')
                     .returning('*')
-                    .whereRaw(`id = ${debt.id}`)
+                    .whereRaw('id = 1')
                     .update({
-                        newDebt: debt.newDebt + So_tien_Dieu_Chinh,
-                        oldDebt: debt.oldebt + So_tien_Dieu_Chinh,
+                        id: 1,
+                        debtCustomers
                     });
-            });
-            //Xóa bảng công nợ
-            await Knex('debtCustomers')
-                .transacting(t)
-                .debug(true)
-                .where({ id: saleOrder[0].debtCustomerId })
-                .del()
-                .catch((error) => {
-                    console.error('delete debtCustomers error: ', error);
+                console.log('go 2');
+                const saleOrder = await Knex('saleOrders')
+                    .where({ id: id });
+                //Lấy thông tin bảng công nợ sẽ bị xóa
+                console.log('go 3');
+                const customerDebt = await Knex('debtCustomers')
+                    .where({ id: saleOrder[0].debtCustomerId });
+                //phát sinh giảm - phát sinh tăng
+                const So_tien_Dieu_Chinh = saleOrder[0].pay - saleOrder[0].totalIncludeVat;
+                console.log('totalIncludeVat = ', totalIncludeVat);
+                console.log('saleOrder[0].totalIncludeVat = ', saleOrder[0].totalIncludeVat);
+                console.log('So_tien_Dieu_Chinh = ', So_tien_Dieu_Chinh);
+                //Lấy toàn bộ bảng dữ liệu công nợ có liên quan đến bảng công nợ bị xóa
+                console.log('go 3');
+                const customerDebtBeChanged = await Knex('debtCustomers')
+                    .whereRaw(`id > ${saleOrder[0].debtCustomerId} AND "customerId" = ${saleOrder[0].customerId}`);
+                //Điều chỉnh toàn bộ công nợ có liêu quan
+                if(customerDebtBeChanged.length > 0) {
+                    customerDebtBeChanged.forEach(async (debt) => {
+                        console.log('debt = ', debt);
+                        await t('debtCustomers')
+                            .returning('*')
+                            .whereRaw(`id = ${debt.id}`)
+                            .update({
+                                newDebt: debt.newDebt + So_tien_Dieu_Chinh,
+                                oldDebt: debt.oldDebt + So_tien_Dieu_Chinh,
+                            });
+                    });
+                }
+                //Xóa bảng công nợ
+                console.log('go 4');
+                await Knex('debtCustomers')
+                    .transacting(t)
+                    .where({ id: saleOrder[0].debtCustomerId })
+                    .del()
+                    .catch((error) => {
+                        console.error('delete debtCustomers error: ', error);
+                    });
+                //xoa hóa đơn chi tiết có liên quan
+                console.log('go 5');
+                await Knex('saleOderDetails')
+                    .transacting(t)
+                    .where({ saleOrderId: id })
+                    .del()
+                    .catch((error) => {
+                        console.error('delete saleOderDetails error: ', error);
+                    });
+                //Xóa hóa đơn
+                console.log('go 6');
+                await Knex('saleOrders')
+                    .transacting(t)
+                    .where({ id: id })
+                    .del()
+                    .catch((error) => {
+                        console.error('delete saleOrders error: ', error);
+                    });
+    
+            } catch (e) {
+                t.rollback();
+                res.status(400).json({ success: false, error: e });
+            }
+        }).then(
+            () => {
+                res.json({
+                    success: true,
+                    dataversion: newDataversion
                 });
-            //xoa hóa đơn chi tiết có liên quan
-            await Knex('saleOderDetails')
-                .transacting(t)
-                .debug(true)
-                .where({ saleOrderId: id })
-                .del()
-                .catch((error) => {
-                    console.error('delete saleOderDetails error: ', error);
-                });
-            //Xóa hóa đơn
-            await Knex('saleOrders')
-                .transacting(t)
-                .debug(true)
-                .where({ id: id })
-                .del()
-                .catch((error) => {
-                    console.error('delete saleOrders error: ', error);
-                });
-
-        } catch (e) {
-            t.rollback();
-            res.status(400).json({ success: false, error: e });
-        }
-    }).then(
-        () => {
-            res.json({
-                success: true,
-                dataversion: newDataversion
-            });
-        }
-        ).catch(
-        e => console.log(`Error: ${e}`)
-        );
+            }
+            ).catch(
+            e => console.log(`Error: ${e}`)
+            );
+    }
+    catch(e) {
+        console.log(e)
+    }
 });
 
 export default SaleOrderRouter;

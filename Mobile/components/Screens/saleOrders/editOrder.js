@@ -21,7 +21,8 @@ import {
 import {
     loadSaleOrderById,
     SaleOrderUpdate,
-    SaleOrderChange
+    SaleOrderChange,
+    SaleOrderDelete
 } from '../../../actions/saleOrderActions';
 import db from '../../../database/sqliteConfig';
 import moment from '../../../../Shared/utils/moment';
@@ -31,7 +32,7 @@ import {
     unformat
 } from '../../../../Shared/utils/format';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
-import invoiceTemplate, {css, sendEmail, sendMessage} from '../../../../Shared/templates/invoice';
+import invoiceTemplate, { css, sendEmail, sendMessage } from '../../../../Shared/templates/invoice';
 import loadAsset from '../../../utils/loadAsset';
 import { fontUrl, URL } from '../../../../env';
 
@@ -43,6 +44,7 @@ class EditSaleOrder extends React.Component {
         isExpandedTotal: true,
         customerId: '',
         debtCustomers: {},
+        debtCustomerId: null,
         date: '',
         title: '',
         total: 0,
@@ -55,7 +57,6 @@ class EditSaleOrder extends React.Component {
         quoctes: [],
         editMode: false,
         fontPath: null,
-        logoPath: null
     }
     async componentWillMount() {
         this.props.loadSaleOrderById(this.props.saleOrder.id);
@@ -67,10 +68,8 @@ class EditSaleOrder extends React.Component {
             this.props.loadUnits();
         }
         const fontAsset = await loadAsset("vuarial", "ttf", fontUrl);
-        const imageAsset = await loadAsset("logo", "png", `${URL}/logo.png`);
-        this.setState({ 
-            fontPath: fontAsset.localUri, 
-            logoPath: imageAsset.localUri 
+        this.setState({
+            fontPath: fontAsset.localUri,
         });
     }
 
@@ -95,12 +94,15 @@ class EditSaleOrder extends React.Component {
             pay: nextProps.pay,
             saleOrderDetails,
             debtCustomers: nextProps.debt,
+            debtCustomerId: nextProps.debtCustomerId,
             oldDebt: nextProps.oldDebt,
             quoctes: nextProps.quocteList
         });
     }
 
     onSave() {
+        console.log('this.state.debtCustomerId = ', this.state.debtCustomerId);
+        if (this.state.debtCustomerId == null) return;
         Alert.alert(
             'Xác Nhận',
             'Bạn chắc chắn muốn lưu hóa đơn',
@@ -109,10 +111,11 @@ class EditSaleOrder extends React.Component {
                     text: 'Xác Nhận',
                     onPress: () => {
                         const {
-                            date, title, customerId, total, totalIncludeVat, vat, pay,
-                            newDebt, oldebt, saleOrderDetails
+                            id, date, title, customerId, total, totalIncludeVat, vat, pay,
+                            newDebt, oldDebt, saleOrderDetails
                         } = this.state;
-                        this.props.AddNewSaleOrder({
+                        this.props.SaleOrderUpdate({
+                            id,
                             date,
                             title,
                             customerId,
@@ -121,9 +124,9 @@ class EditSaleOrder extends React.Component {
                             vat,
                             pay,
                             newDebt,
-                            oldebt,
+                            oldDebt,
                             saleOrderDetails,
-                            debtCustomerId: this.state.debtCustomers.id,
+                            debtCustomerId: this.state.debtCustomerId,
                             user: this.props.user
                         });
                     }
@@ -244,10 +247,10 @@ class EditSaleOrder extends React.Component {
                                                         const saleOrderDetails = [...this.state.saleOrderDetails];
                                                         saleOrderDetails.forEach((product) => {
                                                             if (product.id == item.id) {
-                                                                product.quantity = text;
+                                                                product.quantity = unformat(text);
                                                             }
                                                         });
-                                                        const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.state.newDebt, this.state.pay, saleOrderDetails);
+                                                        const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.state.oldDebt, this.state.pay, saleOrderDetails);
                                                         this.setState({
                                                             total,
                                                             newDebt,
@@ -288,10 +291,10 @@ class EditSaleOrder extends React.Component {
                                                         const saleOrderDetails = [...this.state.saleOrderDetails];
                                                         saleOrderDetails.forEach((product) => {
                                                             if (product.id == item.id) {
-                                                                product.salePrice = text;
+                                                                product.salePrice = unformat(text);
                                                             }
                                                         });
-                                                        const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.state.newDebt, this.state.pay, saleOrderDetails);
+                                                        const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.state.oldDebt, this.state.pay, saleOrderDetails);
                                                         this.setState({
                                                             total,
                                                             newDebt,
@@ -440,7 +443,8 @@ class EditSaleOrder extends React.Component {
                                         total,
                                         newDebt,
                                         totalIncludeVat,
-                                        vat
+                                        vat,
+                                        pay
                                     });
                                 }}
                                 type="Text"
@@ -472,7 +476,7 @@ class EditSaleOrder extends React.Component {
                 <View style={styles.body}>
                     <TouchableOpacity
                         disabled={!this.state.editMode}
-                        style={styles.Btn}
+                        style={[styles.Btn, this.state.editMode ? { backgroundColor: '#16a085' } : { backgroundColor: '#7f8c8d' } ]}
                         onPress={() => this.setState({ isExpanded: !this.state.isExpanded })}
                     >
                         {this.state.isExpanded ?
@@ -489,7 +493,7 @@ class EditSaleOrder extends React.Component {
 
                     <TouchableOpacity
                         disabled={!this.state.editMode}
-                        style={styles.Btn}
+                        style={[styles.Btn, this.state.editMode ? { backgroundColor: '#16a085' } : { backgroundColor: '#7f8c8d' } ]}
                         onPress={() => this.setState({ isExpandedTotal: !this.state.isExpandedTotal })}
                     >
                         {this.state.isExpandedTotal ?
@@ -511,26 +515,23 @@ class EditSaleOrder extends React.Component {
                 <Footer>
                     <View style={styles.FooterGroupButton} >
                         <TouchableOpacity
-                            style={[styles.Btn, { backgroundColor: '#2ecc71' }]}
+                            style={[styles.Btn, this.state.editMode ? { backgroundColor: '#7f8c8d' } : { backgroundColor: '#2ecc71' }]}
                             onPress={this.editModeToggle.bind(this)}
                         >
                             <Ionicons name="ios-apps-outline" size={25} color="#FFFFFF" />
-                            {this.state.editMode ? (<Text style={styles.titleButton}>Hủy</Text>) :
-                                (<Text style={styles.titleButton}>Sửa</Text>)
-                            }
                         </TouchableOpacity>
                         <TouchableOpacity
                             disabled={!this.state.editMode}
-                            style={styles.Btn}
+                            style={[styles.Btn, this.state.editMode ? { backgroundColor: '#16a085' } : { backgroundColor: '#7f8c8d' } ]}
                             onPress={this.onSave.bind(this)}
                         >
                             <Ionicons name="ios-checkmark-circle" size={25} color="#FFFFFF" />
                         </TouchableOpacity>
                         <TouchableOpacity
                             disabled={!this.state.editMode}
-                            style={styles.Btn}
+                            style={[styles.Btn, this.state.editMode ? { backgroundColor: '#16a085' } : { backgroundColor: '#7f8c8d' } ]}
                             onPress={async () => {
-                                if(!this.state.fontPath || !this.state.logoPath) return;
+                                if (!this.state.fontPath) return;
 
                                 if (this.state.id == '') {
                                     Alert.alert(
@@ -560,10 +561,10 @@ class EditSaleOrder extends React.Component {
                                         html: invoiceTemplate(customerName, this.state.id,
                                             moment(this.state.date).format('DD-MM-YYYY'), this.state.total, this.state.totalIncludeVat,
                                             this.state.vat, this.state.oldDebt, this.state.pay, this.state.newDebt,
-                                            saleOrderDetails, this.state.logoPath),
-                                            css: css(),
-                                            fileName: "invoice",
-                                            fonts: [this.state.fontPath]
+                                            saleOrderDetails),
+                                        css: css(),
+                                        fileName: "invoice",
+                                        fonts: [this.state.fontPath]
                                     };
                                     try {
                                         const results = await RNHTMLtoPDF.convert(options).catch(
@@ -581,7 +582,7 @@ class EditSaleOrder extends React.Component {
                         </TouchableOpacity>
                         <TouchableOpacity
                             disabled={!this.state.editMode}
-                            style={styles.Btn}
+                            style={[styles.Btn, this.state.editMode ? { backgroundColor: '#16a085' } : { backgroundColor: '#7f8c8d' } ]}
                             onPress={() => {
                                 let saleOrderDetails = [...this.state.saleOrderDetails];
                                 saleOrderDetails.forEach((order) => {
@@ -601,7 +602,7 @@ class EditSaleOrder extends React.Component {
                                 });
                                 sendMessage(
                                     customerPhone, customerName, moment(this.state.date).format('DD-MM-YYYY'), this.state.total, this.state.totalIncludeVat,
-                                    this.state.vat, this.state.oldDebt, this.state.pay, this.state.newDebt, 
+                                    this.state.vat, this.state.oldDebt, this.state.pay, this.state.newDebt,
                                     saleOrderDetails
                                 );
                             }}
@@ -610,7 +611,7 @@ class EditSaleOrder extends React.Component {
                         </TouchableOpacity>
                         <TouchableOpacity
                             disabled={!this.state.editMode}
-                            style={styles.Btn}
+                            style={[styles.Btn, this.state.editMode ? { backgroundColor: '#16a085' } : { backgroundColor: '#7f8c8d' } ]}
                             onPress={() => {
                                 let saleOrderDetails = [...this.state.saleOrderDetails];
                                 saleOrderDetails.forEach((order) => {
@@ -630,12 +631,28 @@ class EditSaleOrder extends React.Component {
                                 });
                                 sendEmail(
                                     customerEmail, customerName, moment(this.state.date).format('DD-MM-YYYY'), this.state.total, this.state.totalIncludeVat,
-                                    this.state.vat, this.state.oldDebt, this.state.pay, this.state.newDebt, 
+                                    this.state.vat, this.state.oldDebt, this.state.pay, this.state.newDebt,
                                     saleOrderDetails
                                 );
                             }}
                         >
                             <Ionicons name="ios-mail-outline" size={25} color="#FFFFFF" />
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            disabled={!this.state.editMode}
+                            style={[styles.Btn, this.state.editMode ? { backgroundColor: '#d35400' } : { backgroundColor: '#7f8c8d' } ]}
+                            onPress={() =>{
+                                const {
+                                    id, date, title, customerId, total, totalIncludeVat, vat, pay,
+                                    newDebt, oldebt, saleOrderDetails
+                                } = this.state;
+                                this.props.SaleOrderDelete({
+                                    id, date, title, customerId, total, totalIncludeVat, vat, pay,
+                                    newDebt, oldebt, saleOrderDetails
+                                });
+                            }}
+                        >
+                            <Ionicons name="ios-trash-outline" size={25} color="#c0392b" />
                         </TouchableOpacity>
                     </View>
                 </Footer>
@@ -792,5 +809,6 @@ export default connect(mapStateToProps, {
     toggleProductToSelectList,
     SaleOrderUpdate,
     SaleOrderChange,
-    resetSelectedProducts
+    resetSelectedProducts,
+    SaleOrderDelete
 })(EditSaleOrder);

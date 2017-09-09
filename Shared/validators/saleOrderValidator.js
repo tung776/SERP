@@ -4,9 +4,9 @@ import Validator from 'validator';
 export const NewSaleOrderValidator = ({ date, customerId }) => {
     // console.log(NameCustomer, Description);
     const errors = {};
-    if (Validator.isEmpty(date)) {
-        errors.customerid = 'Bạn chưa điền tên khách hàng';
-    }
+    // if (Validator.isEmpty(customerId)) {
+    //     errors.customerid = 'Bạn chưa điền khách hàng';
+    // }
     return {
         errors,
         isValid: isEmpty(errors)

@@ -11,8 +11,7 @@ export default Invoice = (
     oldDebt,
     pay,
     newDebt,
-    OrderDetail,
-    logo
+    OrderDetail
 ) => {
     let htmlOrderDetail = '';
     OrderDetail.forEach((order) => {

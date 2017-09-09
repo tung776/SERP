@@ -140,7 +140,7 @@ export const SaleOrderDelete = (order) => async (dispatch) => {
 
     const apiUrl = `${URL}/api/order/delete`;
 
-    axios.post(apiUrl, { Id: order.id }).then(
+    axios.post(apiUrl, order).then(
         (res) => {
             //Dữ liệu đã được lưu thành công trên server,
             //Tiến hàng lưu dữ liệu lên sqlite cho mục đích offline

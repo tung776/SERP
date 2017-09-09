@@ -64,7 +64,7 @@ class SaleOrderList extends React.Component {
         }
         return (
             <View>
-                <Text>Không tìm thấy báo giá bạn cần</Text>
+                <Text>Không tìm thấy hóa đơn bạn cần</Text>
             </View>
         );
     }
@@ -89,7 +89,7 @@ class SaleOrderList extends React.Component {
         return (
             <View style={styles.container}>
                 <Header>
-                    <Text style={styles.headTitle}>Tìm báo Giá</Text>
+                    <Text style={styles.headTitle}>Tìm Hóa Đơn</Text>
                 </Header>
                 <View style={styles.body}>
                     <View style={styles.InputContainer}>
@@ -123,7 +123,7 @@ class SaleOrderList extends React.Component {
                 <Footer>
                     <TouchableOpacity style={styles.addNewGroupBtn} onPress={() => { Actions.newSaleOrder(); }}>
                         <Ionicons name="ios-add-circle" size={32} color="#FFFFFF" />
-                        <Text style={{ alignSelf: 'center', paddingLeft: 10, fontSize: 16, color: '#FFFFFF', fontWeight: '600' }}>Thêm Báo Giá</Text>
+                        <Text style={{ alignSelf: 'center', paddingLeft: 10, fontSize: 16, color: '#FFFFFF', fontWeight: '600' }}>Thêm Hóa Đơn</Text>
                     </TouchableOpacity>
                 </Footer>
             </View>
