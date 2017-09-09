@@ -415,6 +415,8 @@ SaleOrderRouter.post('/delete', async (req, res) => {
                 if(customerDebtBeChanged.length > 0) {
                     customerDebtBeChanged.forEach(async (debt) => {
                         console.log('debt = ', debt);
+                        if(debt.newDebt.isNaN()) debt.newDebt = 0;
+                        if(debt.oldDebt.isNaN()) debt.oldDebt = 0;
                         await t('debtCustomers')
                             .returning('*')
                             .whereRaw(`id = ${debt.id}`)
@@ -424,15 +426,7 @@ SaleOrderRouter.post('/delete', async (req, res) => {
                             });
                     });
                 }
-                //Xóa bảng công nợ
-                console.log('go 4');
-                await Knex('debtCustomers')
-                    .transacting(t)
-                    .where({ id: saleOrder[0].debtCustomerId })
-                    .del()
-                    .catch((error) => {
-                        console.error('delete debtCustomers error: ', error);
-                    });
+                
                 //xoa hóa đơn chi tiết có liên quan
                 console.log('go 5');
                 await Knex('saleOderDetails')
@@ -451,7 +445,15 @@ SaleOrderRouter.post('/delete', async (req, res) => {
                     .catch((error) => {
                         console.error('delete saleOrders error: ', error);
                     });
-    
+                //Xóa bảng công nợ
+                console.log('go 4');
+                await Knex('debtCustomers')
+                    .transacting(t)
+                    .where({ id: saleOrder[0].debtCustomerId })
+                    .del()
+                    .catch((error) => {
+                        console.error('delete debtCustomers error: ', error);
+                    });
             } catch (e) {
                 t.rollback();
                 res.status(400).json({ success: false, error: e });
