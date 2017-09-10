@@ -70,7 +70,7 @@ CustomerRouter.post('/new', async (req, res) => {
                             customerId: data[0].id,
                             createdDate: moment().format('YYYY-MM-DD'),
                             title: 'Khởi tạo công nợ',
-                            newDebt: CurentDebt,
+                            newDebt: CurentDebt || 0,
                             oldDebt: 0,
                             minus: 0,
                             plus: 0

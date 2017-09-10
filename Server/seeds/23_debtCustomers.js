@@ -7,7 +7,8 @@ exports.seed = function (knex, Promise) {
             // Inserts seed entries
             return knex('debtCustomers').insert([
                 {
-                    customerId: 1,                   
+                    customerId: 1,   
+                    createdDate: '10-09-2017',                
                     title: 'Công nợ Tư Sim',
                     newDebt: 0,
                     oldDebt: 0,
@@ -15,7 +16,8 @@ exports.seed = function (knex, Promise) {
                     plus: 0
                 },
                 {
-                    customerId: 2,                   
+                    customerId: 2,          
+                    createdDate: '10-09-2017',         
                     title: 'Công nợ Mỹ Nghệ',
                     newDebt: 0,
                     oldDebt: 0,
@@ -23,7 +25,8 @@ exports.seed = function (knex, Promise) {
                     plus: 0
                 },
                 {
-                    customerId: 3,                  
+                    customerId: 3,    
+                    createdDate: '10-09-2017',              
                     title: '',
                     newDebt: 0,
                     oldDebt: 0,
@@ -31,7 +34,8 @@ exports.seed = function (knex, Promise) {
                     plus: 0
                 },
                 {
-                    customerId: 4,                  
+                    customerId: 4,      
+                    createdDate: '10-09-2017',            
                     title: '',
                     newDebt: 0,
                     oldDebt: 0,
@@ -39,7 +43,8 @@ exports.seed = function (knex, Promise) {
                     plus: 0
                 },
                 {
-                    customerId: 5,                  
+                    customerId: 5,   
+                    createdDate: '10-09-2017',               
                     title: '',
                     newDebt: 0,
                     oldDebt: 0,
@@ -47,7 +52,8 @@ exports.seed = function (knex, Promise) {
                     plus: 0
                 },
                 {
-                    customerId: 6,                 
+                    customerId: 6,     
+                    createdDate: '10-09-2017',            
                     title: '',
                     newDebt: 0,
                     oldDebt: 0,
@@ -55,7 +61,8 @@ exports.seed = function (knex, Promise) {
                     plus: 0
                 },
                 {
-                    customerId: 7,                   
+                    customerId: 7,   
+                    createdDate: '10-09-2017',                
                     title: '',
                     newDebt: 0,
                     oldDebt: 0,
@@ -63,7 +70,8 @@ exports.seed = function (knex, Promise) {
                     plus: 0
                 },
                 {
-                    customerId: 8,                  
+                    customerId: 8,    
+                    createdDate: '10-09-2017',              
                     title: '',
                     newDebt: 0,
                     oldDebt: 0,
@@ -71,7 +79,8 @@ exports.seed = function (knex, Promise) {
                     plus: 0
                 },
                 {
-                    customerId: 9,                 
+                    customerId: 9,   
+                    createdDate: '10-09-2017',              
                     title: '',
                     newDebt: 0,
                     oldDebt: 0,
@@ -79,7 +88,8 @@ exports.seed = function (knex, Promise) {
                     plus: 0
                 },
                 {
-                    customerId: 10,                 
+                    customerId: 10,    
+                    createdDate: '10-09-2017',             
                     title: '',
                     newDebt: 0,
                     oldDebt: 0,

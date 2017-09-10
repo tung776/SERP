@@ -44,6 +44,7 @@ class NewSaleOrder extends React.Component {
         fontLocation: null,
         appIsReady: false,
         fontPath: null,
+        editMode: false
     }
     async componentWillMount() {
         this.props.resetData();
@@ -54,10 +55,10 @@ class NewSaleOrder extends React.Component {
             this.props.loadUnits();
         }
         const fontAsset = await loadAsset("vuarial", "ttf", fontUrl);
-        this.setState({ 
-            fontPath: fontAsset.localUri, 
+        this.setState({
+            fontPath: fontAsset.localUri,
         });
-    }    
+    }
 
     componentWillReceiveProps(nextProps) {
 
@@ -105,6 +106,7 @@ class NewSaleOrder extends React.Component {
                             newDebt, oldebt, saleOderDetails, debtCustomerId: this.state.debtCustomers.id,
                             user: this.props.user
                         });
+                        this.setState({ editMode: false });
                     }
                 },
                 { text: 'Hủy', onPress: () => console.log('cancel Pressed') },
@@ -114,6 +116,7 @@ class NewSaleOrder extends React.Component {
 
     onSelectProduct() {
         Actions.productSelector({ ProductSelected: this.state.saleOderDetails });
+        this.setState({ editMode: true });
     }
 
     onCustomerChanged(customerId) {
@@ -124,7 +127,7 @@ class NewSaleOrder extends React.Component {
             }
 
         });
-        this.setState({ customerId });
+        this.setState({ customerId, editMode: true });
     }
 
     caculateOrder(debt = 0, pay = 0, saleOderDetails = []) {
@@ -139,12 +142,14 @@ class NewSaleOrder extends React.Component {
         const vat = total * 0.1;
         totalIncludeVat = total + vat;
         newDebt = debt + totalIncludeVat - pay;
+        this.setState({ editMode: true });
         return {
             total,
             newDebt,
             totalIncludeVat,
             vat
         };
+        
     }
 
     caculatePriceOnUnitChanged(product, newUnitId) {
@@ -171,7 +176,8 @@ class NewSaleOrder extends React.Component {
             total,
             totalIncludeVat,
             vat,
-            newDebt
+            newDebt,
+            editMode: true
         });
     }
 
@@ -190,9 +196,10 @@ class NewSaleOrder extends React.Component {
                                 >
                                     <TouchableWithoutFeedback
 
-                                        key={item.key} onPress={() =>
-                                            this.props.toggleProductToSelectList(item)
-                                        }
+                                        key={item.key} onPress={() => {
+                                            this.props.toggleProductToSelectList(item);
+                                            this.setState({ editMode: true });
+                                        }}
                                     >
                                         <View style={{ flex: 1, alignSelf: 'center' }}>
                                             <Ionicons name="ios-trash-outline" size={25} color="#d35400" />
@@ -215,6 +222,7 @@ class NewSaleOrder extends React.Component {
                                                     blurOnSubmit
                                                     value={formatNumber(item.quantity)}
                                                     onChangeText={text => {
+                                                        this.setState({ editMode: true });
                                                         this.state.saleOderDetails.forEach((product) => {
                                                             if (product.id == item.id) {
                                                                 product.quantity = unformat(text);
@@ -239,8 +247,10 @@ class NewSaleOrder extends React.Component {
                                                 style={{ flex: 1.3, alignItems: 'center' }}
                                                 selectedValue={item.unitId}
                                                 onValueChange={
-                                                    (itemValue, itemIndex) => this.caculatePriceOnUnitChanged(item, itemValue)
-                                                }
+                                                    (itemValue, itemIndex) => {
+                                                        this.setState({ editMode: true });
+                                                        this.caculatePriceOnUnitChanged(item, itemValue);
+                                                    }}
                                             >
                                                 {this.props.units && this.props.units.map((unit) => (
                                                     <Picker.Item key={unit.id} label={unit.name} value={unit.id} />
@@ -256,6 +266,7 @@ class NewSaleOrder extends React.Component {
                                                     blurOnSubmit
                                                     value={formatNumber(item.salePrice)}
                                                     onChangeText={text => {
+                                                        this.setState({ editMode: true });
                                                         this.state.saleOderDetails.forEach((product) => {
                                                             if (product.id == item.id) {
                                                                 product.salePrice = unformat(text);
@@ -322,7 +333,7 @@ class NewSaleOrder extends React.Component {
                                     }
                                     // ... You can check the source to find the other keys.
                                 }}
-                                onDateChange={(date) => { this.setState({ date }); }}
+                                onDateChange={(date) => { this.setState({ date, editMode: true }); }}
                             />
                         </View>
                     </View>
@@ -333,6 +344,7 @@ class NewSaleOrder extends React.Component {
                                 selectedValue={this.state.customerId}
                                 onValueChange={
                                     (itemValue, itemIndex) => {
+                                        this.setState({ editMode: true });
                                         this.onCustomerChanged(itemValue);
                                     }
                                 }
@@ -354,7 +366,7 @@ class NewSaleOrder extends React.Component {
                                 style={styles.textInput}
                                 blurOnSubmit
                                 value={this.state.title}
-                                onChangeText={text => this.setState({ title: text })}
+                                onChangeText={text => this.setState({ title: text, editMode: true })}
                                 type="Text"
                                 name="title"
                                 placeholder="Tiêu đề hóa đơn"
@@ -405,7 +417,8 @@ class NewSaleOrder extends React.Component {
                                         total,
                                         newDebt,
                                         totalIncludeVat,
-                                        vat
+                                        vat,
+                                        editMode: true
                                     });
                                 }}
                                 type="Text"
@@ -434,7 +447,7 @@ class NewSaleOrder extends React.Component {
             <View style={styles.container}>
                 <Header>
                     <Text style={styles.headTitle} >Tạo Hóa Đơn Bán</Text>
-                </Header>                
+                </Header>
                 <View style={styles.body}>
                     <TouchableOpacity
                         style={styles.Btn}
@@ -480,14 +493,15 @@ class NewSaleOrder extends React.Component {
                             <Ionicons name="ios-checkmark-circle" size={25} color="#FFFFFF" />
                         </TouchableOpacity>
                         <TouchableOpacity
-                            style={styles.Btn}
+                            disabled={!this.state.editMode}
+                            style={[styles.Btn, this.state.editMode ? { backgroundColor: '#7f8c8d' } : { backgroundColor: '#16a085' }]}
                             onPress={async () => {
-                                if(!this.state.fontPath) return;
+                                if (!this.state.fontPath) return;
                                 if (this.state.id == '') {
                                     Alert.alert(
                                         'Thông Báo',
                                         'Bạn cần lưu hóa đơn trước khi in',
-                                        [                    
+                                        [
                                             { text: 'Ok' },
                                         ]
                                     );
@@ -509,7 +523,7 @@ class NewSaleOrder extends React.Component {
                                     let options = {
                                         html: invoiceTemplate(customerName, this.props.id,
                                             this.state.date, this.state.total, this.state.totalIncludeVat,
-                                            this.state.vat, this.state.oldebt, this.state.pay, this.state.newDebt, 
+                                            this.state.vat, this.state.oldebt, this.state.pay, this.state.newDebt,
                                             saleOrderDetails),
                                         css: css(),
                                         fileName: "invoice",
@@ -530,7 +544,8 @@ class NewSaleOrder extends React.Component {
                             <Ionicons name="ios-print-outline" size={25} color="#FFFFFF" />
                         </TouchableOpacity>
                         <TouchableOpacity
-                            style={styles.Btn}
+                            disabled={!this.state.editMode}
+                            style={[styles.Btn, this.state.editMode ? { backgroundColor: '#7f8c8d' } : { backgroundColor: '#16a085' }]}
                             onPress={() => {
                                 let saleOrderDetails = [...this.state.saleOderDetails];
                                 saleOrderDetails.forEach((order) => {
@@ -550,7 +565,7 @@ class NewSaleOrder extends React.Component {
                                 });
                                 sendMessage(
                                     customerPhone, customerName, this.state.date, this.state.total, this.state.totalIncludeVat,
-                                    this.state.vat, this.state.oldebt, this.state.pay, this.state.newDebt, 
+                                    this.state.vat, this.state.oldebt, this.state.pay, this.state.newDebt,
                                     saleOrderDetails
                                 );
                             }}
@@ -558,7 +573,8 @@ class NewSaleOrder extends React.Component {
                             <Ionicons name="ios-send-outline" size={25} color="#FFFFFF" />
                         </TouchableOpacity>
                         <TouchableOpacity
-                            style={styles.Btn}
+                            disabled={!this.state.editMode}
+                            style={[styles.Btn, this.state.editMode ? { backgroundColor: '#7f8c8d' } : { backgroundColor: '#16a085' }]}
                             onPress={() => {
                                 let saleOderDetails = [...this.state.saleOderDetails];
                                 saleOderDetails.forEach((order) => {
@@ -578,7 +594,7 @@ class NewSaleOrder extends React.Component {
                                 });
                                 sendEmail(
                                     customerEmail, customerName, this.state.date, this.state.total, this.state.totalIncludeVat,
-                                    this.state.vat, this.state.oldebt, this.state.pay, this.state.newDebt, 
+                                    this.state.vat, this.state.oldebt, this.state.pay, this.state.newDebt,
                                     saleOderDetails
                                 );
                             }}

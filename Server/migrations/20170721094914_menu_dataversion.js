@@ -116,7 +116,7 @@ exports.up = function (knex, Promise) {
             */
             table.increments();
             table.integer('customerId').notNullable().references('id').inTable('customers');
-            table.date('createdDate').notNullable().defaultTo(knex.fn.now());;
+            table.date('createdDate').notNullable().defaultTo(knex.fn.now());
             table.string('title').notNullable();
             table.float('newDebt').defaultTo(0);//nợ mới
             table.float('oldDebt').defaultTo(0);//nợ cũ
@@ -128,7 +128,7 @@ exports.up = function (knex, Promise) {
             table.increments();
             table.integer('debtCustomerId').references('id').inTable('debtCustomers');
             table.integer('customerId').references('id').inTable('customers');
-            table.date('createdDate').notNullable().defaultTo(knex.fn.now());;
+            table.date('createdDate').notNullable().defaultTo(knex.fn.now());
             table.string('title');
             table.string('description');
             table.float('amount').defaultTo(0);

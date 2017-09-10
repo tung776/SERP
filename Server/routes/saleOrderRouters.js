@@ -95,6 +95,8 @@ SaleOrderRouter.post('/getById', async (req, res) => {
             WHERE s."id" = ${orderId};                      
         `);
 
+        console.log('saleOrder = ', saleOrder);
+
         const saleOrderDetails = await Knex.raw(`
             SELECT s."id" , s."saleOrderId", s."productId", s."unitId", s."quantity", s."salePrice", p."name" 
             FROM "saleOderDetails" as s

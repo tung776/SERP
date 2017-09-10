@@ -614,7 +614,7 @@ export const updateOrInsertDataVersion = async (data) => {
             tx.executeSql(`
               update debtCustomers 
               set customerId = ${item.customerId},
-              createdDate = ${item.createdDate},
+              createdDate = '${item.createdDate}',
               title = ${item.title},
               newDebt = ${item.newDebt},
               oldDebt = ${item.oldDebt},

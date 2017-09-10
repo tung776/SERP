@@ -1,5 +1,5 @@
 // Update with your config settings.
-
+var moment = require('moment');
 module.exports = {
 
   development: {
@@ -7,7 +7,8 @@ module.exports = {
     connection: {
       database: 'SERP',
       user:     'postgres',
-      password: 'tung1221982'
+      password: 'tung1221982',
+      datestyle: 'DMY'
     },
     pool: {
       min: 2,
@@ -39,7 +40,14 @@ module.exports = {
     connection: {
       database: 'my_db',
       user:     'username',
-      password: 'password'
+      password: 'password',
+      timezone: 'UTC',
+      typeCast: function (field, next) {
+        if (field.type == 'DATE') {
+          return moment(field.string()).format('DD-MM-YYYY');
+        }
+        return next();
+      }
     },
     pool: {
       min: 2,
