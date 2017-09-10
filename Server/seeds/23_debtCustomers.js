@@ -1,4 +1,4 @@
-import moment from '../../Shared/utils/moment';
+
 
 exports.seed = function (knex, Promise) {
     // Deletes ALL existing entries
@@ -7,8 +7,7 @@ exports.seed = function (knex, Promise) {
             // Inserts seed entries
             return knex('debtCustomers').insert([
                 {
-                    customerId: 1,    
-                    date: moment().format('YYYY-MM-DD'),                
+                    customerId: 1,                   
                     title: 'Công nợ Tư Sim',
                     newDebt: 0,
                     oldDebt: 0,
@@ -16,8 +15,7 @@ exports.seed = function (knex, Promise) {
                     plus: 0
                 },
                 {
-                    customerId: 2,            
-                    date: moment().format('YYYY-MM-DD'),        
+                    customerId: 2,                   
                     title: 'Công nợ Mỹ Nghệ',
                     newDebt: 0,
                     oldDebt: 0,
@@ -25,8 +23,7 @@ exports.seed = function (knex, Promise) {
                     plus: 0
                 },
                 {
-                    customerId: 3,         
-                    date: moment().format('YYYY-MM-DD'),           
+                    customerId: 3,                  
                     title: '',
                     newDebt: 0,
                     oldDebt: 0,
@@ -34,8 +31,7 @@ exports.seed = function (knex, Promise) {
                     plus: 0
                 },
                 {
-                    customerId: 4,        
-                    date: moment().format('YYYY-MM-DD'),            
+                    customerId: 4,                  
                     title: '',
                     newDebt: 0,
                     oldDebt: 0,
@@ -43,8 +39,7 @@ exports.seed = function (knex, Promise) {
                     plus: 0
                 },
                 {
-                    customerId: 5,     
-                    date: moment().format('YYYY-MM-DD'),               
+                    customerId: 5,                  
                     title: '',
                     newDebt: 0,
                     oldDebt: 0,
@@ -52,8 +47,7 @@ exports.seed = function (knex, Promise) {
                     plus: 0
                 },
                 {
-                    customerId: 6,     
-                    date: moment().format('YYYY-MM-DD'),               
+                    customerId: 6,                 
                     title: '',
                     newDebt: 0,
                     oldDebt: 0,
@@ -61,8 +55,7 @@ exports.seed = function (knex, Promise) {
                     plus: 0
                 },
                 {
-                    customerId: 7,    
-                    date: moment().format('YYYY-MM-DD'),                
+                    customerId: 7,                   
                     title: '',
                     newDebt: 0,
                     oldDebt: 0,
@@ -70,8 +63,7 @@ exports.seed = function (knex, Promise) {
                     plus: 0
                 },
                 {
-                    customerId: 8,          
-                    date: moment().format('YYYY-MM-DD'),          
+                    customerId: 8,                  
                     title: '',
                     newDebt: 0,
                     oldDebt: 0,
@@ -79,8 +71,7 @@ exports.seed = function (knex, Promise) {
                     plus: 0
                 },
                 {
-                    customerId: 9,   
-                    date: moment().format('YYYY-MM-DD'),                 
+                    customerId: 9,                 
                     title: '',
                     newDebt: 0,
                     oldDebt: 0,
@@ -88,8 +79,7 @@ exports.seed = function (knex, Promise) {
                     plus: 0
                 },
                 {
-                    customerId: 10,  
-                    date: moment().format('YYYY-MM-DD'),                  
+                    customerId: 10,                 
                     title: '',
                     newDebt: 0,
                     oldDebt: 0,

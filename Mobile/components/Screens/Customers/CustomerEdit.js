@@ -244,8 +244,7 @@ class CustomerEdit extends React.Component {
                                 <View style={styles.controlContainer}>
                                 <Text style={styles.label} >Công nợ Hiện Tại</Text>
                                 <View style={styles.groupControl}>
-                                    <TextInput  
-                                        editable={false}                                          
+                                    <TextInput                                          
                                         disableFullscreenUI
                                         underlineColorAndroid={'transparent'}
                                         style={styles.textInput}
@@ -520,6 +519,7 @@ const mapStateToProps = (state, ownProps) => {
         Address,
         Phone,
         Email,
+        CurentDebt,
         Overdue,
         ExcessDebt,
         CompanyName,
@@ -539,6 +539,7 @@ const mapStateToProps = (state, ownProps) => {
         Address,
         Phone,
         Email,
+        CurentDebt,
         Overdue,
         ExcessDebt,
         CompanyName,

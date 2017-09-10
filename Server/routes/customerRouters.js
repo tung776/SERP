@@ -4,6 +4,7 @@ import Knex from '../config/knex';
 import dataversionHelper from '../helpers/saveNewDataversion';
 import fs from 'fs';
 import path from 'path';
+import moment from '../../Shared/utils/moment';
 
 const CustomerRouter = Router();
 
@@ -32,6 +33,7 @@ CustomerRouter.post('/new', async (req, res) => {
     if (isValid) {
         let newDataversion;
         let data;
+        let customerDebt;
         try {
             //bắt đầu thực hiện giao dịch, một trong nhiệm vụ thất bại sẽ bị rollback
             Knex.transaction(async (t) => {
@@ -62,7 +64,7 @@ CustomerRouter.post('/new', async (req, res) => {
                             taxCode: TaxCode || "",
                             fax: Fax || ""
                         });
-                    const customerDebt = await t('debtCustomers')
+                    customerDebt = await t('debtCustomers')
                         .returning('*')
                         .insert({
                             customerId: data[0].id,
@@ -92,6 +94,7 @@ CustomerRouter.post('/new', async (req, res) => {
                     res.json({
                         success: true,
                         customer: data,
+                        customerDebt,
                         dataversion: newDataversion
                     });
                 }
@@ -133,6 +136,7 @@ CustomerRouter.post('/update', async (req, res) => {
     if (isValid) {
         let newDataversion;
         let data;
+        let customerDebt;
         try {
             Knex.transaction(async (t) => {
                 try {
@@ -154,13 +158,13 @@ CustomerRouter.post('/update', async (req, res) => {
                         WHERE q."id" IN (
                             SELECT min(id) FROM "debtCustomers"  
                             GROUP BY "id", "customerId"
-                        );                           
+                        )    
+                        AND q."customerId" = ${Id};                    
                     `);
-
-                    const So_tien_Dieu_Chinh = CurentDebt - oldestDebt.row[0].newDebt;
+                    const So_tien_Dieu_Chinh = CurentDebt - oldestDebt.rows[0].newDebt;
                     //Tiến hành thay đổi toàn bộ bản ghi công nợ phát sinh
                     const customerDebtBeChanged = await Knex('debtCustomers')
-                        .whereRaw(`id >= ${oldestDebt.row[0].id} AND "customerId" = ${Id}`);
+                        .whereRaw(`id >= ${oldestDebt.rows[0].id} AND "customerId" = ${Id}`);
                     //Điều chỉnh toàn bộ công nợ có liêu quan
                     if (customerDebtBeChanged.length > 0) {
                         customerDebtBeChanged.forEach(async (debt) => {
@@ -199,6 +203,14 @@ CustomerRouter.post('/update', async (req, res) => {
                             taxCode: TaxCode || '',
                             fax: Fax || ''
                         });
+                    customerDebt = await Knex.raw(`
+                        SELECT q."id", q."customerId", q."newDebt", q."oldDebt", q."minus", q."plus" FROM "debtCustomers" AS q
+                        WHERE q."id" IN (
+                            SELECT max(id) FROM "debtCustomers"  
+                            GROUP BY "id", "customerId"
+                        )
+                        AND q."customerId" = ${Id};                           
+                    `);
                 } catch (e) {
                     t.rollback();
                     console.log(e);
@@ -209,6 +221,7 @@ CustomerRouter.post('/update', async (req, res) => {
                     res.json({
                         success: true,
                         customer: data,
+                        customerDebt: customerDebt.rows,
                         dataversion: newDataversion
                     });
                 }

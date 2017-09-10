@@ -224,6 +224,7 @@ export const CustomerUpdate = (customer) => async (dispatch) => {
                             customerGroupId = ${res.data.customer[0].customerGroupId},
                             phone = '${res.data.customer[0].phone}',
                             email = '${res.data.customer[0].email}',
+                            CurentDebt = '${res.data.customer[0].CurentDebt}',
                             overdue = ${res.data.customer[0].overdue},
                             excessDebt = ${res.data.customer[0].excessDebt},
                             companyName = '${res.data.customer[0].companyName}',
@@ -241,6 +242,26 @@ export const CustomerUpdate = (customer) => async (dispatch) => {
                                     console.log('lỗi update customers = ', e);
                                 }
                             );
+                            
+                            tx.executeSql(`
+                            update debtCustomers 
+                            set customerId = ${res.data.customerDebt[0].customerId},
+                            createdDate = ${res.data.customerDebt[0].createdDate},
+                            title = ${res.data.customerDebt[0].title},
+                            newDebt = ${res.data.customerDebt[0].newDebt},
+                            oldDebt = ${res.data.customerDebt[0].oldDebt},
+                            minus = ${res.data.customerDebt[0].minus},
+                            plus = ${res.data.customerDebt[0].plus}
+                            where id = ${res.data.customerDebt[0].id} 
+                            `,
+                                null,
+                                null,
+                                (e) => {
+                                    console.log('lỗi update debtCustomers = ', e);
+                                }
+                            );
+
+
                             tx.executeSql('select * from customers',
                                 null,
                                 (_, { rows: { _array } }) => {
@@ -351,6 +372,7 @@ export const AddNewCustomer = (customer) => async (dispatch) => {
                                         address,
                                         phone,
                                         email,
+                                        CurentDebt,
                                         overdue,
                                         excessDebt,
                                         companyName,
@@ -368,6 +390,7 @@ export const AddNewCustomer = (customer) => async (dispatch) => {
                                            '${res.data.customer[0].address}', 
                                            '${res.data.customer[0].phone}', 
                                            '${res.data.customer[0].email}', 
+                                           '${res.data.customer[0].CurentDebt}', 
                                             ${res.data.customer[0].overdue}, 
                                             ${res.data.customer[0].excessDebt}, 
                                            '${res.data.customer[0].companyName}', 
@@ -381,6 +404,30 @@ export const AddNewCustomer = (customer) => async (dispatch) => {
                                     `;
 
                         tx.executeSql(strSql);
+                        const strSqlDebt = `insert into debtCustomers 
+                                    (
+                                        'id',
+                                        'customerId',
+                                        'createdDate',
+                                        'title',
+                                        'newDebt',
+                                        'oldDebt',
+                                        'minus',
+                                        'plus'
+                                    ) 
+                                    values (
+                                            ${res.data.customerDebt[0].id},
+                                            '${res.data.customerDebt[0].customerId}', 
+                                           '${res.data.customerDebt[0].createdDate}', 
+                                           '${res.data.customerDebt[0].title}', 
+                                           '${res.data.customerDebt[0].newDebt}', 
+                                           '${res.data.customerDebt[0].oldDebt}', 
+                                           '${res.data.customerDebt[0].minus}', 
+                                            ${res.data.customerDebt[0].plus}
+                                        )
+                                    `;
+
+                        tx.executeSql(strSqlDebt);
 
                         tx.executeSql(
                             'select * from customers',
