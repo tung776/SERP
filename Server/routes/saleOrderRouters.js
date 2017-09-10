@@ -246,8 +246,7 @@ SaleOrderRouter.post('/update', async (req, res) => {
     } = req.body;
 
     console.log('date = ', date);
-    console.log(' date = ',  moment(date));
-    console.log(`${moment(date).date()}/${moment(date).months()}/${moment(date).year()}`);
+    console.log(' date = ',  moment(date, 'DD-MM-YYYY'))
     console.log('saleOrderDetails = ', saleOrderDetails);
     return;
     const { isValid, errors } = NewSaleOrderValidator({
@@ -315,7 +314,7 @@ SaleOrderRouter.post('/update', async (req, res) => {
                             total: total,
                             vat: vat,
                             totalIncludeVat: totalIncludeVat,
-                            date: moment(date, 'DD-MM-YYYY')
+                            date: moment(date, 'DD-MM-YYYY').format('YYYY-MM-DD')
                         });
 
                     saleOrderDetails.forEach(async (detail) => {
@@ -337,7 +336,7 @@ SaleOrderRouter.post('/update', async (req, res) => {
                         .whereRaw(`id = ${debtCustomerId}`)
                         .update({
                             customerId: customerId,
-                            createdDate: moment(date, 'DD-MM-YYYY'),
+                            createdDate: moment(date, 'DD-MM-YYYY').format('YYYY-MM-DD'),
                             title: title,
                             newDebt: newDebt,
                             oldDebt: oldebt,

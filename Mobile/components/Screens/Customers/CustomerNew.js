@@ -16,6 +16,7 @@ import { loadCustomerGroupListDataFromSqlite } from '../../../actions/customerGr
 import { AddNewCustomer, CustomerChange, resetData } from '../../../actions/customerAction';
 import { AppLoading } from 'expo';
 import { Spinner } from '../../commons/Spinner';
+import { formatMoney, formatNumber, unformat } from '../../../../Shared/utils/format';
 
 class CustomerNew extends React.Component {
     state = {
@@ -42,6 +43,7 @@ class CustomerNew extends React.Component {
                             Address,
                             Phone,
                             Email,
+                            CurentDebt,
                             Overdue,
                             ExcessDebt,
                             DirectorName,
@@ -60,6 +62,7 @@ class CustomerNew extends React.Component {
                             Address,
                             Phone,
                             Email,
+                            CurentDebt: CurentDebt,
                             Overdue,
                             ExcessDebt,
                             DirectorName,
@@ -199,6 +202,23 @@ class CustomerNew extends React.Component {
                                             placeholder="Thư điện tử"
                                         />
                                         {error && <Text style={styles.errorStyle}>{error.Email}</Text>}
+                                    </View>
+                                </View>
+                                <View style={styles.controlContainer}>
+                                    <Text style={styles.label} >Công nợ Hiện Tại</Text>
+                                    <View style={styles.groupControl}>
+                                        <TextInput                                            
+                                            disableFullscreenUI
+                                            underlineColorAndroid={'transparent'}
+                                            style={styles.textInput}
+                                            blurOnSubmit
+                                            value={this.props.CurentDebt}
+                                            onChangeText={text => CustomerChange({ prop: 'CurentDebt', value: text })}
+                                            type="Text"
+                                            name="CurentDebt"
+                                            placeholder="Công nợ hiện tại (nếu có)"
+                                        />
+                                        {error && <Text style={styles.errorStyle}>{error.Overdue}</Text>}
                                     </View>
                                 </View>
                                 <View style={styles.controlContainer}>

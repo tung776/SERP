@@ -1,3 +1,4 @@
+import moment from '../../Shared/utils/moment';
 
 exports.seed = function (knex, Promise) {
     // Deletes ALL existing entries
@@ -6,21 +7,95 @@ exports.seed = function (knex, Promise) {
             // Inserts seed entries
             return knex('debtCustomers').insert([
                 {
-                    customerId: 1,                    
+                    customerId: 1,    
+                    date: moment().format('YYYY-MM-DD'),                
                     title: 'Công nợ Tư Sim',
-                    newDebt: 20000000,
-                    oldDebt: 15000000,
-                    minus: 5000000,
-                    plus: 10000000
+                    newDebt: 0,
+                    oldDebt: 0,
+                    minus: 0,
+                    plus: 0
                 },
                 {
-                    customerId: 2,                    
+                    customerId: 2,            
+                    date: moment().format('YYYY-MM-DD'),        
                     title: 'Công nợ Mỹ Nghệ',
-                    newDebt: 29000000,
-                    oldDebt: 39000000,
-                    minus: 30000000,
-                    plus: 20000000
-                }
+                    newDebt: 0,
+                    oldDebt: 0,
+                    minus: 0,
+                    plus: 0
+                },
+                {
+                    customerId: 3,         
+                    date: moment().format('YYYY-MM-DD'),           
+                    title: '',
+                    newDebt: 0,
+                    oldDebt: 0,
+                    minus: 0,
+                    plus: 0
+                },
+                {
+                    customerId: 4,        
+                    date: moment().format('YYYY-MM-DD'),            
+                    title: '',
+                    newDebt: 0,
+                    oldDebt: 0,
+                    minus: 0,
+                    plus: 0
+                },
+                {
+                    customerId: 5,     
+                    date: moment().format('YYYY-MM-DD'),               
+                    title: '',
+                    newDebt: 0,
+                    oldDebt: 0,
+                    minus: 0,
+                    plus: 0
+                },
+                {
+                    customerId: 6,     
+                    date: moment().format('YYYY-MM-DD'),               
+                    title: '',
+                    newDebt: 0,
+                    oldDebt: 0,
+                    minus: 0,
+                    plus: 0
+                },
+                {
+                    customerId: 7,    
+                    date: moment().format('YYYY-MM-DD'),                
+                    title: '',
+                    newDebt: 0,
+                    oldDebt: 0,
+                    minus: 0,
+                    plus: 0
+                },
+                {
+                    customerId: 8,          
+                    date: moment().format('YYYY-MM-DD'),          
+                    title: '',
+                    newDebt: 0,
+                    oldDebt: 0,
+                    minus: 0,
+                    plus: 0
+                },
+                {
+                    customerId: 9,   
+                    date: moment().format('YYYY-MM-DD'),                 
+                    title: '',
+                    newDebt: 0,
+                    oldDebt: 0,
+                    minus: 0,
+                    plus: 0
+                },
+                {
+                    customerId: 10,  
+                    date: moment().format('YYYY-MM-DD'),                  
+                    title: '',
+                    newDebt: 0,
+                    oldDebt: 0,
+                    minus: 0,
+                    plus: 0
+                },
             ]);
         });
 };

@@ -15,6 +15,7 @@ import { CustomerUpdate, CustomerChange, CustomerDelete, loadCustomerDataFromSql
 import { loadCustomerGroupListDataFromSqlite } from '../../../actions/customerGroupAction';
 import { Spinner } from '../../commons/Spinner';
 import SqlService from '../../../database/sqliteService';
+import { formatMoney, formatNumber, unformat } from '../../../../Shared/utils/format';
 
 class CustomerEdit extends React.Component {
     state = {
@@ -47,6 +48,7 @@ class CustomerEdit extends React.Component {
                             Address,
                             Phone,
                             Email,
+                            CurentDebt,
                             Overdue,
                             ExcessDebt,
                             CompanyName,
@@ -65,6 +67,7 @@ class CustomerEdit extends React.Component {
                             Address,
                             Phone,
                             Email,
+                            CurentDebt: CurentDebt,
                             Overdue,
                             ExcessDebt,
                             CompanyName,
@@ -238,6 +241,24 @@ class CustomerEdit extends React.Component {
                                         {error && <Text style={styles.errorStyle}>{error.Email}</Text>}
                                     </View>
                                 </View>
+                                <View style={styles.controlContainer}>
+                                <Text style={styles.label} >Công nợ Hiện Tại</Text>
+                                <View style={styles.groupControl}>
+                                    <TextInput  
+                                        editable={false}                                          
+                                        disableFullscreenUI
+                                        underlineColorAndroid={'transparent'}
+                                        style={styles.textInput}
+                                        blurOnSubmit
+                                        value={this.props.CurentDebt}
+                                        onChangeText={text => CustomerChange({ prop: 'CurentDebt', value: text })}
+                                        type="Text"
+                                        name="CurentDebt"
+                                        placeholder="Công nợ hiện tại (nếu có)"
+                                    />
+                                    {error && <Text style={styles.errorStyle}>{error.Overdue}</Text>}
+                                </View>
+                            </View>
                                 <View style={styles.controlContainer}>
                                     <Text style={styles.label} >Số ngày tối đa cho phép nợ</Text>
                                     <View style={styles.groupControl}>

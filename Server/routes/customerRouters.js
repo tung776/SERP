@@ -15,6 +15,7 @@ CustomerRouter.post('/new', async (req, res) => {
         Address,
         Phone,
         Email,
+        CurentDebt,
         Overdue,
         ExcessDebt,
         CompanyName,
@@ -40,6 +41,7 @@ CustomerRouter.post('/new', async (req, res) => {
 
                     let { menus, userMenus, roles, categoryGroups, units, warehouses, products, customers, customerGroups } = dataVersion[0];
                     customers++;
+
                     //thực hiện thay đổi dữ liệu khách hàng
                     data = await t('customers')
                         .returning('*')
@@ -49,6 +51,7 @@ CustomerRouter.post('/new', async (req, res) => {
                             address: Address || '',
                             phone: Phone || '',
                             email: Email || '',
+                            CurentDebt: CurentDebt || 0,
                             overdue: Overdue || 10,
                             excessDebt: ExcessDebt || 10000000,
                             companyName: CompanyName || "",
@@ -58,6 +61,17 @@ CustomerRouter.post('/new', async (req, res) => {
                             bankName: BankName || "",
                             taxCode: TaxCode || "",
                             fax: Fax || ""
+                        });
+                    const customerDebt = await t('debtCustomers')
+                        .returning('*')
+                        .insert({
+                            customerId: data[0].id,
+                            createdDate: moment().format('YYYY-MM-DD'),
+                            title: 'Khởi tạo công nợ',
+                            newDebt: CurentDebt,
+                            oldDebt: 0,
+                            minus: 0,
+                            plus: 0
                         });
                     //để cập nhật dataversion mới
                     newDataversion = await t('dataVersions')
@@ -101,6 +115,7 @@ CustomerRouter.post('/update', async (req, res) => {
         Address,
         Phone,
         Email,
+        CurentDebt,
         Overdue,
         ExcessDebt,
         CompanyName,
@@ -132,6 +147,37 @@ CustomerRouter.post('/update', async (req, res) => {
                         .update({
                             id: 1, menus, userMenus, roles, categoryGroups, units, warehouses, products, customers, customerGroups
                         });
+                    //Thay đổi toàn bộ công nợ khách hàng
+                    //Tìm bản ghi công nợ khách hàng đầu tiên
+                    const oldestDebt = await Knex.raw(`
+                        SELECT q."id", q."customerId", q."newDebt", q."oldDebt", q."minus", q."plus" FROM "debtCustomers" AS q
+                        WHERE q."id" IN (
+                            SELECT min(id) FROM "debtCustomers"  
+                            GROUP BY "id", "customerId"
+                        );                           
+                    `);
+
+                    const So_tien_Dieu_Chinh = CurentDebt - oldestDebt.row[0].newDebt;
+                    //Tiến hành thay đổi toàn bộ bản ghi công nợ phát sinh
+                    const customerDebtBeChanged = await Knex('debtCustomers')
+                        .whereRaw(`id >= ${oldestDebt.row[0].id} AND "customerId" = ${Id}`);
+                    //Điều chỉnh toàn bộ công nợ có liêu quan
+                    if (customerDebtBeChanged.length > 0) {
+                        customerDebtBeChanged.forEach(async (debt) => {
+                            if (debt.newDebt == 'NAN') debt.newDebt = 0;
+                            if (debt.oldDebt == 'NAN') debt.oldDebt = 0;
+                            const _newDebt = debt.newDebt + So_tien_Dieu_Chinh;
+                            const _oldDebt = debt.oldDebt + So_tien_Dieu_Chinh;
+
+                            await t('debtCustomers')
+                                .returning('*')
+                                .whereRaw(`id = ${debt.id}`)
+                                .update({
+                                    newDebt: _newDebt,
+                                    oldDebt: _oldDebt,
+                                });
+                        });
+                    }
 
                     data = await t('customers')
                         .returning('*')
@@ -142,6 +188,7 @@ CustomerRouter.post('/update', async (req, res) => {
                             address: Address || '',
                             phone: Phone || '',
                             email: Email || '',
+                            CurentDebt: CurentDebt || 0,
                             overdue: Overdue || 10,
                             excessDebt: ExcessDebt || 10000000,
                             companyName: CompanyName || '',

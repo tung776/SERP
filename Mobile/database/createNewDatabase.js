@@ -168,6 +168,7 @@ export const createDatabaseSqlite = async () => {
            imageUrl text,
            phone text,
            email text,
+           CurentDebt integer,
            overdue integer,
            excessDebt real,
            directorName text,
@@ -543,6 +544,7 @@ export const updateOrInsertDataVersion = async (data) => {
           'imageUrl',
           'phone',
           'email',
+          'CurentDebt',
           'overdue',
           'excessDebt',
           'directorName',
@@ -554,7 +556,7 @@ export const updateOrInsertDataVersion = async (data) => {
           'fax'
         ], [
             item.id, item.customerGroupId, item.name, item.address,
-            item.imageUrl, item.phone, item.email, item.overdue,
+            item.imageUrl, item.phone, item.email, item.CurentDebt, item.overdue,
             item.excessDebt, item.directorName, item.bankNumber, item.bankName,
             item.companyName, item.companyAdress, item.taxCode, item.fax
           ]);
@@ -569,6 +571,7 @@ export const updateOrInsertDataVersion = async (data) => {
               imageUrl = ${item.imageUrl},
               phone = ${item.phone},
               email = ${item.email},
+              CurentDebt = ${item.CurentDebt},
               overdue = ${item.overdue},
               excessDebt = ${item.excessDebt},
               directorName = ${item.directorName},
