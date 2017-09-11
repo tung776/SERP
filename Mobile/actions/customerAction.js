@@ -242,17 +242,17 @@ export const CustomerUpdate = (customer) => async (dispatch) => {
                                     console.log('lỗi update customers = ', e);
                                 }
                             );
-                            
+                            console.log('res.data.customerDebt =', res.data.customerDebt);
                             tx.executeSql(`
                             update debtCustomers 
-                            set customerId = ${res.data.customerDebt[0].customerId},
-                            createdDate = ${res.data.customerDebt[0].createdDate},
-                            title = ${res.data.customerDebt[0].title},
-                            newDebt = ${res.data.customerDebt[0].newDebt},
-                            oldDebt = ${res.data.customerDebt[0].oldDebt},
-                            minus = ${res.data.customerDebt[0].minus},
-                            plus = ${res.data.customerDebt[0].plus}
-                            where id = ${res.data.customerDebt[0].id} 
+                            set customerId = ${res.data.customerDebt.customerId},
+                            createdDate = '${res.data.customerDebt.createdDate}',
+                            title = '${res.data.customerDebt.title}',
+                            newDebt = ${res.data.customerDebt.newDebt},
+                            oldDebt = ${res.data.customerDebt.oldDebt},
+                            minus = ${res.data.customerDebt.minus},
+                            plus = ${res.data.customerDebt.plus}
+                            where id = ${res.data.customerDebt.id} 
                             `,
                                 null,
                                 null,

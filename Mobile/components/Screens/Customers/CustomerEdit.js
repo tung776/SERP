@@ -242,22 +242,23 @@ class CustomerEdit extends React.Component {
                                     </View>
                                 </View>
                                 <View style={styles.controlContainer}>
-                                <Text style={styles.label} >Công nợ Hiện Tại</Text>
-                                <View style={styles.groupControl}>
-                                    <TextInput                                          
-                                        disableFullscreenUI
-                                        underlineColorAndroid={'transparent'}
-                                        style={styles.textInput}
-                                        blurOnSubmit
-                                        value={this.props.CurentDebt}
-                                        onChangeText={text => CustomerChange({ prop: 'CurentDebt', value: text })}
-                                        type="Text"
-                                        name="CurentDebt"
-                                        placeholder="Công nợ hiện tại (nếu có)"
-                                    />
-                                    {error && <Text style={styles.errorStyle}>{error.Overdue}</Text>}
+                                    <Text style={styles.label} >Công nợ Hiện Tại</Text>
+                                    <View style={styles.groupControl}>
+                                        <TextInput
+                                            editable={this.state.editMode}
+                                            disableFullscreenUI
+                                            underlineColorAndroid={'transparent'}
+                                            style={styles.textInput}
+                                            blurOnSubmit
+                                            value={this.props.CurentDebt}
+                                            onChangeText={text => CustomerChange({ prop: 'CurentDebt', value: text })}
+                                            type="Text"
+                                            name="CurentDebt"
+                                            placeholder="Công nợ hiện tại (nếu có)"
+                                        />
+                                        {error && <Text style={styles.errorStyle}>{error.Overdue}</Text>}
+                                    </View>
                                 </View>
-                            </View>
                                 <View style={styles.controlContainer}>
                                     <Text style={styles.label} >Số ngày tối đa cho phép nợ</Text>
                                     <View style={styles.groupControl}>

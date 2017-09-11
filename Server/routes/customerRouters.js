@@ -129,7 +129,6 @@ CustomerRouter.post('/update', async (req, res) => {
         TaxCode,
         Fax,
     } = req.body;
-    console.log(req.body);
 
     const { isValid, errors } = NewCustomerValidator(req.body);
 
@@ -164,6 +163,7 @@ CustomerRouter.post('/update', async (req, res) => {
                     const So_tien_Dieu_Chinh = CurentDebt - oldestDebt.rows[0].newDebt;
                     //Tiến hành thay đổi toàn bộ bản ghi công nợ phát sinh
                     const customerDebtBeChanged = await Knex('debtCustomers')
+                        .orderBy('id', 'asc')
                         .whereRaw(`id >= ${oldestDebt.rows[0].id} AND "customerId" = ${Id}`);
                     //Điều chỉnh toàn bộ công nợ có liêu quan
                     if (customerDebtBeChanged.length > 0) {
@@ -180,8 +180,13 @@ CustomerRouter.post('/update', async (req, res) => {
                                     newDebt: _newDebt,
                                     oldDebt: _oldDebt,
                                 });
+                            customerDebt = debt;
+                            customerDebt.newDebt = _newDebt;
+                            customerDebt.oldDebt = _oldDebt;
                         });
                     }
+
+                    console.log('customerDebt = ', customerDebt);
 
                     data = await t('customers')
                         .returning('*')
@@ -203,14 +208,14 @@ CustomerRouter.post('/update', async (req, res) => {
                             taxCode: TaxCode || '',
                             fax: Fax || ''
                         });
-                    customerDebt = await Knex.raw(`
-                        SELECT q."id", q."customerId", q."newDebt", q."oldDebt", q."minus", q."plus" FROM "debtCustomers" AS q
-                        WHERE q."id" IN (
-                            SELECT max(id) FROM "debtCustomers"  
-                            GROUP BY "id", "customerId"
-                        )
-                        AND q."customerId" = ${Id};                           
-                    `);
+                    // customerDebt = await Knex.raw(`
+                    //     SELECT q."id", q."customerId", q."newDebt", q."oldDebt", q."minus", q."plus" FROM "debtCustomers" AS q
+                    //     WHERE q."id" IN (
+                    //         SELECT max(id) FROM "debtCustomers"  
+                    //         GROUP BY "id", "customerId"
+                    //     )
+                    //     AND q."customerId" = ${Id};                           
+                    // `);
                 } catch (e) {
                     t.rollback();
                     console.log(e);
@@ -221,7 +226,7 @@ CustomerRouter.post('/update', async (req, res) => {
                     res.json({
                         success: true,
                         customer: data,
-                        customerDebt: customerDebt.rows,
+                        customerDebt,
                         dataversion: newDataversion
                     });
                 }
