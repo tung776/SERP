@@ -22,6 +22,7 @@ const INITIAL_STATE = {
     loading: false,
     loaded: false,
     error: '',
+    isSave:false,
     // uploading: false
 };
 
@@ -32,6 +33,7 @@ export default (state = INITIAL_STATE, action) => {
         case RESET_SALE_ORDER_FORM:
             return {
                 ...state,
+                isSave: false,
                 customerId: '',
                 date: '',
                 title: '',
@@ -39,7 +41,7 @@ export default (state = INITIAL_STATE, action) => {
                 error: ''
             };
         case SALE_ORDER_CHANGE:
-            return { ...state, [action.payload.prop]: action.payload.value };
+            return { ...state, isSave: false, [action.payload.prop]: action.payload.value };
         case SALE_ORDER_LIST_LOADED_SQLITE: {
             const saleOrderList = [];
             
@@ -82,14 +84,12 @@ export default (state = INITIAL_STATE, action) => {
                     key: item.id
                 });
             });
-            const date = moment(action.payload.saleOrder[0].date, 'YYYY-MM-DD').toDate();
-            console.log(date);
-            console.log('saleOrder = ', action.payload.saleOrder[0]);
             return {
                 ...state,
+                isSave: false,
                 id: action.payload.saleOrder[0].id,
                 customerId: action.payload.saleOrder[0].customerId,
-                date,
+                date: action.payload.saleOrder[0].date,
                 title: action.payload.saleOrder[0].title,
                 total: action.payload.saleOrder[0].total,
                 totalIncludeVat: action.payload.saleOrder[0].totalIncludeVat,
@@ -104,21 +104,19 @@ export default (state = INITIAL_STATE, action) => {
                 loaded: true
             };
         case SALE_ORDER_CHANGE_FAIL:
-            return { ...state, error: action.payload, loading: false };
+            return { ...state, error: action.payload, loading: false, isSave: false };
         case ADD_SALE_ORDER:
             return {
                 ...state,
-                id: action.payload.saleOrder[0].id,
-                customerId: '',
-                date: '',
-                title: '',
-                saleOrderDetails: [],
+                isSave: true,
+                id: action.payload.saleOrder[0].id,                
                 error: '',
                 loading: false,
             };
         case SALE_ORDER_CHANGE_SUCCESS:
             return {
-                ...state,                
+                ...state,         
+                isSave: true,       
                 error: '',
                 loading: false,
             };

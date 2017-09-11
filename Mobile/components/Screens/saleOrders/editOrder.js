@@ -87,7 +87,7 @@ class EditSaleOrder extends React.Component {
         this.setState({
             id: nextProps.id,
             customerId: nextProps.customerId,
-            date: moment(nextProps.date, 'YYYY-MM-DD').format('L'),
+            date: moment(nextProps.date, moment.ISO_8601).format('DD-MM-YYYY'),
             total,
             newDebt,
             totalIncludeVat,
@@ -472,12 +472,11 @@ class EditSaleOrder extends React.Component {
         return (
             <View style={styles.container}>
                 <Header>
-                    <Text style={styles.headTitle} >Tạo Hóa Đơn Bán</Text>
+                    <Text style={styles.headTitle} >Sửa Hóa Đơn Bán</Text>
                 </Header>
                 <View style={styles.body}>
                     <TouchableOpacity
-                        disabled={!this.state.editMode}
-                        style={[styles.Btn, this.state.editMode ? { backgroundColor: '#16a085' } : { backgroundColor: '#7f8c8d' } ]}
+                        style={[styles.Btn, { backgroundColor: '#16a085' } ]}
                         onPress={() => this.setState({ isExpanded: !this.state.isExpanded })}
                     >
                         {this.state.isExpanded ?
@@ -493,8 +492,7 @@ class EditSaleOrder extends React.Component {
                     {this.renderToTal()}
 
                     <TouchableOpacity
-                        disabled={!this.state.editMode}
-                        style={[styles.Btn, this.state.editMode ? { backgroundColor: '#16a085' } : { backgroundColor: '#7f8c8d' } ]}
+                        style={[styles.Btn, { backgroundColor: '#16a085' } ]}
                         onPress={() => this.setState({ isExpandedTotal: !this.state.isExpandedTotal })}
                     >
                         {this.state.isExpandedTotal ?
@@ -529,8 +527,8 @@ class EditSaleOrder extends React.Component {
                             <Ionicons name="ios-checkmark-circle" size={25} color="#FFFFFF" />
                         </TouchableOpacity>
                         <TouchableOpacity
-                            disabled={!this.state.editMode}
-                            style={[styles.Btn, this.state.editMode ? { backgroundColor: '#16a085' } : { backgroundColor: '#7f8c8d' } ]}
+                            disabled={this.state.editMode}
+                            style={[styles.Btn, this.state.editMode ? { backgroundColor: '#7f8c8d' } : { backgroundColor: '#2ecc71' }]}
                             onPress={async () => {
                                 if (!this.state.fontPath) return;
 
@@ -560,7 +558,7 @@ class EditSaleOrder extends React.Component {
 
                                     let options = {
                                         html: invoiceTemplate(customerName, this.state.id,
-                                            moment(this.state.date).format('DD-MM-YYYY'), this.state.total, this.state.totalIncludeVat,
+                                            this.state.date, this.state.total, this.state.totalIncludeVat,
                                             this.state.vat, this.state.oldDebt, this.state.pay, this.state.newDebt,
                                             saleOrderDetails),
                                         css: css(),
@@ -582,8 +580,8 @@ class EditSaleOrder extends React.Component {
                             <Ionicons name="ios-print-outline" size={25} color="#FFFFFF" />
                         </TouchableOpacity>
                         <TouchableOpacity
-                            disabled={!this.state.editMode}
-                            style={[styles.Btn, this.state.editMode ? { backgroundColor: '#16a085' } : { backgroundColor: '#7f8c8d' } ]}
+                            disabled={this.state.editMode}
+                            style={[styles.Btn, this.state.editMode ? { backgroundColor: '#7f8c8d' } : { backgroundColor: '#2ecc71' }]}
                             onPress={() => {
                                 let saleOrderDetails = [...this.state.saleOrderDetails];
                                 saleOrderDetails.forEach((order) => {
@@ -602,7 +600,7 @@ class EditSaleOrder extends React.Component {
                                     }
                                 });
                                 sendMessage(
-                                    customerPhone, customerName, moment(this.state.date).format('DD-MM-YYYY'), this.state.total, this.state.totalIncludeVat,
+                                    customerPhone, customerName, this.state.date, this.state.total, this.state.totalIncludeVat,
                                     this.state.vat, this.state.oldDebt, this.state.pay, this.state.newDebt,
                                     saleOrderDetails
                                 );
@@ -611,8 +609,8 @@ class EditSaleOrder extends React.Component {
                             <Ionicons name="ios-send-outline" size={25} color="#FFFFFF" />
                         </TouchableOpacity>
                         <TouchableOpacity
-                            disabled={!this.state.editMode}
-                            style={[styles.Btn, this.state.editMode ? { backgroundColor: '#16a085' } : { backgroundColor: '#7f8c8d' } ]}
+                            disabled={this.state.editMode}
+                            style={[styles.Btn, this.state.editMode ? { backgroundColor: '#7f8c8d' } : { backgroundColor: '#2ecc71' }]}
                             onPress={() => {
                                 let saleOrderDetails = [...this.state.saleOrderDetails];
                                 saleOrderDetails.forEach((order) => {
@@ -631,7 +629,7 @@ class EditSaleOrder extends React.Component {
                                     }
                                 });
                                 sendEmail(
-                                    customerEmail, customerName, moment(this.state.date).format('DD-MM-YYYY'), this.state.total, this.state.totalIncludeVat,
+                                    customerEmail, customerName, this.state.date, this.state.total, this.state.totalIncludeVat,
                                     this.state.vat, this.state.oldDebt, this.state.pay, this.state.newDebt,
                                     saleOrderDetails
                                 );

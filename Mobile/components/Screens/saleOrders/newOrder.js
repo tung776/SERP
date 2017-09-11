@@ -44,7 +44,6 @@ class NewSaleOrder extends React.Component {
         fontLocation: null,
         appIsReady: false,
         fontPath: null,
-        editMode: false
     }
     async componentWillMount() {
         this.props.resetData();
@@ -106,7 +105,6 @@ class NewSaleOrder extends React.Component {
                             newDebt, oldebt, saleOderDetails, debtCustomerId: this.state.debtCustomers.id,
                             user: this.props.user
                         });
-                        this.setState({ editMode: false });
                     }
                 },
                 { text: 'Hủy', onPress: () => console.log('cancel Pressed') },
@@ -116,7 +114,6 @@ class NewSaleOrder extends React.Component {
 
     onSelectProduct() {
         Actions.productSelector({ ProductSelected: this.state.saleOderDetails });
-        this.setState({ editMode: true });
     }
 
     onCustomerChanged(customerId) {
@@ -127,7 +124,7 @@ class NewSaleOrder extends React.Component {
             }
 
         });
-        this.setState({ customerId, editMode: true });
+        this.setState({ customerId });
     }
 
     caculateOrder(debt = 0, pay = 0, saleOderDetails = []) {
@@ -142,14 +139,13 @@ class NewSaleOrder extends React.Component {
         const vat = total * 0.1;
         totalIncludeVat = total + vat;
         newDebt = debt + totalIncludeVat - pay;
-        this.setState({ editMode: true });
         return {
             total,
             newDebt,
             totalIncludeVat,
             vat
         };
-        
+
     }
 
     caculatePriceOnUnitChanged(product, newUnitId) {
@@ -177,7 +173,6 @@ class NewSaleOrder extends React.Component {
             totalIncludeVat,
             vat,
             newDebt,
-            editMode: true
         });
     }
 
@@ -195,10 +190,9 @@ class NewSaleOrder extends React.Component {
                                     style={{ flexDirection: 'row', height: 80, borderBottomWidth: 3, borderBottomColor: '#bdc3c7', backgroundColor: '#ecf0f1', padding: 5 }}
                                 >
                                     <TouchableWithoutFeedback
-
+                                        disabled = {this.props.isSave}
                                         key={item.key} onPress={() => {
                                             this.props.toggleProductToSelectList(item);
-                                            this.setState({ editMode: true });
                                         }}
                                     >
                                         <View style={{ flex: 1, alignSelf: 'center' }}>
@@ -216,13 +210,13 @@ class NewSaleOrder extends React.Component {
 
                                             <View style={{ flex: 0.4 }}>
                                                 <TextInput
+                                                    editable={!this.props.isSave}
                                                     disableFullscreenUI
                                                     underlineColorAndroid={'transparent'}
                                                     style={styles.textInput}
                                                     blurOnSubmit
                                                     value={formatNumber(item.quantity)}
                                                     onChangeText={text => {
-                                                        this.setState({ editMode: true });
                                                         this.state.saleOderDetails.forEach((product) => {
                                                             if (product.id == item.id) {
                                                                 product.quantity = unformat(text);
@@ -244,11 +238,11 @@ class NewSaleOrder extends React.Component {
                                             </View>
 
                                             <Picker
+                                                enabled={!this.props.isSave}
                                                 style={{ flex: 1.3, alignItems: 'center' }}
                                                 selectedValue={item.unitId}
                                                 onValueChange={
                                                     (itemValue, itemIndex) => {
-                                                        this.setState({ editMode: true });
                                                         this.caculatePriceOnUnitChanged(item, itemValue);
                                                     }}
                                             >
@@ -260,13 +254,13 @@ class NewSaleOrder extends React.Component {
 
                                             <View style={{ flex: 1 }}>
                                                 <TextInput
+                                                    editable={!this.props.isSave}
                                                     disableFullscreenUI
                                                     underlineColorAndroid={'transparent'}
                                                     style={[styles.textInput, { textAlign: 'right' }]}
                                                     blurOnSubmit
                                                     value={formatNumber(item.salePrice)}
                                                     onChangeText={text => {
-                                                        this.setState({ editMode: true });
                                                         this.state.saleOderDetails.forEach((product) => {
                                                             if (product.id == item.id) {
                                                                 product.salePrice = unformat(text);
@@ -312,6 +306,7 @@ class NewSaleOrder extends React.Component {
                         <Text style={styles.label} >Ngày tháng</Text>
                         <View style={styles.groupControl}>
                             <DatePicker
+                                enabled={this.props.isSave}
                                 style={{ width: 200 }}
                                 date={this.state.date}
                                 mode="date"
@@ -333,7 +328,7 @@ class NewSaleOrder extends React.Component {
                                     }
                                     // ... You can check the source to find the other keys.
                                 }}
-                                onDateChange={(date) => { this.setState({ date, editMode: true }); }}
+                                onDateChange={(date) => { this.setState({ date }); }}
                             />
                         </View>
                     </View>
@@ -341,10 +336,10 @@ class NewSaleOrder extends React.Component {
                         <Text style={styles.label} >Khách Hàng</Text>
                         <View style={styles.groupControl}>
                             <Picker
+                                enabled={!this.props.isSave}
                                 selectedValue={this.state.customerId}
                                 onValueChange={
                                     (itemValue, itemIndex) => {
-                                        this.setState({ editMode: true });
                                         this.onCustomerChanged(itemValue);
                                     }
                                 }
@@ -361,12 +356,13 @@ class NewSaleOrder extends React.Component {
                         <Text style={styles.label} >Tiêu đề</Text>
                         <View style={styles.groupControl}>
                             <TextInput
+                                editable={!this.props.isSave}
                                 disableFullscreenUI
                                 underlineColorAndroid={'transparent'}
                                 style={styles.textInput}
                                 blurOnSubmit
                                 value={this.state.title}
-                                onChangeText={text => this.setState({ title: text, editMode: true })}
+                                onChangeText={text => this.setState({ title: text })}
                                 type="Text"
                                 name="title"
                                 placeholder="Tiêu đề hóa đơn"
@@ -403,6 +399,7 @@ class NewSaleOrder extends React.Component {
                         <Text style={styles.label} >Thanh Toán</Text>
                         <View style={[styles.groupControl, { width: 180 }]}>
                             <TextInput
+                                editable={!this.props.isSave}
                                 disableFullscreenUI
                                 keyboardType='numeric'
                                 underlineColorAndroid={'transparent'}
@@ -417,8 +414,7 @@ class NewSaleOrder extends React.Component {
                                         total,
                                         newDebt,
                                         totalIncludeVat,
-                                        vat,
-                                        editMode: true
+                                        vat
                                     });
                                 }}
                                 type="Text"
@@ -476,6 +472,7 @@ class NewSaleOrder extends React.Component {
                     </TouchableOpacity>
 
                     <TouchableOpacity
+                        disabled={this.props.isSave}
                         style={{ padding: 2, alignSelf: 'center', position: 'absolute', right: 10, bottom: 0 }}
                         onPress={this.onSelectProduct.bind(this)}
                     >
@@ -487,14 +484,15 @@ class NewSaleOrder extends React.Component {
                 <Footer>
                     <View style={styles.FooterGroupButton} >
                         <TouchableOpacity
-                            style={styles.Btn}
+                            disabled={this.props.isSave}
+                            style={[styles.Btn, (this.props.isSave) ? { backgroundColor: '#7f8c8d' } : { backgroundColor: '#16a085' }]}
                             onPress={this.onSave.bind(this)}
                         >
                             <Ionicons name="ios-checkmark-circle" size={25} color="#FFFFFF" />
                         </TouchableOpacity>
                         <TouchableOpacity
-                            disabled={!this.state.editMode}
-                            style={[styles.Btn, this.state.editMode ? { backgroundColor: '#7f8c8d' } : { backgroundColor: '#16a085' }]}
+                            disabled={!this.props.isSave}
+                            style={[styles.Btn, (this.props.isSave) ? { backgroundColor: '#16a085' } : { backgroundColor: '#7f8c8d' }]}
                             onPress={async () => {
                                 if (!this.state.fontPath) return;
                                 if (this.state.id == '') {
@@ -544,8 +542,8 @@ class NewSaleOrder extends React.Component {
                             <Ionicons name="ios-print-outline" size={25} color="#FFFFFF" />
                         </TouchableOpacity>
                         <TouchableOpacity
-                            disabled={!this.state.editMode}
-                            style={[styles.Btn, this.state.editMode ? { backgroundColor: '#7f8c8d' } : { backgroundColor: '#16a085' }]}
+                            disabled={!this.props.isSave}
+                            style={[styles.Btn, (this.props.isSave) ? { backgroundColor: '#16a085' } : { backgroundColor: '#7f8c8d' }]}
                             onPress={() => {
                                 let saleOrderDetails = [...this.state.saleOderDetails];
                                 saleOrderDetails.forEach((order) => {
@@ -573,8 +571,8 @@ class NewSaleOrder extends React.Component {
                             <Ionicons name="ios-send-outline" size={25} color="#FFFFFF" />
                         </TouchableOpacity>
                         <TouchableOpacity
-                            disabled={!this.state.editMode}
-                            style={[styles.Btn, this.state.editMode ? { backgroundColor: '#7f8c8d' } : { backgroundColor: '#16a085' }]}
+                            disabled={!this.props.isSave}
+                            style={[styles.Btn, (this.props.isSave) ? { backgroundColor: '#16a085' } : { backgroundColor: '#7f8c8d' }]}
                             onPress={() => {
                                 let saleOderDetails = [...this.state.saleOderDetails];
                                 saleOderDetails.forEach((order) => {
@@ -708,7 +706,8 @@ const mapStateToProps = (state, ownProps) => {
         date,
         saleOderDetails,
         loaded,
-        error
+        error, 
+        isSave,
     } = state.saleOrders;
     const { selectedProducts } = state.products;
     const { customers, debt } = state.customers;
@@ -716,6 +715,7 @@ const mapStateToProps = (state, ownProps) => {
     const { quocteList } = state.quoctes;
     const { isAuthenticated, user } = state.auth;
     return {
+        isSave,
         id,
         customerId,
         date,

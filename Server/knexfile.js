@@ -7,8 +7,7 @@ module.exports = {
     connection: {
       database: 'SERP',
       user:     'postgres',
-      password: 'tung1221982',
-      datestyle: 'DMY'
+      password: 'tung1221982'
     },
     pool: {
       min: 2,
@@ -41,13 +40,6 @@ module.exports = {
       database: 'my_db',
       user:     'username',
       password: 'password',
-      timezone: 'UTC',
-      typeCast: function (field, next) {
-        if (field.type == 'DATE') {
-          return moment(field.string()).format('DD-MM-YYYY');
-        }
-        return next();
-      }
     },
     pool: {
       min: 2,

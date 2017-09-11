@@ -120,10 +120,14 @@ SaleOrderRouter.post('/getById', async (req, res) => {
 
 SaleOrderRouter.post('/getByCustomerId', async (req, res) => {
     const { customerId } = req.body;
-
+    const count = 10; //10 dòng trong 1 trang
+    const page = 1;
     try {
         const orders = await Knex('saleOrders')
-            .where({ customerId });
+            .where({ customerId })
+            .orderBy('id', 'desc')
+            // .limit(count)
+            // .offset(30);
         res.status(200).json({
             success: true,
             orders,
@@ -247,10 +251,6 @@ SaleOrderRouter.post('/update', async (req, res) => {
         newDebt, oldebt, saleOrderDetails, debtCustomerId, user
     } = req.body;
 
-    console.log('date = ', date);
-    console.log(' date = ',  moment(date, 'DD-MM-YYYY'))
-    console.log('saleOrderDetails = ', saleOrderDetails);
-    return;
     const { isValid, errors } = NewSaleOrderValidator({
         date, title, customerId, total, totalIncludeVat, vat, pay,
         newDebt, oldebt, saleOrderDetails,

@@ -43,7 +43,7 @@ QuocteRouter.post('/new', async (req, res) => {
                             customerId: customerId,
                             customerGroupId: customerGroupId,
                             title: title,
-                            date: date
+                            date: moment(date, 'DD-MM-YYYY').format('YYYY-MM-DDDD')
                         });
                     //thêm các báo giá chi tiết
                     quocteDetails.forEach(async ({ id, unitId, salePrice }) => {
@@ -138,7 +138,7 @@ QuocteRouter.post('/update', async (req, res) => {
                             customerGroupId: QuocteGroupId,
                             customerId: customerId,
                             title: title || '',
-                            date: moment(date, 'DD-MM-YYYY')
+                            date: moment(date, 'DD-MM-YYYY').format('YYYY-MM-DD')
                         });
                     quocteDetails.forEach(async (detail) => {
                         await t('quocteDetails')

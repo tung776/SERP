@@ -51,7 +51,7 @@ class SaleOrderList extends React.Component {
                                     }}
                                 >
                                     <View style={styles.listItem}>
-                                        <Text style={styles.itemTitle}>{item.title} - {moment(item.date).format('LL')}</Text>
+                                        <Text style={styles.itemTitle}>Hóa Đơn số: {item.id} - {moment(item.date, moment.ISO_8601).format('LL')}</Text>
                                     </View>
                                 </TouchableWithoutFeedback>
                             )

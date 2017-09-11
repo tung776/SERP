@@ -44,7 +44,7 @@ class EditQuocte extends React.Component {
         //sqlite, đồng thời phủ đầy mảng state.products.selectedProducts.
         this.setState({ 
             id: nextProps.id,
-            date: nextProps.date,
+            date: moment(nextProps.date, moment.ISO_8601).format('DD-MM-YYYY'),
             title: nextProps.title,
             customerId: nextProps.customerId,
             customerGroupId: nextProps.customerGroupId,
@@ -196,7 +196,7 @@ class EditQuocte extends React.Component {
                             <DatePicker
                                 enabled={this.state.editMode}
                                 style={{ width: 200 }}
-                                date={moment(this.state.date).format('L')}
+                                date={this.state.date}
                                 mode="date"
                                 placeholder="Chọn ngày lập báo giá"
                                 format="DD-MM-YYYY"
