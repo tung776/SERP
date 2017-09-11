@@ -1,6 +1,6 @@
 import {
     ADD_SALE_ORDER, SALE_ORDER_PENDING, SALE_ORDER_CHANGE_FAIL,
-    SALE_ORDER_CHANGE_SUCCESS, SALE_ORDER_CHANGE,
+    SALE_ORDER_CHANGE_SUCCESS, SALE_ORDER_CHANGE, LOAD_VAT_SUCCESS,
     SALE_ORDER_LOADED_SQLITE, SALE_ORDER_LIST_LOADED_SQLITE, SALE_ORDER_DELETE_SUCCESS,
     RESET_SALE_ORDER_FORM, SALE_ORDER_DETAIL_CHANGE, SELECTED_PRODUCT_TO_SALE_ORDER_DETAIL
 } from '../actions/types';
@@ -14,15 +14,17 @@ const INITIAL_STATE = {
     total: '',
     totalIncludeVat: '',
     vat: '',
-    newDebt:'',
+    vatId: 0,
+    newDebt: '',
     oldDebt: '',
     pay: '',
     saleOrderDetails: [],
     saleOrderList: [],
+    units: [],
     loading: false,
     loaded: false,
     error: '',
-    isSave:false,
+    isSave: false,
     // uploading: false
 };
 
@@ -37,6 +39,7 @@ export default (state = INITIAL_STATE, action) => {
                 customerId: '',
                 date: '',
                 title: '',
+                vatId: 0,
                 saleOrderDetails: [],
                 error: ''
             };
@@ -44,10 +47,10 @@ export default (state = INITIAL_STATE, action) => {
             return { ...state, isSave: false, [action.payload.prop]: action.payload.value };
         case SALE_ORDER_LIST_LOADED_SQLITE: {
             const saleOrderList = [];
-            
+
             if (action.payload) {
                 action.payload.forEach((order) => {
-                    const temp = {...order, key: order.id}
+                    const temp = { ...order, key: order.id }
                     saleOrderList.push(temp);
                 })
                 return {
@@ -94,6 +97,7 @@ export default (state = INITIAL_STATE, action) => {
                 total: action.payload.saleOrder[0].total,
                 totalIncludeVat: action.payload.saleOrder[0].totalIncludeVat,
                 vat: action.payload.saleOrder[0].vat,
+                vatId: action.payload.saleOrder[0].vatId,
                 debtCustomerId: action.payload.saleOrder[0].debtCustomerId,
                 newDebt: action.payload.saleOrder[0].newDebt,
                 oldDebt: action.payload.saleOrder[0].oldDebt,
@@ -109,14 +113,14 @@ export default (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 isSave: true,
-                id: action.payload.saleOrder[0].id,                
+                id: action.payload.saleOrder[0].id,
                 error: '',
                 loading: false,
             };
         case SALE_ORDER_CHANGE_SUCCESS:
             return {
-                ...state,         
-                isSave: true,       
+                ...state,
+                isSave: true,
                 error: '',
                 loading: false,
             };
@@ -131,8 +135,9 @@ export default (state = INITIAL_STATE, action) => {
                 error: '',
                 loading: false,
             };
+        case LOAD_VAT_SUCCESS:
+            return { ...state, vat: action.payload };
         default:
             return state;
     }
-}
-    ;
+};

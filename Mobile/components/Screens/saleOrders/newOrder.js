@@ -13,7 +13,7 @@ import {
 } from '../../../actions/customerAction';
 import { loadUnits, toggleProductToSelectList } from '../../../actions/productActions';
 import { loadQuocteByCustomerOrCustomerGroupIdFromSqlite } from '../../../actions/quocteActions';
-import { resetData, AddNewSaleOrder } from '../../../actions/saleOrderActions';
+import { resetData, AddNewSaleOrder, loadVat } from '../../../actions/saleOrderActions';
 import db from '../../../database/sqliteConfig';
 import { formatMoney, formatNumber, unformat } from '../../../../Shared/utils/format';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
@@ -37,6 +37,7 @@ class NewSaleOrder extends React.Component {
         totalIncludeVat: 0,
         vat: 0,
         pay: 0,
+        vatId: '',
         newDebt: 0,
         oldebt: 0,
         saleOderDetails: [],
@@ -52,6 +53,9 @@ class NewSaleOrder extends React.Component {
         }
         if (!this.props.units || this.props.units.length == 0) {
             this.props.loadUnits();
+        }
+        if (!this.props.vat || this.props.vat.length == 0) {
+            this.props.loadVat();
         }
         const fontAsset = await loadAsset("vuarial", "ttf", fontUrl);
         this.setState({
@@ -98,10 +102,10 @@ class NewSaleOrder extends React.Component {
                     onPress: () => {
                         const {
                             date, title, customerId, total, totalIncludeVat, vat, pay,
-                            newDebt, oldebt, saleOderDetails
+                            newDebt, oldebt, saleOderDetails, vatId
                         } = this.state;
                         this.props.AddNewSaleOrder({
-                            date, title, customerId, total, totalIncludeVat, vat, pay,
+                            date, title, customerId, total, totalIncludeVat, vat, vatId, pay,
                             newDebt, oldebt, saleOderDetails, debtCustomerId: this.state.debtCustomers.id,
                             user: this.props.user
                         });
@@ -127,7 +131,7 @@ class NewSaleOrder extends React.Component {
         this.setState({ customerId });
     }
 
-    caculateOrder(debt = 0, pay = 0, saleOderDetails = []) {
+    caculateOrder(debt = 0, pay = 0, saleOderDetails = [], vatRate = 0) {
         let total = 0,
             totalIncludeVat = 0,
             newDebt = 0;
@@ -136,7 +140,7 @@ class NewSaleOrder extends React.Component {
             const temp = order.salePrice * order.quantity;
             total += temp;
         });
-        const vat = total * 0.1;
+        const vat = total * vatRate;
         totalIncludeVat = total + vat;
         newDebt = debt + totalIncludeVat - pay;
         return {
@@ -190,7 +194,7 @@ class NewSaleOrder extends React.Component {
                                     style={{ flexDirection: 'row', height: 80, borderBottomWidth: 3, borderBottomColor: '#bdc3c7', backgroundColor: '#ecf0f1', padding: 5 }}
                                 >
                                     <TouchableWithoutFeedback
-                                        disabled = {this.props.isSave}
+                                        disabled={this.props.isSave}
                                         key={item.key} onPress={() => {
                                             this.props.toggleProductToSelectList(item);
                                         }}
@@ -384,7 +388,34 @@ class NewSaleOrder extends React.Component {
                         <Text style={styles.label}>{formatNumber(this.state.total)}</Text>
                     </View>
                     <View style={styles.totalControlGroup}>
-                        <Text style={styles.label} >VAT</Text>
+                        <Picker
+                            style={{ color: '#34495e', flex: 0.5, alignSelf: 'center' }}
+                            enabled={!this.props.isSave}
+                            selectedValue={this.state.vatId}
+                            onValueChange={
+                                (itemValue, itemIndex) => {
+                                    let vatRate = 0;
+                                    this.props.vat.forEach((vat) => {
+                                        if(vat.id == itemValue) {
+                                            vatRate = vat.rate;
+                                        }
+                                    })
+                                    const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.state.oldebt, this.state.pay, this.state.saleOderDetails, vatRate);
+                                    this.setState({
+                                        total,
+                                        totalIncludeVat,
+                                        vat,
+                                        newDebt,
+                                        vatId: itemValue
+                                    });
+                                }
+                            }
+                        >
+                            {this.props.vat && this.props.vat.map((vat) => (
+                                <Picker.Item key={vat.id} label={vat.name} value={vat.id} />
+                            ))}
+
+                        </Picker>
                         <Text style={styles.label}>{formatNumber(this.state.vat)}</Text>
                     </View>
                     <View style={styles.totalControlGroup}>
@@ -706,8 +737,9 @@ const mapStateToProps = (state, ownProps) => {
         date,
         saleOderDetails,
         loaded,
-        error, 
+        error,
         isSave,
+        vat,
     } = state.saleOrders;
     const { selectedProducts } = state.products;
     const { customers, debt } = state.customers;
@@ -727,7 +759,8 @@ const mapStateToProps = (state, ownProps) => {
         selectedProducts,
         debt,
         quocteList,
-        user
+        user,
+        vat
     };
 };
 export default connect(mapStateToProps, {
@@ -737,5 +770,6 @@ export default connect(mapStateToProps, {
     toggleProductToSelectList,
     loadDebtCustomersFromSqlite,
     AddNewSaleOrder,
+    loadVat,
     loadQuocteByCustomerOrCustomerGroupIdFromSqlite
 })(NewSaleOrder);

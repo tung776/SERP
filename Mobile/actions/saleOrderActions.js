@@ -5,7 +5,8 @@ import {
     ADD_FLASH_MESSAGE, SUCCESS_MESSAGE, ERROR_MESSAGE,
     SALE_ORDER_LOADED_SQLITE, SALE_ORDER_DELETE_SUCCESS,
     RESET_SALE_ORDER_FORM, SALE_ORDER_LIST_LOADED_SQLITE,
-    SALE_ORDER_DETAIL_CHANGE, RESET_PRODUCT_FORM, ADD_SALE_ORDER
+    SALE_ORDER_DETAIL_CHANGE, RESET_PRODUCT_FORM, ADD_SALE_ORDER,
+    LOAD_VAT_SUCCESS
 } from './index';
 import { URL } from '../../env';
 import axios from 'axios';
@@ -450,4 +451,15 @@ export const AddNewSaleOrder = (order) => async (dispatch) => {
             }
             );
     }
+};
+
+export const loadVat = () => async (dispatch) => {
+    SqlService.query('select * from vat').then(
+        result => {
+            dispatch({
+                type: LOAD_VAT_SUCCESS,
+                payload: result
+            });
+        }
+    );
 };

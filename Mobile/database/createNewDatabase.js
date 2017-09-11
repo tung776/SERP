@@ -7,6 +7,7 @@ import { loadCustomerListDataFromSqlite } from '../actions/customerAction';
 import { loadCustomerGroupListDataFromSqlite } from '../actions/customerGroupAction';
 import { loadCategoriesDataFromSqlite } from '../actions/categoryActions';
 import { loadProductListDataFromSqlite, loadUnits, loadTypeCargo } from '../actions/productActions';
+import { loadVat } from '../actions/saleOrderActions';
 import db from './sqliteConfig';
 
 /*
@@ -25,6 +26,8 @@ export const resetDatabase = (tx) => {
     'drop table if exists roles;');
   tx.executeSql(
     'drop table if exists units;');
+  tx.executeSql(
+    'drop table if exists vat;');
   tx.executeSql(
     'drop table if exists typeCargoes;');
   tx.executeSql(
@@ -97,6 +100,15 @@ export const createDatabaseSqlite = async () => {
           );`, null,
         null,
         e => console.log('units error: ', e)
+      );
+      tx.executeSql(`create table if not exists
+         vat (
+           id integer primary key not null,
+           name text,
+           rate real
+          );`, null,
+        null,
+        e => console.log('vat error: ', e)
       );
       tx.executeSql(`create table if not exists
          typeCargoes (
@@ -206,6 +218,7 @@ export const createDatabaseSqlite = async () => {
            categories integer,
            roles integer,
            units integer,
+           vat integer,
            typeCargoes integer,
            warehouses integer,
            products integer,
@@ -231,7 +244,7 @@ export const updateOrInsertDataVersion = async (data) => {
 
   const newDataVersion = [
     data.id, data.menusVersion, data.userMenusVersion, data.categoriesVersion,
-    data.rolesVersion, data.unitsVersion, data.typeCargoesVersion, data.warehousesVersion, data.productsVersion,
+    data.rolesVersion, data.unitsVersion, data.vatVersion, data.typeCargoesVersion, data.warehousesVersion, data.productsVersion,
     data.customerGroupsVersion, data.customersVersion, data.quoctesVersion, data.debtCustomersVersion
   ];
 
@@ -240,7 +253,7 @@ export const updateOrInsertDataVersion = async (data) => {
       tx => {
         tx.executeSql(`
           insert into dataVersions 
-            (id, menus, userMenus, categories, roles, units, typeCargoes, warehouses, products, customerGroups, customers, quoctes, debtCustomers) 
+            (id, menus, userMenus, categories, roles, units, vat, typeCargoes, warehouses, products, customerGroups, customers, quoctes, debtCustomers) 
             values (
               '${data.id}', 
               '${data.menusVersion}', 
@@ -248,6 +261,7 @@ export const updateOrInsertDataVersion = async (data) => {
               '${data.categoriesVersion}', 
               '${data.rolesVersion}', 
               '${data.unitsVersion}', 
+              '${data.vatVersion}', 
               '${data.typeCargoesVersion}', 
               '${data.warehousesVersion}', 
               '${data.productsVersion}', 
@@ -269,6 +283,7 @@ export const updateOrInsertDataVersion = async (data) => {
       if (data.categoriesVersion) { sql += `categories = '${data.categoriesVersion}',`; }
       if (data.rolesVersion) { sql += `roles = '${data.rolesVersion}',`; }
       if (data.unitsVersion) { sql += `units = '${data.unitsVersion}',`; }
+      if (data.vatVersion) { sql += `vat = '${data.vatVersion}',`; }
       if (data.typeCargoesVersion) { sql += `typeCargoes = '${data.typeCargoesVersion}',`; }
       if (data.warehousesVersion) { sql += `warehouses = '${data.warehousesVersion}',`; }
       if (data.productsVersion) { sql += `products = '${data.productsVersion}',`; }
@@ -388,6 +403,28 @@ export const updateOrInsertDataVersion = async (data) => {
           },
           null,
           e => console.log('error when update units', e)
+        );
+      }
+    }, this);
+  }
+  if (data.vat) {
+    data.vat.forEach(async (item) => {
+      const avaiabledData = await SqlService.select('vat', '*', `id = ${item.id}`);
+      if (avaiabledData.length == 0) {
+        SqlService.insert('vat', ['id', 'name', 'rate'],
+          [item.id, item.name, item.rate]);
+      } else {
+        db.transaction(
+          tx => {
+            tx.executeSql(`
+              update vat 
+              set name = ${item.name},
+              rate = ${item.rate}
+              where id = ${item.id} 
+              `);
+          },
+          null,
+          e => console.log('error when update vat', e)
         );
       }
     }, this);
@@ -679,6 +716,7 @@ export const checkDataVersion = async (userId, store) => {
             userMenus: 0,
             roles: 0,
             units: 0,
+            vat: 0,
             typeCargoes: 0,
             warehouses: 0,
             categories: 0,
@@ -690,7 +728,7 @@ export const checkDataVersion = async (userId, store) => {
           };
         }
         const { id, menus, userMenus,
-          roles, units, typeCargoes,
+          roles, units, vat, typeCargoes,
           warehouses, categories,
           products, customerGroups,
           customers, quoctes, debtCustomers } = currentVersion[0];
@@ -700,6 +738,7 @@ export const checkDataVersion = async (userId, store) => {
           userMenus,
           roles,
           units,
+          vat,
           typeCargoes,
           warehouses,
           products,
@@ -717,6 +756,7 @@ export const checkDataVersion = async (userId, store) => {
         await store.dispatch(loadCategoriesDataFromSqlite());
         await store.dispatch(loadProductListDataFromSqlite());
         await store.dispatch(loadUnits());
+        await store.dispatch(loadVat());
         await store.dispatch(loadTypeCargo());
         await store.dispatch(loadMenusData());
 

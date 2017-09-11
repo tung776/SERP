@@ -212,6 +212,11 @@ exports.up = function (knex, Promise) {
             table.integer('unitId').notNullable().references('id').inTable('units');            
             table.float('salePrice').defaultTo(0);            
         })
+        .createTableIfNotExists('vat', (table) => {
+            table.increments();
+            table.string('name').notNullable();
+            table.float('rate').notNullable();
+        })
         .createTableIfNotExists('saleOrders', (table) => {
             /*
             mỗi hóa đơn sẽ có thể có hoặc không phát sinh phiếu thu 
@@ -233,6 +238,7 @@ exports.up = function (knex, Promise) {
             table.string('title').defaultTo("");
             table.float('total').defaultTo(0);
             table.float('vat').defaultTo(0);
+            table.integer('vatId').notNullable().references('id').inTable('vat');
             table.float('totalIncludeVat').defaultTo(0);
             table.date('date').notNullable().defaultTo(knex.fn.now());
         })
@@ -267,6 +273,7 @@ exports.up = function (knex, Promise) {
             table.string('note').defaultTo(0);
             table.float('total').defaultTo(0);
             table.float('vat').defaultTo(0);
+            table.integer('vatId').notNullable().references('id').inTable('vat');
             table.float('totalIncludeVat').defaultTo(0);
             table.date('date').notNullable().defaultTo(knex.fn.now());
         })
@@ -392,6 +399,7 @@ exports.up = function (knex, Promise) {
             table.integer('roles').notNullable().defaultTo(1);
             table.integer('categories').notNullable().defaultTo(1);
             table.integer('units').notNullable().defaultTo(1);
+            table.integer('vat').notNullable().defaultTo(1);
             table.integer('typeCargoes').notNullable().defaultTo(1);
             table.integer('warehouses').notNullable().defaultTo(1);
             table.integer('products').notNullable().defaultTo(1);
@@ -408,6 +416,7 @@ exports.down = function (knex, Promise) {
         .dropTableIfExists('purchaseOrderDetails')
         .dropTableIfExists('purchaseOrders')
         .dropTableIfExists('saleOrders')
+        .dropTableIfExists('vat')
         .dropTableIfExists('orderTypes')
         .dropTableIfExists('quocteDetails')
         .dropTableIfExists('quoctes')

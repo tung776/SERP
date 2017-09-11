@@ -89,7 +89,7 @@ SaleOrderRouter.post('/getById', async (req, res) => {
     try {
         const saleOrder = await Knex.raw(`
             SELECT s."id", s."date" , s."customerId", s."userId", s."debtCustomerId", s."orderTypeId", 
-            s."title", s."total", s."totalIncludeVat", s."vat", d."newDebt", d."oldDebt", d."minus"
+            s."title", s."total", s."totalIncludeVat", s."vat", s."vatId", d."newDebt", d."oldDebt", d."minus"
             FROM "saleOrders" as s
             INNER JOIN "debtCustomers" AS d ON d."id" = s."debtCustomerId" 
             WHERE s."id" = ${orderId};                      
@@ -144,7 +144,7 @@ SaleOrderRouter.post('/getByCustomerId', async (req, res) => {
 
 SaleOrderRouter.post('/new', async (req, res) => {
     let {
-        date, title, customerId, total, totalIncludeVat, vat, pay,
+        date, title, customerId, total, totalIncludeVat, vat, vatId, pay,
         newDebt, oldebt, saleOderDetails, debtCustomerId, user
     } = req.body;
     console.log('date = ', moment(date, 'DD-MM-YYYY').format('YYYY-MM-DD'));
@@ -183,6 +183,7 @@ SaleOrderRouter.post('/new', async (req, res) => {
                             title: title,
                             total: total,
                             vat: vat,
+                            vatId,
                             totalIncludeVat: totalIncludeVat,
                             date: moment(date, 'DD-MM-YYYY').format('YYYY-MM-DD')
                         });
@@ -247,7 +248,7 @@ SaleOrderRouter.post('/new', async (req, res) => {
 SaleOrderRouter.post('/update', async (req, res) => {
 
     let {
-        id, date, title, customerId, total, totalIncludeVat, vat, pay,
+        id, date, title, customerId, total, totalIncludeVat, vat, vatId, pay,
         newDebt, oldebt, saleOrderDetails, debtCustomerId, user
     } = req.body;
 
@@ -315,6 +316,7 @@ SaleOrderRouter.post('/update', async (req, res) => {
                             title: title,
                             total: total,
                             vat: vat,
+                            vatId,
                             totalIncludeVat: totalIncludeVat,
                             date: moment(date, 'DD-MM-YYYY').format('YYYY-MM-DD')
                         });

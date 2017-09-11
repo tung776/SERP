@@ -22,7 +22,8 @@ import {
     loadSaleOrderById,
     SaleOrderUpdate,
     SaleOrderChange,
-    SaleOrderDelete
+    SaleOrderDelete,
+    loadVat
 } from '../../../actions/saleOrderActions';
 import db from '../../../database/sqliteConfig';
 import moment from '../../../../Shared/utils/moment';
@@ -50,6 +51,7 @@ class EditSaleOrder extends React.Component {
         total: 0,
         totalIncludeVat: 0,
         vat: 0,
+        vatId: 0,
         pay: 0,
         newDebt: 0,
         oldDebt: 0,
@@ -67,6 +69,9 @@ class EditSaleOrder extends React.Component {
         if (!this.props.units || this.props.units.length == 0) {
             this.props.loadUnits();
         }
+        if (!this.props.units || this.props.units.length == 0) {
+            this.props.loadVat();
+        }
         const fontAsset = await loadAsset("vuarial", "ttf", fontUrl);
         this.setState({
             fontPath: fontAsset.localUri,
@@ -80,8 +85,7 @@ class EditSaleOrder extends React.Component {
         } else {
             saleOrderDetails = nextProps.saleOrderDetails;
         }
-        console.log('nextProps.date = ', nextProps.date);
-        
+
         const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.state.oldDebt, this.state.pay,
             saleOrderDetails);
         this.setState({
@@ -92,6 +96,7 @@ class EditSaleOrder extends React.Component {
             newDebt,
             totalIncludeVat,
             vat,
+            vatRate: nextProps.vatRate,
             pay: nextProps.pay,
             saleOrderDetails,
             debtCustomers: nextProps.debt,
@@ -102,7 +107,6 @@ class EditSaleOrder extends React.Component {
     }
 
     onSave() {
-        console.log('this.state.debtCustomerId = ', this.state.debtCustomerId);
         if (this.state.debtCustomerId == null) return;
         Alert.alert(
             'Xác Nhận',
@@ -151,16 +155,16 @@ class EditSaleOrder extends React.Component {
         this.setState({ customerId });
     }
 
-    caculateOrder(debt = 0, pay = 0, saleOrderDetails = []) {
+    caculateOrder(debt = 0, pay = 0, saleOderDetails = [], vatRate = 0) {
         let total = 0,
             totalIncludeVat = 0,
             newDebt = 0;
 
-        saleOrderDetails.forEach((order) => {
+        saleOderDetails.forEach((order) => {
             const temp = order.salePrice * order.quantity;
             total += temp;
         });
-        const vat = total * 0.1;
+        const vat = total * vatRate;
         totalIncludeVat = total + vat;
         newDebt = debt + totalIncludeVat - pay;
         return {
@@ -169,6 +173,7 @@ class EditSaleOrder extends React.Component {
             totalIncludeVat,
             vat
         };
+
     }
 
     caculatePriceOnUnitChanged(product, newUnitId) {
@@ -415,7 +420,34 @@ class EditSaleOrder extends React.Component {
                         <Text style={styles.label}>{formatNumber(this.state.total)}</Text>
                     </View>
                     <View style={styles.totalControlGroup}>
-                        <Text style={styles.label} >VAT</Text>
+                        <Picker
+                            style={{ color: '#34495e', flex: 0.5, alignSelf: 'center' }}
+                            enabled={!this.props.isSave}
+                            selectedValue={this.state.vatId}
+                            onValueChange={
+                                (itemValue, itemIndex) => {
+                                    let vatRate = 0;
+                                    this.props.vat.forEach((vat) => {
+                                        if (vat.id == itemValue) {
+                                            vatRate = vat.rate;
+                                        }
+                                    })
+                                    const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.state.oldebt, this.state.pay, this.state.saleOderDetails, vatRate);
+                                    this.setState({
+                                        total,
+                                        totalIncludeVat,
+                                        vat,
+                                        newDebt,
+                                        vatId: itemValue
+                                    });
+                                }
+                            }
+                        >
+                            {this.props.vat && this.props.vat.map((vat) => (
+                                <Picker.Item key={vat.id} label={vat.name} value={vat.id} />
+                            ))}
+
+                        </Picker>
                         <Text style={styles.label}>{formatNumber(this.state.vat)}</Text>
                     </View>
                     <View style={styles.totalControlGroup}>
@@ -476,7 +508,7 @@ class EditSaleOrder extends React.Component {
                 </Header>
                 <View style={styles.body}>
                     <TouchableOpacity
-                        style={[styles.Btn, { backgroundColor: '#16a085' } ]}
+                        style={[styles.Btn, { backgroundColor: '#16a085' }]}
                         onPress={() => this.setState({ isExpanded: !this.state.isExpanded })}
                     >
                         {this.state.isExpanded ?
@@ -492,7 +524,7 @@ class EditSaleOrder extends React.Component {
                     {this.renderToTal()}
 
                     <TouchableOpacity
-                        style={[styles.Btn, { backgroundColor: '#16a085' } ]}
+                        style={[styles.Btn, { backgroundColor: '#16a085' }]}
                         onPress={() => this.setState({ isExpandedTotal: !this.state.isExpandedTotal })}
                     >
                         {this.state.isExpandedTotal ?
@@ -521,7 +553,7 @@ class EditSaleOrder extends React.Component {
                         </TouchableOpacity>
                         <TouchableOpacity
                             disabled={!this.state.editMode}
-                            style={[styles.Btn, this.state.editMode ? { backgroundColor: '#16a085' } : { backgroundColor: '#7f8c8d' } ]}
+                            style={[styles.Btn, this.state.editMode ? { backgroundColor: '#16a085' } : { backgroundColor: '#7f8c8d' }]}
                             onPress={this.onSave.bind(this)}
                         >
                             <Ionicons name="ios-checkmark-circle" size={25} color="#FFFFFF" />
@@ -639,8 +671,8 @@ class EditSaleOrder extends React.Component {
                         </TouchableOpacity>
                         <TouchableOpacity
                             disabled={!this.state.editMode}
-                            style={[styles.Btn, this.state.editMode ? { backgroundColor: '#d35400' } : { backgroundColor: '#7f8c8d' } ]}
-                            onPress={() =>{
+                            style={[styles.Btn, this.state.editMode ? { backgroundColor: '#d35400' } : { backgroundColor: '#7f8c8d' }]}
+                            onPress={() => {
                                 const {
                                     id, date, title, customerId, total, totalIncludeVat, vat, pay,
                                     newDebt, oldebt, saleOrderDetails
@@ -768,6 +800,7 @@ const mapStateToProps = (state, ownProps) => {
         title,
         total,
         vat,
+        vatId,
         pay,
         oldDebt,
         newDebt,
@@ -788,6 +821,7 @@ const mapStateToProps = (state, ownProps) => {
         title,
         total,
         vat,
+        vatId,
         pay,
         oldDebt,
         newDebt,
@@ -804,6 +838,7 @@ const mapStateToProps = (state, ownProps) => {
 export default connect(mapStateToProps, {
     loadSaleOrderById,
     loadUnits,
+    loadVat,
     loadCustomerListDataFromSqlite,
     toggleProductToSelectList,
     SaleOrderUpdate,

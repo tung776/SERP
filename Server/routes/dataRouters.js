@@ -6,7 +6,7 @@ import Knex from '../config/knex';
 dataRoutes.post('/checkDataVersion', async function (req, res) {
     const { 
         id, menus, userMenus, roles,
-        categories, units, warehouses,
+        categories, units, vat, warehouses,
         products, customerGroups, customers, userId, typeCargoes,
         quoctes, debtCustomers
      } = req.body;
@@ -42,6 +42,10 @@ dataRoutes.post('/checkDataVersion', async function (req, res) {
         if (dataVersion[0].units != units) {
             shouldUpdate.units = await Knex('units').select('id', 'name', 'rate');
             shouldUpdate.unitsVersion = dataVersion[0].units;
+        }
+        if (dataVersion[0].vat != vat) {
+            shouldUpdate.vat = await Knex('vat').select('id', 'name', 'rate');
+            shouldUpdate.vatVersion = dataVersion[0].vat;
         }
         if (dataVersion[0].typeCargoes != typeCargoes) {
             shouldUpdate.typeCargoes = await Knex('typeCargoes').select('id', 'name');
