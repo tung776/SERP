@@ -13,7 +13,7 @@ import {
 } from '../../../actions/customerAction';
 import { loadUnits, toggleProductToSelectList } from '../../../actions/productActions';
 import { loadQuocteByCustomerOrCustomerGroupIdFromSqlite } from '../../../actions/quocteActions';
-import { resetData, AddNewSaleOrder, loadVat } from '../../../actions/saleOrderActions';
+import { resetData, AddNewSaleOrder, loadTax } from '../../../actions/saleOrderActions';
 import db from '../../../database/sqliteConfig';
 import { formatMoney, formatNumber, unformat } from '../../../../Shared/utils/format';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
@@ -37,7 +37,7 @@ class NewSaleOrder extends React.Component {
         totalIncludeVat: 0,
         vat: 0,
         pay: 0,
-        vatId: '',
+        taxId: 1,
         newDebt: 0,
         oldebt: 0,
         saleOderDetails: [],
@@ -54,8 +54,8 @@ class NewSaleOrder extends React.Component {
         if (!this.props.units || this.props.units.length == 0) {
             this.props.loadUnits();
         }
-        if (!this.props.vat || this.props.vat.length == 0) {
-            this.props.loadVat();
+        if (!this.props.tax || this.props.tax.length == 0) {
+            this.props.loadTax();
         }
         const fontAsset = await loadAsset("vuarial", "ttf", fontUrl);
         this.setState({
@@ -102,10 +102,10 @@ class NewSaleOrder extends React.Component {
                     onPress: () => {
                         const {
                             date, title, customerId, total, totalIncludeVat, vat, pay,
-                            newDebt, oldebt, saleOderDetails, vatId
+                            newDebt, oldebt, saleOderDetails, taxId
                         } = this.state;
                         this.props.AddNewSaleOrder({
-                            date, title, customerId, total, totalIncludeVat, vat, vatId, pay,
+                            date, title, customerId, total, totalIncludeVat, vat, taxId, pay,
                             newDebt, oldebt, saleOderDetails, debtCustomerId: this.state.debtCustomers.id,
                             user: this.props.user
                         });
@@ -131,7 +131,7 @@ class NewSaleOrder extends React.Component {
         this.setState({ customerId });
     }
 
-    caculateOrder(debt = 0, pay = 0, saleOderDetails = [], vatRate = 0) {
+    caculateOrder(debt = 0, pay = 0, saleOderDetails = [], taxRate = 0) {
         let total = 0,
             totalIncludeVat = 0,
             newDebt = 0;
@@ -140,7 +140,7 @@ class NewSaleOrder extends React.Component {
             const temp = order.salePrice * order.quantity;
             total += temp;
         });
-        const vat = total * vatRate;
+        const vat = total * taxRate;
         totalIncludeVat = total + vat;
         newDebt = debt + totalIncludeVat - pay;
         return {
@@ -391,27 +391,27 @@ class NewSaleOrder extends React.Component {
                         <Picker
                             style={{ color: '#34495e', flex: 0.5, alignSelf: 'center' }}
                             enabled={!this.props.isSave}
-                            selectedValue={this.state.vatId}
+                            selectedValue={this.state.taxId}
                             onValueChange={
                                 (itemValue, itemIndex) => {
-                                    let vatRate = 0;
-                                    this.props.vat.forEach((vat) => {
-                                        if(vat.id == itemValue) {
-                                            vatRate = vat.rate;
+                                    let taxRate = 0;
+                                    this.props.tax.forEach((tax) => {
+                                        if(tax.id == itemValue) {
+                                            taxRate = tax.rate;
                                         }
                                     })
-                                    const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.state.oldebt, this.state.pay, this.state.saleOderDetails, vatRate);
+                                    const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.state.oldebt, this.state.pay, this.state.saleOderDetails, taxRate);
                                     this.setState({
                                         total,
                                         totalIncludeVat,
                                         vat,
                                         newDebt,
-                                        vatId: itemValue
+                                        taxId: itemValue
                                     });
                                 }
                             }
                         >
-                            {this.props.vat && this.props.vat.map((vat) => (
+                            {this.props.tax && this.props.tax.map((vat) => (
                                 <Picker.Item key={vat.id} label={vat.name} value={vat.id} />
                             ))}
 
@@ -739,7 +739,7 @@ const mapStateToProps = (state, ownProps) => {
         loaded,
         error,
         isSave,
-        vat,
+        tax,
     } = state.saleOrders;
     const { selectedProducts } = state.products;
     const { customers, debt } = state.customers;
@@ -760,7 +760,7 @@ const mapStateToProps = (state, ownProps) => {
         debt,
         quocteList,
         user,
-        vat
+        tax
     };
 };
 export default connect(mapStateToProps, {
@@ -770,6 +770,6 @@ export default connect(mapStateToProps, {
     toggleProductToSelectList,
     loadDebtCustomersFromSqlite,
     AddNewSaleOrder,
-    loadVat,
+    loadTax,
     loadQuocteByCustomerOrCustomerGroupIdFromSqlite
 })(NewSaleOrder);

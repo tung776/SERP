@@ -23,7 +23,7 @@ import {
     SaleOrderUpdate,
     SaleOrderChange,
     SaleOrderDelete,
-    loadVat
+    loadTax
 } from '../../../actions/saleOrderActions';
 import db from '../../../database/sqliteConfig';
 import moment from '../../../../Shared/utils/moment';
@@ -51,12 +51,13 @@ class EditSaleOrder extends React.Component {
         total: 0,
         totalIncludeVat: 0,
         vat: 0,
-        vatId: 0,
+        taxId: '',
         pay: 0,
         newDebt: 0,
         oldDebt: 0,
         saleOrderDetails: [],
         quoctes: [],
+        tax: [],
         editMode: false,
         fontPath: null,
     }
@@ -70,7 +71,7 @@ class EditSaleOrder extends React.Component {
             this.props.loadUnits();
         }
         if (!this.props.units || this.props.units.length == 0) {
-            this.props.loadVat();
+            this.props.loadTax();
         }
         const fontAsset = await loadAsset("vuarial", "ttf", fontUrl);
         this.setState({
@@ -85,23 +86,30 @@ class EditSaleOrder extends React.Component {
         } else {
             saleOrderDetails = nextProps.saleOrderDetails;
         }
+        let taxRate = 0;
+        nextProps.tax.forEach((tax) => {
+            
+            if(tax.id == nextProps.taxId) {
+                taxRate = tax.rate;
+            }
+        })
 
-        const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.state.oldDebt, this.state.pay,
-            saleOrderDetails);
+        const { total, newDebt, totalIncludeVat, vat,  } = this.caculateOrder(this.state.oldDebt, this.state.pay,
+            saleOrderDetails, taxRate);
         this.setState({
             id: nextProps.id,
             customerId: nextProps.customerId,
             date: moment(nextProps.date, moment.ISO_8601).format('DD-MM-YYYY'),
-            total,
-            newDebt,
-            totalIncludeVat,
-            vat,
-            vatRate: nextProps.vatRate,
+            taxId: nextProps.taxId,
             pay: nextProps.pay,
             saleOrderDetails,
             debtCustomers: nextProps.debt,
             debtCustomerId: nextProps.debtCustomerId,
             oldDebt: nextProps.oldDebt,
+            newDebt: nextProps.newDebt,
+            totalIncludeVat: nextProps.totalIncludeVat,
+            total: nextProps.total,
+            vat: nextProps.vat,
             quoctes: nextProps.quocteList
         });
     }
@@ -117,7 +125,7 @@ class EditSaleOrder extends React.Component {
                     onPress: () => {
                         const {
                             id, date, title, customerId, total, totalIncludeVat, vat, pay,
-                            newDebt, oldDebt, saleOrderDetails
+                            taxId, newDebt, oldDebt, saleOrderDetails
                         } = this.state;
                         this.props.SaleOrderUpdate({
                             id,
@@ -128,6 +136,7 @@ class EditSaleOrder extends React.Component {
                             totalIncludeVat,
                             vat,
                             pay,
+                            taxId,
                             newDebt,
                             oldDebt,
                             saleOrderDetails,
@@ -155,7 +164,7 @@ class EditSaleOrder extends React.Component {
         this.setState({ customerId });
     }
 
-    caculateOrder(debt = 0, pay = 0, saleOderDetails = [], vatRate = 0) {
+    caculateOrder(debt = 0, pay = 0, saleOderDetails = [], taxRate = 0) {
         let total = 0,
             totalIncludeVat = 0,
             newDebt = 0;
@@ -164,7 +173,7 @@ class EditSaleOrder extends React.Component {
             const temp = order.salePrice * order.quantity;
             total += temp;
         });
-        const vat = total * vatRate;
+        const vat = total * taxRate;
         totalIncludeVat = total + vat;
         newDebt = debt + totalIncludeVat - pay;
         return {
@@ -423,28 +432,28 @@ class EditSaleOrder extends React.Component {
                         <Picker
                             style={{ color: '#34495e', flex: 0.5, alignSelf: 'center' }}
                             enabled={!this.props.isSave}
-                            selectedValue={this.state.vatId}
+                            selectedValue={this.state.taxId}
                             onValueChange={
                                 (itemValue, itemIndex) => {
-                                    let vatRate = 0;
-                                    this.props.vat.forEach((vat) => {
-                                        if (vat.id == itemValue) {
-                                            vatRate = vat.rate;
+                                    let taxRate = 0;
+                                    this.props.tax.forEach((tax) => {
+                                        if (tax.id == itemValue) {
+                                            taxRate = tax.rate;
                                         }
                                     })
-                                    const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.state.oldebt, this.state.pay, this.state.saleOderDetails, vatRate);
+                                    const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.state.oldDebt, this.state.pay, this.state.saleOrderDetails, taxRate);
                                     this.setState({
                                         total,
                                         totalIncludeVat,
                                         vat,
                                         newDebt,
-                                        vatId: itemValue
+                                        taxId: itemValue
                                     });
                                 }
                             }
                         >
-                            {this.props.vat && this.props.vat.map((vat) => (
-                                <Picker.Item key={vat.id} label={vat.name} value={vat.id} />
+                            {this.props.tax && this.props.tax.map((tax) => (
+                                <Picker.Item key={tax.id} label={tax.name} value={tax.id} />
                             ))}
 
                         </Picker>
@@ -800,7 +809,8 @@ const mapStateToProps = (state, ownProps) => {
         title,
         total,
         vat,
-        vatId,
+        tax,
+        taxId,
         pay,
         oldDebt,
         newDebt,
@@ -821,7 +831,8 @@ const mapStateToProps = (state, ownProps) => {
         title,
         total,
         vat,
-        vatId,
+        tax,
+        taxId,
         pay,
         oldDebt,
         newDebt,
@@ -838,7 +849,7 @@ const mapStateToProps = (state, ownProps) => {
 export default connect(mapStateToProps, {
     loadSaleOrderById,
     loadUnits,
-    loadVat,
+    loadTax,
     loadCustomerListDataFromSqlite,
     toggleProductToSelectList,
     SaleOrderUpdate,

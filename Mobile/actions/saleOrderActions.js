@@ -6,7 +6,7 @@ import {
     SALE_ORDER_LOADED_SQLITE, SALE_ORDER_DELETE_SUCCESS,
     RESET_SALE_ORDER_FORM, SALE_ORDER_LIST_LOADED_SQLITE,
     SALE_ORDER_DETAIL_CHANGE, RESET_PRODUCT_FORM, ADD_SALE_ORDER,
-    LOAD_VAT_SUCCESS
+    LOAD_TAX_SUCCESS
 } from './index';
 import { URL } from '../../env';
 import axios from 'axios';
@@ -260,36 +260,27 @@ export const SaleOrderUpdate = (order) => async (dispatch) => {
                             tx.executeSql(`UPDATE dataVersions 
                             SET debtCustomers = '${res.data.dataversion[0].debtCustomers}'                    
                             WHERE id = 1;`
-                        );
-                        tx.executeSql(`delete from debtCustomers where id = ${order.debtCustomerId}`);
-                        const strSql = `insert into debtCustomers 
-                                    (
-                                        id,
-                                        customerId,
-                                        createdDate,
-                                        title,
-                                        newDebt,
-                                        oldDebt,
-                                        minus,
-                                        plus
-                                    ) 
-                                    values (
-                                            ${res.data.debtCustomers[0].id},
-                                            ${res.data.debtCustomers[0].customerId}, 
-                                            '${res.data.debtCustomers[0].createdDate}', 
-                                            '${res.data.debtCustomers[0].title}', 
-                                            ${res.data.debtCustomers[0].newDebt}, 
-                                            ${res.data.debtCustomers[0].oldDebt},
-                                            ${res.data.debtCustomers[0].minus}, 
-                                            ${res.data.debtCustomers[0].plus}
-                                        )
-                                    `;
+                            );
+                        
 
-                        tx.executeSql(strSql);
-                        },
-                        (e) => console.log('error ?????', e),
-                        null
-                    );
+                        tx.executeSql(`
+                        update debtCustomers 
+                        set customerId = ${res.data.debtCustomers[0].customerId},
+                        createdDate = '${res.data.debtCustomers[0].createdDate}',
+                        title = '${res.data.debtCustomers[0].title}',
+                        newDebt = ${res.data.debtCustomers[0].newDebt},
+                        oldDebt = ${res.data.debtCustomers[0].oldDebt},
+                        minus = ${res.data.debtCustomers[0].minus},
+                        plus = ${res.data.debtCustomers[0].plus}
+                        where id = ${res.data.debtCustomers[0].id} 
+                        `,
+                            null,
+                            null,
+                            (e) => {
+                                console.log('lỗi update debtCustomers = ', e);
+                            }
+                        );
+                    })
                 } catch (e) {
                     console.log(e);
                 }
@@ -453,11 +444,11 @@ export const AddNewSaleOrder = (order) => async (dispatch) => {
     }
 };
 
-export const loadVat = () => async (dispatch) => {
-    SqlService.query('select * from vat').then(
+export const loadTax = () => async (dispatch) => {
+    SqlService.query('select * from tax').then(
         result => {
             dispatch({
-                type: LOAD_VAT_SUCCESS,
+                type: LOAD_TAX_SUCCESS,
                 payload: result
             });
         }

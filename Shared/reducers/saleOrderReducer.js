@@ -1,6 +1,6 @@
 import {
     ADD_SALE_ORDER, SALE_ORDER_PENDING, SALE_ORDER_CHANGE_FAIL,
-    SALE_ORDER_CHANGE_SUCCESS, SALE_ORDER_CHANGE, LOAD_VAT_SUCCESS,
+    SALE_ORDER_CHANGE_SUCCESS, SALE_ORDER_CHANGE, LOAD_TAX_SUCCESS,
     SALE_ORDER_LOADED_SQLITE, SALE_ORDER_LIST_LOADED_SQLITE, SALE_ORDER_DELETE_SUCCESS,
     RESET_SALE_ORDER_FORM, SALE_ORDER_DETAIL_CHANGE, SELECTED_PRODUCT_TO_SALE_ORDER_DETAIL
 } from '../actions/types';
@@ -14,7 +14,8 @@ const INITIAL_STATE = {
     total: '',
     totalIncludeVat: '',
     vat: '',
-    vatId: 0,
+    tax:'',
+    taxId: 0,
     newDebt: '',
     oldDebt: '',
     pay: '',
@@ -39,7 +40,7 @@ export default (state = INITIAL_STATE, action) => {
                 customerId: '',
                 date: '',
                 title: '',
-                vatId: 0,
+                taxId: 0,
                 saleOrderDetails: [],
                 error: ''
             };
@@ -97,7 +98,7 @@ export default (state = INITIAL_STATE, action) => {
                 total: action.payload.saleOrder[0].total,
                 totalIncludeVat: action.payload.saleOrder[0].totalIncludeVat,
                 vat: action.payload.saleOrder[0].vat,
-                vatId: action.payload.saleOrder[0].vatId,
+                taxId: action.payload.saleOrder[0].taxId,
                 debtCustomerId: action.payload.saleOrder[0].debtCustomerId,
                 newDebt: action.payload.saleOrder[0].newDebt,
                 oldDebt: action.payload.saleOrder[0].oldDebt,
@@ -135,8 +136,8 @@ export default (state = INITIAL_STATE, action) => {
                 error: '',
                 loading: false,
             };
-        case LOAD_VAT_SUCCESS:
-            return { ...state, vat: action.payload };
+        case LOAD_TAX_SUCCESS:
+            return { ...state, tax: action.payload };
         default:
             return state;
     }
