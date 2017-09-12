@@ -431,7 +431,7 @@ class EditSaleOrder extends React.Component {
                     <View style={styles.totalControlGroup}>
                         <Picker
                             style={{ color: '#34495e', flex: 0.5, alignSelf: 'center' }}
-                            enabled={!this.props.isSave}
+                            enabled={this.state.editMode}
                             selectedValue={this.state.taxId}
                             onValueChange={
                                 (itemValue, itemIndex) => {
@@ -684,11 +684,11 @@ class EditSaleOrder extends React.Component {
                             onPress={() => {
                                 const {
                                     id, date, title, customerId, total, totalIncludeVat, vat, pay,
-                                    newDebt, oldebt, saleOrderDetails
+                                    newDebt, oldDebt, saleOrderDetails
                                 } = this.state;
                                 this.props.SaleOrderDelete({
                                     id, date, title, customerId, total, totalIncludeVat, vat, pay,
-                                    newDebt, oldebt, saleOrderDetails
+                                    newDebt, oldDebt, saleOrderDetails
                                 });
                             }}
                         >

@@ -1,8 +1,8 @@
 {
   "expoServerPort": 19000,
   "packagerPort": 19001,
-  "packagerPid": 6564,
+  "packagerPid": 3000,
   "expoServerNgrokUrl": "https://ni-fx2.tung776.serp.exp.direct",
   "packagerNgrokUrl": "https://packager.ni-fx2.tung776.serp.exp.direct",
-  "ngrokPid": 5492
+  "ngrokPid": 9956
 }

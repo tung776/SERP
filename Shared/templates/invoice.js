@@ -13,6 +13,21 @@ export default Invoice = (
     newDebt,
     OrderDetail
 ) => {
+    let vatContent = '';
+    if(vat > 0) {
+        vatContent = `
+        <tr>
+            <th width="40%"></th>
+            <td width="30%"><span>VAT</span></td>
+            <td width="30%"><span></span><span>${formatNumber(vat)}</span></td>
+        </tr>
+        <tr>
+            <th width="40%"></th>
+            <td width="30%"><span>Tổng tiền (gồm vat)</span></td>
+            <td width="30%"><span></span><span>${formatNumber(totalIncludeVat)}</span></td>
+        </tr>
+    `
+    }
     let htmlOrderDetail = '';
     OrderDetail.forEach((order) => {
         const totalPrice = order.salePrice * order.quantity;
@@ -97,16 +112,7 @@ export default Invoice = (
                 <td width="30%"><span>Tổng Tiền</span></td>
                 <td width="25%"><span></span><span>${formatNumber(total)}</span></td>
             </tr>
-            <tr>
-                <th width="40%"></th>
-                <td width="30%"><span>VAT</span></td>
-                <td width="30%"><span></span><span>${formatNumber(vat)}</span></td>
-            </tr>
-            <tr>
-                <th width="40%"></th>
-                <td width="30%"><span>Tổng tiền (gồm vat)</span></td>
-                <td width="30%"><span></span><span>${formatNumber(totalIncludeVat)}</span></td>
-            </tr>
+            ${vatContent}            
             <tr>
                 <th width="40%"></th>
                 <td width="30%"><span>Nợ cũ</span></td>

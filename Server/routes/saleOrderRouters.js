@@ -148,7 +148,6 @@ SaleOrderRouter.post('/new', async (req, res) => {
         date, title, customerId, total, totalIncludeVat, vat, taxId, pay,
         newDebt, oldebt, saleOderDetails, debtCustomerId, user
     } = req.body;
-    console.log('date = ', moment(date, 'DD-MM-YYYY').format('YYYY-MM-DD'));
     // return;
     const { isValid, errors } = NewSaleOrderValidator({
         date, title, customerId, total, totalIncludeVat, vat, pay,
@@ -250,12 +249,12 @@ SaleOrderRouter.post('/update', async (req, res) => {
 
     let {
         id, date, title, customerId, total, totalIncludeVat, vat, taxId, pay,
-        newDebt, oldebt, saleOrderDetails, debtCustomerId, user
+        newDebt, oldDebt, saleOrderDetails, debtCustomerId, user
     } = req.body;
 
     const { isValid, errors } = NewSaleOrderValidator({
         date, title, customerId, total, totalIncludeVat, vat, pay,
-        newDebt, oldebt, saleOrderDetails,
+        newDebt, oldDebt, saleOrderDetails,
     });
 
     if (isValid) {
@@ -293,10 +292,12 @@ SaleOrderRouter.post('/update', async (req, res) => {
                             createdDate: moment(date, 'DD-MM-YYYY').format('YYYY-MM-DD'),
                             title: title,
                             newDebt: newDebt,
-                            oldDebt: oldebt,
+                            oldDebt: oldDebt,
                             minus: pay,
                             plus: totalIncludeVat
                         });
+
+                    console.log('data = ', data);
 
                     //Lấy toàn bộ bảng dữ liệu công nợ có liên quan đến bảng công nợ bị xóa
                     const customerDebtBeChanged = await Knex('debtCustomers')
@@ -318,9 +319,9 @@ SaleOrderRouter.post('/update', async (req, res) => {
                                     newDebt: _newDebt,
                                     oldDebt: _oldDebt,
                                 });
-                            data = debt;
-                            data.newDebt = _newDebt;
-                            data.oldDebt = _oldDebt;
+                            data = [debt];
+                            data[0].newDebt = _newDebt;
+                            data[0].oldDebt = _oldDebt;
                             console.log('customerDebt = ', data);
                         });
                     }
