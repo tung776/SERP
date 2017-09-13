@@ -11,7 +11,7 @@ import { loadCustomerGroupListDataFromSqlite } from '../../../actions/customerGr
 import { loadCustomerListDataFromSqlite } from '../../../actions/customerAction';
 import { loadUnits, toggleProductToSelectList, resetSelectedProducts } from '../../../actions/productActions';
 import { loadQuocteDataFromSqlite, QuocteUpdate } from '../../../actions/quocteActions';
-import db from '../../../database/sqliteConfig';
+import { formatMoney, formatNumber, unformat } from '../../../../Shared/utils/format';
 import moment from '../../../../Shared/utils/moment';
 
 class EditQuocte extends React.Component {
@@ -59,7 +59,7 @@ class EditQuocte extends React.Component {
             [
                 {
                     text: 'Xác Nhận',
-                    onPress: () => this.props.AddNewQuocte(this.state)
+                    onPress: () => this.props.QuocteUpdate(this.state)
                 },
                 { text: 'Hủy', onPress: () => console.log('cancel Pressed') },
             ]
@@ -154,11 +154,11 @@ class EditQuocte extends React.Component {
                                                     underlineColorAndroid={'transparent'}
                                                     style={styles.textInput}
                                                     blurOnSubmit
-                                                    value={`${item.salePrice}`}
+                                                    value={`${formatNumber(item.salePrice)}`}
                                                     onChangeText={text => {
                                                         this.state.quocteDetails.forEach((product) => {
                                                             if (product.id == item.id) {
-                                                                product.salePrice = text;
+                                                                product.salePrice = unformat(text);
                                                             }
                                                         });
                                                         this.setState({ quocteDetails: this.state.quocteDetails });
@@ -324,28 +324,28 @@ class EditQuocte extends React.Component {
                         </TouchableOpacity>
                         <TouchableOpacity
                             disabled={!this.state.editMode}
-                            style={styles.Btn}
+                            style={[styles.Btn, (!this.state.editMode) ? { backgroundColor: '#7f8c8d' } : { backgroundColor: '#16a085' }]}
                             onPress={this.onSave.bind(this)}
                         >
                             <Ionicons name="ios-checkmark-circle" size={25} color="#FFFFFF" />
                         </TouchableOpacity>
                         <TouchableOpacity
-                            disabled={!this.state.editMode}
-                            style={styles.Btn}
+                            disabled={this.state.editMode}
+                            style={[styles.Btn, (this.state.editMode) ? { backgroundColor: '#7f8c8d' } : { backgroundColor: '#16a085' }]}
                             onPress={() => Actions.pop()}
                         >
                             <Ionicons name="ios-print-outline" size={25} color="#FFFFFF" />
                         </TouchableOpacity>
                         <TouchableOpacity
-                            disabled={!this.state.editMode}
-                            style={styles.Btn}
+                            disabled={this.state.editMode}
+                            style={[styles.Btn, (this.state.editMode) ? { backgroundColor: '#7f8c8d' } : { backgroundColor: '#16a085' }]}
                             onPress={() => Actions.pop()}
                         >
                             <Ionicons name="ios-send-outline" size={25} color="#FFFFFF" />
                         </TouchableOpacity>
                         <TouchableOpacity
-                            disabled={!this.state.editMode}
-                            style={styles.Btn}
+                            disabled={this.state.editMode}
+                            style={[styles.Btn, (this.state.editMode) ? { backgroundColor: '#7f8c8d' } : { backgroundColor: '#16a085' }]}
                             onPress={() => Actions.pop()}
                         >
                             <Ionicons name="ios-mail-outline" size={25} color="#FFFFFF" />
@@ -458,7 +458,8 @@ const mapStateToProps = (state, ownProps) => {
         date,
         quocteDetails,
         loaded,
-        error
+        error,
+        isSave
     } = state.quoctes;
     const { selectedProducts } = state.products;
     const { categories } = state.categories;
@@ -479,6 +480,7 @@ const mapStateToProps = (state, ownProps) => {
         customerGroups,
         customers,
         selectedProducts,
+        isSave
     };
 };
 export default connect(mapStateToProps, {

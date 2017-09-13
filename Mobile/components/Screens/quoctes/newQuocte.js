@@ -11,7 +11,7 @@ import { loadCustomerGroupListDataFromSqlite } from '../../../actions/customerGr
 import { loadCustomerListDataFromSqlite } from '../../../actions/customerAction';
 import { loadUnits, toggleProductToSelectList } from '../../../actions/productActions';
 import { resetData, AddNewQuocte } from '../../../actions/quocteActions';
-import db from '../../../database/sqliteConfig';
+import { formatMoney, formatNumber, unformat } from '../../../../Shared/utils/format';
 
 class NewQuocte extends React.Component {
     state = {
@@ -83,7 +83,7 @@ class NewQuocte extends React.Component {
     }
 
     onSelectProduct() {
-        Actions.productSelector({ProductSelected: this.state.quocteDetails});
+        Actions.productSelector({ ProductSelected: this.state.quocteDetails });
     }
 
     renderProductList() {
@@ -136,11 +136,11 @@ class NewQuocte extends React.Component {
                                                     underlineColorAndroid={'transparent'}
                                                     style={styles.textInput}
                                                     blurOnSubmit
-                                                    value={`${item.salePrice}`}
+                                                    value={`${formatNumber(item.salePrice)}`}
                                                     onChangeText={text => {
                                                         this.state.quocteDetails.forEach((product) => {
                                                             if (product.id == item.id) {
-                                                                product.salePrice = text
+                                                                product.salePrice = unformat(text)
                                                             }
                                                         });
                                                         this.setState({ quocteDetails: this.state.quocteDetails });
@@ -205,6 +205,7 @@ class NewQuocte extends React.Component {
                         <Text style={styles.label} >Nhóm Khách hàng</Text>
                         <View style={styles.groupControl}>
                             <Picker
+                                enabled={!this.props.isSave}
                                 selectedValue={this.state.customerGroupId}
                                 onValueChange={
                                     (itemValue, itemIndex) => this.setState({ customerGroupId: itemValue, customerId: null })
@@ -222,6 +223,7 @@ class NewQuocte extends React.Component {
                         <Text style={styles.label} >Khách Hàng</Text>
                         <View style={styles.groupControl}>
                             <Picker
+                                enabled={!this.props.isSave}
                                 selectedValue={this.state.customerId}
                                 onValueChange={
                                     (itemValue, itemIndex) => this.setState({ customerId: itemValue, customerGroupId: null })
@@ -239,6 +241,7 @@ class NewQuocte extends React.Component {
                         <Text style={styles.label} >Tiêu đề</Text>
                         <View style={styles.groupControl}>
                             <TextInput
+                                editable={!this.props.isSave}
                                 disableFullscreenUI
                                 underlineColorAndroid={'transparent'}
                                 style={styles.textInput}
@@ -279,6 +282,7 @@ class NewQuocte extends React.Component {
 
                     {this.renderProductList()}
                     <TouchableOpacity
+                        disabled={this.props.isSave}
                         style={{ padding: 2, alignSelf: 'center', position: 'absolute', right: 5, bottom: 5 }}
                         onPress={this.onSelectProduct.bind(this)}
                     >
@@ -288,25 +292,29 @@ class NewQuocte extends React.Component {
                 <Footer>
                     <View style={styles.FooterGroupButton} >
                         <TouchableOpacity
-                            style={styles.Btn}
+                            disabled={this.props.isSave}
+                            style={[styles.Btn, (this.props.isSave) ? { backgroundColor: '#7f8c8d' } : { backgroundColor: '#16a085' }]}
                             onPress={this.onSave.bind(this)}
                         >
                             <Ionicons name="ios-checkmark-circle" size={25} color="#FFFFFF" />
                         </TouchableOpacity>
                         <TouchableOpacity
-                            style={styles.Btn}
+                            disabled={!this.props.isSave}
+                            style={[styles.Btn, (this.props.isSave) ? { backgroundColor: '#16a085' } : { backgroundColor: '#7f8c8d' }]}
                             onPress={() => Actions.pop()}
                         >
                             <Ionicons name="ios-print-outline" size={25} color="#FFFFFF" />
                         </TouchableOpacity>
                         <TouchableOpacity
-                            style={styles.Btn}
+                            disabled={!this.props.isSave}
+                            style={[styles.Btn, (this.props.isSave) ? { backgroundColor: '#16a085' } : { backgroundColor: '#7f8c8d' }]}
                             onPress={() => Actions.pop()}
                         >
                             <Ionicons name="ios-send-outline" size={25} color="#FFFFFF" />
                         </TouchableOpacity>
                         <TouchableOpacity
-                            style={styles.Btn}
+                            disabled={!this.props.isSave}
+                            style={[styles.Btn, (this.props.isSave) ? { backgroundColor: '#16a085' } : { backgroundColor: '#7f8c8d' }]}
                             onPress={() => Actions.pop()}
                         >
                             <Ionicons name="ios-mail-outline" size={25} color="#FFFFFF" />
@@ -417,7 +425,8 @@ const mapStateToProps = (state, ownProps) => {
         date,
         quocteDetails,
         loaded,
-        error
+        error,
+        isSave
     } = state.quoctes;
     const { selectedProducts } = state.products;
     const { categories } = state.categories;
@@ -436,6 +445,7 @@ const mapStateToProps = (state, ownProps) => {
         customerGroups,
         customers,
         selectedProducts,
+        isSave
     };
 };
 export default connect(mapStateToProps, {

@@ -19,7 +19,7 @@ QuocteRouter.post('/new', async (req, res) => {
 
 
     console.log('req.body = ', req.body);
-    date = moment(date, 'DD-MM-YYYY');
+    date = moment(date, 'DD-MM-YYYY').format('YYYY-MM-DD');
     console.log('date = ', date);
 
     const { isValid, errors } = NewQuocteValidator(req.body);
@@ -43,7 +43,7 @@ QuocteRouter.post('/new', async (req, res) => {
                             customerId: customerId,
                             customerGroupId: customerGroupId,
                             title: title,
-                            date: moment(date, 'DD-MM-YYYY').format('YYYY-MM-DDDD')
+                            date: date
                         });
                     //thêm các báo giá chi tiết
                     quocteDetails.forEach(async ({ id, unitId, salePrice }) => {
@@ -101,7 +101,7 @@ QuocteRouter.post('/new', async (req, res) => {
     }
 });
 QuocteRouter.post('/update', async (req, res) => {
-    const {
+    let {
         id,
         customerId,
         customerGroupId,
@@ -110,7 +110,7 @@ QuocteRouter.post('/update', async (req, res) => {
         quocteDetails
     } = req.body;
     console.log(req.body);
-
+    date = moment(date, 'DD-MM-YYYY').format('YYYY-MM-DD');
     const { isValid, errors } = NewQuocteValidator(req.body);
 
     if (isValid) {
@@ -133,21 +133,21 @@ QuocteRouter.post('/update', async (req, res) => {
 
                     await t('quoctes')
                         .returning('*')
-                        .whereRaw(`id = ${Id}`)
+                        .whereRaw(`id = ${id}`)
                         .update({
-                            customerGroupId: QuocteGroupId,
-                            customerId: customerId,
+                            customerGroupId: (customerGroupId = 'null') ? null : customerGroupId ,
+                            customerId: (customerId = 'null') ? null : customerId,
                             title: title || '',
-                            date: moment(date, 'DD-MM-YYYY').format('YYYY-MM-DD')
+                            date: date
                         });
                     quocteDetails.forEach(async (detail) => {
                         await t('quocteDetails')
                             .returning('*')
                             .whereRaw(`id = ${detail.detailId}`)
                             .update({
-                                productId: detail.productId,
+                                productId: detail.id,
                                 unitId: detail.unitId,
-                                quocteId: detail.quocteId,
+                                quocteId: id,
                                 salePrice: detail.salePrice
                             });
                     });

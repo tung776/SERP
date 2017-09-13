@@ -16,6 +16,7 @@ const INITIAL_STATE = {
     loading: false,
     loaded: false,
     error: '',
+    isSave: false,
     // uploading: false
 };
 
@@ -31,10 +32,11 @@ export default (state = INITIAL_STATE, action) => {
                 date: '',
                 title: '',
                 quocteDetails: [],
-                error: ''
+                error: '',
+                isSave: false
             };
         case QUOCTE_CHANGE:
-            return { ...state, [action.payload.prop]: action.payload.value };
+            return { ...state, [action.payload.prop]: action.payload.value, isSave: false };
         case QUOCTE_LIST_LOADED_SQLITE: {
             const list = [];
             action.payload.forEach((quocte) => {
@@ -72,7 +74,7 @@ export default (state = INITIAL_STATE, action) => {
                     productId: item.productId,
                     salePrice: item.salePrice,
                     name: item.name,
-                    key: item.detailId
+                    key: item.detailId,                    
                 });
             });
             return {
@@ -85,26 +87,23 @@ export default (state = INITIAL_STATE, action) => {
                 quocteDetails: quocteDetails,
                 error: '',
                 loading: false,
-                loaded: true
+                loaded: true,
+                isSave:false,
             };
         case QUOCTE_CHANGE_FAIL:
-            return { ...state, error: action.payload, loading: false };
+            return { ...state, error: action.payload, loading: false, isSave: false };
         case QUOCTE_CHANGE_SUCCESS:
             return {
                 ...state,
-                customerId: '',
-                customerGroupId: '',
-                date: '',
-                title: '',
-                quocteDetails: [],
-                error: '',
                 loading: false,
+                isSave: true,
             };
         case QUOCTE_DELETE_SUCCESS:
             return {
                 ...state,
                 error: '',
                 loading: false,
+                isSave: true,
             };
         default:
             return state;
