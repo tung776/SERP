@@ -36,7 +36,14 @@ class NewQuocte extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        this.setState({ quocteDetails: nextProps.selectedProducts });
+        console.log('this.state.quocteDetails = ', this.state.quocteDetails);
+        console.log('nextProps.selectedProducts = ', nextProps.selectedProducts);
+        nextProps.selectedProducts.forEach(detail => {
+            
+            this.state.quocteDetails.push({...detail, key: `${detail.id}-${detail.unitId}-${detail.quantity}`});
+            console.log('this.state.quocteDetails = ', this.state.quocteDetails);
+        })
+        this.setState({ quocteDetails: this.state.quocteDetails });
     }
 
     onSave() {
@@ -71,7 +78,7 @@ class NewQuocte extends React.Component {
             }
         });
         this.state.quocteDetails.forEach((item) => {
-            if (item.id === product.id) {
+            if (item.key === product.key) {
                 item.salePrice = Math.floor(oldPrice * newRate);
                 item.unitId = newUnitId;
             }
@@ -83,7 +90,7 @@ class NewQuocte extends React.Component {
     }
 
     onSelectProduct() {
-        Actions.productSelector({ ProductSelected: this.state.quocteDetails });
+        Actions.productSelector();
     }
 
     renderProductList() {
@@ -100,9 +107,14 @@ class NewQuocte extends React.Component {
                                 >
                                     <TouchableWithoutFeedback
 
-                                        key={item.key} onPress={() =>
-                                            this.props.toggleProductToSelectList(item)
-                                        }
+                                        key={item.key} onPress={() =>{
+                                            this.state.quocteDetails = this.state.quocteDetails.filter(detail=> {
+                                                if(item.key != detail.key) {
+                                                    return detail;
+                                                }
+                                            });
+                                            this.setState({ quocteDetails: this.state.quocteDetails });
+                                        }}
                                     >
                                         <View style={{ flex: 1, alignSelf: 'center' }}>
                                             <Ionicons name="ios-trash-outline" size={25} color="#d35400" />
