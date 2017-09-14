@@ -36,14 +36,16 @@ class NewQuocte extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log('this.state.quocteDetails = ', this.state.quocteDetails);
-        console.log('nextProps.selectedProducts = ', nextProps.selectedProducts);
-        nextProps.selectedProducts.forEach(detail => {
-            
-            this.state.quocteDetails.push({...detail, key: `${detail.id}-${detail.unitId}-${detail.quantity}`});
+        if (this.props.selectCompleted) {
             console.log('this.state.quocteDetails = ', this.state.quocteDetails);
-        })
-        this.setState({ quocteDetails: this.state.quocteDetails });
+            console.log('nextProps.selectedProducts = ', nextProps.selectedProducts);
+            nextProps.selectedProducts.forEach(detail => {
+
+                this.state.quocteDetails.push({ ...detail, key: `${detail.id}-${detail.unitId}-${detail.quantity}` });
+                console.log('this.state.quocteDetails = ', this.state.quocteDetails);
+            })
+            this.setState({ quocteDetails: this.state.quocteDetails });
+        }
     }
 
     onSave() {
@@ -107,9 +109,9 @@ class NewQuocte extends React.Component {
                                 >
                                     <TouchableWithoutFeedback
 
-                                        key={item.key} onPress={() =>{
-                                            this.state.quocteDetails = this.state.quocteDetails.filter(detail=> {
-                                                if(item.key != detail.key) {
+                                        key={item.key} onPress={() => {
+                                            this.state.quocteDetails = this.state.quocteDetails.filter(detail => {
+                                                if (item.key != detail.key) {
                                                     return detail;
                                                 }
                                             });
@@ -438,7 +440,8 @@ const mapStateToProps = (state, ownProps) => {
         quocteDetails,
         loaded,
         error,
-        isSave
+        isSave,
+        selectCompleted
     } = state.quoctes;
     const { selectedProducts } = state.products;
     const { categories } = state.categories;
@@ -457,7 +460,8 @@ const mapStateToProps = (state, ownProps) => {
         customerGroups,
         customers,
         selectedProducts,
-        isSave
+        isSave,
+        selectCompleted
     };
 };
 export default connect(mapStateToProps, {

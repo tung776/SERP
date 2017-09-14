@@ -25,7 +25,8 @@ const INITIAL_STATE = {
     products: [],
     units: [],
     typeCargoes: [],
-    selectedProducts: []
+    selectedProducts: [],
+    selectCompleted: false
     // uploading: false
 };
 
@@ -54,6 +55,7 @@ export default (state = INITIAL_STATE, action) => {
                 loading: false,
                 loaded: false,
                 error: '',
+                selectCompleted: false
             };
         }
         case RESET_SELECTED_PRODUCT: 
@@ -62,7 +64,7 @@ export default (state = INITIAL_STATE, action) => {
                 selectedProducts: []
             }
         case PRODUCT_PENDING:
-            return { ...state, loading: true, loaded: false, error: '' };
+            return { ...state, loading: true, loaded: false, error: '', selectCompleted: false };
 
         case PRODUCT_CHANGE:
             return { ...state, [action.payload.prop]: action.payload.value };
@@ -81,7 +83,8 @@ export default (state = INITIAL_STATE, action) => {
                 products: convertedData,
                 selectedProducts: newSelectedProductsList,
                 loaded: true,
-                loading: false
+                loading: false,
+                selectCompleted: false
             };
         }
         case PRODUCT_LOADED_SQLITE:

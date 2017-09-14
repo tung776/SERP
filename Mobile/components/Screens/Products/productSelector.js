@@ -11,7 +11,7 @@ import { connect } from 'react-redux';
 import stylesCommon from '../../../styles';
 import { Ionicons } from '@expo/vector-icons';
 import { loadProductListDataFromSqlite, loadProductByNameFromSqlite, 
-    toggleProductToSelectList, resetData
+    toggleProductToSelectList, resetData, ProductChange
 } from '../../../actions/productActions';
 import { Spinner } from '../../commons/Spinner';
 import SqlService from '../../../database/sqliteService';
@@ -31,6 +31,7 @@ class ProductSelector extends React.Component {
         //         this.props.toggleProductToSelectList(item);
         //     });
         // }
+        this.props.ProductChange({ selectCompleted: false })
         this.props.resetData(this.props.ProductSelected);
         this.onAddOrRemove = this.onAddOrRemove.bind(this);
     }
@@ -123,6 +124,13 @@ class ProductSelector extends React.Component {
                     {this.renderProductList()}
                 </View>
                 <Footer>
+                    <TouchableOpacity style={styles.addNewGroupBtn} onPress={() => { 
+                        this.props.ProductChange({ selectCompleted: true });
+                        Actions.pop(); 
+                    }}>
+                        <Ionicons name="ios-arrow-back" size={32} color="#FFFFFF" />
+                        <Text style={{ alignSelf: 'center', paddingLeft: 10, fontSize: 16, color: '#FFFFFF', fontWeight: '600' }}>Thêm Sản Phẩm</Text>
+                    </TouchableOpacity>
                     <TouchableOpacity style={styles.addNewGroupBtn} onPress={() => { Actions.ProductNew(); }}>
                         <Ionicons name="ios-add-circle" size={32} color="#FFFFFF" />
                         <Text style={{ alignSelf: 'center', paddingLeft: 10, fontSize: 16, color: '#FFFFFF', fontWeight: '600' }}>Thêm Sản Phẩm</Text>
@@ -209,6 +217,7 @@ const mapStateToProps = (state, ownProps) => {
 };
 export default connect(mapStateToProps, {
     resetData,
+    ProductChange,
     loadProductListDataFromSqlite,
     loadProductByNameFromSqlite,
     toggleProductToSelectList
