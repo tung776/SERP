@@ -10,7 +10,8 @@ import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import stylesCommon from '../../../styles';
 import { Ionicons } from '@expo/vector-icons';
-import { loadProductListDataFromSqlite, loadProductByNameFromSqlite, 
+import {
+    loadProductListDataFromSqlite, loadProductByNameFromSqlite,
     toggleProductToSelectList, resetData, ProductChange
 } from '../../../actions/productActions';
 import { Spinner } from '../../commons/Spinner';
@@ -22,7 +23,7 @@ class ProductSelector extends React.Component {
     }
     constructor(props) {
         super(props);
-        
+
     }
 
     componentWillMount() {
@@ -31,7 +32,6 @@ class ProductSelector extends React.Component {
         //         this.props.toggleProductToSelectList(item);
         //     });
         // }
-        this.props.ProductChange({ selectCompleted: false })
         this.props.resetData(this.props.ProductSelected);
         this.onAddOrRemove = this.onAddOrRemove.bind(this);
     }
@@ -55,7 +55,7 @@ class ProductSelector extends React.Component {
     }
 
     renderProductList() {
-        if ( this.props.products) {
+        if (this.props.products) {
             return (
                 <FlatList
                     style={styles.listProduct}
@@ -64,12 +64,12 @@ class ProductSelector extends React.Component {
                         if (item) {
                             return (
                                 <TouchableWithoutFeedback
-                                    key={item.key} onPress={() => 
+                                    key={item.key} onPress={() =>
                                         this.onAddOrRemove(item)
                                     }
                                 >
-                                    <View style={[styles.listItem, {backgroundColor: item.isSelected ? '#27ae60' : '#FFFFFF'}]}>
-                                        <Text style={[styles.itemTitle, {color: item.isSelected ? '#FFFFFF' : 'black'}]}>{item.name}</Text>
+                                    <View style={[styles.listItem, { backgroundColor: item.isSelected ? '#27ae60' : '#FFFFFF' }]}>
+                                        <Text style={[styles.itemTitle, { color: item.isSelected ? '#FFFFFF' : 'black' }]}>{item.name}</Text>
                                     </View>
                                 </TouchableWithoutFeedback>
                             )
@@ -112,7 +112,7 @@ class ProductSelector extends React.Component {
                                 placeholder="Tìm sản phẩm :"
                             />
                             <TouchableOpacity
-                                onPress={ this.onSearch.bind(this) }
+                                onPress={this.onSearch.bind(this)}
                             >
                                 <Ionicons name="ios-search" size={32} color="#16a085" />
                             </TouchableOpacity>
@@ -124,17 +124,20 @@ class ProductSelector extends React.Component {
                     {this.renderProductList()}
                 </View>
                 <Footer>
-                    <TouchableOpacity style={styles.addNewGroupBtn} onPress={() => { 
-                        this.props.ProductChange({ selectCompleted: true });
-                        Actions.pop(); 
-                    }}>
-                        <Ionicons name="ios-arrow-back" size={32} color="#FFFFFF" />
-                        <Text style={{ alignSelf: 'center', paddingLeft: 10, fontSize: 16, color: '#FFFFFF', fontWeight: '600' }}>Thêm Sản Phẩm</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.addNewGroupBtn} onPress={() => { Actions.ProductNew(); }}>
-                        <Ionicons name="ios-add-circle" size={32} color="#FFFFFF" />
-                        <Text style={{ alignSelf: 'center', paddingLeft: 10, fontSize: 16, color: '#FFFFFF', fontWeight: '600' }}>Thêm Sản Phẩm</Text>
-                    </TouchableOpacity>
+                    <View style={styles.FooterGroupButton} >
+                        <TouchableOpacity
+                            style={styles.Btn} onPress={() => {
+                                this.props.ProductChange({ prop: "selectCompleted", value: true });
+                                Actions.pop();
+                            }}>
+                            <Ionicons name="ios-arrow-back" size={32} color="#FFFFFF" />
+                            <Text style={{ alignSelf: 'center', paddingLeft: 10, fontSize: 16, color: '#FFFFFF', fontWeight: '600' }}></Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.Btn} onPress={() => { Actions.ProductNew(); }}>
+                            <Ionicons name="ios-add-circle" size={32} color="#FFFFFF" />
+                            <Text style={{ alignSelf: 'center', paddingLeft: 10, fontSize: 16, color: '#FFFFFF', fontWeight: '600' }}></Text>
+                        </TouchableOpacity>
+                    </View>
                 </Footer>
             </View>
         );
@@ -209,6 +212,23 @@ const styles = {
     errorStyle: {
         color: 'rgba(231, 76, 60,1.0)',
         fontSize: 18
+    },
+    FooterGroupButton: {
+        // flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    Btn: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#16a085',
+        paddingTop: 3,
+        paddingRight: 15,
+        paddingLeft: 15,
+        paddingBottom: 8,
+        borderRadius: 5,
+        marginLeft: 5,
     },
 };
 const mapStateToProps = (state, ownProps) => {

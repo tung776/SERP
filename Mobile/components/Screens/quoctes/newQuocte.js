@@ -36,13 +36,11 @@ class NewQuocte extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (this.props.selectCompleted) {
-            console.log('this.state.quocteDetails = ', this.state.quocteDetails);
-            console.log('nextProps.selectedProducts = ', nextProps.selectedProducts);
+        if (nextProps.selectCompleted) {
             nextProps.selectedProducts.forEach(detail => {
 
-                this.state.quocteDetails.push({ ...detail, key: `${detail.id}-${detail.unitId}-${detail.quantity}` });
-                console.log('this.state.quocteDetails = ', this.state.quocteDetails);
+                this.state.quocteDetails.push({ ...detail, key: `${detail.id}-${detail.unitId}-${detail.quantity}-${Math.random()*10}` });
+                
             })
             this.setState({ quocteDetails: this.state.quocteDetails });
         }
@@ -441,9 +439,8 @@ const mapStateToProps = (state, ownProps) => {
         loaded,
         error,
         isSave,
-        selectCompleted
     } = state.quoctes;
-    const { selectedProducts } = state.products;
+    const { selectedProducts, selectCompleted } = state.products;
     const { categories } = state.categories;
     const { customerGroups } = state.customerGroups;
     const { customers } = state.customers;

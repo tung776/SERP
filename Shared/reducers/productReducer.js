@@ -64,7 +64,7 @@ export default (state = INITIAL_STATE, action) => {
                 selectedProducts: []
             }
         case PRODUCT_PENDING:
-            return { ...state, loading: true, loaded: false, error: '', selectCompleted: false };
+            return { ...state, loading: true, loaded: false, error: '' };
 
         case PRODUCT_CHANGE:
             return { ...state, [action.payload.prop]: action.payload.value };
@@ -83,8 +83,7 @@ export default (state = INITIAL_STATE, action) => {
                 products: convertedData,
                 selectedProducts: newSelectedProductsList,
                 loaded: true,
-                loading: false,
-                selectCompleted: false
+                loading: false
             };
         }
         case PRODUCT_LOADED_SQLITE:
@@ -108,10 +107,10 @@ export default (state = INITIAL_STATE, action) => {
             return { ...state, units: action.payload };
         case LOAD_TYPE_CARGO_SUCCESS:
             return { ...state, typeCargoes: action.payload };
-        case ADD_PRODUCT:
 
         case PRODUCT_CHANGE_FAIL:
             return { ...state, error: action.payload, loading: false };
+
         case PRODUCT_CHANGE_SUCCESS:
             const {
                 Id,

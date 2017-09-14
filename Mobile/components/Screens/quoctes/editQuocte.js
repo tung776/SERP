@@ -23,7 +23,8 @@ class EditQuocte extends React.Component {
         date: '',
         title: '',
         quocteDetails: [],
-        editMode: false
+        editMode: false,
+        loaded: true
     }
     componentWillMount() {
         this.props.loadQuocteDataFromSqlite(this.props.quocte.id);
@@ -36,19 +37,27 @@ class EditQuocte extends React.Component {
         }
         if (!this.props.customerGroups || this.props.customerGroups.length == 0) {
             this.props.loadCustomerGroupListDataFromSqlite();
-        }
+        }        
     }
 
     componentWillReceiveProps(nextProps) {
         //Phương thức loadQuocteDataFromSqlite sẽ lấy dữ liệu trong bảng
         //sqlite, đồng thời phủ đầy mảng state.products.selectedProducts.
+        console.log('nextProps.selectedProducts = ', nextProps.selectedProducts);
+        if (nextProps.selectCompleted || this.state.loaded) {
+            nextProps.selectedProducts.forEach(detail => {
+
+                this.state.quocteDetails.push({ ...detail, key: `${detail.id}-${detail.unitId}-${detail.quantity}-${Math.random()*10}` });
+                
+            })
+            this.setState({ quocteDetails: this.state.quocteDetails, loaded: false });
+        }
         this.setState({ 
             id: nextProps.id,
             date: moment(nextProps.date, moment.ISO_8601).format('DD-MM-YYYY'),
             title: nextProps.title,
             customerId: nextProps.customerId,
             customerGroupId: nextProps.customerGroupId,
-            quocteDetails: nextProps.selectedProducts
         });
     }
 
@@ -90,16 +99,16 @@ class EditQuocte extends React.Component {
     }
 
     onSelectProduct() {
-        const selectedProducts = [];
-        this.state.quocteDetails.forEach((product) => {
-            const temp = {
-                ...product,
-                id: product.id,
-                key: product.id
-            };
-            selectedProducts.push(temp);
-        });
-        Actions.productSelector({ ProductSelected: selectedProducts });
+        // const selectedProducts = [];
+        // this.state.quocteDetails.forEach((product) => {
+        //     const temp = {
+        //         ...product,
+        //         id: product.id,
+        //         key: product.id
+        //     };
+        //     selectedProducts.push(temp);
+        // });
+        Actions.productSelector();
     }
 
     renderProductList() {
@@ -461,7 +470,7 @@ const mapStateToProps = (state, ownProps) => {
         error,
         isSave
     } = state.quoctes;
-    const { selectedProducts } = state.products;
+    const { selectedProducts, selectCompleted } = state.products;
     const { categories } = state.categories;
     const { customerGroups } = state.customerGroups;
     const { customers } = state.customers;
@@ -480,7 +489,8 @@ const mapStateToProps = (state, ownProps) => {
         customerGroups,
         customers,
         selectedProducts,
-        isSave
+        isSave,
+        selectCompleted
     };
 };
 export default connect(mapStateToProps, {
