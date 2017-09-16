@@ -109,7 +109,8 @@ QuocteRouter.post('/update', async (req, res) => {
         date,
         quocteDetails
     } = req.body;
-    console.log(req.body);
+    console.log('customerId = ', customerId);
+    console.log('date = ', date);
     date = moment(date, 'DD-MM-YYYY').format('YYYY-MM-DD');
     const { isValid, errors } = NewQuocteValidator(req.body);
 
@@ -130,27 +131,67 @@ QuocteRouter.post('/update', async (req, res) => {
                         .update({
                             id: 1, menus, userMenus, roles, categoryGroups, units, warehouses, products, customers, customerGroups, quoctes
                         });
-
+                    
                     await t('quoctes')
                         .returning('*')
                         .whereRaw(`id = ${id}`)
                         .update({
-                            customerGroupId: (customerGroupId = 'null') ? null : customerGroupId ,
-                            customerId: (customerId = 'null') ? null : customerId,
+                            customerGroupId: (customerGroupId == 'null') ? null : customerGroupId,
+                            customerId: (customerId == 'null') ? null : customerId,
                             title: title || '',
                             date: date
                         });
-                    quocteDetails.forEach(async (detail) => {
+                    
+                    //b1: xác định các bản ghi cần bị xóa. là những bản ghi có trong cơ sở dữ liệu
+                    //nhưng không có trong dữ liệu dc gửi tới server
+                    let detailBeRemoved = [];
+                    let detailBeUpdated = [];
+                    let detailBeInsersted = [];
+                    let detailInDatabase = await t('quocteDetails')
+                                            .whereRaw(`'quocteId' = ${id}`);
+                    detailInDatabase = detailInDatabase.rows;
+                    detailInDatabase.forEach(detailInData => {
+                        quocteDetails.forEach(detail => {
+                            console.log('detailInData = ', detailInData)
+                            console.log('detail = ', detail)
+                            if(detail.detailId == undefined || detail.detail == 'undefined') {
+                                detailBeInsersted.push(detail)
+                            } else {
+                                if (detail.detailId == detailInData.id) {
+                                    detailBeUpdated.push(detail);
+                                } else {
+                                    detailBeRemoved.push(detailInData);
+                                }
+                            }
+                        })
+                    })
+                    console.log('detailBeRemoved = ', detailBeRemoved);
+                    console.log('detailBeUpdated = ', detailBeUpdated);
+                    console.log('detailBeInsersted = ', detailBeInsersted);
+                    //b2: xác định các bản ghi dc điều chỉnh. là các bản ghi có trong cả csdl và dữ liệu dc gửi tới server
+                    //b3 xác định các bản ghi dc thêm vào. là những bản ghi ko có trong csdl nhưng có trong dữ liệu dc chuyển
+                    //tới server
+                    await Knex('quocteDetails')
+                        .transacting(t)
+                        .debug(true)
+                        .where({ quocteId: id })
+                        .del()
+                        .catch((error) => {
+                            console.error('delete quoctes error: ', error);
+                        });
+                    quocteDetails.forEach(async ({ productId, unitId, salePrice }) => {
+                        console.log('insert detail = ', { id, productId, unitId, salePrice })
                         await t('quocteDetails')
+                            .debug(true)
                             .returning('*')
-                            .whereRaw(`id = ${detail.detailId}`)
-                            .update({
-                                productId: detail.id,
-                                unitId: detail.unitId,
+                            .insert({
                                 quocteId: id,
-                                salePrice: detail.salePrice
+                                productId: productId,
+                                unitId: unitId,
+                                salePrice: salePrice
                             });
                     });
+
                 } catch (e) {
                     t.rollback();
                     console.log(e);
@@ -207,6 +248,14 @@ QuocteRouter.post('/delete', async (req, res) => {
                 .transacting(t)
                 .debug(true)
                 .where({ id: Id })
+                .del()
+                .catch((error) => {
+                    console.error('delete quoctes error: ', error);
+                });
+            await Knex('quocteDetails')
+                .transacting(t)
+                .debug(true)
+                .where({ quocteId: Id })
                 .del()
                 .catch((error) => {
                     console.error('delete quoctes error: ', error);

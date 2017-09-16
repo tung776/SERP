@@ -151,7 +151,7 @@ class NewQuocte extends React.Component {
                                                     value={`${formatNumber(item.salePrice)}`}
                                                     onChangeText={text => {
                                                         this.state.quocteDetails.forEach((product) => {
-                                                            if (product.id == item.id) {
+                                                            if (product.key == item.key) {
                                                                 product.salePrice = unformat(text)
                                                             }
                                                         });

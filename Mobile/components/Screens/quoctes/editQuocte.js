@@ -37,22 +37,33 @@ class EditQuocte extends React.Component {
         }
         if (!this.props.customerGroups || this.props.customerGroups.length == 0) {
             this.props.loadCustomerGroupListDataFromSqlite();
-        }        
+        }
     }
 
     componentWillReceiveProps(nextProps) {
         //Phương thức loadQuocteDataFromSqlite sẽ lấy dữ liệu trong bảng
         //sqlite, đồng thời phủ đầy mảng state.products.selectedProducts.
-        console.log('nextProps.selectedProducts = ', nextProps.selectedProducts);
-        if (nextProps.selectCompleted || this.state.loaded) {
+        if (nextProps.selectCompleted ) {
             nextProps.selectedProducts.forEach(detail => {
-
-                this.state.quocteDetails.push({ ...detail, key: `${detail.id}-${detail.unitId}-${detail.quantity}-${Math.random()*10}` });
-                
+                this.state.quocteDetails.push({ 
+                    ...detail, 
+                    productId: detail.id,
+                    key: `${detail.id}-${detail.unitId}-${detail.quantity}-${Math.random() * 10}` 
+                });
+            })
+            this.setState({ quocteDetails: this.state.quocteDetails, loaded: false });
+        } 
+        if (this.state.quocteDetails.length === 0) {
+            nextProps.quocteDetails.forEach(detail => {
+                this.state.quocteDetails.push({ 
+                    ...detail, 
+                    key: `${detail.id}-${detail.unitId}-${detail.quantity}-${Math.random() * 10}` 
+                });
             })
             this.setState({ quocteDetails: this.state.quocteDetails, loaded: false });
         }
-        this.setState({ 
+        console.log('this.state.quocteDetails = ', this.state.quocteDetails);
+        this.setState({
             id: nextProps.id,
             date: moment(nextProps.date, moment.ISO_8601).format('DD-MM-YYYY'),
             title: nextProps.title,
@@ -87,7 +98,7 @@ class EditQuocte extends React.Component {
             }
         });
         this.state.quocteDetails.forEach((item) => {
-            if (item.id === product.id) {
+            if (item.key === product.key) {
                 item.salePrice = Math.floor(oldPrice * newRate);
                 item.unitId = newUnitId;
             }
@@ -125,9 +136,14 @@ class EditQuocte extends React.Component {
                                 >
                                     <TouchableWithoutFeedback
                                         disabled={!this.state.editMode}
-                                        key={item.key} onPress={() =>
-                                            this.props.toggleProductToSelectList(item)
-                                        }
+                                        key={item.key} onPress={() => {
+                                            this.state.quocteDetails = this.state.quocteDetails.filter(detail => {
+                                                if (item.key != detail.key) {
+                                                    return detail;
+                                                }
+                                            });
+                                            this.setState({ quocteDetails: this.state.quocteDetails });
+                                        }}
                                     >
                                         <View style={{ flex: 1, alignSelf: 'center' }}>
                                             <Ionicons name="ios-trash-outline" size={25} color="#d35400" />
@@ -166,7 +182,7 @@ class EditQuocte extends React.Component {
                                                     value={`${formatNumber(item.salePrice)}`}
                                                     onChangeText={text => {
                                                         this.state.quocteDetails.forEach((product) => {
-                                                            if (product.id == item.id) {
+                                                            if (product.key == item.key) {
                                                                 product.salePrice = unformat(text);
                                                             }
                                                         });
