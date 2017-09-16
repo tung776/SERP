@@ -44,7 +44,7 @@ const stringConvert = ({
     });
 
 ProductRouter.post('/new', async (req, res) => {
-    debugger;
+
     let {
         CategoryId,
         UnitId,
@@ -58,20 +58,6 @@ ProductRouter.post('/new', async (req, res) => {
         IsAvaiable
     } = stringConvert(req.body);
 
-
-    console.log({
-        CategoryId,
-        UnitId,
-        TypeCargoId,
-        Name,
-        Description,
-        IsPublic,
-        PurchasePrice,
-        SalePrice,
-        MinQuantity,
-        IsAvaiable
-    });
-    debugger;
     const { isValid, errors } = ProductFormValidator({
         CategoryId,
         UnitId,
@@ -84,17 +70,15 @@ ProductRouter.post('/new', async (req, res) => {
         MinQuantity,
         IsAvaiable
     });
-    console.log('isValid = ', isValid);
-    console.log('errors = ', errors);
     if (isValid) {
         let newDataversion;
         let data;
         try {
             Knex.transaction(async (t) => {
                 try {
-                    debugger;
+ 
                     const dataVersion = await Knex('dataVersions').where('id', 1);
-                    debugger;
+
                     let { menus, userMenus, roles, categories,
                         units, warehouses, products, customers,
                         customerGroups } = dataVersion[0];
@@ -115,7 +99,6 @@ ProductRouter.post('/new', async (req, res) => {
                             customers,
                             customerGroups
                         });
-                    debugger;
                     data = await t('products')
                         .returning('*')
                         .insert({
@@ -130,7 +113,6 @@ ProductRouter.post('/new', async (req, res) => {
                             minQuantity: MinQuantity,
                             isAvaiable: IsAvaiable
                         });
-                    debugger;
                 } catch (e) {
                     t.rollback();
                     console.log(e);
@@ -173,7 +155,6 @@ ProductRouter.post('/update', async (req, res) => {
         IsAvaiable
     } = req.body;
 
-    debugger;
     const { isValid, errors } = ProductFormValidator({
         CategoryId,
         UnitId,
@@ -194,7 +175,6 @@ ProductRouter.post('/update', async (req, res) => {
             Knex.transaction(async (t) => {
                 try {
                     const dataVersion = await Knex('dataVersions').where('id', 1);
-                    debugger;
                     let { menus, userMenus, roles,
                         categories, units, warehouses, products,
                         customers, customerGroups } = dataVersion[0];
@@ -215,10 +195,7 @@ ProductRouter.post('/update', async (req, res) => {
                             products,
                             customers,
                             customerGroups
-                        });
-                    debugger;
-                    // const oldProduct = await t('products').where('id', Id);
-                    debugger;                    
+                        });                  
                    
                         data = await t('products')
                             .returning('*')
@@ -234,9 +211,7 @@ ProductRouter.post('/update', async (req, res) => {
                                 salePrice: SalePrice,
                                 minQuantity: MinQuantity,
                                 isAvaiable: IsAvaiable
-                            });
-                    
-                    debugger;
+                            });                    
                     
                 } catch (e) {
                     t.rollback();
@@ -265,14 +240,11 @@ ProductRouter.post('/update', async (req, res) => {
 });
 
 ProductRouter.post('/delete', async (req, res) => {
-    debugger;
     const { Id } = req.body;
     let newDataversion;
-    debugger;
     Knex.transaction(async (t) => {
         try {
             const dataVersion = await Knex('dataVersions').where('id', 1);
-            debugger;
             let { menus, userMenus, roles, categories,
                 units, warehouses, products, customers,
                 customerGroups } = dataVersion[0];
@@ -295,14 +267,12 @@ ProductRouter.post('/delete', async (req, res) => {
                 .catch((error) => {
                     console.error(error);
                 });
-            debugger;
             const oldProduct = await Knex('products')
                 .debug(true)
                 .where({ id: Id })
                 .catch((error) => {
                     console.error('oldProduct error ', error);
                 });
-            debugger;
             await Knex('products')
                 .transacting(t)
                 .debug(true)
