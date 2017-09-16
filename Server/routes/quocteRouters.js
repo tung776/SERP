@@ -109,10 +109,37 @@ QuocteRouter.post('/update', async (req, res) => {
         date,
         quocteDetails
     } = req.body;
-    console.log('customerId = ', customerId);
-    console.log('date = ', date);
-    date = moment(date, 'DD-MM-YYYY').format('YYYY-MM-DD');
-    const { isValid, errors } = NewQuocteValidator(req.body);
+    //b1: xác định các bản ghi cần bị xóa. là những bản ghi có trong cơ sở dữ liệu
+    //nhưng không có trong dữ liệu dc gửi tới server
+    let detailBeRemoved = [];
+    let detailBeUpdated = [];
+    let detailBeInsersted = [];
+    let detailInDatabase = await Knex('quocteDetails')
+        .whereRaw(`"quocteId" = ${id}`);
+    detailInDatabase = detailInDatabase;
+    detailInDatabase.forEach(detailInData => {
+        quocteDetails.forEach(detail => {
+            if (detail.detailId == undefined || detail.detail == 'undefined') {
+                detailBeInsersted = detailBeInsersted.filter(item => {
+                    if(item.key != detail.key) return item;
+                });
+                detailBeInsersted.push(detail);
+            } else {
+                if (detail.detailId == detailInData.id) {
+                    detailBeUpdated.push(detail);
+                } else {
+                    detailBeRemoved.push(detailInData);
+                }
+            }
+        })
+    })
+    console.log('detailBeRemoved = ', detailBeRemoved);
+    console.log('detailBeUpdated = ', detailBeUpdated);
+    console.log('detailBeInsersted = ', detailBeInsersted);
+    return
+    //b2: xác định các bản ghi dc điều chỉnh. là các bản ghi có trong cả csdl và dữ liệu dc gửi tới server
+    //b3 xác định các bản ghi dc thêm vào. là những bản ghi ko có trong csdl nhưng có trong dữ liệu dc chuyển
+    //tới server
 
     if (isValid) {
         let newDataversion;
@@ -131,7 +158,7 @@ QuocteRouter.post('/update', async (req, res) => {
                         .update({
                             id: 1, menus, userMenus, roles, categoryGroups, units, warehouses, products, customers, customerGroups, quoctes
                         });
-                    
+
                     await t('quoctes')
                         .returning('*')
                         .whereRaw(`id = ${id}`)
@@ -141,36 +168,8 @@ QuocteRouter.post('/update', async (req, res) => {
                             title: title || '',
                             date: date
                         });
-                    
-                    //b1: xác định các bản ghi cần bị xóa. là những bản ghi có trong cơ sở dữ liệu
-                    //nhưng không có trong dữ liệu dc gửi tới server
-                    let detailBeRemoved = [];
-                    let detailBeUpdated = [];
-                    let detailBeInsersted = [];
-                    let detailInDatabase = await t('quocteDetails')
-                                            .whereRaw(`'quocteId' = ${id}`);
-                    detailInDatabase = detailInDatabase.rows;
-                    detailInDatabase.forEach(detailInData => {
-                        quocteDetails.forEach(detail => {
-                            console.log('detailInData = ', detailInData)
-                            console.log('detail = ', detail)
-                            if(detail.detailId == undefined || detail.detail == 'undefined') {
-                                detailBeInsersted.push(detail)
-                            } else {
-                                if (detail.detailId == detailInData.id) {
-                                    detailBeUpdated.push(detail);
-                                } else {
-                                    detailBeRemoved.push(detailInData);
-                                }
-                            }
-                        })
-                    })
-                    console.log('detailBeRemoved = ', detailBeRemoved);
-                    console.log('detailBeUpdated = ', detailBeUpdated);
-                    console.log('detailBeInsersted = ', detailBeInsersted);
-                    //b2: xác định các bản ghi dc điều chỉnh. là các bản ghi có trong cả csdl và dữ liệu dc gửi tới server
-                    //b3 xác định các bản ghi dc thêm vào. là những bản ghi ko có trong csdl nhưng có trong dữ liệu dc chuyển
-                    //tới server
+
+
                     await Knex('quocteDetails')
                         .transacting(t)
                         .debug(true)
