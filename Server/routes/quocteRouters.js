@@ -120,25 +120,39 @@ QuocteRouter.post('/update', async (req, res) => {
     let detailInDatabase = await Knex('quocteDetails')
         .whereRaw(`"quocteId" = ${id}`);
 
+    
+
     detailInDatabase.forEach(detailInData => {
+        let isRemove = true;
         quocteDetails.forEach(detail => {
             if (detail.detailId == undefined || detail.detailId == 'undefined') {
                 detailBeInsersted = detailBeInsersted.filter(item => {
                     if (item.key != detail.key) return item;
                 });
                 detailBeInsersted.push(detail);
+                isRemove = false;
             } else {
                 if (detail.detailId == detailInData.id) {
                     detailBeUpdated.push(detail);
+                    isRemove = false;
                 } else {
-                    detailBeRemoved.push(detailInData);
+                    isRemove = true;
+                    // detailBeRemoved.push(detailInData);
                 }
             }
+            
         })
+        if(isRemove) {
+            detailBeRemoved.push(detailInData);
+        }
     });
+    console.log('===================================================');
     console.log('detailBeRemoved = ', detailBeRemoved);
+    console.log('===================================================');
     console.log('detailBeUpdated = ', detailBeUpdated);
+    console.log('===================================================');
     console.log('detailBeInsersted = ', detailBeInsersted);
+    console.log('===================================================');
 
     return;
 
