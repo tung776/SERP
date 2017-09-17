@@ -112,6 +112,36 @@ QuocteRouter.post('/update', async (req, res) => {
 
     const { isValid, errors } = NewQuocteValidator(req.body);
 
+    //b1: xác định các bản ghi cần bị xóa. là những bản ghi có trong cơ sở dữ liệu
+    //nhưng không có trong dữ liệu dc gửi tới server
+    let detailBeRemoved = [];
+    let detailBeUpdated = [];
+    let detailBeInsersted = [];
+    let detailInDatabase = await Knex('quocteDetails')
+        .whereRaw(`"quocteId" = ${id}`);
+
+    detailInDatabase.forEach(detailInData => {
+        quocteDetails.forEach(detail => {
+            if (detail.detailId == undefined || detail.detailId == 'undefined') {
+                detailBeInsersted = detailBeInsersted.filter(item => {
+                    if (item.key != detail.key) return item;
+                });
+                detailBeInsersted.push(detail);
+            } else {
+                if (detail.detailId == detailInData.id) {
+                    detailBeUpdated.push(detail);
+                } else {
+                    detailBeRemoved.push(detailInData);
+                }
+            }
+        })
+    });
+    console.log('detailBeRemoved = ', detailBeRemoved);
+    console.log('detailBeUpdated = ', detailBeUpdated);
+    console.log('detailBeInsersted = ', detailBeInsersted);
+
+    return;
+
     if (isValid) {
         let newDataversion;
         let data;
@@ -123,89 +153,62 @@ QuocteRouter.post('/update', async (req, res) => {
                     let { menus, userMenus, roles, categoryGroups, units, warehouses, products, customers, customerGroups, quoctes } = dataVersion[0];
                     quoctes++;
 
-                    newDataversion = await t('dataVersions')
+                    newDataversion = await Knex('dataVersions')
+                        .transacting(t)
                         .returning('*')
-                        .whereRaw('id = 1')
+                        .whereRaw('"id" = 1')
                         .update({
                             id: 1, menus, userMenus, roles, categoryGroups, units, warehouses, products, customers, customerGroups, quoctes
                         });
 
-                    await t('quoctes')
+                    //b2: xác định các bản ghi dc điều chỉnh. là các bản ghi có trong cả csdl và dữ liệu dc gửi tới server
+                    //b3 xác định các bản ghi dc thêm vào. là những bản ghi ko có trong csdl nhưng có trong dữ liệu dc chuyển
+                    //tới server
+                    detailBeInsersted.forEach(async ({ productId, unitId, salePrice }) => {
+                        console.log('insert detail = ', { id, productId, unitId, salePrice })
+                        await Knex('quocteDetails')
+                            .transacting(t)
+                            .debug(true)
+                            .insert({
+                                quocteId: id,
+                                productId: productId,
+                                unitId: unitId,
+                                salePrice: salePrice
+                            });
+                    });
+
+                    detailBeRemoved.forEach(async detail => {
+                        console.log('delete item = ', detail);
+                        await Knex('quocteDetails')
+                            .transacting(t)
+                            .debug(true)
+                            .whereRaw(`"id" = ${detail.id}`)
+                            .del();
+                    });
+
+                    detailBeUpdated.forEach(async detail => {
+                        await Knex('quocteDetails')
+                            .transacting(t)
+                            .debug(true)
+                            .whereRaw(`id = ${detail.detailId}`)
+                            .update({
+                                quocteId: id,
+                                productId: detail.productId,
+                                unitId: detail.unitId,
+                                salePrice: detail.salePrice
+                            });
+                    });
+
+                    await Knex('quoctes')
+                        .transacting(t)
                         .returning('*')
-                        .whereRaw(`id = ${id}`)
+                        .whereRaw(`"id" = ${id}`)
                         .update({
                             customerGroupId: (customerGroupId == 'null') ? null : customerGroupId,
                             customerId: (customerId == 'null') ? null : customerId,
                             title: title || '',
                             date: date
                         });
-                    
-                    //b1: xác định các bản ghi cần bị xóa. là những bản ghi có trong cơ sở dữ liệu
-                    //nhưng không có trong dữ liệu dc gửi tới server
-                    let detailBeRemoved = [];
-                    let detailBeUpdated = [];
-                    let detailBeInsersted = [];
-                    let detailInDatabase = await Knex('quocteDetails')
-                        .whereRaw(`"quocteId" = ${id}`);
-
-                    detailInDatabase.forEach(detailInData => {
-                        quocteDetails.forEach(detail => {
-                            if (detail.detailId == undefined || detail.detail == 'undefined') {
-                                detailBeInsersted = detailBeInsersted.filter(item => {
-                                    if (item.key != detail.key) return item;
-                                });
-                                detailBeInsersted.push(detail);
-                            } else {
-                                if (detail.detailId == detailInData.id) {
-                                    detailBeUpdated.push(detail);
-                                } else {
-                                    detailBeRemoved.push(detailInData);
-                                }
-                            }
-                        })
-                    });
-                    console.log('detailBeRemoved = ', detailBeRemoved);
-                    console.log('detailBeUpdated = ', detailBeUpdated);
-                    console.log('detailBeInsersted = ', detailBeInsersted);
-
-                    //b2: xác định các bản ghi dc điều chỉnh. là các bản ghi có trong cả csdl và dữ liệu dc gửi tới server
-                    //b3 xác định các bản ghi dc thêm vào. là những bản ghi ko có trong csdl nhưng có trong dữ liệu dc chuyển
-                    //tới server
-                    // detailBeInsersted.forEach(async ({ productId, unitId, salePrice }) => {
-                    //     console.log('insert detail = ', { id, productId, unitId, salePrice })
-                    //     await t('quocteDetails')
-                    //         .returning('*')
-                    //         .insert({
-                    //             quocteId: id,
-                    //             productId: productId,
-                    //             unitId: unitId,
-                    //             salePrice: salePrice
-                    //         });
-                    // });
-
-                    detailBeRemoved.forEach(async detail => {
-                        console.log('delete item = ', detail);
-                        await Knex("quocteDetails")
-                        .transacting(t)
-                        .debug(true)
-                        .where("id", 10)
-                        .del()
-                        .catch((error) => {
-                            console.error('delete quoctes error: ', error);
-                        });
-                    });
-
-                    // detailBeUpdated.forEach(async detail => {
-                    //     await t('quocteDetails')
-                    //     .returning('*')
-                    //     .whereRaw(`id = ${detail.detailId}`)
-                    //     .update({
-                    //         quocteId: id,
-                    //         productId: detail.productId,
-                    //         unitId: detail.unitId,
-                    //         salePrice: detail.salePrice
-                    //     });
-                    // })
 
                 } catch (e) {
                     t.rollback();
