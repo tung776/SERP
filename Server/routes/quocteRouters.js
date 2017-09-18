@@ -130,7 +130,6 @@ QuocteRouter.post('/update', async (req, res) => {
                     if (item.key != detail.key) return item;
                 });
                 detailBeInsersted.push(detail);
-                isRemove = false;
             } else {
                 if (detail.detailId == detailInData.id) {
                     detailBeUpdated.push(detail);

@@ -24,7 +24,7 @@ class EditQuocte extends React.Component {
         title: '',
         quocteDetails: [],
         editMode: false,
-        loaded: true
+        loaded: false
     }
     componentWillMount() {
         this.props.loadQuocteDataFromSqlite(this.props.quocte.id);
@@ -51,16 +51,16 @@ class EditQuocte extends React.Component {
                     key: `${detail.id}-${detail.unitId}-${detail.quantity}-${Math.random() * 10}` 
                 });
             })
-            this.setState({ quocteDetails: this.state.quocteDetails, loaded: false });
+            this.setState({ quocteDetails: this.state.quocteDetails });
         } 
-        if (this.state.quocteDetails.length === 0) {
+        if (this.state.quocteDetails.length === 0 && this.state.loaded === false) {
             nextProps.quocteDetails.forEach(detail => {
                 this.state.quocteDetails.push({ 
                     ...detail, 
                     key: `${detail.id}-${detail.unitId}-${detail.quantity}-${Math.random() * 10}` 
                 });
             })
-            this.setState({ quocteDetails: this.state.quocteDetails, loaded: false });
+            this.setState({ quocteDetails: this.state.quocteDetails, loaded: true });
         }
         console.log('this.state.quocteDetails = ', this.state.quocteDetails);
         this.setState({
