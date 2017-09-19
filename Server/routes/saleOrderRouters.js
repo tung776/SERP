@@ -257,7 +257,6 @@ SaleOrderRouter.post('/update', async (req, res) => {
         newDebt, oldDebt, saleOrderDetails,
     });
 
-    console.log('saleOrderDetails = ', saleOrderDetails);
 
     //b1: xác định các bản ghi cần bị xóa. là những bản ghi có trong cơ sở dữ liệu
     //nhưng không có trong dữ liệu dc gửi tới server
@@ -298,7 +297,6 @@ SaleOrderRouter.post('/update', async (req, res) => {
     console.log('detailBeInsersted = ', detailBeInsersted);
     console.log('===================================================');
 
-    return;
     if (isValid) {
         let newDataversion;
         let data;
@@ -384,8 +382,8 @@ SaleOrderRouter.post('/update', async (req, res) => {
                             date: moment(date, 'DD-MM-YYYY').format('YYYY-MM-DD')
                         });
 
-                        detailBeInsersted.forEach(async ({ detail }) => {
-                            console.log('insert detail = ', detail)
+                        detailBeInsersted.forEach(async ( detail ) => {
+                            console.log('detailBeInsersted item: ', detail);
                             await Knex('saleOderDetails')
                                 .transacting(t)
                                 .debug(true)
@@ -395,33 +393,34 @@ SaleOrderRouter.post('/update', async (req, res) => {
                                     unitId: detail.unitId,
                                     quantity: detail.quantity,
                                     salePrice: detail.salePrice,
-                                    total: detail.total                                    
+                                    total: detail.salePrice * detail.quantity                                  
                                 });
                         });
     
-                        detailBeRemoved.forEach(async detail => {
-                            console.log('delete item = ', detail);
-                            await Knex('saleOderDetails')
-                                .transacting(t)
-                                .debug(true)
-                                .whereRaw(`"id" = ${detail.id}`)
-                                .del();
-                        });
+                        // detailBeRemoved.forEach(async detail => {
+                        //     console.log('delete item = ', detail);
+                        //     await Knex('saleOderDetails')
+                        //         .transacting(t)
+                        //         .debug(true)
+                        //         .whereRaw(`"id" = ${detail.id}`)
+                        //         .del();
+                        // });
     
-                        detailBeUpdated.forEach(async detail => {
-                            await Knex('saleOderDetails')
-                                .transacting(t)
-                                .debug(true)
-                                .whereRaw(`id = ${detail.detailId}`)
-                                .update({
-                                    saleOrderId: id,
-                                    productId: detail.id,
-                                    unitId: detail.unitId,
-                                    quantity: detail.quantity,
-                                    salePrice: detail.salePrice,
-                                    total: detail.quantity * detail.salePrice
-                                });
-                        });
+                        // detailBeUpdated.forEach(async detail => {
+                        //     console.log('detailBeUpdated item: ', detail);
+                        //     await Knex('saleOderDetails')
+                        //         .transacting(t)
+                        //         .debug(true)
+                        //         .whereRaw(`id = ${detail.detailId}`)
+                        //         .update({
+                        //             saleOrderId: id,
+                        //             productId: detail.id,
+                        //             unitId: detail.unitId,
+                        //             quantity: detail.quantity,
+                        //             salePrice: detail.salePrice,
+                        //             total: detail.quantity * detail.salePrice
+                        //         });
+                        // });
 
                     // saleOrderDetails.forEach(async (detail) => {
                     //     await t('saleOderDetails')

@@ -138,20 +138,11 @@ QuocteRouter.post('/update', async (req, res) => {
                 }
             }
             
-        })
-        if(isRemove) {
+        });
+        if (isRemove) {
             detailBeRemoved.push(detailInData);
         }
     });
-    // console.log('===================================================');
-    // console.log('detailBeRemoved = ', detailBeRemoved);
-    // console.log('===================================================');
-    // console.log('detailBeUpdated = ', detailBeUpdated);
-    // console.log('===================================================');
-    // console.log('detailBeInsersted = ', detailBeInsersted);
-    // console.log('===================================================');
-
-    return;
 
     if (isValid) {
         let newDataversion;
@@ -176,7 +167,6 @@ QuocteRouter.post('/update', async (req, res) => {
                     //b3 xác định các bản ghi dc thêm vào. là những bản ghi ko có trong csdl nhưng có trong dữ liệu dc chuyển
                     //tới server
                     detailBeInsersted.forEach(async ({ productId, unitId, salePrice }) => {
-                        console.log('insert detail = ', { id, productId, unitId, salePrice })
                         await Knex('quocteDetails')
                             .transacting(t)
                             .debug(true)
@@ -189,7 +179,6 @@ QuocteRouter.post('/update', async (req, res) => {
                     });
 
                     detailBeRemoved.forEach(async detail => {
-                        console.log('delete item = ', detail);
                         await Knex('quocteDetails')
                             .transacting(t)
                             .debug(true)
@@ -220,7 +209,6 @@ QuocteRouter.post('/update', async (req, res) => {
                             title: title || '',
                             date: date
                         });
-
                 } catch (e) {
                     t.rollback();
                     console.log(e);
