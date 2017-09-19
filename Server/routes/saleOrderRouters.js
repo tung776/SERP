@@ -384,19 +384,58 @@ SaleOrderRouter.post('/update', async (req, res) => {
                             date: moment(date, 'DD-MM-YYYY').format('YYYY-MM-DD')
                         });
 
-                    saleOrderDetails.forEach(async (detail) => {
-                        await t('saleOderDetails')
-                            .returning('*')
-                            .whereRaw(`id = ${detail.detailId}`)
-                            .update({
-                                saleOrderId: id,
-                                productId: detail.id,
-                                unitId: detail.unitId,
-                                quantity: detail.quantity,
-                                salePrice: detail.salePrice,
-                                total: detail.quantity * detail.salePrice
-                            });
-                    });
+                        detailBeInsersted.forEach(async ({ detail }) => {
+                            console.log('insert detail = ', detail)
+                            await Knex('saleOderDetails')
+                                .transacting(t)
+                                .debug(true)
+                                .insert({
+                                    saleOrderId: id,
+                                    productId: detail.id,
+                                    unitId: detail.unitId,
+                                    quantity: detail.quantity,
+                                    salePrice: detail.salePrice,
+                                    total: detail.total                                    
+                                });
+                        });
+    
+                        detailBeRemoved.forEach(async detail => {
+                            console.log('delete item = ', detail);
+                            await Knex('saleOderDetails')
+                                .transacting(t)
+                                .debug(true)
+                                .whereRaw(`"id" = ${detail.id}`)
+                                .del();
+                        });
+    
+                        detailBeUpdated.forEach(async detail => {
+                            await Knex('saleOderDetails')
+                                .transacting(t)
+                                .debug(true)
+                                .whereRaw(`id = ${detail.detailId}`)
+                                .update({
+                                    saleOrderId: id,
+                                    productId: detail.id,
+                                    unitId: detail.unitId,
+                                    quantity: detail.quantity,
+                                    salePrice: detail.salePrice,
+                                    total: detail.quantity * detail.salePrice
+                                });
+                        });
+
+                    // saleOrderDetails.forEach(async (detail) => {
+                    //     await t('saleOderDetails')
+                    //         .returning('*')
+                    //         .whereRaw(`id = ${detail.detailId}`)
+                    //         .update({
+                    //             saleOrderId: id,
+                    //             productId: detail.id,
+                    //             unitId: detail.unitId,
+                    //             quantity: detail.quantity,
+                    //             salePrice: detail.salePrice,
+                    //             total: detail.quantity * detail.salePrice
+                    //         });
+                    // });
 
                     // data = await t('debtCustomers')
                     //     .returning('*')
