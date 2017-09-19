@@ -60,6 +60,7 @@ class EditSaleOrder extends React.Component {
         tax: [],
         editMode: false,
         fontPath: null,
+        loaded: false
     }
     async componentWillMount() {
         this.props.loadSaleOrderById(this.props.saleOrder.id);
@@ -83,8 +84,10 @@ class EditSaleOrder extends React.Component {
         let saleOrderDetails = [];
         if (nextProps.selectedProducts && nextProps.selectedProducts.length > 0) {
             saleOrderDetails = nextProps.selectedProducts;
-        } else {
+        } 
+        if (this.state.saleOrderDetails.length === 0 && this.state.loaded === false) {
             saleOrderDetails = nextProps.saleOrderDetails;
+            this.setState({ loaded: true });
         }
         let taxRate = 0;
         nextProps.tax.forEach((tax) => {

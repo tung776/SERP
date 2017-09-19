@@ -257,6 +257,48 @@ SaleOrderRouter.post('/update', async (req, res) => {
         newDebt, oldDebt, saleOrderDetails,
     });
 
+    console.log('saleOrderDetails = ', saleOrderDetails);
+
+    //b1: xác định các bản ghi cần bị xóa. là những bản ghi có trong cơ sở dữ liệu
+    //nhưng không có trong dữ liệu dc gửi tới server
+    let detailBeRemoved = [];
+    let detailBeUpdated = [];
+    let detailBeInsersted = [];
+    let detailInDatabase = await Knex('saleOderDetails')
+        .whereRaw(`"saleOrderId" = ${id}`); 
+
+    detailInDatabase.forEach(detailInData => {
+        let isRemove = true;
+        saleOrderDetails.forEach(detail => {
+            if (detail.detailId == undefined || detail.detailId == 'undefined') {
+                detailBeInsersted = detailBeInsersted.filter(item => {
+                    if (item.key != detail.key) return item;
+                });
+                detailBeInsersted.push(detail);
+            } else {
+                if (detail.detailId == detailInData.id) {
+                    detailBeUpdated.push(detail);
+                    isRemove = false;
+                } else {
+                    isRemove = true;
+                    // detailBeRemoved.push(detailInData);
+                }
+            }
+
+        })
+        if (isRemove) {
+            detailBeRemoved.push(detailInData);
+        }
+    });
+    console.log('===================================================');
+    console.log('detailBeRemoved = ', detailBeRemoved);
+    console.log('===================================================');
+    console.log('detailBeUpdated = ', detailBeUpdated);
+    console.log('===================================================');
+    console.log('detailBeInsersted = ', detailBeInsersted);
+    console.log('===================================================');
+
+    return;
     if (isValid) {
         let newDataversion;
         let data;
