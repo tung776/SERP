@@ -264,7 +264,7 @@ SaleOrderRouter.post('/update', async (req, res) => {
     let detailBeUpdated = [];
     let detailBeInsersted = [];
     let detailInDatabase = await Knex('saleOderDetails')
-        .whereRaw(`"saleOrderId" = ${id}`); 
+        .whereRaw(`"saleOrderId" = ${id}`);
 
     detailInDatabase.forEach(detailInData => {
         let isRemove = true;
@@ -296,35 +296,41 @@ SaleOrderRouter.post('/update', async (req, res) => {
     console.log('===================================================');
     console.log('detailBeInsersted = ', detailBeInsersted);
     console.log('===================================================');
+    return;
+    const saleOrder = await Knex('saleOrders')
+    .where({ id: id });
+
+    const customerDebtBeChanged = await Knex('debtCustomers')
+        .orderBy('id', 'asc')
+        .whereRaw(`id > ${saleOrder[0].debtCustomerId} AND "customerId" = ${saleOrder[0].customerId}`);   
+    
+    const customerDebt = await Knex('debtCustomers')
+        .where({ id: debtCustomerId });
+
+    const dataVersion = await Knex('dataVersions').where('id', 1);
 
     if (isValid) {
-        let newDataversion;
         let data;
+        let newDataversion;
         try {
             Knex.transaction(async (t) => {
                 try {
-                    const dataVersion = await Knex('dataVersions').where('id', 1);
+                    
 
-                    let { debtCustomers } = dataVersion[0];
-
+                    let { debtCustomers } = dataVersion[0];                    
                     debtCustomers++;
-
                     newDataversion = await t('dataVersions')
-                        .returning('*')
-                        .whereRaw('id = 1')
-                        .update({
-                            id: 1,
-                            debtCustomers
-                        });
-
-                    const saleOrder = await Knex('saleOrders')
-                        .where({ id: id });
-                    const customerDebt = await Knex('debtCustomers')
-                        .where({ id: debtCustomerId });
+                    .returning('*')
+                    .whereRaw('id = 1')
+                    .update({
+                        id: 1,
+                        debtCustomers
+                    });
 
                     const So_tien_Dieu_Chinh = totalIncludeVat - saleOrder[0].totalIncludeVat - (pay - customerDebt[0].minus);
 
                     data = await t('debtCustomers')
+                        // .debug(true)
                         .returning('*')
                         .whereRaw(`id = ${debtCustomerId}`)
                         .update({
@@ -337,12 +343,8 @@ SaleOrderRouter.post('/update', async (req, res) => {
                             plus: totalIncludeVat
                         });
 
-                    console.log('data = ', data);
-
                     //Lấy toàn bộ bảng dữ liệu công nợ có liên quan đến bảng công nợ bị xóa
-                    const customerDebtBeChanged = await Knex('debtCustomers')
-                        .orderBy('id', 'asc')
-                        .whereRaw(`id > ${saleOrder[0].debtCustomerId} AND "customerId" = ${saleOrder[0].customerId}`);
+
                     //Điều chỉnh toàn bộ công nợ có liêu quan
                     if (customerDebtBeChanged.length >= 0) {
                         customerDebtBeChanged.forEach(async (debt) => {
@@ -352,6 +354,7 @@ SaleOrderRouter.post('/update', async (req, res) => {
                             const _oldDebt = debt.oldDebt + So_tien_Dieu_Chinh;
 
                             await t('debtCustomers')
+                                // .debug(true)
                                 .returning('*')
                                 .orderBy('id', 'asc')
                                 .whereRaw(`id = ${debt.id}`)
@@ -364,77 +367,48 @@ SaleOrderRouter.post('/update', async (req, res) => {
                             data[0].oldDebt = _oldDebt;
                             console.log('customerDebt = ', data);
                         });
-                    }
+                    }                    
 
-                    await t('saleOrders')
-                        .returning('*')
-                        .whereRaw(`id = ${id}`)
-                        .update({
-                            customerId: customerId,
-                            userId: user.id,
-                            debtCustomerId: debtCustomerId,
-                            orderTypeId: 1,
-                            title: title,
-                            total: total,
-                            vat: vat,
-                            taxId,
-                            totalIncludeVat: totalIncludeVat,
-                            date: moment(date, 'DD-MM-YYYY').format('YYYY-MM-DD')
-                        });
+                    detailBeInsersted.forEach(async (detail) => {
+                        console.log('detailBeInsersted item: ', detail);
+                        await Knex('saleOderDetails')
+                            .transacting(t)
+                            // .debug(true)
+                            .insert({
+                                saleOrderId: id,
+                                productId: detail.id,
+                                unitId: detail.unitId,
+                                quantity: detail.quantity,
+                                salePrice: detail.salePrice,
+                                total: detail.salePrice * detail.quantity
+                            });
+                    });
 
-                        detailBeInsersted.forEach(async ( detail ) => {
-                            console.log('detailBeInsersted item: ', detail);
-                            await Knex('saleOderDetails')
-                                .transacting(t)
-                                .debug(true)
-                                .insert({
-                                    saleOrderId: id,
-                                    productId: detail.id,
-                                    unitId: detail.unitId,
-                                    quantity: detail.quantity,
-                                    salePrice: detail.salePrice,
-                                    total: detail.salePrice * detail.quantity                                  
-                                });
-                        });
-    
-                        // detailBeRemoved.forEach(async detail => {
-                        //     console.log('delete item = ', detail);
-                        //     await Knex('saleOderDetails')
-                        //         .transacting(t)
-                        //         .debug(true)
-                        //         .whereRaw(`"id" = ${detail.id}`)
-                        //         .del();
-                        // });
-    
-                        // detailBeUpdated.forEach(async detail => {
-                        //     console.log('detailBeUpdated item: ', detail);
-                        //     await Knex('saleOderDetails')
-                        //         .transacting(t)
-                        //         .debug(true)
-                        //         .whereRaw(`id = ${detail.detailId}`)
-                        //         .update({
-                        //             saleOrderId: id,
-                        //             productId: detail.id,
-                        //             unitId: detail.unitId,
-                        //             quantity: detail.quantity,
-                        //             salePrice: detail.salePrice,
-                        //             total: detail.quantity * detail.salePrice
-                        //         });
-                        // });
+                    detailBeRemoved.forEach(async detail => {
+                        console.log('delete item = ', detail);
+                        await Knex('saleOderDetails')
+                            .transacting(t)
+                            // .debug(true)
+                            .whereRaw(`"id" = ${detail.id}`)
+                            .del();
+                    });
 
-                    // saleOrderDetails.forEach(async (detail) => {
-                    //     await t('saleOderDetails')
-                    //         .returning('*')
-                    //         .whereRaw(`id = ${detail.detailId}`)
-                    //         .update({
-                    //             saleOrderId: id,
-                    //             productId: detail.id,
-                    //             unitId: detail.unitId,
-                    //             quantity: detail.quantity,
-                    //             salePrice: detail.salePrice,
-                    //             total: detail.quantity * detail.salePrice
-                    //         });
-                    // });
+                    detailBeUpdated.forEach(async detail => {
+                        console.log('detailBeUpdated item: ', detail);
+                        await Knex('saleOderDetails')
+                            .transacting(t)
+                            // .debug(true)
+                            .whereRaw(`id = ${detail.detailId}`)
+                            .update({
+                                saleOrderId: id,
+                                productId: detail.id,
+                                unitId: detail.unitId,
+                                quantity: detail.quantity,
+                                salePrice: detail.salePrice,
+                                total: detail.quantity * detail.salePrice
+                            });
+                    });
+
 
                     // data = await t('debtCustomers')
                     //     .returning('*')
@@ -448,6 +422,22 @@ SaleOrderRouter.post('/update', async (req, res) => {
                     //         minus: pay,
                     //         plus: totalIncludeVat
                     //     });
+
+                    await t('saleOrders')
+                    .returning('*')
+                    .whereRaw(`id = ${id}`)
+                    .update({
+                        customerId: customerId,
+                        userId: user.id,
+                        debtCustomerId: debtCustomerId,
+                        orderTypeId: 1,
+                        title: title,
+                        total: total,
+                        vat: vat,
+                        taxId,
+                        totalIncludeVat: totalIncludeVat,
+                        date: moment(date, 'DD-MM-YYYY').format('YYYY-MM-DD')
+                    });
 
                 } catch (e) {
                     t.rollback();
