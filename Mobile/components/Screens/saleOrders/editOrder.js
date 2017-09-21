@@ -82,30 +82,43 @@ class EditSaleOrder extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         let saleOrderDetails = [];
-        if (nextProps.selectedProducts && nextProps.selectedProducts.length > 0) {
-            saleOrderDetails = nextProps.selectedProducts;
-        } 
+        if (nextProps.selectCompleted) {
+            nextProps.selectedProducts.forEach(detail => {
+                this.state.saleOrderDetails.push({
+                    ...detail,
+                    productId: detail.id,
+                    key: `${detail.id}-${detail.unitId}-${detail.quantity}-${Math.random() * 10}`
+                });                
+            });
+            this.setState({ saleOderDetails: this.state.saleOrderDetails });
+        }
         if (this.state.saleOrderDetails.length === 0 && this.state.loaded === false) {
-            saleOrderDetails = nextProps.saleOrderDetails;
-            this.setState({ loaded: true });
+            nextProps.saleOrderDetails.forEach(detail => {
+                console.log('go to push');
+                this.state.saleOrderDetails.push({
+                    ...detail,
+                    key: `${detail.id}-${detail.unitId}-${detail.quantity}-${Math.random() * 10}`
+                });
+                
+            });
+            this.setState({ saleOderDetails: this.state.saleOrderDetails, loaded: true });
         }
         let taxRate = 0;
         nextProps.tax.forEach((tax) => {
-            
-            if(tax.id == nextProps.taxId) {
+
+            if (tax.id == nextProps.taxId) {
                 taxRate = tax.rate;
             }
         })
 
-        const { total, newDebt, totalIncludeVat, vat,  } = this.caculateOrder(this.state.oldDebt, this.state.pay,
-            saleOrderDetails, taxRate);
+        const { total, newDebt, totalIncludeVat, vat, } = this.caculateOrder(this.state.oldDebt, this.state.pay,
+            this.state.saleOrderDetails, taxRate);
         this.setState({
             id: nextProps.id,
             customerId: nextProps.customerId,
             date: moment(nextProps.date, moment.ISO_8601).format('DD-MM-YYYY'),
             taxId: nextProps.taxId,
             pay: nextProps.pay,
-            saleOrderDetails,
             debtCustomers: nextProps.debt,
             debtCustomerId: nextProps.debtCustomerId,
             oldDebt: nextProps.oldDebt,
@@ -154,7 +167,7 @@ class EditSaleOrder extends React.Component {
     }
 
     onSelectProduct() {
-        Actions.productSelector({ ProductSelected: this.state.saleOrderDetails });
+        Actions.productSelector();
     }
 
     onCustomerChanged(customerId) {
@@ -202,7 +215,7 @@ class EditSaleOrder extends React.Component {
         });
         const saleOrderDetails = [...this.state.saleOrderDetails];
         saleOrderDetails.forEach((item) => {
-            if (item.id === product.id) {
+            if (item.key === product.key) {
                 item.salePrice = Math.round(oldPrice * newRate);
                 item.unitId = newUnitId;
             }
@@ -224,6 +237,8 @@ class EditSaleOrder extends React.Component {
 
     renderProductList() {
         if (this.state.saleOrderDetails) {
+            console.log('render product list');
+            console.log('this.state.saleOrderDetails = ', this.state.saleOrderDetails);
             return (
                 <FlatList
                     style={{ marginTop: 10, marginBottom: 10 }}
@@ -266,6 +281,7 @@ class EditSaleOrder extends React.Component {
                                                         saleOrderDetails.forEach((product) => {
                                                             if (product.id == item.id) {
                                                                 product.quantity = unformat(text);
+                                                                
                                                             }
                                                         });
                                                         const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.state.oldDebt, this.state.pay, saleOrderDetails);
@@ -822,9 +838,8 @@ const mapStateToProps = (state, ownProps) => {
         loaded,
         error
     } = state.saleOrders;
-    const { selectedProducts } = state.products;
     const { customers } = state.customers;
-    const { units } = state.products;
+    const { units, selectedProducts, selectCompleted } = state.products;
     const { isAuthenticated, user } = state.auth;
     return {
         id,
@@ -846,6 +861,7 @@ const mapStateToProps = (state, ownProps) => {
         error,
         customers,
         selectedProducts,
+        selectCompleted,
         user
     };
 };

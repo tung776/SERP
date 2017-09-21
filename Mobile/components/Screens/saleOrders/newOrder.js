@@ -117,7 +117,7 @@ class NewSaleOrder extends React.Component {
     }
 
     onSelectProduct() {
-        Actions.productSelector({ ProductSelected: this.state.saleOderDetails });
+        Actions.productSelector();
     }
 
     onCustomerChanged(customerId) {

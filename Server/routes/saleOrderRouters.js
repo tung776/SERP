@@ -273,6 +273,7 @@ SaleOrderRouter.post('/update', async (req, res) => {
                 detailBeInsersted = detailBeInsersted.filter(item => {
                     if (item.key != detail.key) return item;
                 });
+                isRemove = false;
                 detailBeInsersted.push(detail);
             } else {
                 if (detail.detailId == detailInData.id) {
@@ -314,8 +315,7 @@ SaleOrderRouter.post('/update', async (req, res) => {
         let newDataversion;
         try {
             Knex.transaction(async (t) => {
-                try {
-                    
+                try {                   
 
                     let { debtCustomers } = dataVersion[0];                    
                     debtCustomers++;
