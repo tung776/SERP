@@ -16,7 +16,8 @@ import { loadCustomerListDataFromSqlite } from '../../../actions/customerAction'
 import {
     loadUnits,
     toggleProductToSelectList,
-    resetSelectedProducts
+    resetSelectedProducts,
+    ProductChange
 } from '../../../actions/productActions';
 import {
     loadSaleOrderById,
@@ -65,6 +66,8 @@ class EditSaleOrder extends React.Component {
     async componentWillMount() {
         this.props.loadSaleOrderById(this.props.saleOrder.id);
 
+        this.setState({ loaded:false });
+
         if (!this.props.customers || this.props.customers.length == 0) {
             this.props.loadCustomerListDataFromSqlite();
         }
@@ -76,7 +79,7 @@ class EditSaleOrder extends React.Component {
         }
         const fontAsset = await loadAsset("vuarial", "ttf", fontUrl);
         this.setState({
-            fontPath: fontAsset.localUri,
+            fontPath: fontAsset.localUri            
         });
     }
 
@@ -86,11 +89,14 @@ class EditSaleOrder extends React.Component {
             nextProps.selectedProducts.forEach(detail => {
                 this.state.saleOrderDetails.push({
                     ...detail,
+                    isNew: true,
                     productId: detail.id,
                     key: `${detail.id}-${detail.unitId}-${detail.quantity}-${Math.random() * 10}`
                 });                
             });
             this.setState({ saleOderDetails: this.state.saleOrderDetails });
+            nextProps.ProductChange({prop: 'selectCompleted', value: false})
+            nextProps.ProductChange({prop: 'selectedProducts', value: []});
         }
         if (this.state.saleOrderDetails.length === 0 && this.state.loaded === false) {
             nextProps.saleOrderDetails.forEach(detail => {
@@ -237,8 +243,6 @@ class EditSaleOrder extends React.Component {
 
     renderProductList() {
         if (this.state.saleOrderDetails) {
-            console.log('render product list');
-            console.log('this.state.saleOrderDetails = ', this.state.saleOrderDetails);
             return (
                 <FlatList
                     style={{ marginTop: 10, marginBottom: 10 }}
@@ -251,9 +255,14 @@ class EditSaleOrder extends React.Component {
                                 >
                                     <TouchableWithoutFeedback
                                         disabled={!this.state.editMode}
-                                        key={item.key} onPress={() =>
-                                            this.props.toggleProductToSelectList(item)
-                                        }
+                                        key={item.key} onPress={() =>{
+                                            this.state.saleOrderDetails = this.state.saleOrderDetails.filter(detail => {
+                                                if (item.key != detail.key) {
+                                                    return detail;
+                                                }
+                                            });
+                                            this.setState({ saleOrderDetails: this.state.saleOrderDetails });
+                                        }}
                                     >
                                         <View style={{ flex: 1, alignSelf: 'center' }}>
                                             <Ionicons name="ios-trash-outline" size={25} color="#d35400" />
@@ -874,5 +883,6 @@ export default connect(mapStateToProps, {
     SaleOrderUpdate,
     SaleOrderChange,
     resetSelectedProducts,
-    SaleOrderDelete
+    SaleOrderDelete,
+    ProductChange
 })(EditSaleOrder);

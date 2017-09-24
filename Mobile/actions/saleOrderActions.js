@@ -284,7 +284,6 @@ export const SaleOrderUpdate = (order) => async (dispatch) => {
                 } catch (e) {
                     console.log(e);
                 }
-                Actions.pop({ reLoad: true });
                 dispatch({
                     type: SALE_ORDER_CHANGE_SUCCESS,
                 });

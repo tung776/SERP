@@ -123,7 +123,7 @@ QuocteRouter.post('/update', async (req, res) => {
     detailInDatabase.forEach(detailInData => {
         let isRemove = true;
         quocteDetails.forEach(detail => {
-            if (detail.detailId == undefined || detail.detailId == 'undefined') {
+            if (detail.isNew == true) {
                 detailBeInsersted = detailBeInsersted.filter(item => {
                     if (item.key != detail.key) return item;
                 });

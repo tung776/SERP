@@ -96,14 +96,14 @@ SaleOrderRouter.post('/getById', async (req, res) => {
             WHERE s."id" = ${orderId};                      
         `);
 
-        console.log('saleOrder = ', saleOrder);
-
+        
         const saleOrderDetails = await Knex.raw(`
-            SELECT s."id" , s."saleOrderId", s."productId", s."unitId", s."quantity", s."salePrice", p."name" 
-            FROM "saleOderDetails" as s
-            INNER JOIN "products" AS p ON p."id" = s."productId" 
-            WHERE s."saleOrderId" = ${orderId};                      
+        SELECT s."id" , s."saleOrderId", s."productId", s."unitId", s."quantity", s."salePrice", p."name" 
+        FROM "saleOderDetails" as s
+        INNER JOIN "products" AS p ON p."id" = s."productId" 
+        WHERE s."saleOrderId" = ${orderId};                      
         `);
+        console.log('saleOrderDetails = ', saleOrderDetails.rows);
         res.status(200).json({
             success: true,
             saleOrder: saleOrder.rows,
@@ -268,43 +268,29 @@ SaleOrderRouter.post('/update', async (req, res) => {
 
     detailInDatabase.forEach(detailInData => {
         let isRemove = true;
+        let itemUpdated = null;
         saleOrderDetails.forEach(detail => {
-            if (detail.detailId == undefined || detail.detailId == 'undefined') {
-                detailBeInsersted = detailBeInsersted.filter(item => {
-                    if (item.key != detail.key) return item;
-                });
+            if (detail.id == detailInData.id) {                
                 isRemove = false;
-                detailBeInsersted.push(detail);
-            } else {
-                if (detail.detailId == detailInData.id) {
-                    detailBeUpdated.push(detail);
-                    isRemove = false;
-                } else {
-                    isRemove = true;
-                    // detailBeRemoved.push(detailInData);
-                }
-            }
-
+                itemUpdated = detail;
+            } 
         })
         if (isRemove) {
             detailBeRemoved.push(detailInData);
+        } else {
+            detailBeUpdated.push(itemUpdated);
         }
     });
-    console.log('===================================================');
-    console.log('detailBeRemoved = ', detailBeRemoved);
-    console.log('===================================================');
-    console.log('detailBeUpdated = ', detailBeUpdated);
-    console.log('===================================================');
-    console.log('detailBeInsersted = ', detailBeInsersted);
-    console.log('===================================================');
-    return;
+    detailBeInsersted = saleOrderDetails.filter(item => {
+        if (item.isNew) return item;
+    });
     const saleOrder = await Knex('saleOrders')
-    .where({ id: id });
+        .where({ id: id });
 
     const customerDebtBeChanged = await Knex('debtCustomers')
         .orderBy('id', 'asc')
-        .whereRaw(`id > ${saleOrder[0].debtCustomerId} AND "customerId" = ${saleOrder[0].customerId}`);   
-    
+        .whereRaw(`id > ${saleOrder[0].debtCustomerId} AND "customerId" = ${saleOrder[0].customerId}`);
+
     const customerDebt = await Knex('debtCustomers')
         .where({ id: debtCustomerId });
 
@@ -315,17 +301,17 @@ SaleOrderRouter.post('/update', async (req, res) => {
         let newDataversion;
         try {
             Knex.transaction(async (t) => {
-                try {                   
+                try {
 
-                    let { debtCustomers } = dataVersion[0];                    
+                    let { debtCustomers } = dataVersion[0];
                     debtCustomers++;
                     newDataversion = await t('dataVersions')
-                    .returning('*')
-                    .whereRaw('id = 1')
-                    .update({
-                        id: 1,
-                        debtCustomers
-                    });
+                        .returning('*')
+                        .whereRaw('id = 1')
+                        .update({
+                            id: 1,
+                            debtCustomers
+                        });
 
                     const So_tien_Dieu_Chinh = totalIncludeVat - saleOrder[0].totalIncludeVat - (pay - customerDebt[0].minus);
 
@@ -354,7 +340,7 @@ SaleOrderRouter.post('/update', async (req, res) => {
                             const _oldDebt = debt.oldDebt + So_tien_Dieu_Chinh;
 
                             await t('debtCustomers')
-                                // .debug(true)
+                                .debug(true)
                                 .returning('*')
                                 .orderBy('id', 'asc')
                                 .whereRaw(`id = ${debt.id}`)
@@ -367,16 +353,15 @@ SaleOrderRouter.post('/update', async (req, res) => {
                             data[0].oldDebt = _oldDebt;
                             console.log('customerDebt = ', data);
                         });
-                    }                    
+                    }
 
                     detailBeInsersted.forEach(async (detail) => {
-                        console.log('detailBeInsersted item: ', detail);
                         await Knex('saleOderDetails')
                             .transacting(t)
-                            // .debug(true)
+                            .debug(true)
                             .insert({
                                 saleOrderId: id,
-                                productId: detail.id,
+                                productId: detail.productId,
                                 unitId: detail.unitId,
                                 quantity: detail.quantity,
                                 salePrice: detail.salePrice,
@@ -385,7 +370,6 @@ SaleOrderRouter.post('/update', async (req, res) => {
                     });
 
                     detailBeRemoved.forEach(async detail => {
-                        console.log('delete item = ', detail);
                         await Knex('saleOderDetails')
                             .transacting(t)
                             // .debug(true)
@@ -394,14 +378,13 @@ SaleOrderRouter.post('/update', async (req, res) => {
                     });
 
                     detailBeUpdated.forEach(async detail => {
-                        console.log('detailBeUpdated item: ', detail);
                         await Knex('saleOderDetails')
                             .transacting(t)
-                            // .debug(true)
-                            .whereRaw(`id = ${detail.detailId}`)
+                            .debug(true)
+                            .whereRaw(`id = ${detail.id}`)
                             .update({
                                 saleOrderId: id,
-                                productId: detail.id,
+                                productId: detail.productId,
                                 unitId: detail.unitId,
                                 quantity: detail.quantity,
                                 salePrice: detail.salePrice,
@@ -424,20 +407,20 @@ SaleOrderRouter.post('/update', async (req, res) => {
                     //     });
 
                     await t('saleOrders')
-                    .returning('*')
-                    .whereRaw(`id = ${id}`)
-                    .update({
-                        customerId: customerId,
-                        userId: user.id,
-                        debtCustomerId: debtCustomerId,
-                        orderTypeId: 1,
-                        title: title,
-                        total: total,
-                        vat: vat,
-                        taxId,
-                        totalIncludeVat: totalIncludeVat,
-                        date: moment(date, 'DD-MM-YYYY').format('YYYY-MM-DD')
-                    });
+                        .returning('*')
+                        .whereRaw(`id = ${id}`)
+                        .update({
+                            customerId: customerId,
+                            userId: user.id,
+                            debtCustomerId: debtCustomerId,
+                            orderTypeId: 1,
+                            title: title,
+                            total: total,
+                            vat: vat,
+                            taxId,
+                            totalIncludeVat: totalIncludeVat,
+                            date: moment(date, 'DD-MM-YYYY').format('YYYY-MM-DD')
+                        });
 
                 } catch (e) {
                     t.rollback();
