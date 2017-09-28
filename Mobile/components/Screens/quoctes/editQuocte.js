@@ -1,5 +1,8 @@
 import React from 'react';
-import { View, Text, ScrollView, TextInput, TouchableOpacity, TouchableWithoutFeedback, Picker, Alert, FlatList } from 'react-native';
+import { View, Text, ScrollView,
+     TextInput, TouchableOpacity, 
+     TouchableWithoutFeedback, Picker, 
+     Alert, FlatList, NativeModules } from 'react-native';
 import DatePicker from 'react-native-datepicker';
 import { Actions } from 'react-native-router-flux';
 import Header from '../../commons/Header';
@@ -13,7 +16,12 @@ import { loadUnits, toggleProductToSelectList, resetSelectedProducts } from '../
 import { loadQuocteDataFromSqlite, QuocteUpdate } from '../../../actions/quocteActions';
 import { formatMoney, formatNumber, unformat } from '../../../../Shared/utils/format';
 import moment from '../../../../Shared/utils/moment';
+import RNHTMLtoPDF from 'react-native-html-to-pdf';
+import quocteTemplate, { css, sendEmail, sendMessage } from '../../../../Shared/templates/quocte';
+import loadAsset from '../../../utils/loadAsset';
+import { fontUrl, URL } from '../../../../env';
 
+const { RNPrint } = NativeModules;
 class EditQuocte extends React.Component {
     state = {
         isExpanded: true,
@@ -24,9 +32,10 @@ class EditQuocte extends React.Component {
         title: '',
         quocteDetails: [],
         editMode: false,
-        loaded: false
+        loaded: false,
+        fontPath: ''
     }
-    componentWillMount() {
+    async componentWillMount() {
         this.props.loadQuocteDataFromSqlite(this.props.quocte.id);
 
         if (!this.props.customers || this.props.customers.length == 0) {
@@ -38,6 +47,10 @@ class EditQuocte extends React.Component {
         if (!this.props.customerGroups || this.props.customerGroups.length == 0) {
             this.props.loadCustomerGroupListDataFromSqlite();
         }
+        const fontAsset = await loadAsset("vuarial", "ttf", fontUrl);
+        this.setState({
+            fontPath: fontAsset.localUri            
+        });
     }
 
     componentWillReceiveProps(nextProps) {
@@ -62,7 +75,6 @@ class EditQuocte extends React.Component {
             })
             this.setState({ quocteDetails: this.state.quocteDetails, loaded: true });
         }
-        console.log('this.state.quocteDetails = ', this.state.quocteDetails);
         this.setState({
             id: nextProps.id,
             date: moment(nextProps.date, moment.ISO_8601).format('DD-MM-YYYY'),
@@ -357,7 +369,51 @@ class EditQuocte extends React.Component {
                         <TouchableOpacity
                             disabled={this.state.editMode}
                             style={[styles.Btn, (this.state.editMode) ? { backgroundColor: '#7f8c8d' } : { backgroundColor: '#16a085' }]}
-                            onPress={() => Actions.pop()}
+                            onPress={async () => {
+                                if (!this.state.fontPath) return;
+
+                                if (this.state.id == '') {
+                                    Alert.alert(
+                                        'Thông Báo',
+                                        'Bạn cần lưu báo giá trước khi in',
+                                        [
+                                            { text: 'Ok' },
+                                        ]
+                                    );
+                                } else {
+                                    let quocteDetails = [...this.state.quocteDetails];
+                                    quocteDetails.forEach((quocte) => {
+                                        this.props.units.forEach((unit) => {
+                                            if (quocte.unitId == unit.id) {
+                                                quocte.unitName = unit.name
+                                            }
+                                        })
+                                    })
+                                    let customerName = '';
+                                    this.props.customers.forEach((customer) => {
+                                        if (customer.id == this.state.customerId) {
+                                            customerName = customer.name;
+                                        }
+                                    });
+
+                                    let options = {
+                                        html: quocteTemplate(customerName, this.state.id,
+                                            this.state.date, quocteDetails),
+                                        css: css(),
+                                        fileName: "quocte",
+                                        fonts: [this.state.fontPath]
+                                    };
+                                    try {
+                                        const results = await RNHTMLtoPDF.convert(options).catch(
+                                            e => console.log(e)
+                                        );
+                                        const jobName = await RNPrint.print(results.filePath);
+                                    }
+                                    catch (e) {
+                                        console.log('errors: ', e);
+                                    }
+                                }
+                            }}
                         >
                             <Ionicons name="ios-print-outline" size={25} color="#FFFFFF" />
                         </TouchableOpacity>
