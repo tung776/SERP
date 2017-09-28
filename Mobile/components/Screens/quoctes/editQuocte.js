@@ -420,14 +420,54 @@ class EditQuocte extends React.Component {
                         <TouchableOpacity
                             disabled={this.state.editMode}
                             style={[styles.Btn, (this.state.editMode) ? { backgroundColor: '#7f8c8d' } : { backgroundColor: '#16a085' }]}
-                            onPress={() => Actions.pop()}
+                            onPress={() => {
+                                let quocteDetails = [...this.state.quocteDetails];
+                                quocteDetails.forEach((order) => {
+                                    this.props.units.forEach((unit) => {
+                                        if (order.unitId == unit.id) {
+                                            order.unitName = unit.name
+                                        }
+                                    })
+                                });
+                                let customerPhone = '';
+                                let customerName = '';
+                                this.props.customers.forEach((customer) => {
+                                    if (customer.id == this.state.customerId) {
+                                        customerPhone = customer.phone;
+                                        customerName = customer.name;
+                                    }
+                                });
+                                sendMessage(
+                                    customerPhone, customerName, this.state.date, quocteDetails
+                                );
+                            }}
                         >
                             <Ionicons name="ios-send-outline" size={25} color="#FFFFFF" />
                         </TouchableOpacity>
                         <TouchableOpacity
                             disabled={this.state.editMode}
                             style={[styles.Btn, (this.state.editMode) ? { backgroundColor: '#7f8c8d' } : { backgroundColor: '#16a085' }]}
-                            onPress={() => Actions.pop()}
+                            onPress={() => {
+                                let quocteDetails = [...this.state.quocteDetails];
+                                quocteDetails.forEach((order) => {
+                                    this.props.units.forEach((unit) => {
+                                        if (order.unitId == unit.id) {
+                                            order.unitName = unit.name
+                                        }
+                                    })
+                                });
+                                let customerEmail = '';
+                                let customerName = '';
+                                this.props.customers.forEach((customer) => {
+                                    if (customer.id == this.state.customerId) {
+                                        customerEmail = customer.email;
+                                        customerName = customer.name;
+                                    }
+                                });
+                                sendEmail(
+                                    customerEmail, customerName, this.state.date, quocteDetails
+                                );
+                            }}
                         >
                             <Ionicons name="ios-mail-outline" size={25} color="#FFFFFF" />
                         </TouchableOpacity>

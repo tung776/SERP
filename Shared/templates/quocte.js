@@ -236,60 +236,34 @@ export const sendMessage = (
     customerPhone,
     customerName,
     date,
-    total,
-    totalIncludeVat,
-    vat,
-    oldDebt,
-    pay,
-    newDebt,
     QuocteDetail,
 ) => {
     let htmlQuocteDetail = '';
-    let totalPrice = 0;
-    QuocteDetail.forEach((order) => {
-        totalPrice = order.salePrice * order.quantity;
-        htmlQuocteDetail += `${order.name}: ${formatNumber(order.quantity)} ${order.unitName} x ${formatNumber(order.salePrice)}. `
+    QuocteDetail.forEach((order) => {        
+        htmlQuocteDetail += `${order.name}: ${order.unitName} : ${formatNumber(order.salePrice)}. `
     });
-    let totalIncludeVatText = '';
-    if(vat > 0) totalIncludeVatText = `Tổng tiền gồm VAT: ${formatNumber(totalIncludeVat)},`
-    Communications.text(customerPhone, `Kính gửi Quí Khách ${customerName} Hóa Đơn ngày: ${date}: 
-    ${htmlQuocteDetail}
-    Tổng tiền: ${formatNumber(total)}, ${totalIncludeVatText} Nợ cũ: ${formatNumber(oldDebt)}, Thanh Toán: - ${formatNumber(pay)}, Còn Lại: ${formatNumber(newDebt)}
+    
+    Communications.text(customerPhone, `Kính gửi Quí Khách ${customerName} Báo Giá ngày: ${date}: 
+    ${htmlQuocteDetail}    
     `);
 }
 export const sendEmail = (
     customerEmail,
     customerName,
     date,
-    total,
-    totalIncludeVat,
-    vat,
-    oldDebt,
-    pay,
-    newDebt,
     QuocteDetail,
 ) => {
     let htmlQuocteDetail = '';
-    let totalPrice = 0;
     QuocteDetail.forEach((order) => {
-        totalPrice = order.salePrice * order.quantity;
-        htmlQuocteDetail += `${order.name}: ${formatNumber(order.quantity)} ${order.unitName} x ${formatNumber(order.salePrice)} = ${formatNumber(totalPrice)}.
+        htmlQuocteDetail += `${order.name}: ${order.unitName} x ${formatNumber(order.salePrice)}.
         `
     });
-    let totalIncludeVatText = '';
-    if(vat > 0) totalIncludeVatText = `Tổng tiền gồm VAT: ${totalIncludeVat},`
-    Communications.email([customerEmail], null, null, 'Hóa Đơn', `Kính gửi Quí Khách ${customerName}
+    Communications.email([customerEmail], null, null, 'Báo Giá', `Kính gửi Quí Khách ${customerName}
     
     
-        Hóa Đơn ngày: ${date}: 
+        Báo Giá ngày: ${date}: 
 
         ${htmlQuocteDetail}
-
-        Tổng tiền: ${formatNumber(total)}
-        ${totalIncludeVatText} 
-        Nợ cũ: ${formatNumber(oldDebt)}
-        Thanh Toán: - ${formatNumber(pay)}
-        Còn Lại: ${formatNumber(newDebt)}
     `);
 }
 
