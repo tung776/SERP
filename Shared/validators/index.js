@@ -6,3 +6,4 @@ export * from './ProductFormValidator';
 export * from './customerValidator';
 export * from './quocteValidator';
 export * from './saleOrderValidator';
+export * from './NewPaymentCustomerValidator';

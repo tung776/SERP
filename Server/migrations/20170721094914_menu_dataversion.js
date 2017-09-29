@@ -131,7 +131,7 @@ exports.up = function (knex, Promise) {
             table.date('createdDate').notNullable().defaultTo(knex.fn.now());
             table.string('title');
             table.string('description');
-            table.float('amount').defaultTo(0);
+            table.float('amount').notNullable().defaultTo(0);
         })
         .createTableIfNotExists('suppliers', (table) => {
             table.increments();

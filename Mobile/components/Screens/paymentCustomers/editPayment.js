@@ -369,7 +369,7 @@ class EditSaleOrder extends React.Component {
         );
     }
 
-    renderHeaderOrder() {
+    renderHeaderQuocte() {
         if (this.state.isExpanded) {
             return (
                 <ScrollView>
@@ -554,7 +554,7 @@ class EditSaleOrder extends React.Component {
                         }
                     </TouchableOpacity>
 
-                    {this.renderHeaderOrder()}
+                    {this.renderHeaderQuocte()}
 
                     {this.renderProductList()}
 
