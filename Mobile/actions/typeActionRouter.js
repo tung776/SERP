@@ -27,63 +27,68 @@ export const SALE_BY_CUSTOMER_ACT = 22;
 
 export const RECEIPTS_ACT = 23;
 export const NEW_RECEIPT_ACT = 24;
-export const SALARY_RECEIPT_ACT = 25;
-export const RENTAL_WAREHOUSE_ACT = 26;
-export const INTERESTING_RECEIPT_ACT = 27;
-export const OTHER_RECEIPT_ACT = 28;
+export const SEARCH_RECEIPT_ACT = 25;
+export const EDIT_RECEIPT_ACT = 26;
 
-export const SUPPLIER_ORDER_ACT = 29;
-export const NEW_SUPPLIER_ORDER_ACT = 30;
-export const SUPPLIER_RETURNNING_ACT = 31;
-export const SEARCH_SUPPLIER_ORDER_ACT = 32;
-export const SUPPLIER_ORDER_REPORT_ACT = 33;
+export const PAYMENT_ACT = 27;
+export const NEW_PAYMENT_TYPE_ACT = 28;
+export const SALARY_PAY_ACT = 29;
+export const RENTAL_WAREHOUSE_ACT = 30;
+export const INTERESTING_PAY_ACT = 31;
+export const OTHER_PAY_ACT = 32;
 
-export const SUPPLIER_ACT = 34;
-export const SEARCH_SUPPLIER_ACT = 35;
-export const NEW_SUPPLIER_ACT = 36;
-export const SUPPLIER_DEPT_ACT = 37;
-export const SALE_BY_SUPPLIER = 38;
+export const SUPPLIER_ORDER_ACT = 33;
+export const NEW_SUPPLIER_ORDER_ACT = 34;
+export const SUPPLIER_RETURNNING_ACT = 35;
+export const SEARCH_SUPPLIER_ORDER_ACT = 36;
+export const SUPPLIER_ORDER_REPORT_ACT = 37;
 
-export const RESEARCH_ACT = 39;
-export const NEW_RESEARCH_ACT = 40;
-export const COST_TEMP_ACT = 41;
-export const SEARCH_RESEARCH_ACT = 42;
-export const TRANSFER_RESEARCH_ACT = 43;
-export const REPORT_RESEARCH_ACT = 44;
-export const GENERAL_REPORT_RESEARCH_ACT = 45;
+export const SUPPLIER_ACT = 38;
+export const SEARCH_SUPPLIER_ACT = 39;
+export const NEW_SUPPLIER_ACT = 40;
+export const SUPPLIER_DEPT_ACT = 41;
+export const SALE_BY_SUPPLIER = 42;
 
-export const MANUFACTURER_ACT = 46;
-export const MANUFACTURE_COMMAND_ACT = 47;
-export const SEARCH_MANUFACTURE_COMMAND_ACT = 48;
-export const RECYCLE_COMMAND_ACT = 49;
-export const GENERAL_REPORT_MANUFACTURE_ACT = 50;
+export const RESEARCH_ACT = 43;
+export const NEW_RESEARCH_ACT = 44;
+export const COST_TEMP_ACT = 45;
+export const SEARCH_RESEARCH_ACT = 46;
+export const TRANSFER_RESEARCH_ACT = 47;
+export const REPORT_RESEARCH_ACT = 48;
+export const GENERAL_REPORT_RESEARCH_ACT = 49;
 
-export const HUMAN_ACT = 51;
-export const NEW_DEPARTMENT_ACT = 52;
-export const SEARCH_DEPARTMENT_ACT = 53;
-export const NEW_USER_ACT = 54;
-export const SEARCH_USER_ACT = 55;
-export const JOB_TRANSFER_ACT = 56;
-export const PERMITION_ACT = 57;
+export const MANUFACTURER_ACT = 50;
+export const MANUFACTURE_COMMAND_ACT = 51;
+export const SEARCH_MANUFACTURE_COMMAND_ACT = 52;
+export const RECYCLE_COMMAND_ACT = 53;
+export const GENERAL_REPORT_MANUFACTURE_ACT = 54;
 
-export const REPORT_ACT = 58;
-export const SALE_REPORT_ACT = 59;
-export const TEMP_INCOME_REPORT_ACT = 60;
-export const NET_INCOME_REPORT_ACT = 61;
-export const COST_REPORT_ACT = 62;
-export const PRODUCTION_COST_REPORT_ACT = 63;
+export const HUMAN_ACT = 55;
+export const NEW_DEPARTMENT_ACT = 56;
+export const SEARCH_DEPARTMENT_ACT = 57;
+export const NEW_USER_ACT = 58;
+export const SEARCH_USER_ACT = 59;
+export const JOB_TRANSFER_ACT = 60;
+export const PERMITION_ACT = 61;
 
-export const SYSTEM_ACT = 64;
-export const COMPANY_INFOR_ACT = 65;
-export const MENU_ACT = 66;
+export const REPORT_ACT = 62;
+export const SALE_REPORT_ACT = 63;
+export const TEMP_INCOME_REPORT_ACT = 64;
+export const NET_INCOME_REPORT_ACT = 65;
+export const COST_REPORT_ACT = 66;
+export const PRODUCTION_COST_REPORT_ACT = 67;
 
-export const NEW_PRODUCT_ACT = 67;
-export const SEARCH_PRODUCT_ACT = 68;
+export const SYSTEM_ACT = 68;
+export const COMPANY_INFOR_ACT = 69;
+export const MENU_ACT = 70;
 
-export const NEW_CUSTOMER_GROUP_ACT = 69;
-export const SEARCH_CUSTOMER_GROUP_ACT = 70;
-export const NEW_SUPPLIER_GROUP_ACT = 71;
-export const SEARCH_SUPPLIER_GROUP_ACT = 72;
+export const NEW_PRODUCT_ACT = 71;
+export const SEARCH_PRODUCT_ACT = 72;
+
+export const NEW_CUSTOMER_GROUP_ACT = 73;
+export const SEARCH_CUSTOMER_GROUP_ACT = 74;
+export const NEW_SUPPLIER_GROUP_ACT = 75;
+export const SEARCH_SUPPLIER_GROUP_ACT = 76;
 
 export const getActionForMenus = (menu) => {
     switch (menu) {
@@ -147,7 +152,11 @@ export const getActionForMenus = (menu) => {
         case RECEIPTS_ACT:
             return null;
         case NEW_RECEIPT_ACT:
-            return Actions.newReceipt();
+            return Actions.newReceiptCustomer();
+        case EDIT_RECEIPT_ACT:
+            return Actions.editReceiptCustomer();
+        case SEARCH_RECEIPT_ACT:
+            return Actions.indexReceiptCustomer();
         case SALARY_RECEIPT_ACT:
             return Actions.newSalaryReceipt();
         case RENTAL_WAREHOUSE_ACT:

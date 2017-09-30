@@ -3,8 +3,8 @@ import {
     SALE_ORDER_PENDING, SALE_ORDER_CHANGE,
     SALE_ORDER_CHANGE_FAIL, SALE_ORDER_CHANGE_SUCCESS,
     ADD_FLASH_MESSAGE, SUCCESS_MESSAGE, ERROR_MESSAGE,
-    SALE_ORDER_LOADED_SQLITE, SALE_ORDER_DELETE_SUCCESS,
-    RESET_SALE_ORDER_FORM, SALE_ORDER_LIST_LOADED_SQLITE,
+    SALE_ORDER_LOADED_SERVER, SALE_ORDER_DELETE_SUCCESS,
+    RESET_SALE_ORDER_FORM, SALE_ORDER_LIST_LOADED_SERVER,
     SALE_ORDER_DETAIL_CHANGE, RESET_PRODUCT_FORM, ADD_SALE_ORDER,
     LOAD_TAX_SUCCESS
 } from './index';
@@ -25,7 +25,7 @@ export const loadSaleOrderListDataFromServerByCustomerId = (customerId) => async
     axios.post(`${URL}/api/order/getByCustomerId`, { customerId }).then(
         res => {
             dispatch({
-                type: SALE_ORDER_LIST_LOADED_SQLITE,
+                type: SALE_ORDER_LIST_LOADED_SERVER,
                 payload: res.data.orders
             });
         }
@@ -65,12 +65,12 @@ export const loadSaleOrderByCustomerOrCustomerGroupIdFromServer = (customerId = 
         result => {
             if (result[0]) {
                 dispatch({
-                    type: SALE_ORDER_LIST_LOADED_SQLITE,
+                    type: SALE_ORDER_LIST_LOADED_SERVER,
                     payload: result[0]
                 });
             } else {
                 dispatch({
-                    type: SALE_ORDER_LIST_LOADED_SQLITE,
+                    type: SALE_ORDER_LIST_LOADED_SERVER,
                     payload: null
                 });
             }
@@ -87,7 +87,7 @@ export const loadSaleOrderById = (orderId) => async (dispatch) => {
         res => {
             console.log('res = ', res.data);
             dispatch({
-                type: SALE_ORDER_LOADED_SQLITE,
+                type: SALE_ORDER_LOADED_SERVER,
                 payload: res.data
             });
             let selectedProducts = [];

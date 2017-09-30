@@ -38,6 +38,10 @@ import saleOrders from '../components/Screens/saleOrders/index';
 import newSaleOrder from '../components/Screens/saleOrders/newOrder';
 import editSaleOrder from '../components/Screens/saleOrders/editOrder';
 
+import newPaymentCustomer from '../components/Screens/paymentCustomers/newPayment';
+import indexPaymentCustomer from '../components/Screens/paymentCustomers/index';
+import editPaymentCustomer from '../components/Screens/paymentCustomers/editPayment';
+
 const RouterComponent = () => (
     <Router hideNavBar="true" sceneStyle={{ backgroundColor: '#F7F7F7' }} >
 
@@ -90,7 +94,10 @@ const RouterComponent = () => (
                 <Scene key="customerDebt" component={ComminSoon} title="..." />
                 <Scene key="reportSaleByCustomer" component={ComminSoon} title="..." />
 
-                <Scene key="newReceipt" component={ComminSoon} title="..." />
+                <Scene key="newReceiptCustomer" component={newPaymentCustomer} title="..." />
+                <Scene key="editReceiptCustomer" component={editPaymentCustomer} title="..." />
+                <Scene key="indexReceiptCustomer" component={indexPaymentCustomer} title="..." />
+                
                 <Scene key="newSalaryReceipt" component={ComminSoon} title="..." />
                 <Scene key="newRentalWarehouseReceipt" component={ComminSoon} title="..." />
                 <Scene key="newInterestingReceipt" component={ComminSoon} title="..." />

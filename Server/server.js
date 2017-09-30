@@ -58,6 +58,9 @@ app.use('/api/quocte', QuocteRouter);
 import SaleOrderRouter from './routes/saleOrderRouters';
 app.use('/api/order', SaleOrderRouter);
 
+import paymentCustomerRouter from './routes/paymentCustomerRouter';
+app.use('/api/payment', paymentCustomerRouter);
+
 import {RequestHandler} from'./requestHandler';
 app.use( RequestHandler);
 

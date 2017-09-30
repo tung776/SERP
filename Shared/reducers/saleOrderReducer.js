@@ -1,7 +1,7 @@
 import {
     ADD_SALE_ORDER, SALE_ORDER_PENDING, SALE_ORDER_CHANGE_FAIL,
     SALE_ORDER_CHANGE_SUCCESS, SALE_ORDER_CHANGE, LOAD_TAX_SUCCESS,
-    SALE_ORDER_LOADED_SQLITE, SALE_ORDER_LIST_LOADED_SQLITE, SALE_ORDER_DELETE_SUCCESS,
+    SALE_ORDER_LOADED_SERVER, SALE_ORDER_LIST_LOADED_SERVER, SALE_ORDER_DELETE_SUCCESS,
     RESET_SALE_ORDER_FORM, SALE_ORDER_DETAIL_CHANGE, SELECTED_PRODUCT_TO_SALE_ORDER_DETAIL
 } from '../actions/types';
 import moment from '../utils/moment';
@@ -46,7 +46,7 @@ export default (state = INITIAL_STATE, action) => {
             };
         case SALE_ORDER_CHANGE:
             return { ...state, isSave: false, [action.payload.prop]: action.payload.value };
-        case SALE_ORDER_LIST_LOADED_SQLITE: {
+        case SALE_ORDER_LIST_LOADED_SERVER: {
             const saleOrderList = [];
 
             if (action.payload) {
@@ -75,7 +75,7 @@ export default (state = INITIAL_STATE, action) => {
             };
         }
 
-        case SALE_ORDER_LOADED_SQLITE:
+        case SALE_ORDER_LOADED_SERVER:
             let saleOrderDetails = [];
             action.payload.saleOrderDetails.forEach((item) => {
                 saleOrderDetails.push({

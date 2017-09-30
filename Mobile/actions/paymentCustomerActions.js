@@ -3,8 +3,8 @@ import {
     PAYMENT_CUSTOMER_PENDING, PAYMENT_CUSTOMER_CHANGE,
     PAYMENT_CUSTOMER_CHANGE_FAIL, PAYMENT_CUSTOMER_CHANGE_SUCCESS,
     ADD_FLASH_MESSAGE, SUCCESS_MESSAGE, ERROR_MESSAGE,
-    PAYMENT_CUSTOMER_LOADED_SQLITE, PAYMENT_CUSTOMER_DELETE_SUCCESS,
-    RESET_PAYMENT_CUSTOMER_FORM, PAYMENT_CUSTOMER_LIST_LOADED_SQLITE,
+    PAYMENT_CUSTOMER_LOADED_SERVER, PAYMENT_CUSTOMER_DELETE_SUCCESS,
+    RESET_PAYMENT_CUSTOMER_FORM, PAYMENT_CUSTOMER_LIST_LOADED_SERVER,
     ADD_PAYMENT_CUSTOMER,
 } from './index';
 import { URL } from '../../env';
@@ -24,7 +24,7 @@ export const loadPaymentCustomerListDataFromServerByCustomerId = (customerId) =>
     axios.post(`${URL}/api/payment/getByCustomerId`, { customerId }).then(
         res => {
             dispatch({
-                type: PAYMENT_CUSTOMER_LIST_LOADED_SQLITE,
+                type: PAYMENT_CUSTOMER_LIST_LOADED_SERVER,
                 payload: res.data.payments
             });
         }
@@ -40,7 +40,7 @@ export const loadPaymentCustomerById = (paymentId) => async (dispatch) => {
         res => {
             console.log('res = ', res.data);
             dispatch({
-                type: PAYMENT_CUSTOMER_LOADED_SQLITE,
+                type: PAYMENT_CUSTOMER_LOADED_SERVER,
                 payload: res.data
             });            
         }

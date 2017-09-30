@@ -10,15 +10,15 @@ const Printer = require('pdfmake');
 const PaymentCustomerRouter = Router();
 
 PaymentCustomerRouter.post('/getById', async (req, res) => {
-    const { orderId } = req.body;
+    const { id } = req.body;
 
     try {
         const paymentCustomer = await Knex.raw(`
             SELECT s."id", s."date" , s."customerId", s."userId", s."debtCustomerId", 
-            s."title",d."newDebt", d."oldDebt", d."amount"
+            s."title",d."newDebt", d."oldDebt", s."amount"
             FROM "paymentCustomers" as s
             INNER JOIN "debtCustomers" AS d ON d."id" = s."debtCustomerId" 
-            WHERE s."id" = ${orderId};                      
+            WHERE s."id" = ${id};                      
         `);
         res.status(200).json({
             success: true,
@@ -80,7 +80,7 @@ PaymentCustomerRouter.post('/new', async (req, res) => {
                         .returning('*')
                         .insert({
                             customerId: customerId,
-                            createdDate: moment(date, 'DD-MM-YYYY').format('YYYY-MM-DD'),
+                            date: moment(date, 'DD-MM-YYYY').format('YYYY-MM-DD'),
                             title: title,
                             newDebt: newDebt,
                             oldDebt: oldebt,
@@ -94,7 +94,7 @@ PaymentCustomerRouter.post('/new', async (req, res) => {
                             customerId: customerId,
                             debtCustomerId: data[0].id,
                             title: title,
-                            amount: pay,                            
+                            amount: pay,                           
                             createdDate: moment(date, 'DD-MM-YYYY').format('YYYY-MM-DD')
                         });
 
@@ -182,7 +182,7 @@ PaymentCustomerRouter.post('/update', async (req, res) => {
                             debtCustomers
                         });
 
-                    const So_tien_Dieu_Chinh = totalIncludeVat - paymentCustomer[0].totalIncludeVat - (pay - customerDebt[0].minus);
+                    const So_tien_Dieu_Chinh = (pay - customerDebt[0].minus);
 
                     data = await t('debtCustomers')
                         // .debug(true)
@@ -294,7 +294,7 @@ PaymentCustomerRouter.post('/delete', async (req, res) => {
                 const customerDebt = await Knex('debtCustomers')
                     .where({ id: paymentCustomer[0].debtCustomerId });
                 //phát sinh giảm - phát sinh tăng
-                const So_tien_Dieu_Chinh = paymentCustomer[0].amount - pay;
+                const So_tien_Dieu_Chinh = paymentCustomer[0].amount;
                 
                 //Lấy toàn bộ bảng dữ liệu công nợ có liên quan đến bảng công nợ bị xóa
                 console.log('go 3');
@@ -318,6 +318,7 @@ PaymentCustomerRouter.post('/delete', async (req, res) => {
 
                 
                 console.log('go 6');
+                //Điều chỉnh lại phiếu thu
                 await Knex('paymentCustomers')
                     .transacting(t)
                     .where({ id: id })

@@ -1,7 +1,7 @@
 import {
     ADD_PAYMENT_CUSTOMER, PAYMENT_CUSTOMER_PENDING, PAYMENT_CUSTOMER_CHANGE_FAIL,
     PAYMENT_CUSTOMER_CHANGE_SUCCESS, PAYMENT_CUSTOMER_CHANGE,
-    PAYMENT_CUSTOMER_LOADED_SQLITE, PAYMENT_CUSTOMER_LIST_LOADED_SQLITE, PAYMENT_CUSTOMER_DELETE_SUCCESS,
+    PAYMENT_CUSTOMER_LOADED_SERVER, PAYMENT_CUSTOMER_LIST_LOADED_SERVER, PAYMENT_CUSTOMER_DELETE_SUCCESS,
     RESET_PAYMENT_CUSTOMER_FORM, PAYMENT_CUSTOMER_DETAIL_CHANGE,
 } from '../actions/types';
 import moment from '../utils/moment';
@@ -37,7 +37,7 @@ export default (state = INITIAL_STATE, action) => {
             };
         case PAYMENT_CUSTOMER_CHANGE:
             return { ...state, isSave: false, [action.payload.prop]: action.payload.value };
-        case PAYMENT_CUSTOMER_LIST_LOADED_SQLITE: {
+        case PAYMENT_CUSTOMER_LIST_LOADED_SERVER: {
             const paymentCustomerList = [];
 
             if (action.payload) {
@@ -60,7 +60,7 @@ export default (state = INITIAL_STATE, action) => {
             }
         }        
 
-        case PAYMENT_CUSTOMER_LOADED_SQLITE:
+        case PAYMENT_CUSTOMER_LOADED_SERVER:
             
             return {
                 ...state,
