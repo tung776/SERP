@@ -422,10 +422,10 @@ class EditQuocte extends React.Component {
                             style={[styles.Btn, (this.state.editMode) ? { backgroundColor: '#7f8c8d' } : { backgroundColor: '#16a085' }]}
                             onPress={() => {
                                 let quocteDetails = [...this.state.quocteDetails];
-                                quocteDetails.forEach((order) => {
+                                quocteDetails.forEach((quocte) => {
                                     this.props.units.forEach((unit) => {
-                                        if (order.unitId == unit.id) {
-                                            order.unitName = unit.name
+                                        if (quocte.unitId == unit.id) {
+                                            quocte.unitName = unit.name
                                         }
                                     })
                                 });
@@ -449,10 +449,10 @@ class EditQuocte extends React.Component {
                             style={[styles.Btn, (this.state.editMode) ? { backgroundColor: '#7f8c8d' } : { backgroundColor: '#16a085' }]}
                             onPress={() => {
                                 let quocteDetails = [...this.state.quocteDetails];
-                                quocteDetails.forEach((order) => {
+                                quocteDetails.forEach((quocte) => {
                                     this.props.units.forEach((unit) => {
-                                        if (order.unitId == unit.id) {
-                                            order.unitName = unit.name
+                                        if (quocte.unitId == unit.id) {
+                                            quocte.unitName = unit.name
                                         }
                                     })
                                 });

@@ -157,13 +157,13 @@ export const getActionForMenus = (menu) => {
             return Actions.editReceiptCustomer();
         case SEARCH_RECEIPT_ACT:
             return Actions.indexReceiptCustomer();
-        case SALARY_RECEIPT_ACT:
+        case SALARY_PAY_ACT:
             return Actions.newSalaryReceipt();
         case RENTAL_WAREHOUSE_ACT:
             return Actions.newRentalWarehouseReceipt();
-        case INTERESTING_RECEIPT_ACT:
+        case INTERESTING_PAY_ACT:
             return Actions.newInterestingReceipt();
-        case OTHER_RECEIPT_ACT:
+        case OTHER_PAY_ACT:
             return Actions.newOtherReceipt();
 
         case SUPPLIER_ORDER_ACT:

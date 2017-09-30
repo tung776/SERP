@@ -9,7 +9,7 @@ import moment from '../utils/moment';
 const INITIAL_STATE = {
     id: '',
     customerId: '',
-    date: '',
+    createdDate: '',
     title: '',
     newDebt: '',
     oldDebt: '',
@@ -31,7 +31,7 @@ export default (state = INITIAL_STATE, action) => {
                 ...state,
                 isSave: false,
                 customerId: '',
-                date: '',
+                createdDate: '',
                 title: '',
                 error: ''
             };
@@ -41,8 +41,8 @@ export default (state = INITIAL_STATE, action) => {
             const paymentCustomerList = [];
 
             if (action.payload) {
-                action.payload.forEach((order) => {
-                    const temp = { ...order, key: order.id }
+                action.payload.forEach((payment) => {
+                    const temp = { ...payment, key: payment.id }
                     paymentCustomerList.push(temp);
                 })
                 return {
@@ -67,7 +67,7 @@ export default (state = INITIAL_STATE, action) => {
                 isSave: false,
                 id: action.payload.paymentCustomer[0].id,
                 customerId: action.payload.paymentCustomer[0].customerId,
-                date: action.payload.paymentCustomer[0].date,
+                createdDate: action.payload.paymentCustomer[0].createdDate,
                 title: action.payload.paymentCustomer[0].title,
                 debtCustomerId: action.payload.paymentCustomer[0].debtCustomerId,
                 newDebt: action.payload.paymentCustomer[0].newDebt,
@@ -99,7 +99,7 @@ export default (state = INITIAL_STATE, action) => {
                 ...state,
                 id: "",
                 customerId: '',
-                date: '',
+                createdDate: '',
                 title: '',
                 error: '',
                 loading: false,

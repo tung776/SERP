@@ -32,7 +32,7 @@ class NewPaymentCustomer extends React.Component {
         isExpandedTotal: true,
         customerId: '',
         debtCustomers: {},
-        date: '',
+        createdDate: '',
         title: '',
         pay: 0,
         newDebt: 0,
@@ -53,13 +53,13 @@ class NewPaymentCustomer extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log('nextProps = ', nextProps);
-
+        console.log('nextProps.debt = ', nextProps.debt);
+        
         const oldDebt = nextProps.debt ? nextProps.debt.newDebt : 0;
+        console.log('oldDebt = ', oldDebt);
         
         this.setState({
             id: nextProps.id,
-            newDebt,
             debtCustomers: nextProps.debt,
             oldDebt,
         });
@@ -105,7 +105,7 @@ class NewPaymentCustomer extends React.Component {
                             <DatePicker
                                 enabled={this.props.isSave}
                                 style={{ width: 200 }}
-                                date={this.state.date}
+                                date={this.state.createdDate}
                                 mode="date"
                                 placeholder="Chọn ngày lập phiếu thu"
                                 format="DD-MM-YYYY"
@@ -125,7 +125,7 @@ class NewPaymentCustomer extends React.Component {
                                     }
                                     // ... You can check the source to find the other keys.
                                 }}
-                                onDateChange={(date) => { this.setState({ date }); }}
+                                onDateChange={(createdDate) => { this.setState({ createdDate }); }}
                             />
                         </View>
                     </View>
@@ -194,6 +194,7 @@ class NewPaymentCustomer extends React.Component {
                                 value={formatNumber(this.state.pay)}
                                 onChangeText={text => {
                                     const pay = unformat(text);
+                                    const newDebt = this.state.oldDebt - pay;
                                     this.setState({
                                         pay,
                                         newDebt,
@@ -226,39 +227,11 @@ class NewPaymentCustomer extends React.Component {
                 <Header>
                     <Text style={styles.headTitle} >Tạo Phiếu Thu</Text>
                 </Header>
-                <View style={styles.body}>
-                    <TouchableOpacity
-                        style={styles.Btn}
-                        onPress={() => this.setState({ isExpanded: !this.state.isExpanded })}
-                    >
-                        {this.state.isExpanded ?
-                            <Ionicons name="ios-arrow-dropup-outline" size={25} color="#FFFFFF" /> :
-                            <Ionicons name="ios-arrow-dropdown-outline" size={25} color="#FFFFFF" />
-                        }
-                    </TouchableOpacity>
+                <View style={styles.body}>                    
 
                     {this.renderHeaderPayment()}
 
-                    {this.renderToTal()}
-
-                    <TouchableOpacity
-                        style={styles.Btn}
-                        onPress={() => this.setState({ isExpandedTotal: !this.state.isExpandedTotal })}
-                    >
-                        {this.state.isExpandedTotal ?
-                            <Ionicons name="ios-arrow-dropdown-outline" size={25} color="#FFFFFF" /> :
-                            <Ionicons name="ios-arrow-dropup-outline" size={25} color="#FFFFFF" />
-                        }
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                        disabled={this.props.isSave}
-                        style={{ padding: 2, alignSelf: 'center', position: 'absolute', right: 10, bottom: 0 }}
-                        onPress={this.onSelectProduct.bind(this)}
-                    >
-                        <Ionicons name="ios-add-circle" size={35} color="#ecf0f1" />
-                    </TouchableOpacity>
-
+                    {this.renderToTal()}                    
 
                 </View>
                 <Footer>
@@ -293,7 +266,7 @@ class NewPaymentCustomer extends React.Component {
                                     });
                                     let options = {
                                         html: PaymentTemplate(customerName, this.props.id,
-                                            this.state.date, this.state.oldDebt, this.state.pay, this.state.newDebt
+                                            this.state.createdDate, this.state.oldDebt, this.state.pay, this.state.newDebt
                                             ),
                                         css: css(),
                                         fileName: "PhieuThu",
@@ -327,7 +300,7 @@ class NewPaymentCustomer extends React.Component {
                                     }
                                 });
                                 sendMessage(
-                                    customerPhone, customerName, this.state.date, this.state.oldDebt, this.state.pay, this.state.newDebt
+                                    customerPhone, customerName, this.state.createdDate, this.state.oldDebt, this.state.pay, this.state.newDebt
                                 );
                             }}
                         >
@@ -347,7 +320,7 @@ class NewPaymentCustomer extends React.Component {
                                     }
                                 });
                                 sendEmail(
-                                    customerEmail, customerName, this.state.date, this.state.oldDebt, this.state.pay, this.state.newDebt
+                                    customerEmail, customerName, this.state.createdDate, this.state.oldDebt, this.state.pay, this.state.newDebt
                                 );
                             }}
                         >
@@ -457,7 +430,7 @@ const mapStateToProps = (state, ownProps) => {
     const {
         id,
         customerId,
-        date,
+        createdDate,
         loaded,
         error,
         isSave,
@@ -468,7 +441,7 @@ const mapStateToProps = (state, ownProps) => {
         isSave,
         id,
         customerId,
-        date,
+        createdDate,
         loaded,
         error,
         customers,

@@ -14,7 +14,7 @@ PaymentCustomerRouter.post('/getById', async (req, res) => {
 
     try {
         const paymentCustomer = await Knex.raw(`
-            SELECT s."id", s."date" , s."customerId", s."userId", s."debtCustomerId", 
+            SELECT s."id", s."createdDate" , s."customerId", s."userId", s."debtCustomerId", 
             s."title",d."newDebt", d."oldDebt", s."amount"
             FROM "paymentCustomers" as s
             INNER JOIN "debtCustomers" AS d ON d."id" = s."debtCustomerId" 
@@ -60,18 +60,20 @@ PaymentCustomerRouter.post('/getByCustomerId', async (req, res) => {
 
 PaymentCustomerRouter.post('/new', async (req, res) => {
     let {
-        date, title, customerId, pay,
-        newDebt, oldebt, debtCustomerId, user
+        createdDate, title, customerId, pay,
+        newDebt, oldDebt, debtCustomerId, user
     } = req.body;
     // return;
     const { isValid, errors } = NewPaymentCustomerValidator({
-        date, title, customerId, pay,
-        newDebt, oldebt
+        createdDate, title, customerId, pay,
+        newDebt, oldDebt
     });
-    let order = []
+    console.log('createdDate =', createdDate);
+    
     if (isValid) {
         let newDataversion;
         let data;
+        let payment;
         try {
             Knex.transaction(async (t) => {
                 try {
@@ -80,10 +82,10 @@ PaymentCustomerRouter.post('/new', async (req, res) => {
                         .returning('*')
                         .insert({
                             customerId: customerId,
-                            date: moment(date, 'DD-MM-YYYY').format('YYYY-MM-DD'),
+                            createdDate: moment(createdDate, 'DD-MM-YYYY').format('YYYY-MM-DD'),
                             title: title,
                             newDebt: newDebt,
-                            oldDebt: oldebt,
+                            oldDebt: oldDebt,
                             minus: pay,
                             plus: 0
                         });
@@ -95,7 +97,7 @@ PaymentCustomerRouter.post('/new', async (req, res) => {
                             debtCustomerId: data[0].id,
                             title: title,
                             amount: pay,                           
-                            createdDate: moment(date, 'DD-MM-YYYY').format('YYYY-MM-DD')
+                            createdDate: moment(createdDate, 'DD-MM-YYYY').format('YYYY-MM-DD')
                         });
 
                     const dataVersion = await Knex('dataVersions').where('id', 1);
@@ -142,12 +144,12 @@ PaymentCustomerRouter.post('/new', async (req, res) => {
 PaymentCustomerRouter.post('/update', async (req, res) => {
 
     let {
-        id, date, title, customerId,  pay,
+        id, createdDate, title, customerId,  pay,
         newDebt, oldDebt, debtCustomerId, user
     } = req.body;
 
     const { isValid, errors } = NewPaymentCustomerValidator({
-        date, title, customerId, pay,
+        createdDate, title, customerId, pay,
         newDebt, oldDebt,
     });
 
@@ -190,7 +192,7 @@ PaymentCustomerRouter.post('/update', async (req, res) => {
                         .whereRaw(`id = ${debtCustomerId}`)
                         .update({
                             customerId: customerId,
-                            createdDate: moment(date, 'DD-MM-YYYY').format('YYYY-MM-DD'),
+                            createdDate: moment(createdDate, 'DD-MM-YYYY').format('YYYY-MM-DD'),
                             title: title,
                             newDebt: newDebt,
                             oldDebt: oldDebt,
@@ -234,7 +236,7 @@ PaymentCustomerRouter.post('/update', async (req, res) => {
                             debtCustomerId: debtCustomerId,
                             title: title,
                             amount: pay,
-                            createdDate: moment(date, 'DD-MM-YYYY').format('YYYY-MM-DD')
+                            createdDate: moment(createdDate, 'DD-MM-YYYY').format('YYYY-MM-DD')
                         });
 
                 } catch (e) {
@@ -265,8 +267,8 @@ PaymentCustomerRouter.post('/update', async (req, res) => {
 
 PaymentCustomerRouter.post('/delete', async (req, res) => {
 
-    const { id, date, title, customerId, pay,
-        newDebt, oldebt, debtCustomerId, user } = req.body;
+    const { id, createdDate, title, customerId, pay,
+        newDebt, oldDebt, debtCustomerId, user } = req.body;
     let newDataversion;
     console.log('deleting order ', id);
 

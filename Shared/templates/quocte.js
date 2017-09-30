@@ -13,8 +13,8 @@ export default Invoice = (
         htmlQuocteDetail += `
         <tr>
             <td>${quocte.name}</td>
-            <td class = "center">${order.unitName}</td>
-            <td class = "alignright" >${formatNumber(order.salePrice)}</td>
+            <td class = "center">${quocte.unitName}</td>
+            <td class = "alignright" >${formatNumber(quocte.salePrice)}</td>
         </tr>
         `
     });
@@ -46,10 +46,10 @@ export default Invoice = (
     
         </table>
         <h1 class="title" width: "100%">BÁO GIÁ</h1>
-        <table class="orderInfor" width="100%">
+        <table class="quocteInfor" width="100%">
             <tr>
                 <td width="50%">
-                    <h2>Kính gửi Quý Khách ${customerName}</h2>
+                    <h5>Kính gửi Quý Khách ${customerName}</h5>
                 </td>
                 <td width="50%">
                     <p>Ngày Lập: ${date}</p>
@@ -58,7 +58,7 @@ export default Invoice = (
         </table>
     
     
-        <table class="orderDetail" width="100%">
+        <table class="quocteDetail" width="100%">
             <thead>
                 <tr>
                     <th>
@@ -130,49 +130,49 @@ export const css = () => {
         border-collapse: collapse;
     }
 
-    table.orderDetail th,
-    table.orderDetail td {
+    table.quocteDetail th,
+    table.quocteDetail td {
         border-style: solid;
         border-width: 1px;
         padding: 2em;
         border-color: #7f8c8d;
     }
 
-    table.orderDetail th {
+    table.quocteDetail th {
         text-align: center;
     }
 
-    table.orderDetail tr:nth-child(even) {
+    table.quocteDetail tr:nth-child(even) {
         background-color: #dddddd;
     }
 
-    table.orderDetail td:nth-child(1) {
+    table.quocteDetail td:nth-child(1) {
         width: 32%;
     }
 
-    table.orderDetail td:nth-child(2) {
+    table.quocteDetail td:nth-child(2) {
         text-align: center;
         width: 12%;
     }
 
-    table.orderDetail td:nth-child(3) {
+    table.quocteDetail td:nth-child(3) {
         text-align: center;
         width: 15%;
     }
 
-    table.orderDetail td:nth-child(4) {
+    table.quocteDetail td:nth-child(4) {
         text-align: right;
         width: 18%;
     }
 
-    table.orderDetail td:nth-child(5) {
+    table.quocteDetail td:nth-child(5) {
         text-align: right;
         width: 23%;
     }
-    table.orderDetail td.alignright {
+    table.quocteDetail td.alignright {
         text-align: right;
     }
-    table.orderDetail td.center {
+    table.quocteDetail td.center {
         text-align: center;
     }
 
@@ -224,7 +224,7 @@ export const css = () => {
         line-height: 1em;
     }
 
-    table.orderInfor {
+    table.quocteInfor {
         text-align: center;
         font-weight: bold;
         margin-bottom: 20px;
@@ -239,8 +239,8 @@ export const sendMessage = (
     QuocteDetail,
 ) => {
     let htmlQuocteDetail = '';
-    QuocteDetail.forEach((order) => {        
-        htmlQuocteDetail += `${order.name}: ${order.unitName} : ${formatNumber(order.salePrice)}. `
+    QuocteDetail.forEach((quocte) => {        
+        htmlQuocteDetail += `${quocte.name}: ${quocte.unitName} : ${formatNumber(quocte.salePrice)}. `
     });
     
     Communications.text(customerPhone, `Kính gửi Quí Khách ${customerName} Báo Giá ngày: ${date}: 
@@ -254,8 +254,8 @@ export const sendEmail = (
     QuocteDetail,
 ) => {
     let htmlQuocteDetail = '';
-    QuocteDetail.forEach((order) => {
-        htmlQuocteDetail += `${order.name}: ${order.unitName} x ${formatNumber(order.salePrice)}.
+    QuocteDetail.forEach((quocte) => {
+        htmlQuocteDetail += `${quocte.name}: ${quocte.unitName} x ${formatNumber(quocte.salePrice)}.
         `
     });
     Communications.email([customerEmail], null, null, 'Báo Giá', `Kính gửi Quí Khách ${customerName}

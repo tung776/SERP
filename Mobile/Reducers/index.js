@@ -10,6 +10,7 @@ import customerGroups from '../../Shared/reducers/customerGroupReducer';
 import customers from '../../Shared/reducers/customerReducer';
 import quoctes from '../../Shared/reducers/quocteReducer';
 import saleOrders from '../../Shared/reducers/saleOrderReducer';
+import paymentCustomerReducer from '../../Shared/reducers/paymentCustomerReducer';
 
 const reducers = combineReducers({
     main: () => null,
@@ -25,6 +26,7 @@ const reducers = combineReducers({
     customers: customers,
     quoctes: quoctes,
     saleOrders: saleOrders,
+    paymentCustomer: paymentCustomerReducer,
 
 });
 export default reducers;
