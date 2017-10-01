@@ -47,7 +47,6 @@ export const loadPaymentCustomerById = (paymentId) => async (dispatch) => {
     );
 };
 
-
 export const resetData = () => (dispatch) => {
     dispatch({
         type: RESET_PAYMENT_CUSTOMER_FORM
@@ -58,8 +57,6 @@ export const PaymentCustomerChange = ({ prop, value }) => ({
     type: PAYMENT_CUSTOMER_CHANGE,
     payload: { prop, value }
 });
-
-
 
 export const PaymentCustomerDelete = (payment) => async (dispatch) => {
     dispatch({

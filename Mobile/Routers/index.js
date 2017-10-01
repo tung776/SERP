@@ -94,9 +94,9 @@ const RouterComponent = () => (
                 <Scene key="customerDebt" component={ComminSoon} title="..." />
                 <Scene key="reportSaleByCustomer" component={ComminSoon} title="..." />
 
-                <Scene key="newReceiptCustomer" component={newPaymentCustomer} title="..." />
-                <Scene key="editReceiptCustomer" component={editPaymentCustomer} title="..." />
-                <Scene key="indexReceiptCustomer" component={indexPaymentCustomer} title="..." />
+                <Scene key="newReceiptCustomer" component={newPaymentCustomer} title="Thêm Phiếu Thu" />
+                <Scene key="editReceiptCustomer" component={editPaymentCustomer} title="Sửa Phiếu Thu" />
+                <Scene key="indexReceiptCustomer" component={indexPaymentCustomer} title="Tìm Phiếu Thu" />
                 
                 <Scene key="newSalaryReceipt" component={ComminSoon} title="..." />
                 <Scene key="newRentalWarehouseReceipt" component={ComminSoon} title="..." />

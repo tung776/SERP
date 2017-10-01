@@ -11,18 +11,18 @@ import { connect } from 'react-redux';
 import stylesCommon from '../../../styles';
 import { Ionicons } from '@expo/vector-icons';
 import {
-    loadSaleOrderListDataFromServerByCustomerId
-} from '../../../actions/saleOrderActions';
+    loadPaymentCustomerListDataFromServerByCustomerId
+} from '../../../actions/paymentCustomerActions';
 import { loadCustomerListDataFromSqlite } from '../../../actions/customerAction';
 import { Spinner } from '../../commons/Spinner';
 import SqlService from '../../../database/sqliteService';
 import moment from '../../../../Shared/utils/moment';
 
-class SaleOrderList extends React.Component {
+class PaymentCustomerList extends React.Component {
     state = {
         customerId: null,
         error: null,
-        saleOrderList: [],
+        paymentCustomerList: [],
         loaded: false
     }
 
@@ -36,22 +36,22 @@ class SaleOrderList extends React.Component {
         Actions.main();
     }
 
-    renderSaleOrderList() {
-        if (this.props.saleOrderList) {
+    renderPaymentCustomerList() {
+        if (this.props.paymentCustomerList) {
             return (
                 <FlatList
-                    style={styles.listSaleOrder}
-                    data={this.props.saleOrderList}
+                    style={styles.listPaymentCustomer}
+                    data={this.props.paymentCustomerList}
                     renderItem={({ item }) => {
                         if (item) {
                             return (
                                 <TouchableWithoutFeedback
                                     key={item.key} onPress={() => {
-                                        Actions.editSaleOrder({ saleOrder: item });
+                                        Actions.editPaymentCustomer({ paymentCustomer: item });
                                     }}
                                 >
                                     <View style={styles.listItem}>
-                                        <Text style={styles.itemTitle}>Hóa Đơn số: {item.id} - {moment(item.date, moment.ISO_8601).format('LL')}</Text>
+                                        <Text style={styles.itemTitle}>Phiếu Thu số: {item.id} - {moment(item.date, moment.ISO_8601).format('LL')}</Text>
                                     </View>
                                 </TouchableWithoutFeedback>
                             )
@@ -64,7 +64,7 @@ class SaleOrderList extends React.Component {
         }
         return (
             <View>
-                <Text>Không tìm thấy hóa đơn bạn cần</Text>
+                <Text>Không tìm thấy phiếu thu bạn cần</Text>
             </View>
         );
     }
@@ -73,7 +73,7 @@ class SaleOrderList extends React.Component {
         if (this.state.customerId === null ) {
             return Alert.alert(
                 'Báo lỗi',
-                'Bạn chưa chọn nhóm khách hàng hoặc khách hàng',
+                'Bạn chưa chọn nhóm khách hàng',
                 [
                     {
                         text: 'Xác Nhận'
@@ -82,14 +82,14 @@ class SaleOrderList extends React.Component {
                 ]
             );
         }
-        this.props.loadSaleOrderListDataFromServerByCustomerId(this.state.customerId);
+        this.props.loadPaymentCustomerListDataFromServerByCustomerId(this.state.customerId);
     }
 
     render() {
         return (
             <View style={styles.container}>
                 <Header>
-                    <Text style={styles.headTitle}>Tìm Hóa Đơn</Text>
+                    <Text style={styles.headTitle}>Tìm Phiếu Thu</Text>
                 </Header>
                 <View style={styles.body}>
                     <View style={styles.InputContainer}>
@@ -118,12 +118,12 @@ class SaleOrderList extends React.Component {
                         </TouchableOpacity>
                     </View>
 
-                    {this.renderSaleOrderList()}
+                    {this.renderPaymentCustomerList()}
                 </View>
                 <Footer>
-                    <TouchableOpacity style={styles.addNewGroupBtn} onPress={() => { Actions.newSaleOrder(); }}>
+                    <TouchableOpacity style={styles.addNewGroupBtn} onPress={() => { Actions.newPaymentCustomer(); }}>
                         <Ionicons name="ios-add-circle" size={32} color="#FFFFFF" />
-                        <Text style={{ alignSelf: 'center', paddingLeft: 10, fontSize: 16, color: '#FFFFFF', fontWeight: '600' }}>Thêm Hóa Đơn</Text>
+                        <Text style={{ alignSelf: 'center', paddingLeft: 10, fontSize: 16, color: '#FFFFFF', fontWeight: '600' }}>Thêm Phiếu Thu</Text>
                     </TouchableOpacity>
                 </Footer>
             </View>
@@ -183,7 +183,7 @@ const styles = {
         borderRadius: 5,
         backgroundColor: 'rgba(236, 240, 241,1.0)'
     },
-    listSaleOrder: {
+    listPaymentCustomer: {
         flex: 1
     },
     groupControl: {
@@ -202,16 +202,16 @@ const styles = {
     },
 };
 const mapStateToProps = (state, ownProps) => {
-    const { loading, loaded, saleOrderList } = state.saleOrders;
+    const { loading, loaded, paymentCustomerList } = state.paymentCustomers;
     const { customers } = state.customers;
     return {
         loading,
         loaded,
-        saleOrderList,
+        paymentCustomerList,
         customers
     };
 };
 export default connect(mapStateToProps, {
-    loadSaleOrderListDataFromServerByCustomerId,
+    loadPaymentCustomerListDataFromServerByCustomerId,
     loadCustomerListDataFromSqlite,
-})(SaleOrderList);
+})(PaymentCustomerList);

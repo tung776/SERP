@@ -68,8 +68,9 @@ PaymentCustomerRouter.post('/new', async (req, res) => {
         createdDate, title, customerId, pay,
         newDebt, oldDebt
     });
-    console.log('createdDate =', createdDate);
-    
+
+    title = (title == "") ? `Thu công nợ khách hàng` : title;
+
     if (isValid) {
         let newDataversion;
         let data;
@@ -153,14 +154,17 @@ PaymentCustomerRouter.post('/update', async (req, res) => {
         newDebt, oldDebt,
     });
 
-
+    title = (title == "") ? `Thu công nợ khách hàng` : title;
     
-    const paymentCustomer = await Knex('paymentCustomers')
-        .where({ id: id });
+    console.log('req.body = ', req.body);
+    return;
+
+    // const oldPaymentCustomer = await Knex('paymentCustomers')
+    //     .where({ id: id });
 
     const customerDebtBeChanged = await Knex('debtCustomers')
         .orderBy('id', 'asc')
-        .whereRaw(`id > ${paymentCustomer[0].debtCustomerId} AND "customerId" = ${paymentCustomer[0].customerId}`);
+        .whereRaw(`id > ${debtCustomerId} AND "customerId" = ${customerId}`);
 
     const customerDebt = await Knex('debtCustomers')
         .where({ id: debtCustomerId });

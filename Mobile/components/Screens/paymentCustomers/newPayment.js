@@ -52,12 +52,8 @@ class NewPaymentCustomer extends React.Component {
         });
     }
 
-    componentWillReceiveProps(nextProps) {
-        console.log('nextProps.debt = ', nextProps.debt);
-        
-        const oldDebt = nextProps.debt ? nextProps.debt.newDebt : 0;
-        console.log('oldDebt = ', oldDebt);
-        
+    componentWillReceiveProps(nextProps) {        
+        const oldDebt = nextProps.debt ? nextProps.debt.newDebt : 0;        
         this.setState({
             id: nextProps.id,
             debtCustomers: nextProps.debt,
@@ -75,10 +71,10 @@ class NewPaymentCustomer extends React.Component {
                     text: 'Xác Nhận',
                     onPress: () => {
                         const {
-                            createdDate, debtCustomerId, title, customerId, amount
+                            createdDate, debtCustomerId, title, customerId, pay, oldDebt, newDebt
                         } = this.state;
                         this.props.AddNewPaymentCustomer({
-                            createdDate, title, customerId, amount, debtCustomerId: this.state.debtCustomers.id,
+                            createdDate, title, customerId, pay, oldDebt, newDebt, debtCustomerId: this.state.debtCustomers.id,
                             user: this.props.user
                         });
                     }
@@ -92,8 +88,6 @@ class NewPaymentCustomer extends React.Component {
         this.props.loadDebtCustomersFromSqlite(customerId);        
         this.setState({ customerId });
     }
-
-   
 
     renderHeaderPayment() {
         if (this.state.isExpanded) {
