@@ -23,7 +23,6 @@ class PaymentCustomerList extends React.Component {
         customerId: null,
         error: null,
         paymentCustomerList: [],
-        loaded: false
     }
 
     componentWillMount() {
@@ -202,11 +201,9 @@ const styles = {
     },
 };
 const mapStateToProps = (state, ownProps) => {
-    const { loading, loaded, paymentCustomerList } = state.paymentCustomers;
+    const { paymentCustomerList } = state.paymentCustomer;
     const { customers } = state.customers;
     return {
-        loading,
-        loaded,
         paymentCustomerList,
         customers
     };

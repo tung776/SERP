@@ -6,7 +6,8 @@ export default Invoice = (
     date,
     oldDebt,
     pay,
-    newDebt
+    newDebt,
+    paymentCustomer
 ) => {    
     
     return `
