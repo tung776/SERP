@@ -25,7 +25,7 @@ export const loadPaymentCustomerListDataFromServerByCustomerId = (customerId) =>
         res => {
             dispatch({
                 type: PAYMENT_CUSTOMER_LIST_LOADED_SERVER,
-                payload: res.data.payments
+                payload: res.data.payment
             });
         }
     );

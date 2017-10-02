@@ -1,3 +1,5 @@
+path 
+babel es6, jsx, path intellisence, react native snippet, react native tools, react-beautify, react-native/react/redux, sass
 ### convert ảnh định dạng 64bit ###
 https://www.base64-image.de/
 

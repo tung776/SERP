@@ -28,7 +28,7 @@ import {
     unformat
 } from '../../../../Shared/utils/format';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
-import invoiceTemplate, { css, sendEmail, sendMessage } from '../../../../Shared/templates/payment';
+import paymentTemplate, { css, sendEmail, sendMessage } from '../../../../Shared/templates/payment';
 import loadAsset from '../../../utils/loadAsset';
 import { fontUrl, URL } from '../../../../env';
 
@@ -89,7 +89,7 @@ class EditPaymentCustomer extends React.Component {
                     onPress: () => {
                         const {
                             id, createdDate, title, customerId, amount,
-                            newDebt, oldDebt, saleOrderDetails
+                            newDebt, oldDebt
                         } = this.state;
                         this.props.PaymentCustomerUpdate({
                             id,
@@ -297,7 +297,7 @@ class EditPaymentCustomer extends React.Component {
                                     });
 
                                     let options = {
-                                        html: invoiceTemplate(customerName, this.state.id,
+                                        html: paymentTemplate(customerName, this.state.id,
                                             this.state.createdDate, this.state.oldDebt,
                                              this.state.amount, this.state.newDebt,
                                             ),
@@ -364,12 +364,12 @@ class EditPaymentCustomer extends React.Component {
                             style={[styles.Btn, this.state.editMode ? { backgroundColor: '#d35400' } : { backgroundColor: '#7f8c8d' }]}
                             onPress={() => {
                                 const {
-                                    id, createdDate, title, customerId, total, totalIncludeVat, vat, pay,
-                                    newDebt, oldDebt, saleOrderDetails
+                                    id, createdDate, title, customerId, amount,
+                                    newDebt, oldDebt
                                 } = this.state;
                                 this.props.PaymentCustomerDelete({
-                                    id, createdDate, title, customerId, total, totalIncludeVat, vat, pay,
-                                    newDebt, oldDebt, saleOrderDetails
+                                    id, createdDate, title, customerId, amount,
+                                    newDebt, oldDebt
                                 });
                             }}
                         >
@@ -493,7 +493,7 @@ const mapStateToProps = (state, ownProps) => {
         debtCustomerId,
         loaded,
         error
-    } = state.saleOrders;
+    } = state.paymentCustomer;
     const { customers } = state.customers;
     const { isAuthenticated, user } = state.auth;
     return {

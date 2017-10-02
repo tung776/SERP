@@ -32,7 +32,7 @@ class PaymentCustomerList extends React.Component {
     }
 
     addNewGroupBtnPress() {
-        Actions.main();
+        Actions.newReceiptCustomer();
     }
 
     renderPaymentCustomerList() {
@@ -46,11 +46,11 @@ class PaymentCustomerList extends React.Component {
                             return (
                                 <TouchableWithoutFeedback
                                     key={item.key} onPress={() => {
-                                        Actions.editPaymentCustomer({ paymentCustomer: item });
+                                        Actions.editReceiptCustomer({ paymentCustomer: item });
                                     }}
                                 >
                                     <View style={styles.listItem}>
-                                        <Text style={styles.itemTitle}>Phiếu Thu số: {item.id} - {moment(item.date, moment.ISO_8601).format('LL')}</Text>
+                                        <Text style={styles.itemTitle}>Phiếu Thu số: {item.id} - {moment(item.createdDate, moment.ISO_8601).format('LL')}</Text>
                                     </View>
                                 </TouchableWithoutFeedback>
                             )

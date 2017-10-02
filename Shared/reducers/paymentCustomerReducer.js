@@ -45,6 +45,7 @@ export default (state = INITIAL_STATE, action) => {
                     const temp = { ...payment, key: payment.id }
                     paymentCustomerList.push(temp);
                 })
+                console.log('paymentCustomerList = ', paymentCustomerList)
                 return {
                     ...state,
                     paymentCustomerList,

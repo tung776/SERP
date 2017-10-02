@@ -39,14 +39,14 @@ PaymentCustomerRouter.post('/getByCustomerId', async (req, res) => {
     const count = 10; //10 dòng trong 1 trang
     const page = 1;
     try {
-        const orders = await Knex('paymentCustomers')
+        const payment = await Knex('paymentCustomers')
             .where({ customerId })
             .orderBy('id', 'desc')
         // .limit(count)
         // .offset(30);
         res.status(200).json({
             success: true,
-            orders,
+            payment,
         });
     }
     catch (e) {
