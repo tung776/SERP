@@ -19,7 +19,7 @@ import {
     PaymentCustomerUpdate,
     PaymentCustomerChange,
     PaymentCustomerDelete,
-} from '../../../actions/saleOrderActions';
+} from '../../../actions/paymentCustomerActions.js';
 import db from '../../../database/sqliteConfig';
 import moment from '../../../../Shared/utils/moment';
 import {
@@ -51,7 +51,8 @@ class EditPaymentCustomer extends React.Component {
         loaded: false
     }
     async componentWillMount() {
-        this.props.loadPaymentCustomerById(this.props.saleOrder.id);
+        console.log('this.props.paymentCustomer = ', this.props.paymentCustomer);
+        this.props.loadPaymentCustomerById(this.props.paymentCustomer.id);
 
         this.setState({ loaded:false });
 
@@ -65,16 +66,17 @@ class EditPaymentCustomer extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        
+        console.log('nextProps.pay = ', nextProps.pay);
         this.setState({
             id: nextProps.id,
             customerId: nextProps.customerId,
             createdDate: moment(nextProps.createdDate, moment.ISO_8601).format('DD-MM-YYYY'),
-            amount: nextProps.amount,
+            pay: nextProps.pay,
             debtCustomers: nextProps.debt,
             debtCustomerId: nextProps.debtCustomerId,
             oldDebt: nextProps.oldDebt,
             newDebt: nextProps.newDebt,
+            title: nextProps.title,
         });
     }
 
@@ -88,7 +90,7 @@ class EditPaymentCustomer extends React.Component {
                     text: 'Xác Nhận',
                     onPress: () => {
                         const {
-                            id, createdDate, title, customerId, amount,
+                            id, createdDate, title, customerId, pay,
                             newDebt, oldDebt
                         } = this.state;
                         this.props.PaymentCustomerUpdate({
@@ -96,7 +98,7 @@ class EditPaymentCustomer extends React.Component {
                             createdDate,
                             title,
                             customerId,
-                            amount,
+                            pay,
                             newDebt,
                             oldDebt,
                             debtCustomerId: this.state.debtCustomerId,
@@ -215,13 +217,13 @@ class EditPaymentCustomer extends React.Component {
                                 underlineColorAndroid={'transparent'}
                                 style={[styles.textInput, { textAlign: 'right', fontSize: 15 }]}
                                 blurOnSubmit
-                                value={formatNumber(this.state.amount)}
+                                value={formatNumber(this.state.pay)}
                                 onChangeText={text => {
-                                    const amount = unformat(text);
-                                    const newDebt = this.state.oldDebt - amount;
+                                    const pay = unformat(text);
+                                    const newDebt = this.state.oldDebt - pay;
                                     this.setState({
                                         newDebt,
-                                        amount
+                                        pay
                                     });
                                 }}
                                 type="Text"
@@ -299,7 +301,7 @@ class EditPaymentCustomer extends React.Component {
                                     let options = {
                                         html: paymentTemplate(customerName, this.state.id,
                                             this.state.createdDate, this.state.oldDebt,
-                                             this.state.amount, this.state.newDebt,
+                                             this.state.pay, this.state.newDebt,
                                             ),
                                         css: css(),
                                         fileName: "invoice",
@@ -333,7 +335,7 @@ class EditPaymentCustomer extends React.Component {
                                 });
                                 sendMessage(
                                     customerPhone, customerName, this.state.createdDate, 
-                                    this.state.oldDebt, this.state.amount, this.state.newDebt
+                                    this.state.oldDebt, this.state.pay, this.state.newDebt
                                 );
                             }}
                         >
@@ -353,7 +355,7 @@ class EditPaymentCustomer extends React.Component {
                                 });
                                 sendEmail(
                                     customerEmail, customerName, this.state.createdDate, 
-                                    this.state.oldDebt, this.state.amount, this.state.newDebt
+                                    this.state.oldDebt, this.state.pay, this.state.newDebt
                                 );
                             }}
                         >
@@ -364,11 +366,11 @@ class EditPaymentCustomer extends React.Component {
                             style={[styles.Btn, this.state.editMode ? { backgroundColor: '#d35400' } : { backgroundColor: '#7f8c8d' }]}
                             onPress={() => {
                                 const {
-                                    id, createdDate, title, customerId, amount,
+                                    id, createdDate, title, customerId, pay,
                                     newDebt, oldDebt
                                 } = this.state;
                                 this.props.PaymentCustomerDelete({
-                                    id, createdDate, title, customerId, amount,
+                                    id, createdDate, title, customerId, pay,
                                     newDebt, oldDebt
                                 });
                             }}
@@ -470,7 +472,7 @@ const styles = {
     PaymentCustomerDetailItemContainer: {
         flexDirection: 'row',
     },
-    saleOrderDetailRemoveBtn: {
+    paymentCustomerDetailRemoveBtn: {
 
     },
     totalControlGroup: {
@@ -487,7 +489,7 @@ const mapStateToProps = (state, ownProps) => {
         customerId,
         createdDate,
         title,        
-        amount,
+        pay,
         oldDebt,
         newDebt,
         debtCustomerId,
@@ -501,7 +503,7 @@ const mapStateToProps = (state, ownProps) => {
         customerId,
         createdDate,
         title,
-        amount,
+        pay,
         oldDebt,
         newDebt,
         debtCustomerId,

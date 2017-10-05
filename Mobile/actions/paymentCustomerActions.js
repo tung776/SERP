@@ -32,11 +32,12 @@ export const loadPaymentCustomerListDataFromServerByCustomerId = (customerId) =>
 };
 
 export const loadPaymentCustomerById = (paymentId) => async (dispatch) => {
+    console.log('paymentId = ', paymentId);
     dispatch({
         type: PAYMENT_CUSTOMER_PENDING
     });
 
-    axios.post(`${URL}/api/payment/getById`, { paymentId }).then(
+    axios.post(`${URL}/api/payment/getById`, { id: paymentId }).then(
         res => {
             console.log('res = ', res.data);
             dispatch({

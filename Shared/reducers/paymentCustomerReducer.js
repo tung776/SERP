@@ -73,7 +73,7 @@ export default (state = INITIAL_STATE, action) => {
                 debtCustomerId: action.payload.paymentCustomer[0].debtCustomerId,
                 newDebt: action.payload.paymentCustomer[0].newDebt,
                 oldDebt: action.payload.paymentCustomer[0].oldDebt,
-                pay: action.payload.paymentCustomer[0].minus,
+                pay: action.payload.paymentCustomer[0].amount,
                 error: '',
                 loading: false,
                 loaded: true

@@ -12,9 +12,14 @@ const PaymentCustomerRouter = Router();
 PaymentCustomerRouter.post('/getById', async (req, res) => {
     const { id } = req.body;
 
+    if(id == undefined) {
+        console.log('id = undefined');
+        return;
+    }
+
     try {
         const paymentCustomer = await Knex.raw(`
-            SELECT s."id", s."createdDate" , s."customerId", s."userId", s."debtCustomerId", 
+            SELECT s."id", s."createdDate" , s."customerId", s."debtCustomerId", 
             s."title",d."newDebt", d."oldDebt", s."amount"
             FROM "paymentCustomers" as s
             INNER JOIN "debtCustomers" AS d ON d."id" = s."debtCustomerId" 
@@ -149,6 +154,7 @@ PaymentCustomerRouter.post('/update', async (req, res) => {
         newDebt, oldDebt, debtCustomerId, user
     } = req.body;
 
+
     const { isValid, errors } = NewPaymentCustomerValidator({
         createdDate, title, customerId, pay,
         newDebt, oldDebt,
@@ -156,8 +162,6 @@ PaymentCustomerRouter.post('/update', async (req, res) => {
 
     title = (title == "") ? `Thu công nợ khách hàng` : title;
     
-    console.log('req.body = ', req.body);
-    return;
 
     // const oldPaymentCustomer = await Knex('paymentCustomers')
     //     .where({ id: id });
