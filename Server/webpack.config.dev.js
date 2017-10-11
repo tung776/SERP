@@ -18,7 +18,7 @@ module.exports = {
             {
                 test:/\.js$/,
                 exclude: [/node_modules/, /Mobile/, /android/,/ios/],
-                loaders: ['react-hot-loader', 'babel-loader'],
+                loaders: ['babel-loader'],
                 // include: path.join(__dirname, 'src'),
                 // query: {
                 //     presets: ['react', 'es2015', 'stage-1']
