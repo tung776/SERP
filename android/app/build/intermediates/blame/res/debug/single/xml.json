@@ -1,10 +1,18 @@
 [
     {
+        "merged": "F:\\SERP\\SERP\\android\\app\\build\\intermediates\\res\\merged\\debug\\xml\\preferences.xml",
+        "source": "C:\\Users\\thanhtung\\.android\\build-cache\\9408a40fc1a611792dcf89b14dc55903f4abb9b7\\output\\res\\xml\\preferences.xml"
+    },
+    {
         "merged": "F:\\soncattuong\\SERP\\android\\app\\build\\intermediates\\res\\merged\\debug\\xml\\preferences.xml",
         "source": "C:\\Users\\thanhtung776\\.android\\build-cache\\0df1769238c829a72b62f61c535ebf4a77e24f55\\output\\res\\xml\\preferences.xml"
     },
     {
         "merged": "F:\\soncattuong\\SERP\\android\\app\\build\\intermediates\\res\\merged\\debug\\xml\\provider_paths.xml",
         "source": "C:\\Users\\thanhtung776\\.android\\build-cache\\8f00c1a97911b1ebb88274885a107f356918d41f\\output\\res\\xml\\provider_paths.xml"
+    },
+    {
+        "merged": "F:\\SERP\\SERP\\android\\app\\build\\intermediates\\res\\merged\\debug\\xml\\provider_paths.xml",
+        "source": "C:\\Users\\thanhtung\\.android\\build-cache\\48a77c3105e559ebdee8b9167dbcee1fba6ad2bf\\output\\res\\xml\\provider_paths.xml"
     }
 ]
