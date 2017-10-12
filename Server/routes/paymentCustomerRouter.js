@@ -193,7 +193,8 @@ PaymentCustomerRouter.post('/update', async (req, res) => {
                         });
 
                     const So_tien_Dieu_Chinh = (pay - customerDebt[0].minus);
-
+                    console.log('customerDebt = ', customerDebt);
+                    console.log('So_tien_Dieu_Chinh = ', So_tien_Dieu_Chinh);
                     data = await t('debtCustomers')
                         // .debug(true)
                         .returning('*')
@@ -230,7 +231,7 @@ PaymentCustomerRouter.post('/update', async (req, res) => {
                             data = [debt];
                             data[0].newDebt = _newDebt;
                             data[0].oldDebt = _oldDebt;
-                            console.log('customerDebt = ', data);
+                            console.log('customerDebtBeChanged = ', data);
                         });
                     }
 
@@ -240,7 +241,6 @@ PaymentCustomerRouter.post('/update', async (req, res) => {
                         .whereRaw(`id = ${id}`)
                         .update({
                             customerId: customerId,
-                            userId: user.id,
                             debtCustomerId: debtCustomerId,
                             title: title,
                             amount: pay,
