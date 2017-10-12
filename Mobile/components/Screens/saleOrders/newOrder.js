@@ -67,6 +67,9 @@ class NewSaleOrder extends React.Component {
 
         const oldebt = nextProps.debt ? nextProps.debt.newDebt : 0;
         const saleOderDetails = nextProps.selectedProducts;
+        if (this.props.isSave) {
+            console.log('nextProps.selectedProducts = ', nextProps.selectedProducts);
+        }
         saleOderDetails.forEach((orderItem) => {
             nextProps.quocteList.forEach((quocte) => {
                 if (orderItem.id === quocte.productId) {
@@ -396,7 +399,7 @@ class NewSaleOrder extends React.Component {
                                 (itemValue, itemIndex) => {
                                     let taxRate = 0;
                                     this.props.tax.forEach((tax) => {
-                                        if(tax.id == itemValue) {
+                                        if (tax.id == itemValue) {
                                             taxRate = tax.rate;
                                         }
                                     })

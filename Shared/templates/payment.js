@@ -2,12 +2,12 @@ import Expo from 'expo';
 import Communications from 'react-native-communications';
 import {  formatMoney, formatNumber, unformat } from '../utils/format';
 export default Invoice = (
+    customerName,
     id,
     date,
     oldDebt,
     pay,
-    newDebt,
-    paymentCustomer
+    newDebt
 ) => {    
     
     return `
