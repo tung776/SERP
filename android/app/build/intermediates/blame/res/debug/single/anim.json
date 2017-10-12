@@ -4,12 +4,12 @@
         "source": "C:\\Users\\thanhtung\\.android\\build-cache\\645df1b8341c0149d924cb48dc6d51a2cd0b3877\\output\\res\\anim\\abc_popup_enter.xml"
     },
     {
-        "merged": "F:\\soncattuong\\SERP\\android\\app\\build\\intermediates\\res\\merged\\debug\\anim\\abc_slide_out_bottom.xml",
-        "source": "C:\\Users\\thanhtung776\\.android\\build-cache\\645df1b8341c0149d924cb48dc6d51a2cd0b3877\\output\\res\\anim\\abc_slide_out_bottom.xml"
-    },
-    {
         "merged": "F:\\SERP\\SERP\\android\\app\\build\\intermediates\\res\\merged\\debug\\anim\\abc_slide_in_bottom.xml",
         "source": "C:\\Users\\thanhtung\\.android\\build-cache\\645df1b8341c0149d924cb48dc6d51a2cd0b3877\\output\\res\\anim\\abc_slide_in_bottom.xml"
+    },
+    {
+        "merged": "F:\\soncattuong\\SERP\\android\\app\\build\\intermediates\\res\\merged\\debug\\anim\\abc_slide_out_bottom.xml",
+        "source": "C:\\Users\\thanhtung776\\.android\\build-cache\\645df1b8341c0149d924cb48dc6d51a2cd0b3877\\output\\res\\anim\\abc_slide_out_bottom.xml"
     },
     {
         "merged": "F:\\soncattuong\\SERP\\android\\app\\build\\intermediates\\res\\merged\\debug\\anim\\catalyst_push_up_out.xml",

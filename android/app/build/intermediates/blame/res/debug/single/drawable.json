@@ -68,12 +68,12 @@
         "source": "C:\\Users\\thanhtung\\.android\\build-cache\\f7d784c3e15c81e2a82f4c676c9b8b7fac9b7363\\output\\res\\drawable\\crop_image_menu_crop_stub.xml"
     },
     {
-        "merged": "F:\\SERP\\SERP\\android\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_btn_borderless_material.xml",
-        "source": "C:\\Users\\thanhtung\\.android\\build-cache\\645df1b8341c0149d924cb48dc6d51a2cd0b3877\\output\\res\\drawable\\abc_btn_borderless_material.xml"
-    },
-    {
         "merged": "F:\\soncattuong\\SERP\\android\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\messenger_button_white_bg_round.xml",
         "source": "C:\\Users\\thanhtung776\\.android\\build-cache\\f8268f69fbd1a513f36976e50552b394c2755dba\\output\\res\\drawable\\messenger_button_white_bg_round.xml"
+    },
+    {
+        "merged": "F:\\SERP\\SERP\\android\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_btn_borderless_material.xml",
+        "source": "C:\\Users\\thanhtung\\.android\\build-cache\\645df1b8341c0149d924cb48dc6d51a2cd0b3877\\output\\res\\drawable\\abc_btn_borderless_material.xml"
     },
     {
         "merged": "F:\\soncattuong\\SERP\\android\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\com_facebook_button_login_silver_background.xml",
@@ -100,16 +100,16 @@
         "source": "C:\\Users\\thanhtung776\\.android\\build-cache\\645df1b8341c0149d924cb48dc6d51a2cd0b3877\\output\\res\\drawable\\abc_ratingbar_small_material.xml"
     },
     {
-        "merged": "F:\\SERP\\SERP\\android\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_btn_colored_material.xml",
-        "source": "C:\\Users\\thanhtung\\.android\\build-cache\\645df1b8341c0149d924cb48dc6d51a2cd0b3877\\output\\res\\drawable\\abc_btn_colored_material.xml"
+        "merged": "F:\\soncattuong\\SERP\\android\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_btn_radio_material.xml",
+        "source": "C:\\Users\\thanhtung776\\.android\\build-cache\\645df1b8341c0149d924cb48dc6d51a2cd0b3877\\output\\res\\drawable\\abc_btn_radio_material.xml"
     },
     {
         "merged": "F:\\soncattuong\\SERP\\android\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_dialog_material_background.xml",
         "source": "C:\\Users\\thanhtung776\\.android\\build-cache\\645df1b8341c0149d924cb48dc6d51a2cd0b3877\\output\\res\\drawable\\abc_dialog_material_background.xml"
     },
     {
-        "merged": "F:\\soncattuong\\SERP\\android\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_btn_radio_material.xml",
-        "source": "C:\\Users\\thanhtung776\\.android\\build-cache\\645df1b8341c0149d924cb48dc6d51a2cd0b3877\\output\\res\\drawable\\abc_btn_radio_material.xml"
+        "merged": "F:\\SERP\\SERP\\android\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_btn_colored_material.xml",
+        "source": "C:\\Users\\thanhtung\\.android\\build-cache\\645df1b8341c0149d924cb48dc6d51a2cd0b3877\\output\\res\\drawable\\abc_btn_colored_material.xml"
     },
     {
         "merged": "F:\\soncattuong\\SERP\\android\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_cab_background_internal_bg.xml",

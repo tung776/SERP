@@ -170,6 +170,8 @@ PaymentCustomerRouter.post('/update', async (req, res) => {
         .orderBy('id', 'asc')
         .whereRaw(`id > ${debtCustomerId} AND "customerId" = ${customerId}`);
 
+    
+
     const customerDebt = await Knex('debtCustomers')
         .where({ id: debtCustomerId });
 
@@ -192,7 +194,7 @@ PaymentCustomerRouter.post('/update', async (req, res) => {
                             debtCustomers
                         });
 
-                    const So_tien_Dieu_Chinh = (pay - customerDebt[0].minus);
+                    const So_tien_Dieu_Chinh = (customerDebt[0].minus - pay);
                     console.log('customerDebt = ', customerDebt);
                     console.log('So_tien_Dieu_Chinh = ', So_tien_Dieu_Chinh);
                     data = await t('debtCustomers')
@@ -234,8 +236,8 @@ PaymentCustomerRouter.post('/update', async (req, res) => {
                             console.log('customerDebtBeChanged = ', data);
                         });
                     }
-
                     
+
                     await t('paymentCustomers')
                         .returning('*')
                         .whereRaw(`id = ${id}`)
