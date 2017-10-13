@@ -12,7 +12,11 @@ import stylesCommon from '../../../styles';
 import { Ionicons } from '@expo/vector-icons';
 import { loadCustomerGroupListDataFromSqlite } from '../../../actions/customerGroupAction';
 import { loadCustomerListDataFromSqlite } from '../../../actions/customerAction';
-import { loadUnits, toggleProductToSelectList, resetSelectedProducts } from '../../../actions/productActions';
+import { loadUnits, 
+    toggleProductToSelectList, 
+    resetSelectedProducts,
+    ProductChange,
+ } from '../../../actions/productActions';
 import { loadQuocteDataFromSqlite, QuocteUpdate } from '../../../actions/quocteActions';
 import { formatMoney, formatNumber, unformat } from '../../../../Shared/utils/format';
 import moment from '../../../../Shared/utils/moment';
@@ -65,6 +69,8 @@ class EditQuocte extends React.Component {
                 });
             })
             this.setState({ quocteDetails: this.state.quocteDetails });
+            nextProps.ProductChange({prop: 'selectCompleted', value: false})
+            nextProps.ProductChange({prop: 'selectedProducts', value: []});
         } 
         if (this.state.quocteDetails.length === 0 && this.state.loaded === false) {
             nextProps.quocteDetails.forEach(detail => {
@@ -612,5 +618,6 @@ export default connect(mapStateToProps, {
     loadCustomerListDataFromSqlite,
     toggleProductToSelectList,
     QuocteUpdate,
-    resetSelectedProducts
+    resetSelectedProducts,
+    ProductChange
 })(EditQuocte);

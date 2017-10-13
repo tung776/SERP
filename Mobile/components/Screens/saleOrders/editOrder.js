@@ -100,7 +100,6 @@ class EditSaleOrder extends React.Component {
         }
         if (this.state.saleOrderDetails.length === 0 && this.state.loaded === false) {
             nextProps.saleOrderDetails.forEach(detail => {
-                console.log('go to push');
                 this.state.saleOrderDetails.push({
                     ...detail,
                     key: `${detail.id}-${detail.unitId}-${detail.quantity}-${Math.random() * 10}`
@@ -261,7 +260,16 @@ class EditSaleOrder extends React.Component {
                                                     return detail;
                                                 }
                                             });
-                                            this.setState({ saleOrderDetails: this.state.saleOrderDetails });
+                                            const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.state.oldDebt, this.state.pay,
+                                                this.state.saleOrderDetails);
+                                
+                                            this.setState({
+                                                total,
+                                                newDebt,
+                                                totalIncludeVat,
+                                                vat,
+                                                saleOrderDetails: this.state.saleOrderDetails,
+                                            });
                                         }}
                                     >
                                         <View style={{ flex: 1, alignSelf: 'center' }}>
@@ -288,7 +296,7 @@ class EditSaleOrder extends React.Component {
                                                     onChangeText={text => {
                                                         const saleOrderDetails = [...this.state.saleOrderDetails];
                                                         saleOrderDetails.forEach((product) => {
-                                                            if (product.id == item.id) {
+                                                            if (product.key == item.key) {
                                                                 product.quantity = unformat(text);
                                                                 
                                                             }
@@ -333,7 +341,7 @@ class EditSaleOrder extends React.Component {
                                                     onChangeText={text => {
                                                         const saleOrderDetails = [...this.state.saleOrderDetails];
                                                         saleOrderDetails.forEach((product) => {
-                                                            if (product.id == item.id) {
+                                                            if (product.key == item.key) {
                                                                 product.salePrice = unformat(text);
                                                             }
                                                         });

@@ -12,7 +12,7 @@ const PaymentCustomerRouter = Router();
 PaymentCustomerRouter.post('/getById', async (req, res) => {
     const { id } = req.body;
 
-    if(id == undefined) {
+    if (id == undefined) {
         console.log('id = undefined');
         return;
     }
@@ -102,7 +102,7 @@ PaymentCustomerRouter.post('/new', async (req, res) => {
                             customerId: customerId,
                             debtCustomerId: data[0].id,
                             title: title,
-                            amount: pay,                           
+                            amount: pay,
                             createdDate: moment(createdDate, 'DD-MM-YYYY').format('YYYY-MM-DD')
                         });
 
@@ -150,7 +150,7 @@ PaymentCustomerRouter.post('/new', async (req, res) => {
 PaymentCustomerRouter.post('/update', async (req, res) => {
 
     let {
-        id, createdDate, title, customerId,  pay,
+        id, createdDate, title, customerId, pay,
         newDebt, oldDebt, debtCustomerId, user
     } = req.body;
 
@@ -161,7 +161,7 @@ PaymentCustomerRouter.post('/update', async (req, res) => {
     });
 
     title = (title == "") ? `Thu công nợ khách hàng` : title;
-    
+
 
     // const oldPaymentCustomer = await Knex('paymentCustomers')
     //     .where({ id: id });
@@ -170,7 +170,7 @@ PaymentCustomerRouter.post('/update', async (req, res) => {
         .orderBy('id', 'asc')
         .whereRaw(`id > ${debtCustomerId} AND "customerId" = ${customerId}`);
 
-    
+
 
     const customerDebt = await Knex('debtCustomers')
         .where({ id: debtCustomerId });
@@ -236,7 +236,7 @@ PaymentCustomerRouter.post('/update', async (req, res) => {
                             console.log('customerDebtBeChanged = ', data);
                         });
                     }
-                    
+
 
                     await t('paymentCustomers')
                         .returning('*')
@@ -277,10 +277,23 @@ PaymentCustomerRouter.post('/update', async (req, res) => {
 
 PaymentCustomerRouter.post('/delete', async (req, res) => {
 
-    const { id, createdDate, title, customerId, pay,
-        newDebt, oldDebt, debtCustomerId, user } = req.body;
+    let {
+        id
+    } = req.body;
     let newDataversion;
-    console.log('deleting order ', id);
+
+    const paymentCustomer = await Knex('paymentCustomers')
+        .where({ id: id });
+    //Lấy thông tin bảng công nợ sẽ bị xóa
+    const customerDebt = await Knex('debtCustomers')
+        .where({ id: paymentCustomer[0].debtCustomerId });
+
+    //phát sinh giảm - phát sinh tăng
+    const So_tien_Dieu_Chinh = paymentCustomer[0].amount;
+
+    //Lấy toàn bộ bảng dữ liệu công nợ có liên quan đến bảng công nợ bị xóa
+    const customerDebtBeChanged = await Knex('debtCustomers')
+        .whereRaw(`id > ${paymentCustomer[0].debtCustomerId} AND "customerId" = ${paymentCustomer[0].customerId}`);
 
     try {
         Knex.transaction(async (t) => {
@@ -290,35 +303,21 @@ PaymentCustomerRouter.post('/delete', async (req, res) => {
                 let { debtCustomers } = dataVersion[0];
 
                 debtCustomers++;
-                console.log('go 1');
                 newDataversion = await t('dataVersions')
+                    .debug(true)
                     .returning('*')
                     .whereRaw('id = 1')
                     .update({
                         id: 1,
                         debtCustomers
                     });
-                console.log('go 2');
-                const paymentCustomer = await Knex('paymentCustomers')
-                    .where({ id: id });
-                //Lấy thông tin bảng công nợ sẽ bị xóa
-                console.log('go 3');
-                const customerDebt = await Knex('debtCustomers')
-                    .where({ id: paymentCustomer[0].debtCustomerId });
-                //phát sinh giảm - phát sinh tăng
-                const So_tien_Dieu_Chinh = paymentCustomer[0].amount;
-                
-                //Lấy toàn bộ bảng dữ liệu công nợ có liên quan đến bảng công nợ bị xóa
-                console.log('go 3');
-                const customerDebtBeChanged = await Knex('debtCustomers')
-                    .whereRaw(`id > ${paymentCustomer[0].debtCustomerId} AND "customerId" = ${paymentCustomer[0].customerId}`);
+
                 //Điều chỉnh toàn bộ công nợ có liêu quan
                 if (customerDebtBeChanged.length > 0) {
                     customerDebtBeChanged.forEach(async (debt) => {
                         console.log('debt = ', debt);
-                        if (debt.newDebt.isNaN()) debt.newDebt = 0;
-                        if (debt.oldDebt.isNaN()) debt.oldDebt = 0;
                         await t('debtCustomers')
+                            .debug(true)
                             .returning('*')
                             .whereRaw(`id = ${debt.id}`)
                             .update({
@@ -328,25 +327,26 @@ PaymentCustomerRouter.post('/delete', async (req, res) => {
                     });
                 }
 
-                
-                console.log('go 6');
                 //Điều chỉnh lại phiếu thu
                 await Knex('paymentCustomers')
+                    .debug(true)
                     .transacting(t)
                     .where({ id: id })
                     .del()
                     .catch((error) => {
                         console.error('delete paymentCustomers error: ', error);
                     });
-                //Xóa bảng công nợ
-                console.log('go 4');
+
                 await Knex('debtCustomers')
+                    .debug(true)
                     .transacting(t)
                     .where({ id: paymentCustomer[0].debtCustomerId })
                     .del()
                     .catch((error) => {
                         console.error('delete debtCustomers error: ', error);
                     });
+
+
             } catch (e) {
                 t.rollback();
                 res.status(400).json({ success: false, error: e });

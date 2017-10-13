@@ -9,7 +9,7 @@ import stylesCommon from '../../../styles';
 import { Ionicons } from '@expo/vector-icons';
 import { loadCustomerGroupListDataFromSqlite } from '../../../actions/customerGroupAction';
 import { loadCustomerListDataFromSqlite } from '../../../actions/customerAction';
-import { loadUnits, toggleProductToSelectList } from '../../../actions/productActions';
+import { loadUnits, toggleProductToSelectList, ProductChange } from '../../../actions/productActions';
 import { resetData, AddNewQuocte } from '../../../actions/quocteActions';
 import { formatMoney, formatNumber, unformat } from '../../../../Shared/utils/format';
 
@@ -43,6 +43,8 @@ class NewQuocte extends React.Component {
                 
             })
             this.setState({ quocteDetails: this.state.quocteDetails });
+            nextProps.ProductChange({prop: 'selectCompleted', value: false})
+            nextProps.ProductChange({prop: 'selectedProducts', value: []});
         }
     }
 
@@ -467,5 +469,6 @@ export default connect(mapStateToProps, {
     loadCustomerGroupListDataFromSqlite,
     loadCustomerListDataFromSqlite,
     toggleProductToSelectList,
-    AddNewQuocte
+    AddNewQuocte,
+    ProductChange
 })(NewQuocte);

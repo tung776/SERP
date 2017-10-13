@@ -478,8 +478,9 @@ SaleOrderRouter.post('/delete', async (req, res) => {
                 console.log('go 3');
                 const customerDebt = await Knex('debtCustomers')
                     .where({ id: saleOrder[0].debtCustomerId });
+
                 //phát sinh giảm - phát sinh tăng
-                const So_tien_Dieu_Chinh = saleOrder[0].pay - saleOrder[0].totalIncludeVat;
+                const So_tien_Dieu_Chinh = parseFloat(customerDebt[0].minus) - parseFloat(saleOrder[0].totalIncludeVat);
                 console.log('totalIncludeVat = ', totalIncludeVat);
                 console.log('saleOrder[0].totalIncludeVat = ', saleOrder[0].totalIncludeVat);
                 console.log('So_tien_Dieu_Chinh = ', So_tien_Dieu_Chinh);
@@ -491,14 +492,12 @@ SaleOrderRouter.post('/delete', async (req, res) => {
                 if (customerDebtBeChanged.length > 0) {
                     customerDebtBeChanged.forEach(async (debt) => {
                         console.log('debt = ', debt);
-                        if (debt.newDebt.isNaN()) debt.newDebt = 0;
-                        if (debt.oldDebt.isNaN()) debt.oldDebt = 0;
                         await t('debtCustomers')
                             .returning('*')
                             .whereRaw(`id = ${debt.id}`)
                             .update({
-                                newDebt: debt.newDebt + So_tien_Dieu_Chinh,
-                                oldDebt: debt.oldDebt + So_tien_Dieu_Chinh,
+                                newDebt: parseFloat(debt.newDebt) + So_tien_Dieu_Chinh,
+                                oldDebt: parseFloat(debt.oldDebt) + So_tien_Dieu_Chinh,
                             });
                     });
                 }
