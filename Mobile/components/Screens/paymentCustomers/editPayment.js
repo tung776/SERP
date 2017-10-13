@@ -66,7 +66,7 @@ class EditPaymentCustomer extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log('nextProps.pay = ', nextProps.pay);
+        console.log('nextProps.loaded = ', nextProps.loaded);
         this.setState({
             id: nextProps.id,
             customerId: nextProps.customerId,
@@ -494,7 +494,7 @@ const mapStateToProps = (state, ownProps) => {
         newDebt,
         debtCustomerId,
         loaded,
-        error
+        error,        
     } = state.paymentCustomer;
     const { customers } = state.customers;
     const { isAuthenticated, user } = state.auth;
@@ -510,7 +510,7 @@ const mapStateToProps = (state, ownProps) => {
         loaded,
         error,
         customers,
-        user
+        user,
     };
 };
 export default connect(mapStateToProps, {

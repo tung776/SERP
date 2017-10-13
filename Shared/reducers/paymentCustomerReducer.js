@@ -25,7 +25,7 @@ const INITIAL_STATE = {
 export default (state = INITIAL_STATE, action) => {
     switch (action.type) {
         case PAYMENT_CUSTOMER_PENDING:
-            return { ...state, loading: true, error: '' };
+            return { ...state, loading: true, loaded: false, error: '' };
         case RESET_PAYMENT_CUSTOMER_FORM:
             return {
                 ...state,
@@ -45,7 +45,6 @@ export default (state = INITIAL_STATE, action) => {
                     const temp = { ...payment, key: payment.id }
                     paymentCustomerList.push(temp);
                 })
-                console.log('paymentCustomerList = ', paymentCustomerList)
                 return {
                     ...state,
                     paymentCustomerList,
@@ -62,7 +61,7 @@ export default (state = INITIAL_STATE, action) => {
         }        
 
         case PAYMENT_CUSTOMER_LOADED_SERVER:
-            
+            console.log('action.payload.paymentCustomer = ', action.payload.paymentCustomer);
             return {
                 ...state,
                 isSave: false,

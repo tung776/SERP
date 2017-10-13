@@ -42,8 +42,6 @@ Asset.prototype.downloadAsyncWithoutHash = async function({ cache }) {
   this.downloading = true;
 
   try {
-    console.log('go 1');
-    console.log('path = ', path);
 
     let exists, uri;
     ({
@@ -55,10 +53,7 @@ Asset.prototype.downloadAsyncWithoutHash = async function({ cache }) {
       //  false: checks if file exists in app data
       cache, //shorthand for cache: cache
     }));
-    console.log('go 2');
     if (__DEV__) {
-      console.log(`${path} ${exists ? 'already downloaded':'not downloaded'}`);
-      console.log('________________________');
       if (exists) {
         console.log(`filepath: ${uri
           .replace('file://', '')

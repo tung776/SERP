@@ -39,7 +39,6 @@ export const loadPaymentCustomerById = (paymentId) => async (dispatch) => {
 
     axios.post(`${URL}/api/payment/getById`, { id: paymentId }).then(
         res => {
-            console.log('res = ', res.data);
             dispatch({
                 type: PAYMENT_CUSTOMER_LOADED_SERVER,
                 payload: res.data
