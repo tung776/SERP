@@ -8,8 +8,8 @@ import stylesCommon from '../../../styles';
 import { Ionicons } from '@expo/vector-icons';
 import { URL } from '../../../../env';
 import {
-    ADD_CUSTOMER, ADD_CUSTOMER_PENDING,
-    CUSTOMER_CHANGE_FAIL, CUSTOMER_CHANGE_SUCCESS,
+    ADD_SUPPLIER, ADD_SUPPLIER_PENDING,
+    SUPPLIER_CHANGE_FAIL, SUPPLIER_CHANGE_SUCCESS,
 } from '../../../actions';
 import { SupplierUpdate, SupplierChange, SupplierDelete, loadSupplierDataFromSqlite } from '../../../actions/customerAction';
 import { loadSupplierGroupListDataFromSqlite } from '../../../actions/customerGroupAction';

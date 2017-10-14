@@ -13,20 +13,20 @@ import { Ionicons } from '@expo/vector-icons';
 import {
     loadPaymentSupplierListDataFromServerBySupplierId
 } from '../../../actions/paymentSupplierActions';
-import { loadSupplierListDataFromSqlite } from '../../../actions/customerAction';
+import { loadSupplierListDataFromSqlite } from '../../../actions/supplierAction';
 import { Spinner } from '../../commons/Spinner';
 import SqlService from '../../../database/sqliteService';
 import moment from '../../../../Shared/utils/moment';
 
 class PaymentSupplierList extends React.Component {
     state = {
-        customerId: null,
+        supplierId: null,
         error: null,
         paymentSupplierList: [],
     }
 
     componentWillMount() {
-        if (this.props.customers.length == 0) {
+        if (this.props.suppliers.length == 0) {
             this.props.loadSupplierListDataFromSqlite();
         }
     }
@@ -69,7 +69,7 @@ class PaymentSupplierList extends React.Component {
     }
 
     onSearch() {
-        if (this.state.customerId === null ) {
+        if (this.state.supplierId === null ) {
             return Alert.alert(
                 'Báo lỗi',
                 'Bạn chưa chọn nhóm khách hàng',
@@ -81,7 +81,7 @@ class PaymentSupplierList extends React.Component {
                 ]
             );
         }
-        this.props.loadPaymentSupplierListDataFromServerBySupplierId(this.state.customerId);
+        this.props.loadPaymentSupplierListDataFromServerBySupplierId(this.state.supplierId);
     }
 
     render() {
@@ -95,15 +95,15 @@ class PaymentSupplierList extends React.Component {
                         <View style={styles.groupControl} >
                             <Picker
                                 style={{ flex: 1 }}
-                                selectedValue={this.state.customerId}
+                                selectedValue={this.state.supplierId}
                                 onValueChange={
                                     (itemValue, itemIndex) => this.setState({
-                                        customerId: itemValue
+                                        supplierId: itemValue
                                     })
                                 }
                             >
                                 <Picker.Item key={0} label="" value={null} />
-                                {this.props.customers && this.props.customers.map((item) => (
+                                {this.props.suppliers && this.props.suppliers.map((item) => (
                                     <Picker.Item key={item.id} label={item.name} value={item.id} />
                                 ))
                                 }
@@ -202,10 +202,10 @@ const styles = {
 };
 const mapStateToProps = (state, ownProps) => {
     const { paymentSupplierList } = state.paymentSupplier;
-    const { customers } = state.customers;
+    const { suppliers } = state.suppliers;
     return {
         paymentSupplierList,
-        customers
+        suppliers
     };
 };
 export default connect(mapStateToProps, {

@@ -11,23 +11,23 @@ import { connect } from 'react-redux';
 import stylesCommon from '../../../styles';
 import { Ionicons } from '@expo/vector-icons';
 import {
-    loadSaleOrderListDataFromServerByCustomerId
-} from '../../../actions/saleOrderActions';
-import { loadCustomerListDataFromSqlite } from '../../../actions/customerAction';
+    loadPurchaseOrderListDataFromServerByCustomerId
+} from '../../../actions/purchaseOrderActions';
+import { loadCustomerListDataFromSqlite } from '../../../actions/supplierAction';
 import { Spinner } from '../../commons/Spinner';
 import SqlService from '../../../database/sqliteService';
 import moment from '../../../../Shared/utils/moment';
 
-class SaleOrderList extends React.Component {
+class PurchaseOrderList extends React.Component {
     state = {
-        customerId: null,
+        supplierId: null,
         error: null,
-        saleOrderList: [],
+        purchaseOrderList: [],
         loaded: false
     }
 
     componentWillMount() {
-        if (this.props.customers.length == 0) {
+        if (this.props.suppliers.length == 0) {
             this.props.loadCustomerListDataFromSqlite();
         }
     }
@@ -36,18 +36,18 @@ class SaleOrderList extends React.Component {
         Actions.main();
     }
 
-    renderSaleOrderList() {
-        if (this.props.saleOrderList) {
+    renderPurchaseOrderList() {
+        if (this.props.purchaseOrderList) {
             return (
                 <FlatList
-                    style={styles.listSaleOrder}
-                    data={this.props.saleOrderList}
+                    style={styles.listPurchaseOrder}
+                    data={this.props.purchaseOrderList}
                     renderItem={({ item }) => {
                         if (item) {
                             return (
                                 <TouchableWithoutFeedback
                                     key={item.key} onPress={() => {
-                                        Actions.editSaleOrder({ saleOrder: item });
+                                        Actions.editPurchaseOrder({ purchaseOrder: item });
                                     }}
                                 >
                                     <View style={styles.listItem}>
@@ -70,7 +70,7 @@ class SaleOrderList extends React.Component {
     }
 
     onSearch() {
-        if (this.state.customerId === null ) {
+        if (this.state.supplierId === null ) {
             return Alert.alert(
                 'Báo lỗi',
                 'Bạn chưa chọn nhóm khách hàng hoặc khách hàng',
@@ -82,7 +82,7 @@ class SaleOrderList extends React.Component {
                 ]
             );
         }
-        this.props.loadSaleOrderListDataFromServerByCustomerId(this.state.customerId);
+        this.props.loadPurchaseOrderListDataFromServerByCustomerId(this.state.supplierId);
     }
 
     render() {
@@ -96,15 +96,15 @@ class SaleOrderList extends React.Component {
                         <View style={styles.groupControl} >
                             <Picker
                                 style={{ flex: 1 }}
-                                selectedValue={this.state.customerId}
+                                selectedValue={this.state.supplierId}
                                 onValueChange={
                                     (itemValue, itemIndex) => this.setState({
-                                        customerId: itemValue
+                                        supplierId: itemValue
                                     })
                                 }
                             >
                                 <Picker.Item key={0} label="" value={null} />
-                                {this.props.customers && this.props.customers.map((item) => (
+                                {this.props.suppliers && this.props.suppliers.map((item) => (
                                     <Picker.Item key={item.id} label={item.name} value={item.id} />
                                 ))
                                 }
@@ -118,10 +118,10 @@ class SaleOrderList extends React.Component {
                         </TouchableOpacity>
                     </View>
 
-                    {this.renderSaleOrderList()}
+                    {this.renderPurchaseOrderList()}
                 </View>
                 <Footer>
-                    <TouchableOpacity style={styles.addNewGroupBtn} onPress={() => { Actions.newSaleOrder(); }}>
+                    <TouchableOpacity style={styles.addNewGroupBtn} onPress={() => { Actions.newPurchaseOrder(); }}>
                         <Ionicons name="ios-add-circle" size={32} color="#FFFFFF" />
                         <Text style={{ alignSelf: 'center', paddingLeft: 10, fontSize: 16, color: '#FFFFFF', fontWeight: '600' }}>Thêm Hóa Đơn</Text>
                     </TouchableOpacity>
@@ -183,7 +183,7 @@ const styles = {
         borderRadius: 5,
         backgroundColor: 'rgba(236, 240, 241,1.0)'
     },
-    listSaleOrder: {
+    listPurchaseOrder: {
         flex: 1
     },
     groupControl: {
@@ -202,16 +202,16 @@ const styles = {
     },
 };
 const mapStateToProps = (state, ownProps) => {
-    const { loading, loaded, saleOrderList } = state.saleOrders;
-    const { customers } = state.customers;
+    const { loading, loaded, purchaseOrderList } = state.purchaseOrders;
+    const { suppliers } = state.suppliers;
     return {
         loading,
         loaded,
-        saleOrderList,
-        customers
+        purchaseOrderList,
+        suppliers
     };
 };
 export default connect(mapStateToProps, {
-    loadSaleOrderListDataFromServerByCustomerId,
+    loadPurchaseOrderListDataFromServerByCustomerId,
     loadCustomerListDataFromSqlite,
-})(SaleOrderList);
+})(PurchaseOrderList);

@@ -12,7 +12,7 @@ import Footer from '../../commons/Footer';
 import { connect } from 'react-redux';
 import stylesCommon from '../../../styles';
 import { Ionicons } from '@expo/vector-icons';
-import { loadSupplierListDataFromSqlite } from '../../../actions/customerAction';
+import { loadSupplierListDataFromSqlite } from '../../../actions/supplierAction';
 
 import {
     loadPaymentSupplierById,
@@ -38,7 +38,7 @@ class EditPaymentSupplier extends React.Component {
         id: '',
         isExpanded: true,
         isExpandedTotal: true,
-        customerId: '',
+        supplierId: '',
         debtSuppliers: {},
         debtSupplierId: null,
         createdDate: '',
@@ -56,7 +56,7 @@ class EditPaymentSupplier extends React.Component {
 
         this.setState({ loaded:false });
 
-        if (!this.props.customers || this.props.customers.length == 0) {
+        if (!this.props.suppliers || this.props.suppliers.length == 0) {
             this.props.loadSupplierListDataFromSqlite();
         }
         const fontAsset = await loadAsset("vuarial", "ttf", fontUrl);
@@ -69,7 +69,7 @@ class EditPaymentSupplier extends React.Component {
         console.log('nextProps.loaded = ', nextProps.loaded);
         this.setState({
             id: nextProps.id,
-            customerId: nextProps.customerId,
+            supplierId: nextProps.supplierId,
             createdDate: moment(nextProps.createdDate, moment.ISO_8601).format('DD-MM-YYYY'),
             pay: nextProps.pay,
             debtSuppliers: nextProps.debt,
@@ -90,14 +90,14 @@ class EditPaymentSupplier extends React.Component {
                     text: 'Xác Nhận',
                     onPress: () => {
                         const {
-                            id, createdDate, title, customerId, pay,
+                            id, createdDate, title, supplierId, pay,
                             newDebt, oldDebt
                         } = this.state;
                         this.props.PaymentSupplierUpdate({
                             id,
                             createdDate,
                             title,
-                            customerId,
+                            supplierId,
                             pay,
                             newDebt,
                             oldDebt,
@@ -111,9 +111,9 @@ class EditPaymentSupplier extends React.Component {
         );
     }    
 
-    onSupplierChanged(customerId) {
-        this.props.loadDebtSuppliersFromSqlite(customerId);
-        this.setState({ customerId });
+    onSupplierChanged(supplierId) {
+        this.props.loadDebtSuppliersFromSqlite(supplierId);
+        this.setState({ supplierId });
     }
 
     editModeToggle() {
@@ -161,15 +161,15 @@ class EditPaymentSupplier extends React.Component {
                         <View style={styles.groupControl}>
                             <Picker
                                 enabled={false}
-                                selectedValue={this.state.customerId}
+                                selectedValue={this.state.supplierId}
                                 onValueChange={
                                     (itemValue, itemIndex) => {
-                                        this.setState({ customerId: itemValue });
+                                        this.setState({ supplierId: itemValue });
                                     }
                                 }
                             >
                                 <Picker.Item key={0} label="" value={null} />
-                                {this.props.customers && this.props.customers.map((item) => (
+                                {this.props.suppliers && this.props.suppliers.map((item) => (
                                     <Picker.Item key={item.id} label={item.name} value={item.id} />
                                 ))
                                 }
@@ -291,15 +291,15 @@ class EditPaymentSupplier extends React.Component {
                                     );
                                 } else {
                                     
-                                    let customerName = '';
-                                    this.props.customers.forEach((customer) => {
-                                        if (customer.id == this.state.customerId) {
-                                            customerName = customer.name;
+                                    let supplierName = '';
+                                    this.props.suppliers.forEach((supplier) => {
+                                        if (supplier.id == this.state.supplierId) {
+                                            supplierName = supplier.name;
                                         }
                                     });
 
                                     let options = {
-                                        html: paymentTemplate(customerName, this.state.id,
+                                        html: paymentTemplate(supplierName, this.state.id,
                                             this.state.createdDate, this.state.oldDebt,
                                              this.state.pay, this.state.newDebt,
                                             ),
@@ -325,16 +325,16 @@ class EditPaymentSupplier extends React.Component {
                             disabled={this.state.editMode}
                             style={[styles.Btn, this.state.editMode ? { backgroundColor: '#7f8c8d' } : { backgroundColor: '#2ecc71' }]}
                             onPress={() => {
-                                let customerPhone = '';
-                                let customerName = '';
-                                this.props.customers.forEach((customer) => {
-                                    if (customer.id == this.state.customerId) {
-                                        customerPhone = customer.phone;
-                                        customerName = customer.name;
+                                let supplierPhone = '';
+                                let supplierName = '';
+                                this.props.suppliers.forEach((supplier) => {
+                                    if (supplier.id == this.state.supplierId) {
+                                        supplierPhone = supplier.phone;
+                                        supplierName = supplier.name;
                                     }
                                 });
                                 sendMessage(
-                                    customerPhone, customerName, this.state.createdDate, 
+                                    supplierPhone, supplierName, this.state.createdDate, 
                                     this.state.oldDebt, this.state.pay, this.state.newDebt
                                 );
                             }}
@@ -345,16 +345,16 @@ class EditPaymentSupplier extends React.Component {
                             disabled={this.state.editMode}
                             style={[styles.Btn, this.state.editMode ? { backgroundColor: '#7f8c8d' } : { backgroundColor: '#2ecc71' }]}
                             onPress={() => {
-                                let customerEmail = '';
-                                let customerName = '';
-                                this.props.customers.forEach((customer) => {
-                                    if (customer.id == this.state.customerId) {
-                                        customerEmail = customer.email;
-                                        customerName = customer.name;
+                                let supplierEmail = '';
+                                let supplierName = '';
+                                this.props.suppliers.forEach((supplier) => {
+                                    if (supplier.id == this.state.supplierId) {
+                                        supplierEmail = supplier.email;
+                                        supplierName = supplier.name;
                                     }
                                 });
                                 sendEmail(
-                                    customerEmail, customerName, this.state.createdDate, 
+                                    supplierEmail, supplierName, this.state.createdDate, 
                                     this.state.oldDebt, this.state.pay, this.state.newDebt
                                 );
                             }}
@@ -366,11 +366,11 @@ class EditPaymentSupplier extends React.Component {
                             style={[styles.Btn, this.state.editMode ? { backgroundColor: '#d35400' } : { backgroundColor: '#7f8c8d' }]}
                             onPress={() => {
                                 const {
-                                    id, createdDate, title, customerId, pay,
+                                    id, createdDate, title, supplierId, pay,
                                     newDebt, oldDebt
                                 } = this.state;
                                 this.props.PaymentSupplierDelete({
-                                    id, createdDate, title, customerId, pay,
+                                    id, createdDate, title, supplierId, pay,
                                     newDebt, oldDebt
                                 });
                             }}
@@ -486,7 +486,7 @@ const styles = {
 const mapStateToProps = (state, ownProps) => {
     const {
         id,
-        customerId,
+        supplierId,
         createdDate,
         title,        
         pay,
@@ -496,11 +496,11 @@ const mapStateToProps = (state, ownProps) => {
         loaded,
         error,        
     } = state.paymentSupplier;
-    const { customers } = state.customers;
+    const { suppliers } = state.suppliers;
     const { isAuthenticated, user } = state.auth;
     return {
         id,
-        customerId,
+        supplierId,
         createdDate,
         title,
         pay,
@@ -509,7 +509,7 @@ const mapStateToProps = (state, ownProps) => {
         debtSupplierId,
         loaded,
         error,
-        customers,
+        suppliers,
         user,
     };
 };

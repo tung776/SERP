@@ -16,18 +16,18 @@ import { loadUnits,
     ProductChange
  } from '../../../actions/productActions';
 import { loadQuocteBySupplierOrSupplierGroupIdFromSqlite } from '../../../actions/quocteActions';
-import { resetData, AddNewSaleOrder, loadTax } from '../../../actions/saleOrderActions';
+import { resetData, AddNewPurchaseOrder, loadTax } from '../../../actions/saleOrderActions';
 import db from '../../../database/sqliteConfig';
 import { formatMoney, formatNumber, unformat } from '../../../../Shared/utils/format';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
-import invoiceTemplate, { css, sendMessage, sendEmail } from '../../../../Shared/templates/invoice';
+import invoiceTemplate, { css, sendMessage, sendEmail } from '../../../../Shared/templates/purchaseInvoice';
 import Expo from 'expo';
 import loadAsset from '../../../utils/loadAsset';
 import { fontUrl, URL } from '../../../../env';
 
 const { RNPrint } = NativeModules;
 
-class NewSaleOrder extends React.Component {
+class NewPurchaseOrder extends React.Component {
     state = {
         id: '',
         isExpanded: true,
@@ -43,7 +43,7 @@ class NewSaleOrder extends React.Component {
         taxId: 1,
         newDebt: 0,
         oldebt: 0,
-        saleOderDetails: [],
+        saleOrderDetails: [],
         quoctes: [],
         fontLocation: null,
         appIsReady: false,
@@ -69,7 +69,7 @@ class NewSaleOrder extends React.Component {
     componentWillReceiveProps(nextProps) {
 
         const oldebt = nextProps.debt ? nextProps.debt.newDebt : 0;
-        let saleOderDetails = []
+        let saleOrderDetails = []
         if (this.props.isSave) {
             console.log('nextProps.selectedProducts = ', nextProps.selectedProducts);
         }
@@ -82,18 +82,18 @@ class NewSaleOrder extends React.Component {
                         detail.unitId = quocte.unitId;
                     }
                 });
-                this.state.saleOderDetails.push({ ...detail, key: `${detail.id}-${detail.unitId}-${detail.quantity}-${Math.random() * 10}` });
+                this.state.saleOrderDetails.push({ ...detail, key: `${detail.id}-${detail.unitId}-${detail.quantity}-${Math.random() * 10}` });
             });
 
             const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(oldebt, this.state.pay,
-                this.state.saleOderDetails);
+                this.state.saleOrderDetails);
 
             this.setState({
                 total,
                 newDebt,
                 totalIncludeVat,
                 vat,
-                saleOderDetails: this.state.saleOderDetails,
+                saleOrderDetails: this.state.saleOrderDetails,
             });
             nextProps.ProductChange({prop: 'selectCompleted', value: false})
             nextProps.ProductChange({prop: 'selectedProducts', value: []});
@@ -118,11 +118,11 @@ class NewSaleOrder extends React.Component {
                     onPress: () => {
                         const {
                             date, title, customerId, total, totalIncludeVat, vat, pay,
-                            newDebt, oldebt, saleOderDetails, taxId
+                            newDebt, oldebt, saleOrderDetails, taxId
                         } = this.state;
-                        this.props.AddNewSaleOrder({
+                        this.props.AddNewPurchaseOrder({
                             date, title, customerId, total, totalIncludeVat, vat, taxId, pay,
-                            newDebt, oldebt, saleOderDetails, debtSupplierId: this.state.debtSuppliers.id,
+                            newDebt, oldebt, saleOrderDetails, debtSupplierId: this.state.debtSuppliers.id,
                             user: this.props.user
                         });
                     }
@@ -147,12 +147,12 @@ class NewSaleOrder extends React.Component {
         this.setState({ customerId });
     }
 
-    caculateOrder(debt = 0, pay = 0, saleOderDetails = [], taxRate = 0) {
+    caculateOrder(debt = 0, pay = 0, saleOrderDetails = [], taxRate = 0) {
         let total = 0,
             totalIncludeVat = 0,
             newDebt = 0;
 
-        saleOderDetails.forEach((order) => {
+        saleOrderDetails.forEach((order) => {
             const temp = order.salePrice * order.quantity;
             total += temp;
         });
@@ -180,31 +180,31 @@ class NewSaleOrder extends React.Component {
                 newRate = unit.rate;
             }
         });
-        const saleOderDetails = [...this.state.saleOderDetails];
-        saleOderDetails.forEach((item) => {
+        const saleOrderDetails = [...this.state.saleOrderDetails];
+        saleOrderDetails.forEach((item) => {
             if (item.key === product.key) {
                 item.salePrice = Math.round(oldPrice * newRate);
                 item.unitId = newUnitId;
             }
         });
 
-        const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.state.oldebt, this.state.pay, saleOderDetails);
+        const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.state.oldebt, this.state.pay, saleOrderDetails);
         this.setState({
             total,
             newDebt,
             totalIncludeVat,
             vat,
-            saleOderDetails
+            saleOrderDetails
         });
     }
 
 
     renderProductList() {
-        if (this.state.saleOderDetails) {
+        if (this.state.saleOrderDetails) {
             return (
                 <FlatList
                     style={{ marginTop: 10, marginBottom: 10 }}
-                    data={this.state.saleOderDetails}
+                    data={this.state.saleOrderDetails}
                     renderItem={({ item }) => {
                         if (item) {
                             return (
@@ -214,21 +214,21 @@ class NewSaleOrder extends React.Component {
                                     <TouchableWithoutFeedback
                                         disabled={this.props.isSave}
                                         key={item.key} onPress={() => {
-                                            this.state.saleOderDetails = this.state.saleOderDetails.filter(detail => {
+                                            this.state.saleOrderDetails = this.state.saleOrderDetails.filter(detail => {
                                                 if (item.key != detail.key) {
                                                     return detail;
                                                 }
                                             });
 
                                             const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.state.oldebt, this.state.pay,
-                                                this.state.saleOderDetails);
+                                                this.state.saleOrderDetails);
                                 
                                             this.setState({
                                                 total,
                                                 newDebt,
                                                 totalIncludeVat,
                                                 vat,
-                                                saleOderDetails: this.state.saleOderDetails,
+                                                saleOrderDetails: this.state.saleOrderDetails,
                                             });
                                         }}
                                     >
@@ -254,14 +254,14 @@ class NewSaleOrder extends React.Component {
                                                     blurOnSubmit
                                                     value={formatNumber(item.quantity)}
                                                     onChangeText={text => {
-                                                        this.state.saleOderDetails.forEach((product) => {
+                                                        this.state.saleOrderDetails.forEach((product) => {
                                                             if (product.key == item.key) {
                                                                 product.quantity = unformat(text);
                                                             }
                                                         });
-                                                        const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.state.oldebt, this.state.pay, this.state.saleOderDetails);
+                                                        const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.state.oldebt, this.state.pay, this.state.saleOrderDetails);
                                                         this.setState({
-                                                            saleOderDetails: this.state.saleOderDetails,
+                                                            saleOrderDetails: this.state.saleOrderDetails,
                                                             total,
                                                             totalIncludeVat,
                                                             vat,
@@ -298,14 +298,14 @@ class NewSaleOrder extends React.Component {
                                                     blurOnSubmit
                                                     value={formatNumber(item.salePrice)}
                                                     onChangeText={text => {
-                                                        this.state.saleOderDetails.forEach((product) => {
+                                                        this.state.saleOrderDetails.forEach((product) => {
                                                             if (product.key == item.key) {
                                                                 product.salePrice = unformat(text);
                                                             }
                                                         });
-                                                        const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.state.oldebt, this.state.pay, this.state.saleOderDetails);
+                                                        const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.state.oldebt, this.state.pay, this.state.saleOrderDetails);
                                                         this.setState({
-                                                            saleOderDetails: this.state.saleOderDetails,
+                                                            saleOrderDetails: this.state.saleOrderDetails,
                                                             total,
                                                             totalIncludeVat,
                                                             vat,
@@ -433,7 +433,7 @@ class NewSaleOrder extends React.Component {
                                             taxRate = tax.rate;
                                         }
                                     })
-                                    const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.state.oldebt, this.state.pay, this.state.saleOderDetails, taxRate);
+                                    const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.state.oldebt, this.state.pay, this.state.saleOrderDetails, taxRate);
                                     this.setState({
                                         total,
                                         totalIncludeVat,
@@ -472,7 +472,7 @@ class NewSaleOrder extends React.Component {
                                 value={formatNumber(this.state.pay)}
                                 onChangeText={text => {
                                     const pay = unformat(text);
-                                    const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.state.oldebt, pay, this.state.saleOderDetails);
+                                    const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.state.oldebt, pay, this.state.saleOrderDetails);
                                     this.setState({
                                         pay,
                                         total,
@@ -568,7 +568,7 @@ class NewSaleOrder extends React.Component {
                                         ]
                                     );
                                 } else {
-                                    let saleOrderDetails = [...this.state.saleOderDetails];
+                                    let saleOrderDetails = [...this.state.saleOrderDetails];
                                     saleOrderDetails.forEach((order) => {
                                         this.props.units.forEach((unit) => {
                                             if (order.unitId == unit.id) {
@@ -609,7 +609,7 @@ class NewSaleOrder extends React.Component {
                             disabled={!this.props.isSave}
                             style={[styles.Btn, (this.props.isSave) ? { backgroundColor: '#16a085' } : { backgroundColor: '#7f8c8d' }]}
                             onPress={() => {
-                                let saleOrderDetails = [...this.state.saleOderDetails];
+                                let saleOrderDetails = [...this.state.saleOrderDetails];
                                 saleOrderDetails.forEach((order) => {
                                     this.props.units.forEach((unit) => {
                                         if (order.unitId == unit.id) {
@@ -638,8 +638,8 @@ class NewSaleOrder extends React.Component {
                             disabled={!this.props.isSave}
                             style={[styles.Btn, (this.props.isSave) ? { backgroundColor: '#16a085' } : { backgroundColor: '#7f8c8d' }]}
                             onPress={() => {
-                                let saleOderDetails = [...this.state.saleOderDetails];
-                                saleOderDetails.forEach((order) => {
+                                let saleOrderDetails = [...this.state.saleOrderDetails];
+                                saleOrderDetails.forEach((order) => {
                                     this.props.units.forEach((unit) => {
                                         if (order.unitId == unit.id) {
                                             order.unitName = unit.name
@@ -657,7 +657,7 @@ class NewSaleOrder extends React.Component {
                                 sendEmail(
                                     customerEmail, customerName, this.state.date, this.state.total, this.state.totalIncludeVat,
                                     this.state.vat, this.state.oldebt, this.state.pay, this.state.newDebt,
-                                    saleOderDetails
+                                    saleOrderDetails
                                 );
                             }}
                         >
@@ -768,7 +768,7 @@ const mapStateToProps = (state, ownProps) => {
         id,
         customerId,
         date,
-        saleOderDetails,
+        saleOrderDetails,
         loaded,
         error,
         isSave,
@@ -784,7 +784,7 @@ const mapStateToProps = (state, ownProps) => {
         id,
         customerId,
         date,
-        saleOderDetails,
+        saleOrderDetails,
         loaded,
         units,
         error,
@@ -803,8 +803,8 @@ export default connect(mapStateToProps, {
     loadSupplierListDataFromSqlite,
     toggleProductToSelectList,
     loadDebtSuppliersFromSqlite,
-    AddNewSaleOrder,
+    AddNewPurchaseOrder,
     loadTax,
     loadQuocteBySupplierOrSupplierGroupIdFromSqlite,
     ProductChange
-})(NewSaleOrder);
+})(NewPurchaseOrder);

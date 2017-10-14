@@ -91,6 +91,11 @@ dataRoutes.post('/checkDataVersion', async function (req, res) {
             shouldUpdate.customersVersion = dataVersion[0].customers;
 
         }
+        if (dataVersion[0].supplier != supplier) {
+            shouldUpdate.supplier = await Knex.select().from('supplier');
+            shouldUpdate.supplierVersion = dataVersion[0].supplier;
+
+        }
         if (dataVersion[0].debtCustomers != debtCustomers) {
             const result = await Knex.raw(`
                 SELECT * FROM "debtCustomers"                 
@@ -101,6 +106,18 @@ dataRoutes.post('/checkDataVersion', async function (req, res) {
             `);
             shouldUpdate.debtCustomers = result.rows;
             shouldUpdate.debtCustomersVersion = dataVersion[0].debtCustomers;
+
+        }
+        if (dataVersion[0].debtSuppliers != debtSuppliers) {
+            const result = await Knex.raw(`
+                SELECT * FROM "debtSuppliers"                 
+                WHERE "id" IN (
+                    SELECT max(id) FROM "debtSuppliers"  
+                    GROUP BY "supplierId" 
+                );                           
+            `);
+            shouldUpdate.debtSuppliers = result.rows;
+            shouldUpdate.debtSuppliersVersion = dataVersion[0].debtSuppliers;
 
         }
         if (dataVersion[0].customerGroups != customerGroups) {

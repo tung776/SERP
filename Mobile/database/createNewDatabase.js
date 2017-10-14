@@ -4,6 +4,7 @@ import { URL } from '../../env';
 import SqlService from './sqliteService';
 import { loadMenusData } from '../actions/menuAction';
 import { loadCustomerListDataFromSqlite } from '../actions/customerAction';
+import { loadSupplierListDataFromSqlite } from '../actions/supplierAction';
 import { loadCustomerGroupListDataFromSqlite } from '../actions/customerGroupAction';
 import { loadCategoriesDataFromSqlite } from '../actions/categoryActions';
 import { loadProductListDataFromSqlite, loadUnits, loadTypeCargo } from '../actions/productActions';
@@ -41,9 +42,13 @@ export const resetDatabase = (tx) => {
   tx.executeSql(
     'drop table if exists customers;');
   tx.executeSql(
+    'drop table if exists suppliers;');
+  tx.executeSql(
     'drop table if exists quoctes;');
   tx.executeSql(
     'drop table if exists debtCustomers;');
+  tx.executeSql(
+    'drop table if exists debtSuppliers;');
   tx.executeSql(
     'drop table if exists dataVersions;');
 };
@@ -194,6 +199,28 @@ export const createDatabaseSqlite = async () => {
         null,
         e => console.log('customers error: ', e)
       );
+      tx.executeSql(`create table if not exists
+         suppliers (
+           id integer primary key not null,
+           name text,
+           address text,
+           imageUrl text,
+           phone text,
+           email text,
+           CurentDebt integer,
+           overdue integer,
+           excessDebt real,
+           directorName text,
+           bankNumber text,
+           bankName text,
+           companyName text,
+           companyAdress text,
+           taxCode text,
+           fax text
+          );`, null,
+        null,
+        e => console.log('suppliers error: ', e)
+      );
 
       tx.executeSql(`create table if not exists
       debtCustomers (
@@ -208,6 +235,20 @@ export const createDatabaseSqlite = async () => {
        );`, null,
      null,
      e => console.log('debtCustomers error: ', e)
+   );
+      tx.executeSql(`create table if not exists
+      debtSuppliers (
+        id integer,
+        supplierId integer,           
+        createdDate text,
+        title text,
+        newDebt real,
+        oldDebt real,
+        minus real,
+        plus real
+       );`, null,
+     null,
+     e => console.log('debtSuppliers error: ', e)
    );
 
       tx.executeSql(`create table if not exists
@@ -253,7 +294,11 @@ export const updateOrInsertDataVersion = async (data) => {
       tx => {
         tx.executeSql(`
           insert into dataVersions 
-            (id, menus, userMenus, categories, roles, units, tax, typeCargoes, warehouses, products, customerGroups, customers, quoctes, debtCustomers) 
+            (
+              id, menus, userMenus, categories, roles, units, 
+              tax, typeCargoes, warehouses, products, customerGroups, 
+              customers, suppliers, quoctes, debtCustomers, debtSuppliers
+            ) 
             values (
               '${data.id}', 
               '${data.menusVersion}', 
@@ -267,8 +312,10 @@ export const updateOrInsertDataVersion = async (data) => {
               '${data.productsVersion}', 
               '${data.customerGroupsVersion}', 
               '${data.customersVersion}',
+              '${data.suppiersVersion}',
               '${data.quoctesVersion}',
-              '${data.debtCustomersVersion}'
+              '${data.debtCustomersVersion}',
+              '${data.debtSuppliersVersion}'
             )
         `);
       },
@@ -289,8 +336,10 @@ export const updateOrInsertDataVersion = async (data) => {
       if (data.productsVersion) { sql += `products = '${data.productsVersion}',`; }
       if (data.customerGroupsVersion) { sql += `customerGroups = '${data.customerGroupsVersion}',`; }
       if (data.customersVersion) { sql += `customers = '${data.customersVersion}',`; }
+      if (data.suppliersVersion) { sql += `customers = '${data.suppliersVersion}',`; }
       if (data.quoctesVersion) { sql += `quoctes = '${data.quoctesVersion}',`; }
       if (data.debtCustomersVersion) { sql += `debtCustomers = '${data.debtCustomersVersion}',`; }
+      if (data.debtSuppliersVersion) { sql += `debtCustomers = '${data.debtSuppliersVersion}',`; }
       console.log('sql = ', sql);
       sql = sql.slice(0, sql.length - 1);
       console.log('sql = ', sql);
@@ -667,6 +716,102 @@ export const updateOrInsertDataVersion = async (data) => {
     }, this);
   }
 
+  if (data.suppliers) {
+    data.suppliers.forEach(async (item) => {
+      const avaiabledData = await SqlService.select('suppliers', '*', `id = '${item.id}'`);
+      if (avaiabledData.length == 0) {
+        SqlService.insert('suppliers', [
+          'id',
+          'name',
+          'address',
+          'imageUrl',
+          'phone',
+          'email',
+          'CurentDebt',
+          'overdue',
+          'excessDebt',
+          'directorName',
+          'bankNumber',
+          'bankName',
+          'companyName',
+          'companyAdress',
+          'taxCode',
+          'fax'
+        ], [
+            item.id, item.name, item.address,
+            item.imageUrl, item.phone, item.email, item.CurentDebt, item.overdue,
+            item.excessDebt, item.directorName, item.bankNumber, item.bankName,
+            item.companyName, item.companyAdress, item.taxCode, item.fax
+          ]);
+      } else {
+        db.transaction(
+          tx => {
+            tx.executeSql(`
+              update suppliers 
+              set name = ${item.name},
+              address = ${item.address},
+              imageUrl = ${item.imageUrl},
+              phone = ${item.phone},
+              email = ${item.email},
+              CurentDebt = ${item.CurentDebt},
+              overdue = ${item.overdue},
+              excessDebt = ${item.excessDebt},
+              directorName = ${item.directorName},
+              bankNumber = ${item.bankNumber},
+              bankName = ${item.bankName},
+              companyName = ${item.companyName},
+              companyAdress = ${item.companyAdress},
+              taxCode = ${item.taxCode},
+              fax = ${item.fax}
+              where id = ${item.id} 
+              `);
+          },
+          null,
+          e => console.log('error when update suppliers', e)
+        );
+      }
+    }, this);
+  }
+  
+  if (data.debtSuppliers) {
+    data.debtSuppliers.forEach(async (item) => {
+      const avaiabledData = await SqlService.select('debtSuppliers', '*', `id = '${item.id}'`);
+      if (avaiabledData.length == 0) {
+        SqlService.insert('debtSuppliers', [
+          'id',
+          'supplierId',
+          'createdDate',
+          'title',
+          'newDebt',
+          'oldDebt',
+          'minus',
+          'plus'
+        ], [
+            item.id, item.supplierId, item.createdDate, item.title,
+            item.newDebt, item.oldDebt, item.minus, item.plus
+          ]);
+      } else {
+        db.transaction(
+          tx => {
+            tx.executeSql(`
+              update debtSuppliers 
+              set supplierId = ${item.supplierId},
+              createdDate = '${item.createdDate}',
+              title = ${item.title},
+              newDebt = ${item.newDebt},
+              oldDebt = ${item.oldDebt},
+              minus = ${item.minus},
+              plus = ${item.plus}
+              where id = ${item.id} 
+              `);
+          },
+          null,
+          e => console.log('error when update debtSuppliers', e)
+        );
+      }
+    }, this);
+  }
+
   if (data.products) {
     data.products.forEach(async (item) => {
       const avaiabledData = await SqlService.select('products', '*', `id = '${item.id}'`);
@@ -723,15 +868,17 @@ export const checkDataVersion = async (userId, store) => {
             products: 0,
             customerGroups: 0,
             customers: 0,
+            suppliers: 0,
             quoctes: 0,
-            debtCustomers: 0
+            debtSuppliers: 0
           };
         }
         const { id, menus, userMenus,
           roles, units, tax, typeCargoes,
           warehouses, categories,
           products, customerGroups,
-          customers, quoctes, debtCustomers } = currentVersion[0];
+          customers, suppliers,
+           quoctes, debtCustomers, debtSuppliers } = currentVersion[0];
         const data = await axios.post(`${URL}/api/data/checkDataVersion`, {
           id,
           menus,
@@ -745,13 +892,16 @@ export const checkDataVersion = async (userId, store) => {
           categories,
           customerGroups,
           customers,
+          suppliers,
           quoctes,
           debtCustomers,
+          debtSuppliers,
           userId
         }); 
         
         await updateOrInsertDataVersion(data.data);
         await store.dispatch(loadCustomerListDataFromSqlite());
+        await store.dispatch(loadSupplierListDataFromSqlite());
         await store.dispatch(loadCustomerGroupListDataFromSqlite());
         await store.dispatch(loadCategoriesDataFromSqlite());
         await store.dispatch(loadProductListDataFromSqlite());

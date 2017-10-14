@@ -1,7 +1,7 @@
 import isEmpty from 'lodash/isEmpty';
 import Validator from 'validator';
 
-export const NewSaleOrderValidator = ({ date, customerId }) => {
+export const NewPurchaseOrderValidator = ({ date, customerId }) => {
     // console.log(NameSupplier, Description);
     const errors = {};
     // if (Validator.isEmpty(customerId)) {

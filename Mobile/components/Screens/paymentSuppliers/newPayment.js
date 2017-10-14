@@ -13,7 +13,7 @@ import { Ionicons } from '@expo/vector-icons';
 import {
     loadSupplierListDataFromSqlite,
     loadDebtSuppliersFromSqlite
-} from '../../../actions/customerAction';
+} from '../../../actions/supplierAction';
 import { resetData, AddNewPaymentSupplier } from '../../../actions/paymentSupplierActions';
 import db from '../../../database/sqliteConfig';
 import { formatMoney, formatNumber, unformat } from '../../../../Shared/utils/format';
@@ -30,7 +30,7 @@ class NewPaymentSupplier extends React.Component {
         id: '',
         isExpanded: true,
         isExpandedTotal: true,
-        customerId: '',
+        supplierId: '',
         debtSuppliers: {},
         createdDate: '',
         title: '',
@@ -43,7 +43,7 @@ class NewPaymentSupplier extends React.Component {
     }
     async componentWillMount() {
         this.props.resetData();
-        if (!this.props.customers || this.props.customers.length == 0) {
+        if (!this.props.suppliers || this.props.suppliers.length == 0) {
             this.props.loadSupplierListDataFromSqlite();
         }
         const fontAsset = await loadAsset("vuarial", "ttf", fontUrl);
@@ -71,10 +71,10 @@ class NewPaymentSupplier extends React.Component {
                     text: 'Xác Nhận',
                     onPress: () => {
                         const {
-                            createdDate, debtSupplierId, title, customerId, pay, oldDebt, newDebt
+                            createdDate, debtSupplierId, title, supplierId, pay, oldDebt, newDebt
                         } = this.state;
                         this.props.AddNewPaymentSupplier({
-                            createdDate, title, customerId, pay, oldDebt, newDebt, debtSupplierId: this.state.debtSuppliers.id,
+                            createdDate, title, supplierId, pay, oldDebt, newDebt, debtSupplierId: this.state.debtSuppliers.id,
                             user: this.props.user
                         });
                     }
@@ -84,9 +84,9 @@ class NewPaymentSupplier extends React.Component {
         );
     }
 
-    onSupplierChanged(customerId) {
-        this.props.loadDebtSuppliersFromSqlite(customerId);        
-        this.setState({ customerId });
+    onSupplierChanged(supplierId) {
+        this.props.loadDebtSuppliersFromSqlite(supplierId);        
+        this.setState({ supplierId });
     }
 
     renderHeaderPayment() {
@@ -128,7 +128,7 @@ class NewPaymentSupplier extends React.Component {
                         <View style={styles.groupControl}>
                             <Picker
                                 enabled={!this.props.isSave}
-                                selectedValue={this.state.customerId}
+                                selectedValue={this.state.supplierId}
                                 onValueChange={
                                     (itemValue, itemIndex) => {
                                         this.onSupplierChanged(itemValue);
@@ -136,7 +136,7 @@ class NewPaymentSupplier extends React.Component {
                                 }
                             >
                                 <Picker.Item key={0} label="" value={null} />
-                                {this.props.customers && this.props.customers.map((item) => (
+                                {this.props.suppliers && this.props.suppliers.map((item) => (
                                     <Picker.Item key={item.id} label={item.name} value={item.id} />
                                 ))
                                 }
@@ -252,14 +252,14 @@ class NewPaymentSupplier extends React.Component {
                                     );
                                 } else {
                                     
-                                    let customerName = '';
-                                    this.props.customers.forEach((customer) => {
-                                        if (customer.id == this.state.customerId) {
-                                            customerName = customer.name;
+                                    let supplierName = '';
+                                    this.props.suppliers.forEach((supplier) => {
+                                        if (supplier.id == this.state.supplierId) {
+                                            supplierName = supplier.name;
                                         }
                                     });
                                     let options = {
-                                        html: PaymentTemplate(customerName, this.props.id,
+                                        html: PaymentTemplate(supplierName, this.props.id,
                                             this.state.createdDate, this.state.oldDebt, this.state.pay, this.state.newDebt
                                             ),
                                         css: css(),
@@ -285,16 +285,16 @@ class NewPaymentSupplier extends React.Component {
                             style={[styles.Btn, (this.props.isSave) ? { backgroundColor: '#16a085' } : { backgroundColor: '#7f8c8d' }]}
                             onPress={() => {
                                 
-                                let customerPhone = '';
-                                let customerName = '';
-                                this.props.customers.forEach((customer) => {
-                                    if (customer.id == this.state.customerId) {
-                                        customerPhone = customer.phone;
-                                        customerName = customer.name;
+                                let supplierPhone = '';
+                                let supplierName = '';
+                                this.props.suppliers.forEach((supplier) => {
+                                    if (supplier.id == this.state.supplierId) {
+                                        supplierPhone = supplier.phone;
+                                        supplierName = supplier.name;
                                     }
                                 });
                                 sendMessage(
-                                    customerPhone, customerName, this.state.createdDate, this.state.oldDebt, this.state.pay, this.state.newDebt
+                                    supplierPhone, supplierName, this.state.createdDate, this.state.oldDebt, this.state.pay, this.state.newDebt
                                 );
                             }}
                         >
@@ -305,16 +305,16 @@ class NewPaymentSupplier extends React.Component {
                             style={[styles.Btn, (this.props.isSave) ? { backgroundColor: '#16a085' } : { backgroundColor: '#7f8c8d' }]}
                             onPress={() => {
                                 
-                                let customerName = '';
-                                let customerEmail = '';
-                                this.props.customers.forEach((customer) => {
-                                    if (customer.id == this.state.customerId) {
-                                        customerEmail = customer.email;
-                                        customerName = customer.name;
+                                let supplierName = '';
+                                let supplierEmail = '';
+                                this.props.suppliers.forEach((supplier) => {
+                                    if (supplier.id == this.state.supplierId) {
+                                        supplierEmail = supplier.email;
+                                        supplierName = supplier.name;
                                     }
                                 });
                                 sendEmail(
-                                    customerEmail, customerName, this.state.createdDate, this.state.oldDebt, this.state.pay, this.state.newDebt
+                                    supplierEmail, supplierName, this.state.createdDate, this.state.oldDebt, this.state.pay, this.state.newDebt
                                 );
                             }}
                         >
@@ -423,22 +423,22 @@ const styles = {
 const mapStateToProps = (state, ownProps) => {
     const {
         id,
-        customerId,
+        supplierId,
         createdDate,
         loaded,
         error,
         isSave,
     } = state.paymentSupplier;
-    const { customers, debt } = state.customers;
+    const { suppliers, debt } = state.suppliers;
     const { isAuthenticated, user } = state.auth;
     return {
         isSave,
         id,
-        customerId,
+        supplierId,
         createdDate,
         loaded,
         error,
-        customers,
+        suppliers,
         debt,
         user
     };

@@ -3,23 +3,15 @@ import Communications from 'react-native-communications';
 import {  formatMoney, formatNumber, unformat } from '../utils/format';
 import logoImage from './logo';
 
-export default Invoice = (
-    customerName,
+export default PurChaseSupplier = (
+    supplierName,
     id,
     date,
-    QuocteDetail
-) => {
+    oldDebt,
+    pay,
+    newDebt
+) => {    
     
-    let htmlQuocteDetail = '';
-    QuocteDetail.forEach((quocte) => {        
-        htmlQuocteDetail += `
-        <tr>
-            <td>${quocte.name}</td>
-            <td class = "center">${quocte.unitName}</td>
-            <td class = "alignright" >${formatNumber(quocte.salePrice)}</td>
-        </tr>
-        `
-    });
     return `
     <?xml version="1.0" encoding="UTF-8"?>
     
@@ -48,36 +40,29 @@ export default Invoice = (
     
         </table>
         <h1 class="title" width: "100%">BÁO GIÁ</h1>
-        <table class="quocteInfor" width="100%">
+        <table class="orderInfor" width="100%">
             <tr>
                 <td width="50%">
-                    <h5>Kính gửi Quý Khách ${customerName}</h5>
+                    <h2>Kính gửi Quý Khách ${supplierName}</h2>
                 </td>
                 <td width="50%">
                     <p>Ngày Lập: ${date}</p>
                 </td>
             </tr>
-        </table>
-    
-    
-        <table class="quocteDetail" width="100%">
-            <thead>
-                <tr>
-                    <th>
-                        <p><strong>Tên sản phẩm</strong></p>
-                    </th>
-                    <th>
-                        <p><strong>Qui cách</strong></p>
-                    </th>
-                    <th>
-                        <p><strong>Giá bán</strong></p>
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                ${htmlQuocteDetail} 
-            </tbody>
-        </table>
+            <tr
+                <td width="60%"></td>
+                <td>Nợ Cũ: $${oldDebt}</td>
+            </tr>
+            <tr
+                <td width="60%"></td>
+                <td>Thanh Toán: $${pay}</td>
+            </tr>
+            <tr
+                <td width="60%"></td>
+                <td>Còn Lại: $${newDebt}</td>
+            </tr>
+        </table>   
+        
     </body>
     
     </html>
@@ -132,49 +117,49 @@ export const css = () => {
         border-collapse: collapse;
     }
 
-    table.quocteDetail th,
-    table.quocteDetail td {
+    table.orderDetail th,
+    table.orderDetail td {
         border-style: solid;
         border-width: 1px;
         padding: 2em;
         border-color: #7f8c8d;
     }
 
-    table.quocteDetail th {
+    table.orderDetail th {
         text-align: center;
     }
 
-    table.quocteDetail tr:nth-child(even) {
+    table.orderDetail tr:nth-child(even) {
         background-color: #dddddd;
     }
 
-    table.quocteDetail td:nth-child(1) {
+    table.orderDetail td:nth-child(1) {
         width: 32%;
     }
 
-    table.quocteDetail td:nth-child(2) {
+    table.orderDetail td:nth-child(2) {
         text-align: center;
         width: 12%;
     }
 
-    table.quocteDetail td:nth-child(3) {
+    table.orderDetail td:nth-child(3) {
         text-align: center;
         width: 15%;
     }
 
-    table.quocteDetail td:nth-child(4) {
+    table.orderDetail td:nth-child(4) {
         text-align: right;
         width: 18%;
     }
 
-    table.quocteDetail td:nth-child(5) {
+    table.orderDetail td:nth-child(5) {
         text-align: right;
         width: 23%;
     }
-    table.quocteDetail td.alignright {
+    table.orderDetail td.alignright {
         text-align: right;
     }
-    table.quocteDetail td.center {
+    table.orderDetail td.center {
         text-align: center;
     }
 
@@ -226,7 +211,7 @@ export const css = () => {
         line-height: 1em;
     }
 
-    table.quocteInfor {
+    table.orderInfor {
         text-align: center;
         font-weight: bold;
         margin-bottom: 20px;
@@ -235,32 +220,32 @@ export const css = () => {
 }
 
 export const sendMessage = (
-    customerPhone,
-    customerName,
+    supplierPhone,
+    supplierName,
     date,
     QuocteDetail,
 ) => {
     let htmlQuocteDetail = '';
-    QuocteDetail.forEach((quocte) => {        
-        htmlQuocteDetail += `${quocte.name}: ${quocte.unitName} : ${formatNumber(quocte.salePrice)}. `
+    QuocteDetail.forEach((order) => {        
+        htmlQuocteDetail += `${order.name}: ${order.unitName} : ${formatNumber(order.salePrice)}. `
     });
     
-    Communications.text(customerPhone, `Kính gửi Quí Khách ${customerName} Báo Giá ngày: ${date}: 
+    Communications.text(supplierPhone, `Kính gửi Quí Khách ${supplierName} Báo Giá ngày: ${date}: 
     ${htmlQuocteDetail}    
     `);
 }
 export const sendEmail = (
-    customerEmail,
-    customerName,
+    supplierEmail,
+    supplierName,
     date,
     QuocteDetail,
 ) => {
     let htmlQuocteDetail = '';
-    QuocteDetail.forEach((quocte) => {
-        htmlQuocteDetail += `${quocte.name}: ${quocte.unitName} x ${formatNumber(quocte.salePrice)}.
+    QuocteDetail.forEach((order) => {
+        htmlQuocteDetail += `${order.name}: ${order.unitName} x ${formatNumber(order.salePrice)}.
         `
     });
-    Communications.email([customerEmail], null, null, 'Báo Giá', `Kính gửi Quí Khách ${customerName}
+    Communications.email([supplierEmail], null, null, 'Báo Giá', `Kính gửi Quí Khách ${supplierName}
     
     
         Báo Giá ngày: ${date}: 

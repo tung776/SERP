@@ -3,8 +3,8 @@ import Communications from 'react-native-communications';
 import {  formatMoney, formatNumber, unformat } from '../utils/format';
 import logoImage from './logo';
 
-export default Invoice = (
-    customerName,
+export default PurchaseInvoice = (
+    supplierName,
     id,
     date,
     total,
@@ -52,7 +52,7 @@ export default Invoice = (
     
     <head>
         <meta charset="utf-8" />
-        <title>Invoice</title>
+        <title>PurchaseInvoice</title>
     </head>
     
     <body>
@@ -74,7 +74,7 @@ export default Invoice = (
         <table class="orderInfor" width="100%">
             <tr>
                 <td width="50%">
-                    <h2>${customerName}</h2>
+                    <h2>${supplierName}</h2>
                 </td>
                 <td width="50%">
                     <p>Ngày Lập: ${date}</p>
@@ -298,8 +298,8 @@ export const css = () => {
 }
 
 export const sendMessage = (
-    customerPhone,
-    customerName,
+    supplierPhone,
+    supplierName,
     date,
     total,
     totalIncludeVat,
@@ -317,14 +317,14 @@ export const sendMessage = (
     });
     let totalIncludeVatText = '';
     if(vat > 0) totalIncludeVatText = `Tổng tiền gồm VAT: ${formatNumber(totalIncludeVat)},`
-    Communications.text(customerPhone, `Kính gửi Quí Khách ${customerName} Hóa Đơn ngày: ${date}: 
+    Communications.text(supplierPhone, `Kính gửi Quí Khách ${supplierName} Hóa Đơn ngày: ${date}: 
     ${htmlOrderDetail}
     Tổng tiền: ${formatNumber(total)}, ${totalIncludeVatText} Nợ cũ: ${formatNumber(oldDebt)}, Thanh Toán: - ${formatNumber(pay)}, Còn Lại: ${formatNumber(newDebt)}
     `);
 }
 export const sendEmail = (
-    customerEmail,
-    customerName,
+    supplierEmail,
+    supplierName,
     date,
     total,
     totalIncludeVat,
@@ -343,7 +343,7 @@ export const sendEmail = (
     });
     let totalIncludeVatText = '';
     if(vat > 0) totalIncludeVatText = `Tổng tiền gồm VAT: ${totalIncludeVat},`
-    Communications.email([customerEmail], null, null, 'Hóa Đơn', `Kính gửi Quí Khách ${customerName}
+    Communications.email([supplierEmail], null, null, 'Hóa Đơn', `Kính gửi Quí Khách ${supplierName}
     
     
         Hóa Đơn ngày: ${date}: 

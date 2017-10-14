@@ -1,56 +1,125 @@
 import {
-    ADD_CATEGORY, CATEGORY_PENDING, CATEGORY_CHANGE_FAIL,
-    CATEGORY_CHANGE_SUCCESS, CATEGORY_CHANGE, 
-    CATEGORY_LOADED_SQLITE, CATEGORY_DELETE_SUCCESS,
-    RESET_CATEGORY_FORM
+    ADD_SUPPLIER, SUPPLIER_PENDING, SUPPLIER_CHANGE_FAIL,
+    SUPPLIER_CHANGE_SUCCESS, SUPPLIER_CHANGE,
+    SUPPLIER_LOADED_SQLITE, SUPPLIER_LIST_LOADED_SQLITE, SUPPLIER_DELETE_SUCCESS,
+    RESET_SUPPLIER_FORM, SUPPLIER_DEBT_LOADED_SQLITE
 } from '../actions/types';
 
 const INITIAL_STATE = {
-    Name: '',
-    Description: '',
-    ImageUrl: '',
     Id: '',
+    SupplierGroupId: 6,
+    Name: '',
+    Address: '',
+    Phone: '',
+    Email: '',
+    CurentDebt: '',
+    Overdue: '',
+    ExcessDebt: '',
+    CompanyName: '',
+    CompanyAdress: '',
+    DirectorName: '',
+    BankNumber: '',
+    BankName: '',
+    TaxCode: '',
+    Fax: '',
     loading: false,
     loaded: false,
     error: '',
-    categories:[]
+    debt: null,
+    customers: []
     // uploading: false
 };
 
 export default (state = INITIAL_STATE, action) => {
     switch (action.type) {
-        case CATEGORY_PENDING:
-            return { ...state, loading: true, error: '' };
-        case RESET_CATEGORY_FORM:
-            return { ...state, Name: '', ImageUrl: '', Description: '', Id: '', error: '' };
-        case CATEGORY_CHANGE:
+        case SUPPLIER_PENDING:
+            return { ...state };
+        case RESET_SUPPLIER_FORM:
+            const debt = action.payload ? action.payload[0] : {}
+            return {
+                ...state,
+                Id: '',
+                SupplierGroupId: 6,
+                Name: '',
+                Address: '',
+                Phone: '',
+                Email: '',
+                CurentDebt: '',
+                Overdue: '',
+                ExcessDebt: '',
+                CompanyName: '',
+                CompanyAdress: '',
+                DirectorName: '',
+                BankNumber: '',
+                BankName: '',
+                TaxCode: '',
+                Fax: '',
+                debt,
+                error: ''
+            };
+        case SUPPLIER_CHANGE:
             return { ...state, [action.payload.prop]: action.payload.value };
-        case CATEGORY_LOADED_SQLITE:
-            return { ...state, categories: action.payload, loaded: true, loading: false };
-        case ADD_CATEGORY:
-            debugger;
+        case SUPPLIER_DEBT_LOADED_SQLITE:
+            return { ...state, debt: action.payload[0] };
+        case SUPPLIER_LIST_LOADED_SQLITE: {
+            const convertedData = [];
+            action.payload.forEach((item) => {
+                const convert = { ...item, key: item.id };
+                convertedData.push(convert);
+            });
+            return { ...state, customers: convertedData, loaded: true, loading: false };
+        }
+
+        case SUPPLIER_LOADED_SQLITE:
             return {
                 ...state,
-                Name: action.payload.Name,
-                Description: action.payload.Description,
-                ImageUrl: action.payload.Image,
+                SupplierGroupId: action.payload.customerGroupId,
+                Name: action.payload.name,
+                Address: action.payload.address,
+                Phone: action.payload.phone,
+                Email: action.payload.email,
+                CurentDebt: `${action.payload.CurentDebt}`,
+                Overdue: `${action.payload.overdue}`,
+                ExcessDebt: `${action.payload.excessDebt}`,
+                CompanyName: action.payload.companyName,
+                CompanyAdress: action.payload.companyAdress,
+                DirectorName: action.payload.directorName,
+                BankNumber: action.payload.bankNumber,
+                BankName: action.payload.bankName,
+                TaxCode: action.payload.taxCode,
+                Fax: action.payload.fax,
+                Id: action.payload.id,
                 error: '',
                 loading: false,
+                loaded: true
             };
-        case CATEGORY_CHANGE_FAIL:
+        case SUPPLIER_CHANGE_FAIL:
             return { ...state, error: action.payload, loading: false };
-        case CATEGORY_CHANGE_SUCCESS:
+        case SUPPLIER_CHANGE_SUCCESS:
             return {
                 ...state,
-                Name: action.payload.Name,
-                Description: action.payload.Description,
-                ImageUrl: action.payload.Image,
+                Id: '',
+                SupplierGroupId: "",
+                Name: '',
+                Address: '',
+                Phone: '',
+                Email: '',
+                CurentDebt: '',
+                Overdue: '',
+                ExcessDebt: '',
+                CompanyName: '',
+                CompanyAdress: '',
+                DirectorName: '',
+                BankNumber: '',
+                BankName: '',
+                TaxCode: '',
+                Fax: '',
                 error: '',
                 loading: false,
             };
-        case CATEGORY_DELETE_SUCCESS:
+        case SUPPLIER_DELETE_SUCCESS:
             return {
-                ...state,               
+                ...state,
                 error: '',
                 loading: false,
             };

@@ -8,7 +8,7 @@ import moment from '../utils/moment';
 
 const INITIAL_STATE = {
     id: '',
-    customerId: '',
+    supplierId: '',
     createdDate: '',
     title: '',
     newDebt: '',
@@ -30,7 +30,7 @@ export default (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 isSave: false,
-                customerId: '',
+                supplierId: '',
                 createdDate: '',
                 title: '',
                 error: ''
@@ -66,7 +66,7 @@ export default (state = INITIAL_STATE, action) => {
                 ...state,
                 isSave: false,
                 id: action.payload.paymentSupplier[0].id,
-                customerId: action.payload.paymentSupplier[0].customerId,
+                supplierId: action.payload.paymentSupplier[0].supplierId,
                 createdDate: action.payload.paymentSupplier[0].createdDate,
                 title: action.payload.paymentSupplier[0].title,
                 debtSupplierId: action.payload.paymentSupplier[0].debtSupplierId,
@@ -98,7 +98,7 @@ export default (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 id: "",
-                customerId: '',
+                supplierId: '',
                 createdDate: '',
                 title: '',
                 error: '',

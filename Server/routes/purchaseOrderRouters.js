@@ -1,36 +1,36 @@
 import { Router } from 'express';
-import { NewSaleOrderValidator } from '../../Shared/validators/index';
+import { NewPurchaseOrderValidator } from '../../Shared/validators/index';
 import Knex from '../config/knex';
 import dataversionHelper from '../helpers/saveNewDataversion';
 import fs from 'fs';
 import path from 'path';
 import moment from '../../Shared/utils/moment';
-import DocDefinition from '../../Shared/templates/saleOrderTemplate';
+import DocDefinition from '../../Shared/templates/purchaseOrderTemplate';
 
 const Printer = require('pdfmake');
-const SaleOrderRouter = Router();
+const PurchaseOrderRouter = Router();
 
-SaleOrderRouter.get('/getInvoice/:orderId', async (req, res) => {
+PurchaseOrderRouter.get('/getInvoice/:orderId', async (req, res) => {
     const orderId = req.params.orderId;
 
-    const saleOrder = await Knex.raw(`
-        SELECT s."id", s."date" , s."customerId", s."userId", s."debtSupplierId", s."orderTypeId", 
+    const purchaseOrder = await Knex.raw(`
+        SELECT s."id", s."date" , s."supplierId", s."userId", s."debtSupplierId", s."orderTypeId", 
         s."title", s."total", s."totalIncludeVat", s."vat", s."taxId" d."newDebt", d."oldDebt", d."minus"
-        FROM "saleOrders" as s
+        FROM "purchaseOrders" as s
         INNER JOIN "debtSuppliers" AS d ON d."id" = s."debtSupplierId" 
         WHERE s."id" = ${orderId};                      
     `);
-    const saleOrderDetails = await Knex.raw(`
-        SELECT s."id" , s."saleOrderId", s."productId", s."unitId", u."name" AS "unitName", s."quantity", s."salePrice", p."name" 
-        FROM "saleOderDetails" as s
+    const purchaseOrderDetails = await Knex.raw(`
+        SELECT s."id" , s."purchaseOrderId", s."productId", s."unitId", u."name" AS "unitName", s."quantity", s."purchasePrice", p."name" 
+        FROM "purchaseOrderDetails" as s
         INNER JOIN "products" AS p ON p."id" = s."productId" 
         INNER JOIN "units" AS u ON u."id" = s."unitId" 
-        WHERE s."saleOrderId" = ${orderId};                      
+        WHERE s."purchaseOrderId" = ${orderId};                      
     `);
 
     const {
         id,
-        customerId,
+        supplierId,
         date,
         total,
         totalIncludeVat,
@@ -39,10 +39,10 @@ SaleOrderRouter.get('/getInvoice/:orderId', async (req, res) => {
         oldDebt,
         minus,
         newDebt,
-    } = saleOrder.rows[0];
+    } = purchaseOrder.rows[0];
 
-    const customer = await Knex('customers')
-        .where({ id: customerId });
+    const supplier = await Knex('suppliers')
+        .where({ id: supplierId });
 
     const fontDescriptors = {
         Roboto: {
@@ -56,7 +56,7 @@ SaleOrderRouter.get('/getInvoice/:orderId', async (req, res) => {
     const printer = new Printer(fontDescriptors);
     const docDefin = DocDefinition(
         id,
-        customer.name,
+        supplier.name,
         date,
         total,
         totalIncludeVat,
@@ -64,7 +64,7 @@ SaleOrderRouter.get('/getInvoice/:orderId', async (req, res) => {
         oldDebt,
         minus,
         newDebt,
-        saleOrderDetails.rows
+        purchaseOrderDetails.rows
     );
     // console.log('docDefin = ', docDefin);
     let doc = printer.createPdfKitDocument(docDefin);
@@ -84,30 +84,30 @@ SaleOrderRouter.get('/getInvoice/:orderId', async (req, res) => {
     doc.end();
 });
 
-SaleOrderRouter.post('/getById', async (req, res) => {
+PurchaseOrderRouter.post('/getById', async (req, res) => {
     const { orderId } = req.body;
 
     try {
-        const saleOrder = await Knex.raw(`
-            SELECT s."id", s."date" , s."customerId", s."userId", s."debtSupplierId", s."orderTypeId", 
+        const purchaseOrder = await Knex.raw(`
+            SELECT s."id", s."date" , s."supplierId", s."userId", s."debtSupplierId", s."orderTypeId", 
             s."title", s."total", s."totalIncludeVat", s."vat", s."taxId", d."newDebt", d."oldDebt", d."minus"
-            FROM "saleOrders" as s
+            FROM "purchaseOrders" as s
             INNER JOIN "debtSuppliers" AS d ON d."id" = s."debtSupplierId" 
             WHERE s."id" = ${orderId};                      
         `);
 
         
-        const saleOrderDetails = await Knex.raw(`
-        SELECT s."id" , s."saleOrderId", s."productId", s."unitId", s."quantity", s."salePrice", p."name" 
-        FROM "saleOderDetails" as s
+        const purchaseOrderDetails = await Knex.raw(`
+        SELECT s."id" , s."purchaseOrderId", s."productId", s."unitId", s."quantity", s."purchasePrice", p."name" 
+        FROM "purchaseOrderDetails" as s
         INNER JOIN "products" AS p ON p."id" = s."productId" 
-        WHERE s."saleOrderId" = ${orderId};                      
+        WHERE s."purchaseOrderId" = ${orderId};                      
         `);
-        console.log('saleOrderDetails = ', saleOrderDetails.rows);
+        console.log('purchaseOrderDetails = ', purchaseOrderDetails.rows);
         res.status(200).json({
             success: true,
-            saleOrder: saleOrder.rows,
-            saleOrderDetails: saleOrderDetails.rows
+            purchaseOrder: purchaseOrder.rows,
+            purchaseOrderDetails: purchaseOrderDetails.rows
         });
     }
     catch (e) {
@@ -119,13 +119,13 @@ SaleOrderRouter.post('/getById', async (req, res) => {
 
 });
 
-SaleOrderRouter.post('/getBySupplierId', async (req, res) => {
-    const { customerId } = req.body;
+PurchaseOrderRouter.post('/getBySupplierId', async (req, res) => {
+    const { supplierId } = req.body;
     const count = 10; //10 dòng trong 1 trang
     const page = 1;
     try {
-        const orders = await Knex('saleOrders')
-            .where({ customerId })
+        const orders = await Knex('purchaseOrders')
+            .where({ supplierId })
             .orderBy('id', 'desc')
         // .limit(count)
         // .offset(30);
@@ -143,15 +143,15 @@ SaleOrderRouter.post('/getBySupplierId', async (req, res) => {
 
 });
 
-SaleOrderRouter.post('/new', async (req, res) => {
+PurchaseOrderRouter.post('/new', async (req, res) => {
     let {
-        date, title, customerId, total, totalIncludeVat, vat, taxId, pay,
-        newDebt, oldebt, saleOderDetails, debtSupplierId, user
+        date, title, supplierId, total, totalIncludeVat, vat, taxId, pay,
+        newDebt, oldebt, purchaseOrderDetails, debtSupplierId, user
     } = req.body;
     // return;
-    const { isValid, errors } = NewSaleOrderValidator({
-        date, title, customerId, total, totalIncludeVat, vat, pay,
-        newDebt, oldebt, saleOderDetails,
+    const { isValid, errors } = NewPurchaseOrderValidator({
+        date, title, supplierId, total, totalIncludeVat, vat, pay,
+        newDebt, oldebt, purchaseOrderDetails,
     });
     let order = []
     if (isValid) {
@@ -164,7 +164,7 @@ SaleOrderRouter.post('/new', async (req, res) => {
                     data = await t('debtSuppliers')
                         .returning('*')
                         .insert({
-                            customerId: customerId,
+                            supplierId: supplierId,
                             createdDate: moment(date, 'DD-MM-YYYY').format('YYYY-MM-DD'),
                             title: title,
                             newDebt: newDebt,
@@ -173,10 +173,10 @@ SaleOrderRouter.post('/new', async (req, res) => {
                             plus: totalIncludeVat
                         });
 
-                    order = await t('saleOrders')
+                    order = await t('purchaseOrders')
                         .returning('*')
                         .insert({
-                            customerId: customerId,
+                            supplierId: supplierId,
                             userId: user.id,
                             debtSupplierId: data[0].id,
                             orderTypeId: 1,
@@ -189,17 +189,17 @@ SaleOrderRouter.post('/new', async (req, res) => {
                         });
 
 
-                    saleOderDetails.forEach(async ({ id, unitId, quantity, salePrice }) => {
+                    purchaseOrderDetails.forEach(async ({ id, unitId, quantity, purchasePrice }) => {
 
-                        const total = quantity * salePrice;
-                        const temp = await t('saleOderDetails')
+                        const total = quantity * purchasePrice;
+                        const temp = await t('purchaseOrderDetails')
                             .returning('*')
                             .insert({
-                                saleOrderId: order[0].id,
+                                purchaseOrderId: order[0].id,
                                 productId: id,
                                 unitId,
                                 quantity,
-                                salePrice,
+                                purchasePrice,
                                 total
                             });
                     });
@@ -229,7 +229,7 @@ SaleOrderRouter.post('/new', async (req, res) => {
                         success: true,
                         debtSuppliers: data,
                         dataversion: newDataversion,
-                        saleOrder: order
+                        purchaseOrder: order
                     });
                 }
                 )
@@ -245,16 +245,16 @@ SaleOrderRouter.post('/new', async (req, res) => {
         }
     }
 });
-SaleOrderRouter.post('/update', async (req, res) => {
+PurchaseOrderRouter.post('/update', async (req, res) => {
 
     let {
-        id, date, title, customerId, total, totalIncludeVat, vat, taxId, pay,
-        newDebt, oldDebt, saleOrderDetails, debtSupplierId, user
+        id, date, title, supplierId, total, totalIncludeVat, vat, taxId, pay,
+        newDebt, oldDebt, purchaseOrderDetails, debtSupplierId, user
     } = req.body;
 
-    const { isValid, errors } = NewSaleOrderValidator({
-        date, title, customerId, total, totalIncludeVat, vat, pay,
-        newDebt, oldDebt, saleOrderDetails,
+    const { isValid, errors } = NewPurchaseOrderValidator({
+        date, title, supplierId, total, totalIncludeVat, vat, pay,
+        newDebt, oldDebt, purchaseOrderDetails,
     });
 
 
@@ -263,13 +263,13 @@ SaleOrderRouter.post('/update', async (req, res) => {
     let detailBeRemoved = [];
     let detailBeUpdated = [];
     let detailBeInsersted = [];
-    let detailInDatabase = await Knex('saleOderDetails')
-        .whereRaw(`"saleOrderId" = ${id}`);
+    let detailInDatabase = await Knex('purchaseOrderDetails')
+        .whereRaw(`"purchaseOrderId" = ${id}`);
 
     detailInDatabase.forEach(detailInData => {
         let isRemove = true;
         let itemUpdated = null;
-        saleOrderDetails.forEach(detail => {
+        purchaseOrderDetails.forEach(detail => {
             if (detail.id == detailInData.id) {                
                 isRemove = false;
                 itemUpdated = detail;
@@ -281,17 +281,17 @@ SaleOrderRouter.post('/update', async (req, res) => {
             detailBeUpdated.push(itemUpdated);
         }
     });
-    detailBeInsersted = saleOrderDetails.filter(item => {
+    detailBeInsersted = purchaseOrderDetails.filter(item => {
         if (item.isNew) return item;
     });
-    const saleOrder = await Knex('saleOrders')
+    const purchaseOrder = await Knex('purchaseOrders')
         .where({ id: id });
 
-    const customerDebtBeChanged = await Knex('debtSuppliers')
+    const supplierDebtBeChanged = await Knex('debtSuppliers')
         .orderBy('id', 'asc')
-        .whereRaw(`id > ${saleOrder[0].debtSupplierId} AND "customerId" = ${saleOrder[0].customerId}`);
+        .whereRaw(`id > ${purchaseOrder[0].debtSupplierId} AND "supplierId" = ${purchaseOrder[0].supplierId}`);
 
-    const customerDebt = await Knex('debtSuppliers')
+    const supplierDebt = await Knex('debtSuppliers')
         .where({ id: debtSupplierId });
 
     const dataVersion = await Knex('dataVersions').where('id', 1);
@@ -313,14 +313,14 @@ SaleOrderRouter.post('/update', async (req, res) => {
                             debtSuppliers
                         });
 
-                    const So_tien_Dieu_Chinh = totalIncludeVat - saleOrder[0].totalIncludeVat - (pay - customerDebt[0].minus);
+                    const So_tien_Dieu_Chinh = totalIncludeVat - purchaseOrder[0].totalIncludeVat - (pay - supplierDebt[0].minus);
 
                     data = await t('debtSuppliers')
                         // .debug(true)
                         .returning('*')
                         .whereRaw(`id = ${debtSupplierId}`)
                         .update({
-                            customerId: customerId,
+                            supplierId: supplierId,
                             createdDate: moment(date, 'DD-MM-YYYY').format('YYYY-MM-DD'),
                             title: title,
                             newDebt: newDebt,
@@ -332,8 +332,8 @@ SaleOrderRouter.post('/update', async (req, res) => {
                     //Lấy toàn bộ bảng dữ liệu công nợ có liên quan đến bảng công nợ bị xóa
 
                     //Điều chỉnh toàn bộ công nợ có liêu quan
-                    if (customerDebtBeChanged.length >= 0) {
-                        customerDebtBeChanged.forEach(async (debt) => {
+                    if (supplierDebtBeChanged.length >= 0) {
+                        supplierDebtBeChanged.forEach(async (debt) => {
                             if (debt.newDebt == 'NAN') debt.newDebt = 0;
                             if (debt.oldDebt == 'NAN') debt.oldDebt = 0;
                             const _newDebt = debt.newDebt + So_tien_Dieu_Chinh;
@@ -351,26 +351,26 @@ SaleOrderRouter.post('/update', async (req, res) => {
                             data = [debt];
                             data[0].newDebt = _newDebt;
                             data[0].oldDebt = _oldDebt;
-                            console.log('customerDebt = ', data);
+                            console.log('supplierDebt = ', data);
                         });
                     }
 
                     detailBeInsersted.forEach(async (detail) => {
-                        await Knex('saleOderDetails')
+                        await Knex('purchaseOrderDetails')
                             .transacting(t)
                             .debug(true)
                             .insert({
-                                saleOrderId: id,
+                                purchaseOrderId: id,
                                 productId: detail.productId,
                                 unitId: detail.unitId,
                                 quantity: detail.quantity,
-                                salePrice: detail.salePrice,
-                                total: detail.salePrice * detail.quantity
+                                purchasePrice: detail.purchasePrice,
+                                total: detail.purchasePrice * detail.quantity
                             });
                     });
 
                     detailBeRemoved.forEach(async detail => {
-                        await Knex('saleOderDetails')
+                        await Knex('purchaseOrderDetails')
                             .transacting(t)
                             // .debug(true)
                             .whereRaw(`"id" = ${detail.id}`)
@@ -378,17 +378,17 @@ SaleOrderRouter.post('/update', async (req, res) => {
                     });
 
                     detailBeUpdated.forEach(async detail => {
-                        await Knex('saleOderDetails')
+                        await Knex('purchaseOrderDetails')
                             .transacting(t)
                             .debug(true)
                             .whereRaw(`id = ${detail.id}`)
                             .update({
-                                saleOrderId: id,
+                                purchaseOrderId: id,
                                 productId: detail.productId,
                                 unitId: detail.unitId,
                                 quantity: detail.quantity,
-                                salePrice: detail.salePrice,
-                                total: detail.quantity * detail.salePrice
+                                purchasePrice: detail.purchasePrice,
+                                total: detail.quantity * detail.purchasePrice
                             });
                     });
 
@@ -397,7 +397,7 @@ SaleOrderRouter.post('/update', async (req, res) => {
                     //     .returning('*')
                     //     .whereRaw(`id = ${debtSupplierId}`)
                     //     .update({
-                    //         customerId: customerId,
+                    //         supplierId: supplierId,
                     //         createdDate: moment(date, 'DD-MM-YYYY').format('YYYY-MM-DD'),
                     //         title: title,
                     //         newDebt: newDebt,
@@ -406,11 +406,11 @@ SaleOrderRouter.post('/update', async (req, res) => {
                     //         plus: totalIncludeVat
                     //     });
 
-                    await t('saleOrders')
+                    await t('purchaseOrders')
                         .returning('*')
                         .whereRaw(`id = ${id}`)
                         .update({
-                            customerId: customerId,
+                            supplierId: supplierId,
                             userId: user.id,
                             debtSupplierId: debtSupplierId,
                             orderTypeId: 1,
@@ -448,10 +448,10 @@ SaleOrderRouter.post('/update', async (req, res) => {
     }
 });
 
-SaleOrderRouter.post('/delete', async (req, res) => {
+PurchaseOrderRouter.post('/delete', async (req, res) => {
 
-    const { id, date, title, customerId, total, totalIncludeVat, vat, pay,
-        newDebt, oldebt, saleOrderDetails, debtSupplierId, user } = req.body;
+    const { id, date, title, supplierId, total, totalIncludeVat, vat, pay,
+        newDebt, oldebt, purchaseOrderDetails, debtSupplierId, user } = req.body;
     let newDataversion;
     console.log('deleting order ', id);
 
@@ -472,25 +472,25 @@ SaleOrderRouter.post('/delete', async (req, res) => {
                         debtSuppliers
                     });
                 console.log('go 2');
-                const saleOrder = await Knex('saleOrders')
+                const purchaseOrder = await Knex('purchaseOrders')
                     .where({ id: id });
                 //Lấy thông tin bảng công nợ sẽ bị xóa
                 console.log('go 3');
-                const customerDebt = await Knex('debtSuppliers')
-                    .where({ id: saleOrder[0].debtSupplierId });
+                const supplierDebt = await Knex('debtSuppliers')
+                    .where({ id: purchaseOrder[0].debtSupplierId });
 
                 //phát sinh giảm - phát sinh tăng
-                const So_tien_Dieu_Chinh = parseFloat(customerDebt[0].minus) - parseFloat(saleOrder[0].totalIncludeVat);
+                const So_tien_Dieu_Chinh = parseFloat(supplierDebt[0].minus) - parseFloat(purchaseOrder[0].totalIncludeVat);
                 console.log('totalIncludeVat = ', totalIncludeVat);
-                console.log('saleOrder[0].totalIncludeVat = ', saleOrder[0].totalIncludeVat);
+                console.log('purchaseOrder[0].totalIncludeVat = ', purchaseOrder[0].totalIncludeVat);
                 console.log('So_tien_Dieu_Chinh = ', So_tien_Dieu_Chinh);
                 //Lấy toàn bộ bảng dữ liệu công nợ có liên quan đến bảng công nợ bị xóa
                 console.log('go 3');
-                const customerDebtBeChanged = await Knex('debtSuppliers')
-                    .whereRaw(`id > ${saleOrder[0].debtSupplierId} AND "customerId" = ${saleOrder[0].customerId}`);
+                const supplierDebtBeChanged = await Knex('debtSuppliers')
+                    .whereRaw(`id > ${purchaseOrder[0].debtSupplierId} AND "supplierId" = ${purchaseOrder[0].supplierId}`);
                 //Điều chỉnh toàn bộ công nợ có liêu quan
-                if (customerDebtBeChanged.length > 0) {
-                    customerDebtBeChanged.forEach(async (debt) => {
+                if (supplierDebtBeChanged.length > 0) {
+                    supplierDebtBeChanged.forEach(async (debt) => {
                         console.log('debt = ', debt);
                         await t('debtSuppliers')
                             .returning('*')
@@ -504,27 +504,27 @@ SaleOrderRouter.post('/delete', async (req, res) => {
 
                 //xoa hóa đơn chi tiết có liên quan
                 console.log('go 5');
-                await Knex('saleOderDetails')
+                await Knex('purchaseOrderDetails')
                     .transacting(t)
-                    .where({ saleOrderId: id })
+                    .where({ purchaseOrderId: id })
                     .del()
                     .catch((error) => {
-                        console.error('delete saleOderDetails error: ', error);
+                        console.error('delete purchaseOrderDetails error: ', error);
                     });
                 //Xóa hóa đơn
                 console.log('go 6');
-                await Knex('saleOrders')
+                await Knex('purchaseOrders')
                     .transacting(t)
                     .where({ id: id })
                     .del()
                     .catch((error) => {
-                        console.error('delete saleOrders error: ', error);
+                        console.error('delete purchaseOrders error: ', error);
                     });
                 //Xóa bảng công nợ
                 console.log('go 4');
                 await Knex('debtSuppliers')
                     .transacting(t)
-                    .where({ id: saleOrder[0].debtSupplierId })
+                    .where({ id: purchaseOrder[0].debtSupplierId })
                     .del()
                     .catch((error) => {
                         console.error('delete debtSuppliers error: ', error);
@@ -549,4 +549,4 @@ SaleOrderRouter.post('/delete', async (req, res) => {
     }
 });
 
-export default SaleOrderRouter;
+export default PurchaseOrderRouter;

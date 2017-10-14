@@ -135,16 +135,21 @@ exports.up = function (knex, Promise) {
         })
         .createTableIfNotExists('suppliers', (table) => {
             table.increments();
-            table.integer('supplierGroupId').notNullable().references('id').inTable('supplierGroups');
             table.string('name').unique().notNullable();
-            table.integer('bankId').references('id').inTable('banks');
-            table.integer('companyId').references('id').inTable('companies');
             table.string('address');
             table.string('imageUrl');
             table.string('phone');
             table.string('email');
-            table.integer('overdue'); //Số ngày nợ cho phép, vượt quá sẽ bị hệ thống liệt kê trong ds trả nợ
+            table.float('CurentDebt').defaultTo(0);
+            table.integer('overdue'); //Số ngày nợ cho phép, vượt quá sẽ bị hệ thống liệt kê trong ds đòi nợ
             table.float('excessDebt'); //Nợ vượt mức cho phép
+            table.string('directorName').nullable();
+            table.string('bankNumber').nullable();
+            table.string('bankName').nullable();
+            table.string('companyName').nullable();
+            table.string('companyAdress').nullable();
+            table.string('taxCode').nullable();
+            table.string('fax').nullable();
         })
         .createTableIfNotExists('debtSuppliers', (table) => {
             /*
@@ -405,8 +410,10 @@ exports.up = function (knex, Promise) {
             table.integer('products').notNullable().defaultTo(1);
             table.integer('customerGroups').notNullable().defaultTo(1);
             table.integer('customers').notNullable().defaultTo(1);
+            table.integer('suppliers').notNullable().defaultTo(1);
             table.integer('quoctes').notNullable().defaultTo(1);
             table.integer('debtCustomers').notNullable().defaultTo(1);
+            table.integer('debtSuppliers').notNullable().defaultTo(1);
         });
 };
 
