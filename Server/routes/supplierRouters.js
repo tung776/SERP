@@ -11,7 +11,6 @@ const SupplierRouter = Router();
 SupplierRouter.post('/new', async (req, res) => {
     const {
         Id,
-        SupplierGroupId,
         Name,
         Address,
         Phone,
@@ -33,7 +32,7 @@ SupplierRouter.post('/new', async (req, res) => {
     if (isValid) {
         let newDataversion;
         let data;
-        let customerDebt;
+        let supplierDebt;
         try {
             //bắt đầu thực hiện giao dịch, một trong nhiệm vụ thất bại sẽ bị rollback
             Knex.transaction(async (t) => {
@@ -41,21 +40,20 @@ SupplierRouter.post('/new', async (req, res) => {
                     //lấy dataversion hiện tại
                     const dataVersion = await Knex('dataVersions').where('id', 1);
 
-                    let { menus, userMenus, roles, categoryGroups, units, warehouses, products, customers, customerGroups } = dataVersion[0];
-                    customers++;
+                    let { menus, userMenus, roles, categoryGroups, units, warehouses, products, suppliers, supplierGroups } = dataVersion[0];
+                    suppliers++;
 
                     //thực hiện thay đổi dữ liệu khách hàng
-                    data = await t('customers')
+                    data = await t('suppliers')
                         .returning('*')
                         .insert({
-                            customerGroupId: SupplierGroupId,
                             name: Name,
                             address: Address || '',
                             phone: Phone || '',
                             email: Email || '',
                             CurentDebt: CurentDebt || 0,
-                            overdue: Overdue || 10,
-                            excessDebt: ExcessDebt || 10000000,
+                            overdue: Overdue || 20,
+                            excessDebt: ExcessDebt || 100000000,
                             companyName: CompanyName || "",
                             companyAdress: CompanyAdress || "",
                             directorName: DirectorName || "",
@@ -64,10 +62,10 @@ SupplierRouter.post('/new', async (req, res) => {
                             taxCode: TaxCode || "",
                             fax: Fax || ""
                         });
-                    customerDebt = await t('debtSuppliers')
+                    supplierDebt = await t('debtSuppliers')
                         .returning('*')
                         .insert({
-                            customerId: data[0].id,
+                            supplierId: data[0].id,
                             createdDate: moment().format('YYYY-MM-DD'),
                             title: 'Khởi tạo công nợ',
                             newDebt: CurentDebt || 0,
@@ -80,7 +78,7 @@ SupplierRouter.post('/new', async (req, res) => {
                         .returning('*')
                         .whereRaw('id = 1')
                         .update({
-                            id: 1, menus, userMenus, roles, categoryGroups, units, warehouses, products, customers, customerGroups
+                            id: 1, menus, userMenus, roles, categoryGroups, units, warehouses, products, suppliers, supplierGroups
                         });
                 } catch (e) {
                     //Đã có lỗi phát sinh, rollback lại toàn bộ thay đổi
@@ -93,8 +91,8 @@ SupplierRouter.post('/new', async (req, res) => {
                     //không có lỗi nào xuất hiện, server sẽ gửi tới client nhóm khách hàng vừa được insert, và dataVersion mới nhất
                     res.json({
                         success: true,
-                        customer: data,
-                        customerDebt,
+                        supplier: data,
+                        supplierDebt,
                         dataversion: newDataversion
                     });
                 }
@@ -113,7 +111,6 @@ SupplierRouter.post('/new', async (req, res) => {
 SupplierRouter.post('/update', async (req, res) => {
     const {
         Id,
-        SupplierGroupId,
         Name,
         Address,
         Phone,
@@ -135,39 +132,39 @@ SupplierRouter.post('/update', async (req, res) => {
     if (isValid) {
         let newDataversion;
         let data;
-        let customerDebt;
+        let supplierDebt;
         try {
             Knex.transaction(async (t) => {
                 try {
                     const dataVersion = await Knex('dataVersions').where('id', 1);
 
-                    let { menus, userMenus, roles, categoryGroups, units, warehouses, products, customers, customerGroups } = dataVersion[0];
-                    customers++;
+                    let { menus, userMenus, roles, categoryGroups, units, warehouses, products, suppliers, supplierGroups } = dataVersion[0];
+                    suppliers++;
 
                     newDataversion = await t('dataVersions')
                         .returning('*')
                         .whereRaw('id = 1')
                         .update({
-                            id: 1, menus, userMenus, roles, categoryGroups, units, warehouses, products, customers, customerGroups
+                            id: 1, menus, userMenus, roles, categoryGroups, units, warehouses, products, suppliers, supplierGroups
                         });
                     //Thay đổi toàn bộ công nợ khách hàng
                     //Tìm bản ghi công nợ khách hàng đầu tiên
                     const oldestDebt = await Knex.raw(`
-                        SELECT q."id", q."customerId", q."newDebt", q."oldDebt", q."minus", q."plus" FROM "debtSuppliers" AS q
+                        SELECT q."id", q."supplierId", q."newDebt", q."oldDebt", q."minus", q."plus" FROM "debtSuppliers" AS q
                         WHERE q."id" IN (
                             SELECT min(id) FROM "debtSuppliers"  
-                            GROUP BY "id", "customerId"
+                            GROUP BY "id", "supplierId"
                         )    
-                        AND q."customerId" = ${Id};                    
+                        AND q."supplierId" = ${Id};                    
                     `);
                     const So_tien_Dieu_Chinh = CurentDebt - oldestDebt.rows[0].newDebt;
                     //Tiến hành thay đổi toàn bộ bản ghi công nợ phát sinh
-                    const customerDebtBeChanged = await Knex('debtSuppliers')
+                    const supplierDebtBeChanged = await Knex('debtSuppliers')
                         .orderBy('id', 'asc')
-                        .whereRaw(`id >= ${oldestDebt.rows[0].id} AND "customerId" = ${Id}`);
+                        .whereRaw(`id >= ${oldestDebt.rows[0].id} AND "supplierId" = ${Id}`);
                     //Điều chỉnh toàn bộ công nợ có liêu quan
-                    if (customerDebtBeChanged.length > 0) {
-                        customerDebtBeChanged.forEach(async (debt) => {
+                    if (supplierDebtBeChanged.length > 0) {
+                        supplierDebtBeChanged.forEach(async (debt) => {
                             if (debt.newDebt == 'NAN') debt.newDebt = 0;
                             if (debt.oldDebt == 'NAN') debt.oldDebt = 0;
                             const _newDebt = debt.newDebt + So_tien_Dieu_Chinh;
@@ -180,19 +177,18 @@ SupplierRouter.post('/update', async (req, res) => {
                                     newDebt: _newDebt,
                                     oldDebt: _oldDebt,
                                 });
-                            customerDebt = debt;
-                            customerDebt.newDebt = _newDebt;
-                            customerDebt.oldDebt = _oldDebt;
+                            supplierDebt = debt;
+                            supplierDebt.newDebt = _newDebt;
+                            supplierDebt.oldDebt = _oldDebt;
                         });
                     }
 
-                    console.log('customerDebt = ', customerDebt);
+                    console.log('supplierDebt = ', supplierDebt);
 
-                    data = await t('customers')
+                    data = await t('suppliers')
                         .returning('*')
                         .whereRaw(`id = ${Id}`)
                         .update({
-                            customerGroupId: SupplierGroupId,
                             name: Name,
                             address: Address || '',
                             phone: Phone || '',
@@ -208,13 +204,13 @@ SupplierRouter.post('/update', async (req, res) => {
                             taxCode: TaxCode || '',
                             fax: Fax || ''
                         });
-                    // customerDebt = await Knex.raw(`
-                    //     SELECT q."id", q."customerId", q."newDebt", q."oldDebt", q."minus", q."plus" FROM "debtSuppliers" AS q
+                    // supplierDebt = await Knex.raw(`
+                    //     SELECT q."id", q."supplierId", q."newDebt", q."oldDebt", q."minus", q."plus" FROM "debtSuppliers" AS q
                     //     WHERE q."id" IN (
                     //         SELECT max(id) FROM "debtSuppliers"  
-                    //         GROUP BY "id", "customerId"
+                    //         GROUP BY "id", "supplierId"
                     //     )
-                    //     AND q."customerId" = ${Id};                           
+                    //     AND q."supplierId" = ${Id};                           
                     // `);
                 } catch (e) {
                     t.rollback();
@@ -225,8 +221,8 @@ SupplierRouter.post('/update', async (req, res) => {
                 () => {
                     res.json({
                         success: true,
-                        customer: data,
-                        customerDebt,
+                        supplier: data,
+                        supplierDebt,
                         dataversion: newDataversion
                     });
                 }
@@ -250,26 +246,26 @@ SupplierRouter.post('/delete', async (req, res) => {
         try {
             const dataVersion = await Knex('dataVersions').where('id', 1);
 
-            let { menus, userMenus, roles, categoryGroups, units, warehouses, products, customers, customerGroups } = dataVersion[0];
-            customers++;
+            let { menus, userMenus, roles, categoryGroups, units, warehouses, products, suppliers, supplierGroups } = dataVersion[0];
+            suppliers++;
 
             newDataversion = await t('dataVersions')
                 .returning('*')
                 .whereRaw('id = 1')
                 .update({
-                    id: 1, menus, userMenus, roles, categoryGroups, units, warehouses, products, customers, customerGroups
+                    id: 1, menus, userMenus, roles, categoryGroups, units, warehouses, products, suppliers, supplierGroups
                 })
                 .catch((error) => {
                     console.error(error);
                 });
 
-            await Knex('customers')
+            await Knex('suppliers')
                 .transacting(t)
                 .debug(true)
                 .where({ id: Id })
                 .del()
                 .catch((error) => {
-                    console.error('delete customers error: ', error);
+                    console.error('delete suppliers error: ', error);
                 });
         } catch (e) {
             t.rollback();

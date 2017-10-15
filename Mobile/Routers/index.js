@@ -34,6 +34,7 @@ import CustomerEdit from '../components/Screens/Customers/CustomerEdit';
 import customerSearch from '../components/Screens/Customers';
 import CustomerNew from '../components/Screens/Customers/CustomerNew';
 import productSelector from '../components/Screens/Products/productSelector';
+
 import saleOrders from '../components/Screens/saleOrders/index';
 import newSaleOrder from '../components/Screens/saleOrders/newOrder';
 import editSaleOrder from '../components/Screens/saleOrders/editOrder';
@@ -41,6 +42,19 @@ import editSaleOrder from '../components/Screens/saleOrders/editOrder';
 import newPaymentCustomer from '../components/Screens/paymentCustomers/newPayment';
 import indexPaymentCustomer from '../components/Screens/paymentCustomers/index';
 import editPaymentCustomer from '../components/Screens/paymentCustomers/editPayment';
+
+import purchaseOrders from '../components/Screens/purchaseOrders/index';
+import newPurchaseOrder from '../components/Screens/purchaseOrders/newOrder';
+import editPurchaseOrder from '../components/Screens/purchaseOrders/editOrder';
+
+import newPaymentSupplier from '../components/Screens/paymentSuppliers/newPayment';
+import indexPaymentSupplier from '../components/Screens/paymentSuppliers/index';
+import editPaymentSupplier from '../components/Screens/paymentSuppliers/editPayment';
+
+import Suppliers from '../components/Screens/Suppliers';
+import SupplierEdit from '../components/Screens/Suppliers/SupplierEdit';
+import SupplierSearch from '../components/Screens/Suppliers';
+import SupplierNew from '../components/Screens/Suppliers/SupplierNew';
 
 const RouterComponent = () => (
     <Router hideNavBar="true" sceneStyle={{ backgroundColor: '#F7F7F7' }} >
@@ -98,21 +112,22 @@ const RouterComponent = () => (
                 <Scene key="editReceiptCustomer" component={editPaymentCustomer} title="Sửa Phiếu Thu" />
                 <Scene key="indexReceiptCustomer" component={indexPaymentCustomer} title="Tìm Phiếu Thu" />
                 
-                <Scene key="newSalaryReceipt" component={ComminSoon} title="..." />
-                <Scene key="newRentalWarehouseReceipt" component={ComminSoon} title="..." />
-                <Scene key="newInterestingReceipt" component={ComminSoon} title="..." />
-                <Scene key="newOtherReceipt" component={ComminSoon} title="..." />
+                <Scene key="newPaymentSupplier" component={newPaymentSupplier} title="..." />
+                <Scene key="searchPaymentSupplier" component={indexPaymentSupplier} title="..." />
+                <Scene key="newPaymentType" component={ComminSoon} title="..." />
+                
+                <Scene key="sumarizePayment" component={ComminSoon} title="..." />
+                <Scene key="newOrtherPayment" component={ComminSoon} title="..." />
 
-                <Scene key="newSupplierOrder" component={ComminSoon} title="..." />
-                <Scene key="newSupplierOrderReturnning" component={ComminSoon} title="..." />
-                <Scene key="searchSupplierOrder" component={ComminSoon} title="..." />
+                <Scene key="newSupplierOrder" component={newPurchaseOrder} title="..." />
+                <Scene key="searchPurchaseOrder" component={purchaseOrders} title="..." />
+                <Scene key="editSupplierOrder" component={editPurchaseOrder} title="..." />
                 <Scene key="reportSupplierOrder" component={ComminSoon} title="..." />
+                <Scene key="newSupplierOrderReturnning" component={ComminSoon} title="..." />
 
-                <Scene key="searchSupplier" component={ComminSoon} title="..." />
-                <Scene key="newSupplier" component={ComminSoon} title="..." />
-                <Scene key="supplierDept" component={ComminSoon} title="..." />
-                <Scene key="reportSaleBySupplier" component={ComminSoon} title="..." />
-                <Scene key="newSupplierGroup" component={ComminSoon} title="..." />
+                <Scene key="searchSupplier" component={Suppliers} title="..." />
+                <Scene key="newSupplier" component={SupplierNew} title="..." />
+                <Scene key="editSupplier" component={SupplierEdit} title="..." />
                 <Scene key="searchSupplierGroup" component={ComminSoon} title="..." />
 
                 <Scene key="newResearch" component={ComminSoon} title="..." />

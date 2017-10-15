@@ -20,7 +20,7 @@ export const loadSupplierListDataFromSqlite = () => async (dispatch) => {
     dispatch({
         type: SUPPLIER_PENDING
     });
-    await SqlService.query('select * from customers').then(
+    await SqlService.query('select * from suppliers').then(
         result => {
             dispatch({
                 type: SUPPLIER_LIST_LOADED_SQLITE,
@@ -29,11 +29,11 @@ export const loadSupplierListDataFromSqlite = () => async (dispatch) => {
         }
     );
 };
-export const loadDebtSuppliersFromSqlite = (customerId) => async (dispatch) => {
+export const loadDebtSuppliersFromSqlite = (supplierId) => async (dispatch) => {
     dispatch({
         type: SUPPLIER_PENDING
     });
-    await SqlService.query(`select * from debtSuppliers where customerId = ${customerId}`).then(
+    await SqlService.query(`select * from debtSuppliers where supplierId = ${supplierId}`).then(
         result => {
             dispatch({
                 type: SUPPLIER_DEBT_LOADED_SQLITE,
@@ -56,7 +56,7 @@ export const loadSupplierByNameFromSqlite = (name) => (dispatch) => {
     dispatch({
         type: SUPPLIER_PENDING
     });
-    SqlService.query(`select * from customers where name like '%${name}%'`).then(
+    SqlService.query(`select * from suppliers where name like '%${name}%'`).then(
         result => {
             dispatch({
                 type: SUPPLIER_LIST_LOADED_SQLITE,
@@ -66,12 +66,12 @@ export const loadSupplierByNameFromSqlite = (name) => (dispatch) => {
     );
 };
 
-export const loadSupplierDataFromSqlite = (customerId) => async (dispatch) => {
+export const loadSupplierDataFromSqlite = (supplierId) => async (dispatch) => {
     dispatch({
         type: SUPPLIER_PENDING
     });
 
-    SqlService.query(`select * from customers where id = ${customerId}`).then(
+    SqlService.query(`select * from suppliers where id = ${supplierId}`).then(
         result => {
             dispatch({
                 type: SUPPLIER_LOADED_SQLITE,
@@ -93,14 +93,14 @@ export const SupplierChange = ({ prop, value }) => ({
     payload: { prop, value }
 });
 
-export const SupplierDelete = (customerId) => async (dispatch) => {
+export const SupplierDelete = (supplierId) => async (dispatch) => {
     dispatch({
         type: SUPPLIER_PENDING
     });
 
-    const apiUrl = `${URL}/api/customer/delete`;
+    const apiUrl = `${URL}/api/supplier/delete`;
 
-    axios.post(apiUrl, { Id: customerId }).then(
+    axios.post(apiUrl, { Id: supplierId }).then(
         (res) => {
             //Dữ liệu đã được lưu thành công trên server,
             //Tiến hàng lưu dữ liệu lên sqlite cho mục đích offline
@@ -108,14 +108,14 @@ export const SupplierDelete = (customerId) => async (dispatch) => {
                 tx => {
                     tx.executeSql(`
                         UPDATE dataVersions 
-                        SET customers = '${res.data.dataversion[0].customers}'                  
+                        SET suppliers = '${res.data.dataversion[0].suppliers}'                  
                         WHERE id = '1';
                     `);
                     tx.executeSql(
-                        `DELETE FROM customers 
-                        WHERE id = '${customerId}';`
+                        `DELETE FROM suppliers 
+                        WHERE id = '${supplierId}';`
                     );
-                    tx.executeSql('select * from customers',
+                    tx.executeSql('select * from suppliers',
                         null,
                         (_, { rows: { _array } }) => {
                             dispatch({
@@ -180,11 +180,11 @@ export const SupplierDelete = (customerId) => async (dispatch) => {
         );
 };
 
-export const SupplierUpdate = (customer) => async (dispatch) => {
+export const SupplierUpdate = (supplier) => async (dispatch) => {
     dispatch({
         type: SUPPLIER_PENDING
     });
-    const { isValid, errors } = NewSupplierValidator(customer);
+    const { isValid, errors } = NewSupplierValidator(supplier);
     if (!isValid) {
         dispatch({
             type: SUPPLIER_CHANGE_FAIL,
@@ -198,9 +198,9 @@ export const SupplierUpdate = (customer) => async (dispatch) => {
             ]
         );
     } else {
-        const apiUrl = `${URL}/api/customer/update`;
+        const apiUrl = `${URL}/api/supplier/update`;
 
-        axios.post(apiUrl, customer).then(
+        axios.post(apiUrl, supplier).then(
             (res) => {
                 //Dữ liệu đã được lưu thành công trên server,
                 //Tiến hàng lưu dữ liệu lên sqlite cho mục đích offline
@@ -209,7 +209,7 @@ export const SupplierUpdate = (customer) => async (dispatch) => {
                         tx => {
                             tx.executeSql(`
                             update dataVersions 
-                            set customers = ${res.data.dataversion[0].customers} 
+                            set suppliers = ${res.data.dataversion[0].suppliers} 
                             where id = 1`,
                                 null,
                                 null,
@@ -219,40 +219,40 @@ export const SupplierUpdate = (customer) => async (dispatch) => {
                             );
 
                             tx.executeSql(`
-                            update customers 
-                            set name = '${res.data.customer[0].name}',
-                            customerGroupId = ${res.data.customer[0].customerGroupId},
-                            phone = '${res.data.customer[0].phone}',
-                            email = '${res.data.customer[0].email}',
-                            CurentDebt = '${res.data.customer[0].CurentDebt}',
-                            overdue = ${res.data.customer[0].overdue},
-                            excessDebt = ${res.data.customer[0].excessDebt},
-                            companyName = '${res.data.customer[0].companyName}',
-                            companyAdress = '${res.data.customer[0].companyAdress}',
-                            directorName = '${res.data.customer[0].directorName}',
-                            bankNumber = '${res.data.customer[0].bankNumber}',
-                            bankName = '${res.data.customer[0].bankName}',
-                            taxCode = '${res.data.customer[0].taxCode}',
-                            fax = '${res.data.customer[0].fax}'
-                            where id = ${res.data.customer[0].id}
+                            update suppliers 
+                            set name = '${res.data.supplier[0].name}',
+                            supplierGroupId = ${res.data.supplier[0].supplierGroupId},
+                            phone = '${res.data.supplier[0].phone}',
+                            email = '${res.data.supplier[0].email}',
+                            CurentDebt = '${res.data.supplier[0].CurentDebt}',
+                            overdue = ${res.data.supplier[0].overdue},
+                            excessDebt = ${res.data.supplier[0].excessDebt},
+                            companyName = '${res.data.supplier[0].companyName}',
+                            companyAdress = '${res.data.supplier[0].companyAdress}',
+                            directorName = '${res.data.supplier[0].directorName}',
+                            bankNumber = '${res.data.supplier[0].bankNumber}',
+                            bankName = '${res.data.supplier[0].bankName}',
+                            taxCode = '${res.data.supplier[0].taxCode}',
+                            fax = '${res.data.supplier[0].fax}'
+                            where id = ${res.data.supplier[0].id}
                             `,
                                 null,
                                 null,
                                 (e) => {
-                                    console.log('lỗi update customers = ', e);
+                                    console.log('lỗi update suppliers = ', e);
                                 }
                             );
-                            console.log('res.data.customerDebt =', res.data.customerDebt);
+                            console.log('res.data.supplierDebt =', res.data.supplierDebt);
                             tx.executeSql(`
                             update debtSuppliers 
-                            set customerId = ${res.data.customerDebt.customerId},
-                            createdDate = '${res.data.customerDebt.createdDate}',
-                            title = '${res.data.customerDebt.title}',
-                            newDebt = ${res.data.customerDebt.newDebt},
-                            oldDebt = ${res.data.customerDebt.oldDebt},
-                            minus = ${res.data.customerDebt.minus},
-                            plus = ${res.data.customerDebt.plus}
-                            where id = ${res.data.customerDebt.id} 
+                            set supplierId = ${res.data.supplierDebt.supplierId},
+                            createdDate = '${res.data.supplierDebt.createdDate}',
+                            title = '${res.data.supplierDebt.title}',
+                            newDebt = ${res.data.supplierDebt.newDebt},
+                            oldDebt = ${res.data.supplierDebt.oldDebt},
+                            minus = ${res.data.supplierDebt.minus},
+                            plus = ${res.data.supplierDebt.plus}
+                            where id = ${res.data.supplierDebt.id} 
                             `,
                                 null,
                                 null,
@@ -262,7 +262,7 @@ export const SupplierUpdate = (customer) => async (dispatch) => {
                             );
 
 
-                            tx.executeSql('select * from customers',
+                            tx.executeSql('select * from suppliers',
                                 null,
                                 (_, { rows: { _array } }) => {
                                     dispatch({
@@ -286,7 +286,7 @@ export const SupplierUpdate = (customer) => async (dispatch) => {
                 Actions.pop({ reLoad: true });
                 dispatch({
                     type: SUPPLIER_CHANGE_SUCCESS,
-                    payload: res.data.customer[0]
+                    payload: res.data.supplier[0]
                 });
                 dispatch({
                     type: ADD_FLASH_MESSAGE,
@@ -334,11 +334,11 @@ export const SupplierUpdate = (customer) => async (dispatch) => {
     }
 };
 
-export const AddNewSupplier = (customer) => async (dispatch) => {
+export const AddNewSupplier = (supplier) => async (dispatch) => {
     dispatch({
         type: SUPPLIER_PENDING
     });
-    const { isValid, errors } = NewSupplierValidator(customer);
+    const { isValid, errors } = NewSupplierValidator(supplier);
     if (!isValid) {
         dispatch({
             type: SUPPLIER_CHANGE_FAIL,
@@ -352,22 +352,22 @@ export const AddNewSupplier = (customer) => async (dispatch) => {
             ]
         );
     } else {
-        const apiUrl = `${URL}/api/customer/new`;
+        const apiUrl = `${URL}/api/supplier/new`;
 
-        axios.post(apiUrl, customer).then(
+        axios.post(apiUrl, supplier).then(
             (res) => {
                 //Dữ liệu đã được lưu thành công trên server,
                 //Tiến hàng lưu dữ liệu lên sqlite cho mục đích offline
                 db.transaction(
                     tx => {
                         tx.executeSql(`UPDATE dataVersions 
-                            SET customers = '${res.data.dataversion[0].customers}'                    
+                            SET suppliers = '${res.data.dataversion[0].suppliers}'                    
                             WHERE id = 1;`
                         );
-                        const strSql = `insert into customers 
+                        const strSql = `insert into suppliers 
                                     (
                                         id,
-                                        customerGroupId,
+                                        supplierGroupId,
                                         name,
                                         address,
                                         phone,
@@ -384,22 +384,22 @@ export const AddNewSupplier = (customer) => async (dispatch) => {
                                         fax
                                     ) 
                                     values (
-                                            ${res.data.customer[0].id},
-                                            '${res.data.customer[0].customerGroupId}', 
-                                           '${res.data.customer[0].name}', 
-                                           '${res.data.customer[0].address}', 
-                                           '${res.data.customer[0].phone}', 
-                                           '${res.data.customer[0].email}', 
-                                           '${res.data.customer[0].CurentDebt}', 
-                                            ${res.data.customer[0].overdue}, 
-                                            ${res.data.customer[0].excessDebt}, 
-                                           '${res.data.customer[0].companyName}', 
-                                           '${res.data.customer[0].companyAdress}', 
-                                           '${res.data.customer[0].directorName}', 
-                                           '${res.data.customer[0].bankNumber}', 
-                                           '${res.data.customer[0].bankName}', 
-                                           '${res.data.customer[0].taxCode}', 
-                                            '${res.data.customer[0].fax}'
+                                            ${res.data.supplier[0].id},
+                                            '${res.data.supplier[0].supplierGroupId}', 
+                                           '${res.data.supplier[0].name}', 
+                                           '${res.data.supplier[0].address}', 
+                                           '${res.data.supplier[0].phone}', 
+                                           '${res.data.supplier[0].email}', 
+                                           '${res.data.supplier[0].CurentDebt}', 
+                                            ${res.data.supplier[0].overdue}, 
+                                            ${res.data.supplier[0].excessDebt}, 
+                                           '${res.data.supplier[0].companyName}', 
+                                           '${res.data.supplier[0].companyAdress}', 
+                                           '${res.data.supplier[0].directorName}', 
+                                           '${res.data.supplier[0].bankNumber}', 
+                                           '${res.data.supplier[0].bankName}', 
+                                           '${res.data.supplier[0].taxCode}', 
+                                            '${res.data.supplier[0].fax}'
                                         )
                                     `;
 
@@ -407,7 +407,7 @@ export const AddNewSupplier = (customer) => async (dispatch) => {
                         const strSqlDebt = `insert into debtSuppliers 
                                     (
                                         'id',
-                                        'customerId',
+                                        'supplierId',
                                         'createdDate',
                                         'title',
                                         'newDebt',
@@ -416,21 +416,21 @@ export const AddNewSupplier = (customer) => async (dispatch) => {
                                         'plus'
                                     ) 
                                     values (
-                                            ${res.data.customerDebt[0].id},
-                                            '${res.data.customerDebt[0].customerId}', 
-                                           '${res.data.customerDebt[0].createdDate}', 
-                                           '${res.data.customerDebt[0].title}', 
-                                           '${res.data.customerDebt[0].newDebt}', 
-                                           '${res.data.customerDebt[0].oldDebt}', 
-                                           '${res.data.customerDebt[0].minus}', 
-                                            ${res.data.customerDebt[0].plus}
+                                            ${res.data.supplierDebt[0].id},
+                                            '${res.data.supplierDebt[0].supplierId}', 
+                                           '${res.data.supplierDebt[0].createdDate}', 
+                                           '${res.data.supplierDebt[0].title}', 
+                                           '${res.data.supplierDebt[0].newDebt}', 
+                                           '${res.data.supplierDebt[0].oldDebt}', 
+                                           '${res.data.supplierDebt[0].minus}', 
+                                            ${res.data.supplierDebt[0].plus}
                                         )
                                     `;
 
                         tx.executeSql(strSqlDebt);
 
                         tx.executeSql(
-                            'select * from customers',
+                            'select * from suppliers',
                             null,
                             (_, { rows: { _array } }) => {
                                 dispatch({
@@ -439,7 +439,7 @@ export const AddNewSupplier = (customer) => async (dispatch) => {
                                 });
                             },
                             (e) => {
-                                console.log('error read customers data from sqlite = ', e);
+                                console.log('error read suppliers data from sqlite = ', e);
                             }
                         );
                     },
@@ -449,7 +449,7 @@ export const AddNewSupplier = (customer) => async (dispatch) => {
 
                 dispatch({
                     type: SUPPLIER_CHANGE_SUCCESS,
-                    payload: res.data.customer[0]
+                    payload: res.data.supplier[0]
                 });
                 dispatch({
                     type: ADD_FLASH_MESSAGE,

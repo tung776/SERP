@@ -137,10 +137,10 @@ exports.up = function (knex, Promise) {
             table.increments();
             table.string('name').unique().notNullable();
             table.string('address');
-            table.string('imageUrl');
+            table.string('imageUrl').nullable();
             table.string('phone');
             table.string('email');
-            table.float('CurentDebt').defaultTo(0);
+            table.float('curentDebt').defaultTo(0);
             table.integer('overdue'); //Số ngày nợ cho phép, vượt quá sẽ bị hệ thống liệt kê trong ds đòi nợ
             table.float('excessDebt'); //Nợ vượt mức cho phép
             table.string('directorName').nullable();

@@ -32,7 +32,7 @@ export const loadPurchaseOrderListDataFromServerBySupplierId = (customerId) => a
     );
 };
 
-export const loadPurchaseOrderBySupplierOrSupplierGroupIdFromServer = (customerId = null) => (dispatch) => {
+export const loadPurchaseOrderBySupplierFromServer = (customerId = null) => (dispatch) => {
     /*
         Phương thức này sẽ trả về danh sách các sản phẩm có tên gần nhất với tên sản phẩm được cung cấp
     */

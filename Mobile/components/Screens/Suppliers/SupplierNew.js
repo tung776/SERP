@@ -12,8 +12,7 @@ import {
     ADD_SUPPLIER, ADD_SUPPLIER_PENDING,
     SUPPLIER_CHANGE_FAIL, SUPPLIER_CHANGE_SUCCESS,
 } from '../../../actions';
-import { loadSupplierGroupListDataFromSqlite } from '../../../actions/customerGroupAction';
-import { AddNewSupplier, SupplierChange, resetData } from '../../../actions/customerAction';
+import { AddNewSupplier, SupplierChange, resetData } from '../../../actions/supplierAction';
 import { AppLoading } from 'expo';
 import { Spinner } from '../../commons/Spinner';
 import { formatMoney, formatNumber, unformat } from '../../../../Shared/utils/format';
@@ -24,7 +23,6 @@ class SupplierNew extends React.Component {
 
     componentWillMount() {
         this.props.resetData();
-        this.props.loadSupplierGroupListDataFromSqlite();
     }
 
     onSavePress() {
@@ -38,7 +36,6 @@ class SupplierNew extends React.Component {
                         const {
                             error,
                             Id,
-                            SupplierGroupId,
                             Name,
                             Address,
                             Phone,
@@ -57,7 +54,6 @@ class SupplierNew extends React.Component {
                             loading } = this.props;
                         AddNewSupplier({
                             Id,
-                            SupplierGroupId,
                             Name,
                             Address,
                             Phone,
@@ -90,19 +86,16 @@ class SupplierNew extends React.Component {
                     style={[styles.Btn, styles.footerBtn]}
                 >
                     <Ionicons name="ios-checkmark-circle" size={25} color="#FFFFFF" />
-                    <Text style={styles.titleButton}>Lưu</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     disabled={this.props.loading}
                     style={[styles.Btn, styles.footerBtn]}>
                     <Ionicons name="ios-close-circle-outline" size={25} color="#FFFFFF" />
-                    <Text style={styles.titleButton}>Hủy</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     disabled={this.props.loading}
-                    style={[styles.Btn, styles.footerBtn]} onPress={() => Actions.customerSearch()}>
+                    style={[styles.Btn, styles.footerBtn]} onPress={() => Actions.supplierSearch()}>
                     <Ionicons name="ios-folder-open-outline" size={25} color="#FFFFFF" />
-                    <Text style={styles.titleButton}>DS Nhóm</Text>
                 </TouchableOpacity>
             </View>
         );
@@ -113,13 +106,13 @@ class SupplierNew extends React.Component {
         return (
             <View style={styles.container}>
                 <Header>
-                    <Text style={styles.headTitle}>Thêm Khách Hàng</Text>
+                    <Text style={styles.headTitle}>Thêm Nhà Cung Cấp</Text>
                 </Header>
                 <View style={styles.body}>
                     <View style={styles.card}>
                         <ScrollView>
                             <View style={styles.controlContainer}>
-                                <Text style={styles.label} >Tên Khách Hàng</Text>
+                                <Text style={styles.label} >Tên Nhà Cung Cấp</Text>
                                 <View style={styles.groupControl}>
                                     <TextInput                                        
                                         disableFullscreenUI
@@ -130,27 +123,9 @@ class SupplierNew extends React.Component {
                                         onChangeText={text => SupplierChange({ prop: 'Name', value: text })}
                                         type="Text"
                                         name="Name"
-                                        placeholder="Điền tên khách hàng:"
+                                        placeholder="Điền tên nhà cung cấp:"
                                     />
                                     {error && <Text style={styles.errorStyle}>{error.Name}</Text>}
-                                </View>
-
-                                <View style={styles.controlContainer}>
-                                    <Text style={styles.label} >Nhóm Khách Hàng</Text>
-                                    <View style={styles.groupControl}>
-                                        <Picker
-                                            enabled={this.state.editMode}
-                                            selectedValue={this.props.SupplierGroupId}
-                                            onValueChange={
-                                                (itemValue, itemIndex) => SupplierChange({ prop: 'SupplierGroupId', value: itemValue })
-                                            }
-                                        >
-                                            {this.props.customerGroups && this.props.customerGroups.map((item) => (
-                                                <Picker.Item key={item.id} label={item.name} value={item.id} />
-                                            ))
-                                            }
-                                        </Picker>
-                                    </View>
                                 </View>
 
                                 <View style={styles.controlContainer}>
@@ -468,7 +443,6 @@ const styles = {
 const mapStateToProps = (state, ownProps) => {
     const {
         Id,
-        SupplierGroupId,
         Name,
         Address,
         Phone,
@@ -484,11 +458,10 @@ const mapStateToProps = (state, ownProps) => {
         TaxCode,
         Fax,
         loading
-    } = state.customers;
-    const { customerGroups } = state.customerGroups;
+    } = state.suppliers;
+    const { supplierGroups } = state.supplierGroups;
     return {
         Id,
-        SupplierGroupId,
         Name,
         Address,
         Phone,
@@ -504,7 +477,7 @@ const mapStateToProps = (state, ownProps) => {
         TaxCode,
         Fax,
         loading,
-        customerGroups
+        supplierGroups
     };
 };
 
@@ -512,5 +485,4 @@ export default connect(mapStateToProps, {
     AddNewSupplier,
     SupplierChange,
     resetData,
-    loadSupplierGroupListDataFromSqlite
 })(SupplierNew);

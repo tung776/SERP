@@ -11,8 +11,7 @@ import {
     ADD_SUPPLIER, ADD_SUPPLIER_PENDING,
     SUPPLIER_CHANGE_FAIL, SUPPLIER_CHANGE_SUCCESS,
 } from '../../../actions';
-import { SupplierUpdate, SupplierChange, SupplierDelete, loadSupplierDataFromSqlite } from '../../../actions/customerAction';
-import { loadSupplierGroupListDataFromSqlite } from '../../../actions/customerGroupAction';
+import { SupplierUpdate, SupplierChange, SupplierDelete, loadSupplierDataFromSqlite } from '../../../actions/supplierAction';
 import { Spinner } from '../../commons/Spinner';
 import SqlService from '../../../database/sqliteService';
 import { formatMoney, formatNumber, unformat } from '../../../../Shared/utils/format';
@@ -27,9 +26,8 @@ class SupplierEdit extends React.Component {
     }
 
     componentWillMount() {
-        const { id } = this.props.customer;
+        const { id } = this.props.supplier;
         this.props.loadSupplierDataFromSqlite(id);
-        this.props.loadSupplierGroupListDataFromSqlite();
     };
 
     onSavePress() {
@@ -43,7 +41,6 @@ class SupplierEdit extends React.Component {
                         const {
                             error,
                             Id,
-                            SupplierGroupId,
                             Name,
                             Address,
                             Phone,
@@ -62,7 +59,6 @@ class SupplierEdit extends React.Component {
                             loading } = this.props;
                         SupplierUpdate({
                             Id,
-                            SupplierGroupId,
                             Name,
                             Address,
                             Phone,
@@ -88,11 +84,11 @@ class SupplierEdit extends React.Component {
     onDelete() {
         Alert.alert(
             'Yêu cầu xác nhận',
-            `Bạn chắc chắn muốn xóa Khách Hàng: ${this.props.Name} ?`,
+            `Bạn chắc chắn muốn xóa Nhà Cung Cấp: ${this.props.Name} ?`,
             [
                 {
                     text: 'Xác Nhận',
-                    onPress: () => this.props.SupplierDelete(this.props.customer.id)
+                    onPress: () => this.props.SupplierDelete(this.props.supplier.id)
                 },
                 { text: 'Hủy', onPress: () => console.log('cancel Pressed') },
             ]
@@ -110,10 +106,7 @@ class SupplierEdit extends React.Component {
                     style={[styles.Btn, { backgroundColor: '#2ecc71' }]}
                     onPress={this.editModeToggle.bind(this)}
                 >
-                    <Ionicons name="ios-apps-outline" size={25} color="#FFFFFF" />
-                    {this.state.editMode ? (<Text style={styles.titleButton}>Hủy</Text>) :
-                        (<Text style={styles.titleButton}>Sửa</Text>)
-                    }
+                    <Ionicons name="ios-apps-outline" size={25} color="#FFFFFF" />                    
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[
@@ -125,7 +118,6 @@ class SupplierEdit extends React.Component {
                     onPress={this.onSavePress.bind(this)}
                 >
                     <Ionicons name="ios-checkmark-circle" size={25} color="#FFFFFF" />
-                    <Text style={styles.titleButton}>Lưu</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     disabled={!this.state.editMode}
@@ -133,7 +125,6 @@ class SupplierEdit extends React.Component {
                     onPress={this.onDelete.bind(this)}
                 >
                     <Ionicons name="ios-close-circle-outline" size={25} color="#e74c3c" />
-                    <Text style={styles.titleButton}>Xóa</Text>
                 </TouchableOpacity>
             </View>
         );
@@ -146,13 +137,13 @@ class SupplierEdit extends React.Component {
         return (
             <View style={styles.container}>
                 <Header>
-                    <Text style={styles.headTitle}>Sửa Khách Hàng</Text>
+                    <Text style={styles.headTitle}>Sửa Nhà Cung Cấp</Text>
                 </Header>
                 <View style={styles.body}>
                     <View style={styles.card}>
                         <ScrollView>
                             <View style={styles.controlContainer}>
-                                <Text style={styles.label} >Tên Khách Hàng</Text>
+                                <Text style={styles.label} >Tên Nhà Cung Cấp</Text>
                                 <View style={styles.groupControl}>
                                     <TextInput
                                         editable={this.state.editMode}
@@ -164,28 +155,10 @@ class SupplierEdit extends React.Component {
                                         onChangeText={text => SupplierChange({ prop: 'Name', value: text })}
                                         type="Text"
                                         name="Name"
-                                        placeholder="Điền tên khách hàng:"
+                                        placeholder="Điền tên nhà cung cấp:"
                                     />
                                     {error && <Text style={styles.errorStyle}>{error.Name}</Text>}
-                                </View>
-
-                                <View style={styles.controlContainer}>
-                                    <Text style={styles.label} >Nhóm Khách Hàng</Text>
-                                    <View style={styles.groupControl}>
-                                        <Picker
-                                            enabled={this.state.editMode}
-                                            selectedValue={this.props.SupplierGroupId}
-                                            onValueChange={
-                                                (itemValue, itemIndex) => SupplierChange({ prop: 'SupplierGroupId', value: itemValue })
-                                            }
-                                        >
-                                            {this.props.customerGroups && this.props.customerGroups.map((item) => (
-                                                <Picker.Item key={item.id} label={item.name} value={item.id} />
-                                            ))
-                                            }
-                                        </Picker>
-                                    </View>
-                                </View>
+                                </View>                                
 
                                 <View style={styles.controlContainer}>
                                     <Text style={styles.label} >Địa chỉ</Text>
@@ -515,7 +488,6 @@ const styles = {
 const mapStateToProps = (state, ownProps) => {
     const {
         Id,
-        SupplierGroupId,
         Name,
         Address,
         Phone,
@@ -531,11 +503,10 @@ const mapStateToProps = (state, ownProps) => {
         TaxCode,
         Fax,
         loading
-    } = state.customers;
-    const { customerGroups } = state.customerGroups;
+    } = state.suppliers;
+    const { supplierGroups } = state.supplierGroups;
     return {
         Id,
-        SupplierGroupId,
         Name,
         Address,
         Phone,
@@ -551,7 +522,7 @@ const mapStateToProps = (state, ownProps) => {
         TaxCode,
         Fax,
         loading,
-        customerGroups
+        supplierGroups
     };
 };
 export default connect(mapStateToProps, {
@@ -559,5 +530,4 @@ export default connect(mapStateToProps, {
     SupplierUpdate,
     SupplierDelete,
     loadSupplierDataFromSqlite,
-    loadSupplierGroupListDataFromSqlite
 })(SupplierEdit);

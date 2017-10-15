@@ -13,7 +13,7 @@ import { Ionicons } from '@expo/vector-icons';
 import {
     loadSupplierListDataFromSqlite,
     loadSupplierByNameFromSqlite
-} from '../../../actions/customerAction';
+} from '../../../actions/supplierAction';
 import { Spinner } from '../../commons/Spinner';
 
 class Suppliers extends React.Component {
@@ -30,17 +30,17 @@ class Suppliers extends React.Component {
     }
 
     renderSupplierList() {
-        const { customers } = this.props;
-        if (customers) {
+        const { suppliers } = this.props;
+        if (suppliers) {
             return (
                 <FlatList
-                    data={customers}
+                    data={suppliers}
                     renderItem={({ item }) => {
                         if (item) {
                             return (
                                 <TouchableWithoutFeedback
                                     key={item.key} onPress={() => {
-                                        Actions.customerEdit({ customer: item });
+                                        Actions.supplierEdit({ supplier: item });
                                     }}
                                 >
                                     <View style={styles.listItem}>
@@ -73,7 +73,7 @@ class Suppliers extends React.Component {
         return (
             <View style={styles.container}>
                 <Header>
-                    <Text style={styles.headTitle}>Khách Hàng</Text>
+                    <Text style={styles.headTitle}>Nhà Cung Cấp</Text>
                 </Header>
                 <View style={styles.body}>
                     <View style={styles.groupControl} >
@@ -86,7 +86,7 @@ class Suppliers extends React.Component {
                             onChangeText={this.onSearchInputChange.bind(this)}
                             type="Text"
                             name="search"
-                            placeholder="Tìm khách hàng :"
+                            placeholder="Tìm nhà cung cấp :"
                         />
                         <TouchableOpacity
                             onPress={this.onSearchPressed.bind(this)}
@@ -102,9 +102,8 @@ class Suppliers extends React.Component {
                     {this.renderSupplierList()}
                 </View>
                 <Footer>
-                    <TouchableOpacity style={styles.addNewGroupBtn} onPress={() => { Actions.customerNew(); }}>
+                    <TouchableOpacity style={styles.addNewGroupBtn} onPress={() => { Actions.supplierNew(); }}>
                         <Ionicons name="ios-add-circle" size={32} color="#FFFFFF" />
-                        <Text style={{ alignSelf: 'center', paddingLeft: 10, fontSize: 16, color: '#FFFFFF', fontWeight: '600' }}>Thêm Nhóm</Text>
                     </TouchableOpacity>
                 </Footer>
             </View>
@@ -166,8 +165,8 @@ const styles = {
     },
 };
 const mapStateToProps = (state, ownProps) => {
-    const { loading, loaded, customers } = state.customers;
-    return { loading, loaded, customers };
+    const { loading, loaded, suppliers } = state.suppliers;
+    return { loading, loaded, suppliers };
 };
 
 export default connect(mapStateToProps, {

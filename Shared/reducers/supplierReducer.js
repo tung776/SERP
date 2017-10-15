@@ -7,7 +7,6 @@ import {
 
 const INITIAL_STATE = {
     Id: '',
-    SupplierGroupId: 6,
     Name: '',
     Address: '',
     Phone: '',
@@ -26,7 +25,7 @@ const INITIAL_STATE = {
     loaded: false,
     error: '',
     debt: null,
-    customers: []
+    suppliers: []
     // uploading: false
 };
 
@@ -39,7 +38,6 @@ export default (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 Id: '',
-                SupplierGroupId: 6,
                 Name: '',
                 Address: '',
                 Phone: '',
@@ -67,13 +65,12 @@ export default (state = INITIAL_STATE, action) => {
                 const convert = { ...item, key: item.id };
                 convertedData.push(convert);
             });
-            return { ...state, customers: convertedData, loaded: true, loading: false };
+            return { ...state, suppliers: convertedData, loaded: true, loading: false };
         }
 
         case SUPPLIER_LOADED_SQLITE:
             return {
                 ...state,
-                SupplierGroupId: action.payload.customerGroupId,
                 Name: action.payload.name,
                 Address: action.payload.address,
                 Phone: action.payload.phone,
@@ -99,7 +96,6 @@ export default (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 Id: '',
-                SupplierGroupId: "",
                 Name: '',
                 Address: '',
                 Phone: '',

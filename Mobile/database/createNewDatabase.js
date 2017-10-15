@@ -204,7 +204,6 @@ export const createDatabaseSqlite = async () => {
            id integer primary key not null,
            name text,
            address text,
-           imageUrl text,
            phone text,
            email text,
            CurentDebt integer,
@@ -724,7 +723,6 @@ export const updateOrInsertDataVersion = async (data) => {
           'id',
           'name',
           'address',
-          'imageUrl',
           'phone',
           'email',
           'CurentDebt',
@@ -739,7 +737,7 @@ export const updateOrInsertDataVersion = async (data) => {
           'fax'
         ], [
             item.id, item.name, item.address,
-            item.imageUrl, item.phone, item.email, item.CurentDebt, item.overdue,
+             item.phone, item.email, item.CurentDebt, item.overdue,
             item.excessDebt, item.directorName, item.bankNumber, item.bankName,
             item.companyName, item.companyAdress, item.taxCode, item.fax
           ]);
@@ -750,7 +748,6 @@ export const updateOrInsertDataVersion = async (data) => {
               update suppliers 
               set name = ${item.name},
               address = ${item.address},
-              imageUrl = ${item.imageUrl},
               phone = ${item.phone},
               email = ${item.email},
               CurentDebt = ${item.CurentDebt},

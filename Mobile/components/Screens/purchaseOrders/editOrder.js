@@ -179,7 +179,7 @@ class EditPurchaseOrder extends React.Component {
         this.props.loadDebtSuppliersFromSqlite(supplierId);
         this.props.suppliers.forEach((supplier) => {
             if (supplier.id === supplierId) {
-                this.props.loadQuocteBySupplierOrSupplierGroupIdFromSqlite(supplierId, supplier.supplierGroupId);
+                this.props.loadQuocteBySupplierFromSqlite(supplierId);
             }
         });
         this.setState({ supplierId });

@@ -28,7 +28,7 @@ import {
     unformat
 } from '../../../../Shared/utils/format';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
-import paymentTemplate, { css, sendEmail, sendMessage } from '../../../../Shared/templates/payment';
+import paymentTemplate, { css, sendEmail, sendMessage } from '../../../../Shared/templates/paymentSupplier';
 import loadAsset from '../../../utils/loadAsset';
 import { fontUrl, URL } from '../../../../env';
 
@@ -157,7 +157,7 @@ class EditPaymentSupplier extends React.Component {
                         </View>
                     </View>
                     <View style={styles.controlContainer}>
-                        <Text style={styles.label} >Khách Hàng</Text>
+                        <Text style={styles.label} >Nhà Cung Cấp</Text>
                         <View style={styles.groupControl}>
                             <Picker
                                 enabled={false}

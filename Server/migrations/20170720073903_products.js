@@ -128,7 +128,6 @@ exports.up = function (knex, Promise) {
     //     })
     //     .createTableIfNotExists('suppliers', (table) => {
     //         table.increments();
-    //         table.integer('supplierGroupId').notNullable().references('id').inTable('supplierGroups');
     //         table.string('name').unique().notNullable();
     //         table.integer('bankId').references('id').inTable('banks');
     //         table.integer('companyId').references('id').inTable('companies');

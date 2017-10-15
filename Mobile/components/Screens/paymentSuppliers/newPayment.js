@@ -18,7 +18,7 @@ import { resetData, AddNewPaymentSupplier } from '../../../actions/paymentSuppli
 import db from '../../../database/sqliteConfig';
 import { formatMoney, formatNumber, unformat } from '../../../../Shared/utils/format';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
-import PaymentTemplate, { css, sendMessage, sendEmail } from '../../../../Shared/templates/payment';
+import PaymentTemplate, { css, sendMessage, sendEmail } from '../../../../Shared/templates/paymentSupplier';
 import Expo from 'expo';
 import loadAsset from '../../../utils/loadAsset';
 import { fontUrl, URL } from '../../../../env';
