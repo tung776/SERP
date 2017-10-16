@@ -221,7 +221,6 @@ export const SupplierUpdate = (supplier) => async (dispatch) => {
                             tx.executeSql(`
                             update suppliers 
                             set name = '${res.data.supplier[0].name}',
-                            supplierGroupId = ${res.data.supplier[0].supplierGroupId},
                             phone = '${res.data.supplier[0].phone}',
                             email = '${res.data.supplier[0].email}',
                             CurentDebt = '${res.data.supplier[0].CurentDebt}',
@@ -367,7 +366,6 @@ export const AddNewSupplier = (supplier) => async (dispatch) => {
                         const strSql = `insert into suppliers 
                                     (
                                         id,
-                                        supplierGroupId,
                                         name,
                                         address,
                                         phone,
@@ -385,7 +383,6 @@ export const AddNewSupplier = (supplier) => async (dispatch) => {
                                     ) 
                                     values (
                                             ${res.data.supplier[0].id},
-                                            '${res.data.supplier[0].supplierGroupId}', 
                                            '${res.data.supplier[0].name}', 
                                            '${res.data.supplier[0].address}', 
                                            '${res.data.supplier[0].phone}', 

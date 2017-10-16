@@ -459,7 +459,6 @@ const mapStateToProps = (state, ownProps) => {
         Fax,
         loading
     } = state.suppliers;
-    const { supplierGroups } = state.supplierGroups;
     return {
         Id,
         Name,
@@ -477,7 +476,6 @@ const mapStateToProps = (state, ownProps) => {
         TaxCode,
         Fax,
         loading,
-        supplierGroups
     };
 };
 

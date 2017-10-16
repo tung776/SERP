@@ -195,10 +195,6 @@ export const getActionForMenus = (menu) => {
             return Actions.supplierDept();
         case SALE_BY_SUPPLIER:
             return Actions.reportSaleBySupplier();
-        case NEW_SUPPLIER_GROUP_ACT:
-            return Actions.newSupplierGroup();
-        case SEARCH_SUPPLIER_GROUP_ACT:
-            return Actions.searchSupplierGroup();
 
         case RESEARCH_ACT:
             return null;

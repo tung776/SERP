@@ -40,7 +40,7 @@ SupplierRouter.post('/new', async (req, res) => {
                     //lấy dataversion hiện tại
                     const dataVersion = await Knex('dataVersions').where('id', 1);
 
-                    let { menus, userMenus, roles, categoryGroups, units, warehouses, products, suppliers, supplierGroups } = dataVersion[0];
+                    let { suppliers } = dataVersion[0];
                     suppliers++;
 
                     //thực hiện thay đổi dữ liệu khách hàng
@@ -78,7 +78,7 @@ SupplierRouter.post('/new', async (req, res) => {
                         .returning('*')
                         .whereRaw('id = 1')
                         .update({
-                            id: 1, menus, userMenus, roles, categoryGroups, units, warehouses, products, suppliers, supplierGroups
+                            id: 1, suppliers
                         });
                 } catch (e) {
                     //Đã có lỗi phát sinh, rollback lại toàn bộ thay đổi
@@ -138,14 +138,14 @@ SupplierRouter.post('/update', async (req, res) => {
                 try {
                     const dataVersion = await Knex('dataVersions').where('id', 1);
 
-                    let { menus, userMenus, roles, categoryGroups, units, warehouses, products, suppliers, supplierGroups } = dataVersion[0];
+                    let { suppliers } = dataVersion[0];
                     suppliers++;
 
                     newDataversion = await t('dataVersions')
                         .returning('*')
                         .whereRaw('id = 1')
                         .update({
-                            id: 1, menus, userMenus, roles, categoryGroups, units, warehouses, products, suppliers, supplierGroups
+                            id: 1, suppliers
                         });
                     //Thay đổi toàn bộ công nợ khách hàng
                     //Tìm bản ghi công nợ khách hàng đầu tiên
@@ -246,14 +246,14 @@ SupplierRouter.post('/delete', async (req, res) => {
         try {
             const dataVersion = await Knex('dataVersions').where('id', 1);
 
-            let { menus, userMenus, roles, categoryGroups, units, warehouses, products, suppliers, supplierGroups } = dataVersion[0];
+            let { suppliers } = dataVersion[0];
             suppliers++;
 
             newDataversion = await t('dataVersions')
                 .returning('*')
                 .whereRaw('id = 1')
                 .update({
-                    id: 1, menus, userMenus, roles, categoryGroups, units, warehouses, products, suppliers, supplierGroups
+                    id: 1, suppliers
                 })
                 .catch((error) => {
                     console.error(error);

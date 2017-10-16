@@ -59,11 +59,6 @@ exports.up = function (knex, Promise) {
             table.string('description');
             table.timestamps();
         })
-        .createTableIfNotExists('supplierGroups', (table) => {
-            table.increments();
-            table.string('name').unique().notNullable();
-            table.string('description');
-        })
         .createTableIfNotExists('categories', (table) => {
             table.increments();
             table.string('name').notNullable().unique();
@@ -446,7 +441,6 @@ exports.down = function (knex, Promise) {
         .dropTableIfExists('pays')
         .dropTableIfExists('payTypes')
         .dropTableIfExists('customerGroups')
-        .dropTableIfExists('supplierGroups')
         .dropTableIfExists('companies')
         .dropTableIfExists('banks')
         .dropTableIfExists('costPriceDetails')
