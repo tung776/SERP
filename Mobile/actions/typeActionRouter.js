@@ -93,7 +93,7 @@ export const NEW_SUPPLIER_GROUP_ACT = 77;
 export const SEARCH_SUPPLIER_GROUP_ACT = 78;
 
 export const NEW_QUOCTE_ACT = 79;
-export const SEARCH_QUOCTE_ACT = 79;
+export const SEARCH_QUOCTE_ACT = 80;
 
 export const getActionForMenus = (menu) => {
     switch (menu) {
@@ -263,6 +263,6 @@ export const getActionForMenus = (menu) => {
             return Actions.quoctes();
 
         default:
-            return nnull;
+            return null;
     }
 };

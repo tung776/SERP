@@ -5,84 +5,8 @@ import dataversionHelper from '../helpers/saveNewDataversion';
 import fs from 'fs';
 import path from 'path';
 import moment from '../../Shared/utils/moment';
-import DocDefinition from '../../Shared/templates/purchaseOrderTemplate';
 
-const Printer = require('pdfmake');
 const PurchaseOrderRouter = Router();
-
-PurchaseOrderRouter.get('/getInvoice/:orderId', async (req, res) => {
-    const orderId = req.params.orderId;
-
-    const purchaseOrder = await Knex.raw(`
-        SELECT s."id", s."date" , s."supplierId", s."userId", s."debtSupplierId", s."orderTypeId", 
-        s."title", s."total", s."totalIncludeVat", s."vat", s."taxId" d."newDebt", d."oldDebt", d."minus"
-        FROM "purchaseOrders" as s
-        INNER JOIN "debtSuppliers" AS d ON d."id" = s."debtSupplierId" 
-        WHERE s."id" = ${orderId};                      
-    `);
-    const purchaseOrderDetails = await Knex.raw(`
-        SELECT s."id" , s."purchaseOrderId", s."productId", s."unitId", u."name" AS "unitName", s."quantity", s."purchasePrice", p."name" 
-        FROM "purchaseOrderDetails" as s
-        INNER JOIN "products" AS p ON p."id" = s."productId" 
-        INNER JOIN "units" AS u ON u."id" = s."unitId" 
-        WHERE s."purchaseOrderId" = ${orderId};                      
-    `);
-
-    const {
-        id,
-        supplierId,
-        date,
-        total,
-        totalIncludeVat,
-        vat,
-        taxId,
-        oldDebt,
-        minus,
-        newDebt,
-    } = purchaseOrder.rows[0];
-
-    const supplier = await Knex('suppliers')
-        .where({ id: supplierId });
-
-    const fontDescriptors = {
-        Roboto: {
-            normal: path.resolve('Shared/templates/fonts/Roboto.ttf'),
-            bold: path.resolve('Shared/templates/fonts/Roboto_medium.ttf'),
-            italics: path.resolve('Shared/templates/fonts/Roboto_medium.ttf'),
-            bolditalics: path.resolve('Shared/templates/fonts/Roboto_medium.ttf'),
-        }
-    };
-
-    const printer = new Printer(fontDescriptors);
-    const docDefin = DocDefinition(
-        id,
-        supplier.name,
-        date,
-        total,
-        totalIncludeVat,
-        vat,
-        oldDebt,
-        minus,
-        newDebt,
-        purchaseOrderDetails.rows
-    );
-    // console.log('docDefin = ', docDefin);
-    let doc = printer.createPdfKitDocument(docDefin);
-    // res.send('success');
-    let chunks = [];
-    let result;
-
-    doc.on('data', function (chunk) {
-        chunks.push(chunk);
-    });
-    doc.on('end', function () {
-        result = Buffer.concat(chunks);
-
-        res.contentType('application/pdf');
-        res.send(result);
-    });
-    doc.end();
-});
 
 PurchaseOrderRouter.post('/getById', async (req, res) => {
     const { orderId } = req.body;

@@ -20,7 +20,7 @@ exports.seed = function (knex, Promise) {
         { name: 'Dự Báo Sản Xuất', parentId: 2 },//12
 
         { name: 'Hóa Đơn Bán' },//13
-        { name: 'Lập Hóa Đơn', parentId: 13 },//13
+        { name: 'Lập Hóa Đơn', parentId: 13 },//14
         { name: 'Lập Hóa Đơn Trả Lại', parentId: 13 },//15
         { name: 'Tìm Hóa Đơn', parentId: 13 },//16
         { name: 'Thêm Loại Hóa Đơn', parentId: 13 },//17

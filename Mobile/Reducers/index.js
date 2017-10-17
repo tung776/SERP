@@ -13,7 +13,7 @@ import saleOrders from '../../Shared/reducers/saleOrderReducer';
 import paymentCustomerReducer from '../../Shared/reducers/paymentCustomerReducer';
 import suppliers from '../../Shared/reducers/supplierReducer';
 import purchaseOrders from '../../Shared/reducers/purchaseOrderReducer';
-import paymentSupplier from '../../Shared/reducers/paymentSupplierReducer';
+import paymentSupplierReducer from '../../Shared/reducers/paymentSupplierReducer';
 
 const reducers = combineReducers({
     main: () => null,

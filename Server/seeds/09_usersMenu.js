@@ -84,6 +84,8 @@ exports.seed = function (knex, Promise) {
         { menuId: 76, userId: 1 },
         { menuId: 77, userId: 1 },
         { menuId: 78, userId: 1 },
+        { menuId: 79, userId: 1 },
+        { menuId: 80, userId: 1 },
       ]);
     });
 };

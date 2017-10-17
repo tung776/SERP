@@ -11,9 +11,9 @@ import { connect } from 'react-redux';
 import stylesCommon from '../../../styles';
 import { Ionicons } from '@expo/vector-icons';
 import {
-    loadPurchaseOrderListDataFromServerByCustomerId
+    loadPurchaseOrderListDataFromServerBySupplierId
 } from '../../../actions/purchaseOrderActions';
-import { loadCustomerListDataFromSqlite } from '../../../actions/supplierAction';
+import { loadSupplierListDataFromSqlite } from '../../../actions/supplierAction';
 import { Spinner } from '../../commons/Spinner';
 import SqlService from '../../../database/sqliteService';
 import moment from '../../../../Shared/utils/moment';
@@ -28,7 +28,7 @@ class PurchaseOrderList extends React.Component {
 
     componentWillMount() {
         if (this.props.suppliers.length == 0) {
-            this.props.loadCustomerListDataFromSqlite();
+            this.props.loadSupplierListDataFromSqlite();
         }
     }
 
@@ -82,7 +82,7 @@ class PurchaseOrderList extends React.Component {
                 ]
             );
         }
-        this.props.loadPurchaseOrderListDataFromServerByCustomerId(this.state.supplierId);
+        this.props.loadPurchaseOrderListDataFromServerBySupplierId(this.state.supplierId);
     }
 
     render() {
@@ -212,6 +212,6 @@ const mapStateToProps = (state, ownProps) => {
     };
 };
 export default connect(mapStateToProps, {
-    loadPurchaseOrderListDataFromServerByCustomerId,
-    loadCustomerListDataFromSqlite,
+    loadPurchaseOrderListDataFromServerBySupplierId,
+    loadSupplierListDataFromSqlite,
 })(PurchaseOrderList);

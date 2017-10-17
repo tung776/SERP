@@ -5,7 +5,7 @@ import Knex from '../config/knex';
 
 dataRoutes.post('/checkDataVersion', async function (req, res) {
     const { 
-        id, menus, userMenus, roles,
+        id, menus, userMenus, roles, supplier, debtSuppliers,
         categories, units, tax, warehouses,
         products, customerGroups, customers, userId, typeCargoes,
         quoctes, debtCustomers

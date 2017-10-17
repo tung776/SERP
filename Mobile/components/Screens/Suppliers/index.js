@@ -102,7 +102,7 @@ class Suppliers extends React.Component {
                     {this.renderSupplierList()}
                 </View>
                 <Footer>
-                    <TouchableOpacity style={styles.addNewGroupBtn} onPress={() => { Actions.supplierNew(); }}>
+                    <TouchableOpacity style={styles.addNewGroupBtn} onPress={() => { Actions.newSupplier(); }}>
                         <Ionicons name="ios-add-circle" size={32} color="#FFFFFF" />
                     </TouchableOpacity>
                 </Footer>

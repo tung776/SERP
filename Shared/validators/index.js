@@ -10,4 +10,4 @@ export * from './NewPaymentCustomerValidator';
 
 export * from './supplierValidator';
 export * from './purchaseOrderValidator';
-export * from './NewPaymentSupplierValidator';
+export * from './PaymentSupplierValidator';
