@@ -51,7 +51,7 @@ SupplierRouter.post('/new', async (req, res) => {
                             address: Address || '',
                             phone: Phone || '',
                             email: Email || '',
-                            CurentDebt: CurentDebt || 0,
+                            curentDebt: CurentDebt || 0,
                             overdue: Overdue || 20,
                             excessDebt: ExcessDebt || 100000000,
                             companyName: CompanyName || "",
@@ -128,6 +128,8 @@ SupplierRouter.post('/update', async (req, res) => {
     } = req.body;
 
     const { isValid, errors } = NewSupplierValidator(req.body);
+    console.log('req.body = ', req.body);
+    // return;
 
     if (isValid) {
         let newDataversion;
@@ -170,6 +172,8 @@ SupplierRouter.post('/update', async (req, res) => {
                             const _newDebt = debt.newDebt + So_tien_Dieu_Chinh;
                             const _oldDebt = debt.oldDebt + So_tien_Dieu_Chinh;
 
+                            console.log(`_newDebt = ${_newDebt}, _oldDebt = ${_oldDebt}`);
+
                             await t('debtSuppliers')
                                 .returning('*')
                                 .whereRaw(`id = ${debt.id}`)
@@ -193,7 +197,7 @@ SupplierRouter.post('/update', async (req, res) => {
                             address: Address || '',
                             phone: Phone || '',
                             email: Email || '',
-                            CurentDebt: CurentDebt || 0,
+                            curentDebt: CurentDebt || 0,
                             overdue: Overdue || 10,
                             excessDebt: ExcessDebt || 10000000,
                             companyName: CompanyName || '',

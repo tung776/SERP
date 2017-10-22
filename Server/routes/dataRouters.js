@@ -91,9 +91,9 @@ dataRoutes.post('/checkDataVersion', async function (req, res) {
             shouldUpdate.customersVersion = dataVersion[0].customers;
 
         }
-        if (dataVersion[0].supplier != supplier) {
-            shouldUpdate.supplier = await Knex.select().from('supplier');
-            shouldUpdate.supplierVersion = dataVersion[0].supplier;
+        if (dataVersion[0].suppliers != supplier) {
+            shouldUpdate.suppliers = await Knex.select().from('suppliers');
+            shouldUpdate.supplierVersion = dataVersion[0].suppliers;
 
         }
         if (dataVersion[0].debtCustomers != debtCustomers) {

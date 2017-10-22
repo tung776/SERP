@@ -138,7 +138,7 @@ const styles = {
         borderRadius: 8,
     },
     itemTitle: {
-        fontSize: 20,
+        fontSize: 16,
         fontWeight: '500',
         alignSelf: 'center',
         paddingBottom: 5,

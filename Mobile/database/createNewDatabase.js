@@ -206,7 +206,7 @@ export const createDatabaseSqlite = async () => {
            address text,
            phone text,
            email text,
-           CurentDebt integer,
+           curentDebt integer,
            overdue integer,
            excessDebt real,
            directorName text,
@@ -265,7 +265,9 @@ export const createDatabaseSqlite = async () => {
            customerGroups integer,
            customers integer,
            quoctes integer,
-           debtCustomers integer
+           debtCustomers integer,
+           suppliers,
+           debtSuppliers
           );`, null,
         null,
         e => console.log('dataVersions error: ', e)
@@ -715,6 +717,8 @@ export const updateOrInsertDataVersion = async (data) => {
     }, this);
   }
 
+  console.log('data.suppliers = ', data.suppliers);
+  
   if (data.suppliers) {
     data.suppliers.forEach(async (item) => {
       const avaiabledData = await SqlService.select('suppliers', '*', `id = '${item.id}'`);
@@ -725,7 +729,7 @@ export const updateOrInsertDataVersion = async (data) => {
           'address',
           'phone',
           'email',
-          'CurentDebt',
+          'curentDebt',
           'overdue',
           'excessDebt',
           'directorName',
@@ -737,7 +741,7 @@ export const updateOrInsertDataVersion = async (data) => {
           'fax'
         ], [
             item.id, item.name, item.address,
-             item.phone, item.email, item.CurentDebt, item.overdue,
+             item.phone, item.email, item.curentDebt, item.overdue,
             item.excessDebt, item.directorName, item.bankNumber, item.bankName,
             item.companyName, item.companyAdress, item.taxCode, item.fax
           ]);
@@ -750,7 +754,7 @@ export const updateOrInsertDataVersion = async (data) => {
               address = ${item.address},
               phone = ${item.phone},
               email = ${item.email},
-              CurentDebt = ${item.CurentDebt},
+              curentDebt = ${item.curentDebt},
               overdue = ${item.overdue},
               excessDebt = ${item.excessDebt},
               directorName = ${item.directorName},
@@ -911,8 +915,8 @@ export const checkDataVersion = async (userId, store) => {
         //   newData =>
         //     console.log("dataversion after updateOrInsert =", newData)
         // );
-        SqlService.query(`select * from 'debtCustomers'`, null).then(
-          result => console.log("debtCustomers = ", result)
+        SqlService.query(`select * from 'suppliers'`, null).then(
+          result => console.log("suppliers = ", result)
         );
         // const a = await SqlService.select('quoctes', '*');
         // console.log("a = ", a);

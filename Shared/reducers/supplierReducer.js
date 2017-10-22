@@ -75,7 +75,7 @@ export default (state = INITIAL_STATE, action) => {
                 Address: action.payload.address,
                 Phone: action.payload.phone,
                 Email: action.payload.email,
-                CurentDebt: `${action.payload.CurentDebt}`,
+                CurentDebt: `${action.payload.curentDebt}`,
                 Overdue: `${action.payload.overdue}`,
                 ExcessDebt: `${action.payload.excessDebt}`,
                 CompanyName: action.payload.companyName,

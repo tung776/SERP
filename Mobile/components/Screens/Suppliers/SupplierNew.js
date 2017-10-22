@@ -187,8 +187,8 @@ class SupplierNew extends React.Component {
                                             underlineColorAndroid={'transparent'}
                                             style={styles.textInput}
                                             blurOnSubmit
-                                            value={this.props.CurentDebt}
-                                            onChangeText={text => SupplierChange({ prop: 'CurentDebt', value: text })}
+                                            value={formatNumber(this.props.CurentDebt)}
+                                            onChangeText={text => SupplierChange({ prop: 'CurentDebt', value: unformat(text) })}
                                             type="Text"
                                             name="CurentDebt"
                                             placeholder="Công nợ hiện tại (nếu có)"
@@ -221,8 +221,8 @@ class SupplierNew extends React.Component {
                                             underlineColorAndroid={'transparent'}
                                             style={styles.textInput}
                                             blurOnSubmit
-                                            value={this.props.ExcessDebt}
-                                            onChangeText={text => SupplierChange({ prop: 'ExcessDebt', value: text })}
+                                            value={formatNumber(this.props.ExcessDebt)}
+                                            onChangeText={text => SupplierChange({ prop: 'ExcessDebt', value: unformat(text) })}
                                             type="Text"
                                             name="ExcessDebt"
                                             placeholder="Số nợ tối đa"

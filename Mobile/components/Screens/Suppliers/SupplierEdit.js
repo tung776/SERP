@@ -57,6 +57,24 @@ class SupplierEdit extends React.Component {
                             Fax,
                             SupplierUpdate,
                             loading } = this.props;
+                        
+                        console.log({
+                            Id,
+                            Name,
+                            Address,
+                            Phone,
+                            Email,
+                            CurentDebt,
+                            Overdue,
+                            ExcessDebt,
+                            CompanyName,
+                            CompanyAdress,
+                            DirectorName,
+                            BankNumber,
+                            BankName,
+                            TaxCode,
+                            Fax,
+                        })
                         SupplierUpdate({
                             Id,
                             Name,
@@ -223,8 +241,8 @@ class SupplierEdit extends React.Component {
                                             underlineColorAndroid={'transparent'}
                                             style={styles.textInput}
                                             blurOnSubmit
-                                            value={this.props.CurentDebt}
-                                            onChangeText={text => SupplierChange({ prop: 'CurentDebt', value: text })}
+                                            value={formatNumber(this.props.CurentDebt) }
+                                            onChangeText={text => SupplierChange({ prop: 'CurentDebt', value: unformat(text) })}
                                             type="Text"
                                             name="CurentDebt"
                                             placeholder="Công nợ hiện tại (nếu có)"
@@ -259,8 +277,8 @@ class SupplierEdit extends React.Component {
                                             underlineColorAndroid={'transparent'}
                                             style={styles.textInput}
                                             blurOnSubmit
-                                            value={this.props.ExcessDebt}
-                                            onChangeText={text => SupplierChange({ prop: 'ExcessDebt', value: text })}
+                                            value={formatNumber(this.props.ExcessDebt)}
+                                            onChangeText={text => SupplierChange({ prop: 'ExcessDebt', value: unformat(text) })}
                                             type="Text"
                                             name="ExcessDebt"
                                             placeholder="Số nợ tối đa"

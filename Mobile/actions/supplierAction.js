@@ -58,6 +58,7 @@ export const loadSupplierByNameFromSqlite = (name) => (dispatch) => {
     });
     SqlService.query(`select * from suppliers where name like '%${name}%'`).then(
         result => {
+            console.log('loadSupplierByNameFromSqlite result = ', result);
             dispatch({
                 type: SUPPLIER_LIST_LOADED_SQLITE,
                 payload: result
@@ -223,7 +224,7 @@ export const SupplierUpdate = (supplier) => async (dispatch) => {
                             set name = '${res.data.supplier[0].name}',
                             phone = '${res.data.supplier[0].phone}',
                             email = '${res.data.supplier[0].email}',
-                            CurentDebt = '${res.data.supplier[0].CurentDebt}',
+                            curentDebt = '${res.data.supplier[0].curentDebt}',
                             overdue = ${res.data.supplier[0].overdue},
                             excessDebt = ${res.data.supplier[0].excessDebt},
                             companyName = '${res.data.supplier[0].companyName}',
@@ -370,7 +371,7 @@ export const AddNewSupplier = (supplier) => async (dispatch) => {
                                         address,
                                         phone,
                                         email,
-                                        CurentDebt,
+                                        curentDebt,
                                         overdue,
                                         excessDebt,
                                         companyName,
@@ -387,7 +388,7 @@ export const AddNewSupplier = (supplier) => async (dispatch) => {
                                            '${res.data.supplier[0].address}', 
                                            '${res.data.supplier[0].phone}', 
                                            '${res.data.supplier[0].email}', 
-                                           '${res.data.supplier[0].CurentDebt}', 
+                                           '${res.data.supplier[0].curentDebt}', 
                                             ${res.data.supplier[0].overdue}, 
                                             ${res.data.supplier[0].excessDebt}, 
                                            '${res.data.supplier[0].companyName}', 

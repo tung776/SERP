@@ -154,7 +154,7 @@ const styles = {
         justifyContent: 'space-between',
     },
     itemTitle: {
-        fontSize: 17,
+        fontSize: 16,
         fontWeight: '400',
         paddingBottom: 2,
         paddingLeft: 10,

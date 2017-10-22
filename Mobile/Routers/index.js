@@ -127,7 +127,7 @@ const RouterComponent = () => (
 
                 <Scene key="searchSupplier" component={Suppliers} title="..." />
                 <Scene key="newSupplier" component={SupplierNew} title="..." />
-                <Scene key="editSupplier" component={SupplierEdit} title="..." />
+                <Scene key="supplierEdit" component={SupplierEdit} title="..." />
 
                 <Scene key="newResearch" component={ComminSoon} title="..." />
                 <Scene key="reportCostTemp" component={ComminSoon} title="..." />
