@@ -62,7 +62,7 @@ import paymentCustomerRouter from './routes/paymentCustomerRouter';
 app.use('/api/payment', paymentCustomerRouter);
 
 import PurchaseOrderRouter from './routes/purchaseOrderRouters';
-app.use('/api/order', PurchaseOrderRouter);
+app.use('/api/purchaseOrder', PurchaseOrderRouter);
 
 import SupplierRouter from './routes/supplierRouters';
 app.use('/api/supplier' , SupplierRouter);

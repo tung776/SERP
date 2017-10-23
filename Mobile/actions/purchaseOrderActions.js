@@ -17,12 +17,12 @@ import SqlService from '../database/sqliteService';
 import { Actions } from 'react-native-router-flux';
 import db from '../database/sqliteConfig';
 
-export const loadPurchaseOrderListDataFromServerBySupplierId = (customerId) => async (dispatch) => {
+export const loadPurchaseOrderListDataFromServerBySupplierId = (supplierId) => async (dispatch) => {
     dispatch({
         type: PURCHASE_ORDER_PENDING
     });
 
-    axios.post(`${URL}/api/order/getBySupplierId`, { customerId }).then(
+    axios.post(`${URL}/api/purchaseOrder/getBySupplierId`, { supplierId }).then(
         res => {
             dispatch({
                 type: PURCHASE_ORDER_LIST_LOADED_SERVER,
@@ -32,58 +32,58 @@ export const loadPurchaseOrderListDataFromServerBySupplierId = (customerId) => a
     );
 };
 
-export const loadPurchaseOrderBySupplierFromServer = (customerId = null) => (dispatch) => {
-    /*
-        Phương thức này sẽ trả về danh sách các sản phẩm có tên gần nhất với tên sản phẩm được cung cấp
-    */
-    dispatch({
-        type: PURCHASE_ORDER_PENDING
-    });
-    let strSql = '';
-    if (customerId !== null) {
-        strSql = `select
-         id, title, date, customerId, customerGroupId 
-         from saleOrders 
-         where id IN (
-                    SELECT max(id) FROM saleOrders  
-                    GROUP BY customerGroupId, customerId
-                ) 
-        and customerId = ${customerId}
-         `;
-    } else {
-        strSql = `
-        select id, title, date, customerId, customerGroupId 
-        from saleOrders 
-        where id IN (
-                    SELECT max(id) FROM saleOrders  
-                    GROUP BY customerGroupId, customerId
-                ) 
-        and customerGroupId = ${customerGroupId}
-        `;
-    }
-    SqlService.query(strSql).then(
-        result => {
-            if (result[0]) {
-                dispatch({
-                    type: PURCHASE_ORDER_LIST_LOADED_SERVER,
-                    payload: result[0]
-                });
-            } else {
-                dispatch({
-                    type: PURCHASE_ORDER_LIST_LOADED_SERVER,
-                    payload: null
-                });
-            }
-        }
-    );
-};
+// export const loadPurchaseOrderBySupplierFromServer = (supplierId = null) => (dispatch) => {
+//     /*
+//         Phương thức này sẽ trả về danh sách các sản phẩm có tên gần nhất với tên sản phẩm được cung cấp
+//     */
+//     dispatch({
+//         type: PURCHASE_ORDER_PENDING
+//     });
+//     let strSql = '';
+//     if (supplierId !== null) {
+//         strSql = `select
+//          id, title, date, supplierId, supplierGroupId 
+//          from saleOrders 
+//          where id IN (
+//                     SELECT max(id) FROM saleOrders  
+//                     GROUP BY supplierGroupId, supplierId
+//                 ) 
+//         and supplierId = ${supplierId}
+//          `;
+//     } else {
+//         strSql = `
+//         select id, title, date, supplierId, supplierGroupId 
+//         from saleOrders 
+//         where id IN (
+//                     SELECT max(id) FROM saleOrders  
+//                     GROUP BY supplierGroupId, supplierId
+//                 ) 
+//         and supplierGroupId = ${supplierGroupId}
+//         `;
+//     }
+//     SqlService.query(strSql).then(
+//         result => {
+//             if (result[0]) {
+//                 dispatch({
+//                     type: PURCHASE_ORDER_LIST_LOADED_SERVER,
+//                     payload: result[0]
+//                 });
+//             } else {
+//                 dispatch({
+//                     type: PURCHASE_ORDER_LIST_LOADED_SERVER,
+//                     payload: null
+//                 });
+//             }
+//         }
+//     );
+// };
 
 export const loadPurchaseOrderById = (orderId) => async (dispatch) => {
     dispatch({
         type: PURCHASE_ORDER_PENDING
     });
 
-    axios.post(`${URL}/api/order/getById`, { orderId }).then(
+    axios.post(`${URL}/api/purchaseOrder/getById`, { orderId }).then(
         res => {
             console.log('res = ', res.data);
             dispatch({
@@ -139,7 +139,7 @@ export const PurchaseOrderDelete = (order) => async (dispatch) => {
         type: PURCHASE_ORDER_PENDING
     });
 
-    const apiUrl = `${URL}/api/order/delete`;
+    const apiUrl = `${URL}/api/purchaseOrder/delete`;
 
     axios.post(apiUrl, order).then(
         (res) => {
@@ -156,7 +156,7 @@ export const PurchaseOrderDelete = (order) => async (dispatch) => {
                     const strSql = `insert into debtSuppliers 
                                 (
                                     id,
-                                    customerId,
+                                    supplierId,
                                     createdDate,
                                     title,
                                     newDebt,
@@ -166,7 +166,7 @@ export const PurchaseOrderDelete = (order) => async (dispatch) => {
                                 ) 
                                 values (
                                         ${res.data.debtSuppliers[0].id},
-                                        ${res.data.debtSuppliers[0].customerId}, 
+                                        ${res.data.debtSuppliers[0].supplierId}, 
                                         '${res.data.debtSuppliers[0].createdDate}', 
                                         '${res.data.debtSuppliers[0].title}', 
                                         ${res.data.debtSuppliers[0].newDebt}, 
@@ -248,7 +248,7 @@ export const PurchaseOrderUpdate = (order) => async (dispatch) => {
             ]
         );
     } else {
-        const apiUrl = `${URL}/api/order/update`;
+        const apiUrl = `${URL}/api/purchaseOrder/update`;
 
         axios.post(apiUrl, order).then(
             (res) => {
@@ -265,7 +265,7 @@ export const PurchaseOrderUpdate = (order) => async (dispatch) => {
 
                         tx.executeSql(`
                         update debtSuppliers 
-                        set customerId = ${res.data.debtSuppliers[0].customerId},
+                        set supplierId = ${res.data.debtSuppliers[0].supplierId},
                         createdDate = '${res.data.debtSuppliers[0].createdDate}',
                         title = '${res.data.debtSuppliers[0].title}',
                         newDebt = ${res.data.debtSuppliers[0].newDebt},
@@ -351,7 +351,7 @@ export const AddNewPurchaseOrder = (order) => async (dispatch) => {
             ]
         );
     } else {
-        const apiUrl = `${URL}/api/order/new`;
+        const apiUrl = `${URL}/api/purchaseOrder/new`;
 
         axios.post(apiUrl, order).then(
             (res) => {
@@ -367,7 +367,7 @@ export const AddNewPurchaseOrder = (order) => async (dispatch) => {
                         const strSql = `insert into debtSuppliers 
                                     (
                                         id,
-                                        customerId,
+                                        supplierId,
                                         createdDate,
                                         title,
                                         newDebt,
@@ -377,7 +377,7 @@ export const AddNewPurchaseOrder = (order) => async (dispatch) => {
                                     ) 
                                     values (
                                             ${res.data.debtSuppliers[0].id},
-                                            ${res.data.debtSuppliers[0].customerId}, 
+                                            ${res.data.debtSuppliers[0].supplierId}, 
                                             '${res.data.debtSuppliers[0].createdDate}', 
                                             '${res.data.debtSuppliers[0].title}', 
                                             ${res.data.debtSuppliers[0].newDebt}, 

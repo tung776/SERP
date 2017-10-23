@@ -119,11 +119,11 @@ const RouterComponent = () => (
                 <Scene key="sumarizePayment" component={ComminSoon} title="..." />
                 <Scene key="newOrtherPayment" component={ComminSoon} title="..." />
 
-                <Scene key="newSupplierOrder" component={newPurchaseOrder} title="..." />
+                <Scene key="newPurchaseOrder" component={newPurchaseOrder} title="..." />
                 <Scene key="searchPurchaseOrder" component={purchaseOrders} title="..." />
                 <Scene key="editSupplierOrder" component={editPurchaseOrder} title="..." />
                 <Scene key="reportSupplierOrder" component={ComminSoon} title="..." />
-                <Scene key="newSupplierOrderReturnning" component={ComminSoon} title="..." />
+                <Scene key="newPurchaseOrderReturnning" component={ComminSoon} title="..." />
 
                 <Scene key="searchSupplier" component={Suppliers} title="..." />
                 <Scene key="newSupplier" component={SupplierNew} title="..." />

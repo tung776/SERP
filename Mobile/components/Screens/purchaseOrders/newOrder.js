@@ -15,7 +15,6 @@ import { loadUnits,
     toggleProductToSelectList,
     ProductChange
  } from '../../../actions/productActions';
-import { loadQuocteBySupplierFromSqlite } from '../../../actions/quocteActions';
 import { resetData, AddNewPurchaseOrder, loadTax } from '../../../actions/purchaseOrderActions';
 import db from '../../../database/sqliteConfig';
 import { formatMoney, formatNumber, unformat } from '../../../../Shared/utils/format';
@@ -35,7 +34,6 @@ class NewPurchaseOrder extends React.Component {
         supplierId: '',
         debtSuppliers: {},
         date: '',
-        title: '',
         total: 0,
         totalIncludeVat: 0,
         vat: 0,
@@ -44,7 +42,6 @@ class NewPurchaseOrder extends React.Component {
         newDebt: 0,
         oldebt: 0,
         purchaseOrderDetails: [],
-        quoctes: [],
         fontLocation: null,
         appIsReady: false,
         fontPath: null,
@@ -70,18 +67,14 @@ class NewPurchaseOrder extends React.Component {
 
         const oldebt = nextProps.debt ? nextProps.debt.newDebt : 0;
         let purchaseOrderDetails = []
+        console.log('nextProps.debt = ', nextProps.debt);
         if (this.props.isSave) {
             console.log('nextProps.selectedProducts = ', nextProps.selectedProducts);
         }
 
         if (nextProps.selectCompleted) {
             nextProps.selectedProducts.forEach((detail) => {
-                nextProps.quocteList.forEach((quocte) => {
-                    if (detail.id === quocte.productId) {
-                        detail.purchasePrice = quocte.purchasePrice;
-                        detail.unitId = quocte.unitId;
-                    }
-                });
+                
                 this.state.purchaseOrderDetails.push({ ...detail, key: `${detail.id}-${detail.unitId}-${detail.quantity}-${Math.random() * 10}` });
             });
 
@@ -103,7 +96,6 @@ class NewPurchaseOrder extends React.Component {
             id: nextProps.id,
             debtSuppliers: nextProps.debt,
             oldebt,
-            quoctes: nextProps.quocteList
         });
     }
 
@@ -117,11 +109,11 @@ class NewPurchaseOrder extends React.Component {
                     text: 'Xác Nhận',
                     onPress: () => {
                         const {
-                            date, title, supplierId, total, totalIncludeVat, vat, pay,
+                            date, supplierId, total, totalIncludeVat, vat, pay,
                             newDebt, oldebt, purchaseOrderDetails, taxId
                         } = this.state;
                         this.props.AddNewPurchaseOrder({
-                            date, title, supplierId, total, totalIncludeVat, vat, taxId, pay,
+                            date, supplierId, total, totalIncludeVat, vat, taxId, pay,
                             newDebt, oldebt, purchaseOrderDetails, debtSupplierId: this.state.debtSuppliers.id,
                             user: this.props.user
                         });
@@ -138,12 +130,6 @@ class NewPurchaseOrder extends React.Component {
 
     onSupplierChanged(supplierId) {
         this.props.loadDebtSuppliersFromSqlite(supplierId);
-        this.props.suppliers.forEach((supplier) => {
-            if (supplier.id === supplierId) {
-                this.props.loadQuocteBySupplierFromSqlite(supplierId);
-            }
-
-        });
         this.setState({ supplierId });
     }
 
@@ -389,23 +375,7 @@ class NewPurchaseOrder extends React.Component {
                             </Picker>
                         </View>
                     </View>
-                    <View style={styles.controlContainer}>
-                        <Text style={styles.label} >Tiêu đề</Text>
-                        <View style={styles.groupControl}>
-                            <TextInput
-                                editable={!this.props.isSave}
-                                disableFullscreenUI
-                                underlineColorAndroid={'transparent'}
-                                style={styles.textInput}
-                                blurOnSubmit
-                                value={this.state.title}
-                                onChangeText={text => this.setState({ title: text })}
-                                type="Text"
-                                name="title"
-                                placeholder="Tiêu đề hóa đơn"
-                            />
-                        </View>
-                    </View>
+                    
                 </ScrollView>
             );
         }
@@ -777,7 +747,6 @@ const mapStateToProps = (state, ownProps) => {
     const { selectedProducts, selectCompleted } = state.products;
     const { suppliers, debt } = state.suppliers;
     const { units } = state.products;
-    const { quocteList } = state.quoctes;
     const { isAuthenticated, user } = state.auth;
     return {
         isSave,
@@ -791,7 +760,6 @@ const mapStateToProps = (state, ownProps) => {
         suppliers,
         selectedProducts,
         debt,
-        quocteList,
         user,
         tax,
         selectCompleted
@@ -805,6 +773,5 @@ export default connect(mapStateToProps, {
     loadDebtSuppliersFromSqlite,
     AddNewPurchaseOrder,
     loadTax,
-    loadQuocteBySupplierFromSqlite,
     ProductChange
 })(NewPurchaseOrder);

@@ -282,9 +282,8 @@ exports.up = function (knex, Promise) {
             table.integer('purchaseOrderId').notNullable().references('id').inTable('purchaseOrders');
             table.integer('productId').notNullable().unique().references('id').inTable('products');
             table.integer('unitId').notNullable().references('id').inTable('units');
-            table.integer('warehourseId').notNullable().references('id').inTable('warehouses');
             table.float('quantity').defaultTo(0);
-            table.float('salePrice').defaultTo(0);
+            table.float('purchasePrice').defaultTo(0);
             table.float('total').defaultTo(0);
         })
         .createTableIfNotExists('formulationTypes', (table) => {

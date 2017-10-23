@@ -73,7 +73,7 @@ class PurchaseOrderList extends React.Component {
         if (this.state.supplierId === null ) {
             return Alert.alert(
                 'Báo lỗi',
-                'Bạn chưa chọn nhóm khách hàng hoặc khách hàng',
+                'Bạn chưa chọn nhóm nhà cung cấp hoặc nhà cung cấp',
                 [
                     {
                         text: 'Xác Nhận'

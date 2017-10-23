@@ -14,7 +14,7 @@ PurchaseOrderRouter.post('/getById', async (req, res) => {
     try {
         const purchaseOrder = await Knex.raw(`
             SELECT s."id", s."date" , s."supplierId", s."userId", s."debtSupplierId", s."orderTypeId", 
-            s."title", s."total", s."totalIncludeVat", s."vat", s."taxId", d."newDebt", d."oldDebt", d."minus"
+            s."total", s."totalIncludeVat", s."vat", s."taxId", d."newDebt", d."oldDebt", d."minus"
             FROM "purchaseOrders" as s
             INNER JOIN "debtSuppliers" AS d ON d."id" = s."debtSupplierId" 
             WHERE s."id" = ${orderId};                      
@@ -69,14 +69,16 @@ PurchaseOrderRouter.post('/getBySupplierId', async (req, res) => {
 
 PurchaseOrderRouter.post('/new', async (req, res) => {
     let {
-        date, title, supplierId, total, totalIncludeVat, vat, taxId, pay,
+        date, supplierId, total, totalIncludeVat, vat, taxId, pay,
         newDebt, oldebt, purchaseOrderDetails, debtSupplierId, user
     } = req.body;
     // return;
     const { isValid, errors } = NewPurchaseOrderValidator({
-        date, title, supplierId, total, totalIncludeVat, vat, pay,
+        date, supplierId, total, totalIncludeVat, vat, pay,
         newDebt, oldebt, purchaseOrderDetails,
     });
+    console.log('purchaseOrderDetails = ', purchaseOrderDetails);
+    return;
     let order = []
     if (isValid) {
         let newDataversion;
@@ -90,7 +92,7 @@ PurchaseOrderRouter.post('/new', async (req, res) => {
                         .insert({
                             supplierId: supplierId,
                             createdDate: moment(date, 'DD-MM-YYYY').format('YYYY-MM-DD'),
-                            title: title,
+                            title: '',
                             newDebt: newDebt,
                             oldDebt: oldebt,
                             minus: pay,
@@ -104,7 +106,6 @@ PurchaseOrderRouter.post('/new', async (req, res) => {
                             userId: user.id,
                             debtSupplierId: data[0].id,
                             orderTypeId: 1,
-                            title: title,
                             total: total,
                             vat: vat,
                             taxId,
@@ -172,12 +173,12 @@ PurchaseOrderRouter.post('/new', async (req, res) => {
 PurchaseOrderRouter.post('/update', async (req, res) => {
 
     let {
-        id, date, title, supplierId, total, totalIncludeVat, vat, taxId, pay,
+        id, date, supplierId, total, totalIncludeVat, vat, taxId, pay,
         newDebt, oldDebt, purchaseOrderDetails, debtSupplierId, user
     } = req.body;
 
     const { isValid, errors } = NewPurchaseOrderValidator({
-        date, title, supplierId, total, totalIncludeVat, vat, pay,
+        date, supplierId, total, totalIncludeVat, vat, pay,
         newDebt, oldDebt, purchaseOrderDetails,
     });
 
@@ -246,7 +247,6 @@ PurchaseOrderRouter.post('/update', async (req, res) => {
                         .update({
                             supplierId: supplierId,
                             createdDate: moment(date, 'DD-MM-YYYY').format('YYYY-MM-DD'),
-                            title: title,
                             newDebt: newDebt,
                             oldDebt: oldDebt,
                             minus: pay,
@@ -323,7 +323,6 @@ PurchaseOrderRouter.post('/update', async (req, res) => {
                     //     .update({
                     //         supplierId: supplierId,
                     //         createdDate: moment(date, 'DD-MM-YYYY').format('YYYY-MM-DD'),
-                    //         title: title,
                     //         newDebt: newDebt,
                     //         oldDebt: oldebt,
                     //         minus: pay,
@@ -338,7 +337,6 @@ PurchaseOrderRouter.post('/update', async (req, res) => {
                             userId: user.id,
                             debtSupplierId: debtSupplierId,
                             orderTypeId: 1,
-                            title: title,
                             total: total,
                             vat: vat,
                             taxId,
@@ -374,7 +372,7 @@ PurchaseOrderRouter.post('/update', async (req, res) => {
 
 PurchaseOrderRouter.post('/delete', async (req, res) => {
 
-    const { id, date, title, supplierId, total, totalIncludeVat, vat, pay,
+    const { id, date, supplierId, total, totalIncludeVat, vat, pay,
         newDebt, oldebt, purchaseOrderDetails, debtSupplierId, user } = req.body;
     let newDataversion;
     console.log('deleting order ', id);

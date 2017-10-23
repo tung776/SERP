@@ -177,9 +177,9 @@ export const getActionForMenus = (menu) => {
         case SUPPLIER_ORDER_ACT:
             return null;
         case NEW_SUPPLIER_ORDER_ACT:
-            return Actions.newSupplierOrder();
+            return Actions.newPurchaseOrder();
         case SUPPLIER_RETURNNING_ACT:
-            return Actions.newSupplierOrderReturnning();
+            return Actions.newPurchaseOrderReturnning();
         case SEARCH_SUPPLIER_ORDER_ACT:
             return Actions.searchPurchaseOrder();
         case SUPPLIER_ORDER_REPORT_ACT:
