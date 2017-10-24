@@ -300,7 +300,7 @@ class NewPurchaseOrder extends React.Component {
                                                     }}
                                                     type="Text"
                                                     name="Description"
-                                                    placeholder="Giá bán"
+                                                    placeholder="Giá nhập"
                                                 />
                                             </View>
                                         </View>
@@ -476,7 +476,7 @@ class NewPurchaseOrder extends React.Component {
         return (
             <View style={styles.container}>
                 <Header>
-                    <Text style={styles.headTitle} >Tạo Hóa Đơn Bán</Text>
+                    <Text style={styles.headTitle} >Tạo Hóa Đơn Nhập</Text>
                 </Header>
                 <View style={styles.body}>
                     <TouchableOpacity

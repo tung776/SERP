@@ -78,7 +78,7 @@ PurchaseOrderRouter.post('/new', async (req, res) => {
         newDebt, oldebt, purchaseOrderDetails,
     });
     console.log('purchaseOrderDetails = ', purchaseOrderDetails);
-    return;
+    // return;
     let order = []
     if (isValid) {
         let newDataversion;

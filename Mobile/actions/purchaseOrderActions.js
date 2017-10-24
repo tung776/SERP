@@ -43,9 +43,9 @@ export const loadPurchaseOrderListDataFromServerBySupplierId = (supplierId) => a
 //     if (supplierId !== null) {
 //         strSql = `select
 //          id, title, date, supplierId, supplierGroupId 
-//          from saleOrders 
+//          from purchaseOrders 
 //          where id IN (
-//                     SELECT max(id) FROM saleOrders  
+//                     SELECT max(id) FROM purchaseOrders  
 //                     GROUP BY supplierGroupId, supplierId
 //                 ) 
 //         and supplierId = ${supplierId}
@@ -53,9 +53,9 @@ export const loadPurchaseOrderListDataFromServerBySupplierId = (supplierId) => a
 //     } else {
 //         strSql = `
 //         select id, title, date, supplierId, supplierGroupId 
-//         from saleOrders 
+//         from purchaseOrders 
 //         where id IN (
-//                     SELECT max(id) FROM saleOrders  
+//                     SELECT max(id) FROM purchaseOrders  
 //                     GROUP BY supplierGroupId, supplierId
 //                 ) 
 //         and supplierGroupId = ${supplierGroupId}
@@ -91,12 +91,12 @@ export const loadPurchaseOrderById = (orderId) => async (dispatch) => {
                 payload: res.data
             });
             let selectedProducts = [];
-            res.data.saleOrderDetails.forEach((item) => {
+            res.data.purchaseOrderDetails.forEach((item) => {
                 
                 const temp = {
                     id: item.productId,
                     detailId: item.id,
-                    salePrice: item.salePrice,
+                    purchasePrice: item.purchasePrice,
                     unitId: item.unitId,
                     name: item.name,
                     key: item.productId,

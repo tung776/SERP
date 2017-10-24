@@ -121,7 +121,7 @@ const RouterComponent = () => (
 
                 <Scene key="newPurchaseOrder" component={newPurchaseOrder} title="..." />
                 <Scene key="searchPurchaseOrder" component={purchaseOrders} title="..." />
-                <Scene key="editSupplierOrder" component={editPurchaseOrder} title="..." />
+                <Scene key="editPurchaseOrder" component={editPurchaseOrder} title="..." />
                 <Scene key="reportSupplierOrder" component={ComminSoon} title="..." />
                 <Scene key="newPurchaseOrderReturnning" component={ComminSoon} title="..." />
 

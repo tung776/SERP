@@ -1,8 +1,8 @@
 {
-  "expoServerPort": null,
-  "packagerPort": null,
-  "packagerPid": null,
-  "expoServerNgrokUrl": null,
-  "packagerNgrokUrl": null,
-  "ngrokPid": null
+  "expoServerPort": 19000,
+  "packagerPort": 19001,
+  "packagerPid": 2036,
+  "expoServerNgrokUrl": "https://62-dcx.tung776.serp.exp.direct",
+  "packagerNgrokUrl": "https://packager.62-dcx.tung776.serp.exp.direct",
+  "ngrokPid": 5364
 }
