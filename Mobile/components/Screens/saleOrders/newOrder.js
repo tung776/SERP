@@ -11,10 +11,11 @@ import {
     loadCustomerListDataFromSqlite,
     loadDebtCustomersFromSqlite
 } from '../../../actions/customerAction';
-import { loadUnits, 
+import {
+    loadUnits,
     toggleProductToSelectList,
     ProductChange
- } from '../../../actions/productActions';
+} from '../../../actions/productActions';
 import { loadQuocteByCustomerOrCustomerGroupIdFromSqlite } from '../../../actions/quocteActions';
 import { resetData, AddNewSaleOrder, loadTax } from '../../../actions/saleOrderActions';
 import db from '../../../database/sqliteConfig';
@@ -95,8 +96,8 @@ class NewSaleOrder extends React.Component {
                 vat,
                 saleOderDetails: this.state.saleOderDetails,
             });
-            nextProps.ProductChange({prop: 'selectCompleted', value: false})
-            nextProps.ProductChange({prop: 'selectedProducts', value: []});
+            nextProps.ProductChange({ prop: 'selectCompleted', value: false })
+            nextProps.ProductChange({ prop: 'selectedProducts', value: [] });
         }
 
         this.setState({
@@ -147,11 +148,20 @@ class NewSaleOrder extends React.Component {
         this.setState({ customerId });
     }
 
-    caculateOrder(debt = 0, pay = 0, saleOderDetails = [], taxRate = 0) {
+    caculateOrder(debt = 0, pay = 0, saleOderDetails = [], taxRate = null) {
         let total = 0,
             totalIncludeVat = 0,
             newDebt = 0;
 
+        if (taxRate == null) {
+            this.props.tax.forEach((tax) => {
+
+                if (tax.id == this.state.taxId) {
+                    taxRate = tax.rate;
+                }
+            })
+        }
+        
         saleOderDetails.forEach((order) => {
             const temp = order.salePrice * order.quantity;
             total += temp;
@@ -222,7 +232,7 @@ class NewSaleOrder extends React.Component {
 
                                             const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.state.oldebt, this.state.pay,
                                                 this.state.saleOderDetails);
-                                
+
                                             this.setState({
                                                 total,
                                                 newDebt,

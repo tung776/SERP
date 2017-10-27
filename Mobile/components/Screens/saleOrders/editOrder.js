@@ -64,7 +64,7 @@ class EditPurchaseOrder extends React.Component {
     async componentWillMount() {
         this.props.loadPurchaseOrderById(this.props.purchaseOrder.id);
 
-        this.setState({ loaded:false });
+        this.setState({ loaded: false });
 
         if (!this.props.suppliers || this.props.suppliers.length == 0) {
             this.props.loadSupplierListDataFromSqlite();
@@ -77,7 +77,7 @@ class EditPurchaseOrder extends React.Component {
         }
         const fontAsset = await loadAsset("vuarial", "ttf", fontUrl);
         this.setState({
-            fontPath: fontAsset.localUri            
+            fontPath: fontAsset.localUri
         });
     }
 
@@ -90,11 +90,11 @@ class EditPurchaseOrder extends React.Component {
                     isNew: true,
                     productId: detail.id,
                     key: `${detail.id}-${detail.unitId}-${detail.quantity}-${Math.random() * 10}`
-                });                
+                });
             });
             this.setState({ purchaseOderDetails: this.state.purchaseOrderDetails });
-            nextProps.ProductChange({prop: 'selectCompleted', value: false})
-            nextProps.ProductChange({prop: 'selectedProducts', value: []});
+            nextProps.ProductChange({ prop: 'selectCompleted', value: false })
+            nextProps.ProductChange({ prop: 'selectedProducts', value: [] });
         }
         if (this.state.purchaseOrderDetails.length === 0 && this.state.loaded === false) {
             nextProps.purchaseOrderDetails.forEach(detail => {
@@ -102,7 +102,7 @@ class EditPurchaseOrder extends React.Component {
                     ...detail,
                     key: `${detail.id}-${detail.unitId}-${detail.quantity}-${Math.random() * 10}`
                 });
-                
+
             });
             this.setState({ purchaseOderDetails: this.state.purchaseOrderDetails, loaded: true });
         }
@@ -125,10 +125,10 @@ class EditPurchaseOrder extends React.Component {
             debtSuppliers: nextProps.debt,
             debtSupplierId: nextProps.debtSupplierId,
             oldDebt: nextProps.oldDebt,
-            newDebt: nextProps.newDebt,
-            totalIncludeVat: nextProps.totalIncludeVat,
-            total: nextProps.total,
-            vat: nextProps.vat,
+            newDebt: newDebt,
+            totalIncludeVat: totalIncludeVat,
+            total: total,
+            vat: vat,
         });
     }
 
@@ -173,14 +173,23 @@ class EditPurchaseOrder extends React.Component {
 
     onSupplierChanged(supplierId) {
         this.props.loadDebtSuppliersFromSqlite(supplierId);
-        
+
         this.setState({ supplierId });
     }
 
-    caculateOrder(debt = 0, pay = 0, purchaseOderDetails = [], taxRate = 0) {
+    caculateOrder(debt = 0, pay = 0, purchaseOderDetails = [], taxRate = null) {
         let total = 0,
             totalIncludeVat = 0,
             newDebt = 0;
+
+        if (taxRate == null) {
+            this.props.tax.forEach((tax) => {
+
+                if (tax.id == this.state.taxId) {
+                    taxRate = tax.rate;
+                }
+            })
+        }
 
         purchaseOderDetails.forEach((order) => {
             const temp = order.purchasePrice * order.quantity;
@@ -246,7 +255,7 @@ class EditPurchaseOrder extends React.Component {
                                 >
                                     <TouchableWithoutFeedback
                                         disabled={!this.state.editMode}
-                                        key={item.key} onPress={() =>{
+                                        key={item.key} onPress={() => {
                                             this.state.purchaseOrderDetails = this.state.purchaseOrderDetails.filter(detail => {
                                                 if (item.key != detail.key) {
                                                     return detail;
@@ -254,7 +263,7 @@ class EditPurchaseOrder extends React.Component {
                                             });
                                             const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.state.oldDebt, this.state.pay,
                                                 this.state.purchaseOrderDetails);
-                                
+
                                             this.setState({
                                                 total,
                                                 newDebt,
@@ -290,7 +299,7 @@ class EditPurchaseOrder extends React.Component {
                                                         purchaseOrderDetails.forEach((product) => {
                                                             if (product.key == item.key) {
                                                                 product.quantity = unformat(text);
-                                                                
+
                                                             }
                                                         });
                                                         const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.state.oldDebt, this.state.pay, purchaseOrderDetails);
@@ -425,7 +434,7 @@ class EditPurchaseOrder extends React.Component {
                             </Picker>
                         </View>
                     </View>
-                    
+
                 </ScrollView>
             );
         }

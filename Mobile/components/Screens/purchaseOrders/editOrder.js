@@ -48,7 +48,6 @@ class EditPurchaseOrder extends React.Component {
         debtSuppliers: {},
         debtSupplierId: null,
         date: '',
-        title: '',
         total: 0,
         totalIncludeVat: 0,
         vat: 0,
@@ -57,12 +56,13 @@ class EditPurchaseOrder extends React.Component {
         newDebt: 0,
         oldDebt: 0,
         purchaseOrderDetails: [],
-        quoctes: [],
         tax: [],
         editMode: false,
         fontPath: null,
         loaded: false
     }
+
+    
     async componentWillMount() {
         this.props.loadPurchaseOrderById(this.props.purchaseOrder.id);
 
@@ -116,6 +116,8 @@ class EditPurchaseOrder extends React.Component {
             }
         })
 
+        console.log(' taxRate = ', taxRate);
+
         const { total, newDebt, totalIncludeVat, vat, } = this.caculateOrder(this.state.oldDebt, this.state.pay,
             this.state.purchaseOrderDetails, taxRate);
         this.setState({
@@ -127,11 +129,10 @@ class EditPurchaseOrder extends React.Component {
             debtSuppliers: nextProps.debt,
             debtSupplierId: nextProps.debtSupplierId,
             oldDebt: nextProps.oldDebt,
-            newDebt: nextProps.newDebt,
-            totalIncludeVat: nextProps.totalIncludeVat,
-            total: nextProps.total,
-            vat: nextProps.vat,
-            quoctes: nextProps.quocteList
+            newDebt: newDebt,
+            totalIncludeVat: totalIncludeVat,
+            total: total,
+            vat: vat,
         });
     }
 
@@ -145,13 +146,12 @@ class EditPurchaseOrder extends React.Component {
                     text: 'Xác Nhận',
                     onPress: () => {
                         const {
-                            id, date, title, supplierId, total, totalIncludeVat, vat, pay,
+                            id, date, supplierId, total, totalIncludeVat, vat, pay,
                             taxId, newDebt, oldDebt, purchaseOrderDetails
                         } = this.state;
                         this.props.PurchaseOrderUpdate({
                             id,
                             date,
-                            title,
                             supplierId,
                             total,
                             totalIncludeVat,
@@ -185,7 +185,15 @@ class EditPurchaseOrder extends React.Component {
         this.setState({ supplierId });
     }
 
-    caculateOrder(debt = 0, pay = 0, purchaseOderDetails = [], taxRate = 0) {
+    caculateOrder(debt = 0, pay = 0, purchaseOderDetails = [], taxRate = null) {
+        if(taxRate == null) {
+            this.props.tax.forEach((tax) => {
+    
+                if (tax.id == this.state.taxId) {
+                    taxRate = tax.rate;
+                }
+            })
+        }
         let total = 0,
             totalIncludeVat = 0,
             newDebt = 0;
@@ -433,23 +441,7 @@ class EditPurchaseOrder extends React.Component {
                             </Picker>
                         </View>
                     </View>
-                    <View style={styles.controlContainer}>
-                        <Text style={styles.label} >Tiêu đề</Text>
-                        <View style={styles.groupControl}>
-                            <TextInput
-                                editable={this.state.editMode}
-                                disableFullscreenUI
-                                underlineColorAndroid={'transparent'}
-                                style={styles.textInput}
-                                blurOnSubmit
-                                value={this.state.title}
-                                onChangeText={text => this.setState({ title })}
-                                type="Text"
-                                name="title"
-                                placeholder="Tiêu đề hóa đơn"
-                            />
-                        </View>
-                    </View>
+                    
                 </ScrollView>
             );
         }
@@ -719,11 +711,11 @@ class EditPurchaseOrder extends React.Component {
                             style={[styles.Btn, this.state.editMode ? { backgroundColor: '#d35400' } : { backgroundColor: '#7f8c8d' }]}
                             onPress={() => {
                                 const {
-                                    id, date, title, supplierId, total, totalIncludeVat, vat, pay,
+                                    id, date, supplierId, total, totalIncludeVat, vat, pay,
                                     newDebt, oldDebt, purchaseOrderDetails
                                 } = this.state;
                                 this.props.PurchaseOrderDelete({
-                                    id, date, title, supplierId, total, totalIncludeVat, vat, pay,
+                                    id, date, supplierId, total, totalIncludeVat, vat, pay,
                                     newDebt, oldDebt, purchaseOrderDetails
                                 });
                             }}
@@ -842,7 +834,6 @@ const mapStateToProps = (state, ownProps) => {
         supplierId,
         date,
         purchaseOrderDetails,
-        title,
         total,
         vat,
         tax,
@@ -863,7 +854,6 @@ const mapStateToProps = (state, ownProps) => {
         supplierId,
         date,
         purchaseOrderDetails,
-        title,
         total,
         vat,
         tax,

@@ -11,10 +11,11 @@ import {
     loadSupplierListDataFromSqlite,
     loadDebtSuppliersFromSqlite
 } from '../../../actions/supplierAction';
-import { loadUnits, 
+import {
+    loadUnits,
     toggleProductToSelectList,
     ProductChange
- } from '../../../actions/productActions';
+} from '../../../actions/productActions';
 import { resetData, AddNewPurchaseOrder, loadTax } from '../../../actions/purchaseOrderActions';
 import db from '../../../database/sqliteConfig';
 import { formatMoney, formatNumber, unformat } from '../../../../Shared/utils/format';
@@ -74,7 +75,7 @@ class NewPurchaseOrder extends React.Component {
 
         if (nextProps.selectCompleted) {
             nextProps.selectedProducts.forEach((detail) => {
-                
+
                 this.state.purchaseOrderDetails.push({ ...detail, key: `${detail.id}-${detail.unitId}-${detail.quantity}-${Math.random() * 10}` });
             });
 
@@ -88,8 +89,8 @@ class NewPurchaseOrder extends React.Component {
                 vat,
                 purchaseOrderDetails: this.state.purchaseOrderDetails,
             });
-            nextProps.ProductChange({prop: 'selectCompleted', value: false})
-            nextProps.ProductChange({prop: 'selectedProducts', value: []});
+            nextProps.ProductChange({ prop: 'selectCompleted', value: false })
+            nextProps.ProductChange({ prop: 'selectedProducts', value: [] });
         }
 
         this.setState({
@@ -133,10 +134,19 @@ class NewPurchaseOrder extends React.Component {
         this.setState({ supplierId });
     }
 
-    caculateOrder(debt = 0, pay = 0, purchaseOrderDetails = [], taxRate = 0) {
+    caculateOrder(debt = 0, pay = 0, purchaseOrderDetails = [], taxRate = null) {
         let total = 0,
             totalIncludeVat = 0,
             newDebt = 0;
+
+        if (taxRate == null) {
+            this.props.tax.forEach((tax) => {
+
+                if (tax.id == this.state.taxId) {
+                    taxRate = tax.rate;
+                }
+            })
+        }
 
         purchaseOrderDetails.forEach((order) => {
             const temp = order.purchasePrice * order.quantity;
@@ -208,7 +218,7 @@ class NewPurchaseOrder extends React.Component {
 
                                             const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.state.oldebt, this.state.pay,
                                                 this.state.purchaseOrderDetails);
-                                
+
                                             this.setState({
                                                 total,
                                                 newDebt,
@@ -375,7 +385,7 @@ class NewPurchaseOrder extends React.Component {
                             </Picker>
                         </View>
                     </View>
-                    
+
                 </ScrollView>
             );
         }
