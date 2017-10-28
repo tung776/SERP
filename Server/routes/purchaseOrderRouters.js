@@ -113,9 +113,9 @@ PurchaseOrderRouter.post('/new', async (req, res) => {
                             date: moment(date, 'DD-MM-YYYY').format('YYYY-MM-DD')
                         });
 
-
+                    
                     purchaseOrderDetails.forEach(async ({ id, unitId, quantity, purchasePrice }) => {
-
+                        console.log(`orderId = ${order[0].id} and productid = ${id}`);
                         const total = quantity * purchasePrice;
                         const temp = await t('purchaseOrderDetails')
                             .returning('*')

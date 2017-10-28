@@ -280,7 +280,7 @@ exports.up = function (knex, Promise) {
         .createTableIfNotExists('purchaseOrderDetails', (table) => {
             table.increments();
             table.integer('purchaseOrderId').notNullable().references('id').inTable('purchaseOrders');
-            table.integer('productId').notNullable().unique().references('id').inTable('products');
+            table.integer('productId').notNullable().references('id').inTable('products');
             table.integer('unitId').notNullable().references('id').inTable('units');
             table.float('quantity').defaultTo(0);
             table.float('purchasePrice').defaultTo(0);
