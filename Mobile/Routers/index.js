@@ -56,6 +56,10 @@ import SupplierEdit from '../components/Screens/Suppliers/SupplierEdit';
 import SupplierSearch from '../components/Screens/Suppliers';
 import SupplierNew from '../components/Screens/Suppliers/SupplierNew';
 
+import newFormulation from '../components/Screens/formulations/newFormulation';
+import searchFormulation from '../components/Screens/formulations/index';
+import editFormulation from '../components/Screens/formulations/editFormulation';
+
 const RouterComponent = () => (
     <Router hideNavBar="true" sceneStyle={{ backgroundColor: '#F7F7F7' }} >
 
@@ -129,12 +133,13 @@ const RouterComponent = () => (
                 <Scene key="newSupplier" component={SupplierNew} title="..." />
                 <Scene key="supplierEdit" component={SupplierEdit} title="..." />
 
-                <Scene key="newResearch" component={ComminSoon} title="..." />
+                <Scene key="newFormulation" component={newFormulation} title="..." />
+                <Scene key="editFormulation" component={editFormulation} title="..." />
                 <Scene key="reportCostTemp" component={ComminSoon} title="..." />
-                <Scene key="searchResearch" component={ComminSoon} title="..." />
-                <Scene key="transferResearch" component={ComminSoon} title="..." />
-                <Scene key="reportResearch" component={ComminSoon} title="..." />
-                <Scene key="generalReportResearch" component={ComminSoon} title="..." />
+                <Scene key="searchFormulation" component={searchFormulation} title="..." />
+                <Scene key="transferFormulation" component={ComminSoon} title="..." />
+                <Scene key="reportFormulation" component={reportFormulation} title="..." />
+                <Scene key="generalReportFormulation" component={ComminSoon} title="..." />
 
                 <Scene key="newCommandProduction" component={ComminSoon} title="..." />
                 <Scene key="searchCommandProduction" component={ComminSoon} title="..." />

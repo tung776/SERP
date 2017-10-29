@@ -73,7 +73,7 @@ class SaleOrderList extends React.Component {
         if (this.state.customerId === null ) {
             return Alert.alert(
                 'Báo lỗi',
-                'Bạn chưa chọn nhóm khách hàng hoặc khách hàng',
+                'Bạn chưa chọn khách hàng',
                 [
                     {
                         text: 'Xác Nhận'

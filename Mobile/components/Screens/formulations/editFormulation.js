@@ -34,7 +34,7 @@ import {
     unformat
 } from '../../../../Shared/utils/format';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
-import invoiceTemplate, { css, sendEmail, sendMessage } from '../../../../Shared/templates/purchaseInvoice';
+import formulationTemplate, { css, sendEmail, sendMessage } from '../../../../Shared/templates/formulationTemplate';
 import loadAsset from '../../../utils/loadAsset';
 import { fontUrl, URL } from '../../../../env';
 
@@ -44,19 +44,9 @@ class EditFormulation extends React.Component {
         id: '',
         isExpanded: true,
         isExpandedTotal: true,
-        supplierId: '',
-        debtSuppliers: {},
-        debtSupplierId: null,
         date: '',
         total: 0,
-        totalIncludeVat: 0,
-        vat: 0,
-        taxId: '',
-        pay: 0,
-        newDebt: 0,
-        oldDebt: 0,
         formulationDetails: [],
-        tax: [],
         editMode: false,
         fontPath: null,
         loaded: false
@@ -92,7 +82,7 @@ class EditFormulation extends React.Component {
                     key: `${detail.id}-${detail.unitId}-${detail.quantity}-${Math.random() * 10}`
                 });
             });
-            this.setState({ purchaseOderDetails: this.state.formulationDetails });
+            this.setState({ formulationDetails: this.state.formulationDetails });
             nextProps.ProductChange({ prop: 'selectCompleted', value: false })
             nextProps.ProductChange({ prop: 'selectedProducts', value: [] });
         }
@@ -104,60 +94,34 @@ class EditFormulation extends React.Component {
                 });
 
             });
-            this.setState({ purchaseOderDetails: this.state.formulationDetails, loaded: true });
+            this.setState({ formulationDetails: this.state.formulationDetails, loaded: true });
         }
-        let taxRate = 0;
-        nextProps.tax.forEach((tax) => {
 
-            if (tax.id == nextProps.taxId) {
-                taxRate = tax.rate;
-            }
-        })
-
-        const { total, newDebt, totalIncludeVat, vat, } = this.caculateOrder(this.state.oldDebt, this.state.pay,
-            this.state.formulationDetails, taxRate);
+        const { total} = this.caculateTotalPrice(this.state.formulationDetails);
         this.setState({
             id: nextProps.id,
-            supplierId: nextProps.supplierId,
             date: moment(nextProps.date, moment.ISO_8601).format('DD-MM-YYYY'),
-            taxId: nextProps.taxId,
-            pay: nextProps.pay,
-            debtSuppliers: nextProps.debt,
-            debtSupplierId: nextProps.debtSupplierId,
-            oldDebt: nextProps.oldDebt,
-            newDebt: newDebt,
-            totalIncludeVat: totalIncludeVat,
             total: total,
-            vat: vat,
         });
     }
 
     onSave() {
-        if (this.state.debtSupplierId == null) return;
+        
         Alert.alert(
             'Xác Nhận',
-            'Bạn chắc chắn muốn lưu hóa đơn',
+            'Bạn chắc chắn muốn lưu công thức',
             [
                 {
                     text: 'Xác Nhận',
                     onPress: () => {
                         const {
-                            id, date, supplierId, total, totalIncludeVat, vat, pay,
-                            taxId, newDebt, oldDebt, formulationDetails
+                            id, date, total, formulationDetails
                         } = this.state;
                         this.props.FormulationUpdate({
                             id,
-                            date,
-                            supplierId,
+                            date,                            
                             total,
-                            totalIncludeVat,
-                            vat,
-                            pay,
-                            taxId,
-                            newDebt,
-                            oldDebt,
                             formulationDetails,
-                            debtSupplierId: this.state.debtSupplierId,
                             user: this.props.user
                         });
                     }
@@ -177,32 +141,15 @@ class EditFormulation extends React.Component {
         this.setState({ supplierId });
     }
 
-    caculateOrder(debt = 0, pay = 0, purchaseOderDetails = [], taxRate = null) {
+    caculateTotalPrice(formulationDetails = []) {
         let total = 0,
-            totalIncludeVat = 0,
-            newDebt = 0;
 
-        if (taxRate == null) {
-            this.props.tax.forEach((tax) => {
-
-                if (tax.id == this.state.taxId) {
-                    taxRate = tax.rate;
-                }
-            })
-        }
-
-        purchaseOderDetails.forEach((formulation) => {
+        formulationDetails.forEach((formulation) => {
             const temp = formulation.purchasePrice * formulation.quantity;
             total += temp;
         });
-        const vat = total * taxRate;
-        totalIncludeVat = total + vat;
-        newDebt = debt + totalIncludeVat - pay;
         return {
-            total,
-            newDebt,
-            totalIncludeVat,
-            vat
+            total
         };
 
     }
@@ -227,12 +174,9 @@ class EditFormulation extends React.Component {
             }
         });
 
-        const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.state.oldDebt, this.state.pay, formulationDetails);
+        const { total } = this.caculateTotalPrice( formulationDetails);
         this.setState({
             total,
-            newDebt,
-            totalIncludeVat,
-            vat,
             formulationDetails
         });
     }
@@ -261,14 +205,10 @@ class EditFormulation extends React.Component {
                                                     return detail;
                                                 }
                                             });
-                                            const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.state.oldDebt, this.state.pay,
-                                                this.state.formulationDetails);
+                                            const { total } = this.caculateTotalPrice(this.state.formulationDetails);
 
                                             this.setState({
                                                 total,
-                                                newDebt,
-                                                totalIncludeVat,
-                                                vat,
                                                 formulationDetails: this.state.formulationDetails,
                                             });
                                         }}
@@ -302,12 +242,9 @@ class EditFormulation extends React.Component {
 
                                                             }
                                                         });
-                                                        const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.state.oldDebt, this.state.pay, formulationDetails);
+                                                        const { total } = this.caculateTotalPrice(formulationDetails);
                                                         this.setState({
                                                             total,
-                                                            newDebt,
-                                                            totalIncludeVat,
-                                                            vat,
                                                             formulationDetails
                                                         });
                                                     }}
@@ -346,12 +283,9 @@ class EditFormulation extends React.Component {
                                                                 product.purchasePrice = unformat(text);
                                                             }
                                                         });
-                                                        const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.state.oldDebt, this.state.pay, formulationDetails);
+                                                        const { total } = this.caculateTotalPrice(formulationDetails);
                                                         this.setState({
                                                             total,
-                                                            newDebt,
-                                                            totalIncludeVat,
-                                                            vat,
                                                             formulationDetails
                                                         });
                                                     }}
@@ -390,7 +324,7 @@ class EditFormulation extends React.Component {
                                 style={{ width: 200 }}
                                 date={this.state.date}
                                 mode="date"
-                                placeholder="Chọn ngày lập hóa đơn"
+                                placeholder="Chọn ngày lập công thức"
                                 format="DD-MM-YYYY"
                                 minDate="01-01-2008"
                                 maxDate="01-01-3056"
@@ -449,78 +383,6 @@ class EditFormulation extends React.Component {
                         <Text style={styles.label} >Tổng Tiền</Text>
                         <Text style={styles.label}>{formatNumber(this.state.total)}</Text>
                     </View>
-                    <View style={styles.totalControlGroup}>
-                        <Picker
-                            style={{ color: '#34495e', flex: 0.5, alignSelf: 'center' }}
-                            enabled={this.state.editMode}
-                            selectedValue={this.state.taxId}
-                            onValueChange={
-                                (itemValue, itemIndex) => {
-                                    let taxRate = 0;
-                                    this.props.tax.forEach((tax) => {
-                                        if (tax.id == itemValue) {
-                                            taxRate = tax.rate;
-                                        }
-                                    })
-                                    const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.state.oldDebt, this.state.pay, this.state.formulationDetails, taxRate);
-                                    this.setState({
-                                        total,
-                                        totalIncludeVat,
-                                        vat,
-                                        newDebt,
-                                        taxId: itemValue
-                                    });
-                                }
-                            }
-                        >
-                            {this.props.tax && this.props.tax.map((tax) => (
-                                <Picker.Item key={tax.id} label={tax.name} value={tax.id} />
-                            ))}
-
-                        </Picker>
-                        <Text style={styles.label}>{formatNumber(this.state.vat)}</Text>
-                    </View>
-                    <View style={styles.totalControlGroup}>
-                        <Text style={styles.label} >Tổng Tiền gồm VAT</Text>
-                        <Text style={styles.label}>{formatNumber(this.state.totalIncludeVat)}</Text>
-                    </View>
-                    <View style={styles.totalControlGroup}>
-                        <Text style={styles.label} >Nợ Cũ</Text>
-                        <Text style={styles.label}>{formatNumber(this.state.oldDebt)}</Text>
-                    </View>
-                    <View style={styles.totalControlGroup}>
-                        <Text style={styles.label} >Thanh Toán</Text>
-                        <View style={[styles.groupControl, { width: 180 }]}>
-                            <TextInput
-                                editable={this.state.editMode}
-                                disableFullscreenUI
-                                keyboardType='numeric'
-                                underlineColorAndroid={'transparent'}
-                                style={[styles.textInput, { textAlign: 'right', fontSize: 15 }]}
-                                blurOnSubmit
-                                value={formatNumber(this.state.pay)}
-                                onChangeText={text => {
-                                    const pay = unformat(text);
-                                    const { total, newDebt, totalIncludeVat, vat } = this.caculateOrder(this.state.oldDebt, pay, this.state.formulationDetails);
-                                    this.setState({
-                                        total,
-                                        newDebt,
-                                        totalIncludeVat,
-                                        vat,
-                                        pay
-                                    });
-                                }}
-                                type="Text"
-                                name="pay"
-                                placeholder="Thanh Toán"
-                            />
-                        </View>
-                    </View>
-                    <View style={styles.totalControlGroup}>
-                        <Text style={styles.label} >Tổng Nợ</Text>
-                        <Text style={styles.label} >{formatNumber(this.state.newDebt)}</Text>
-
-                    </View>
                 </View>
             );
         }
@@ -534,7 +396,7 @@ class EditFormulation extends React.Component {
         return (
             <View style={styles.container}>
                 <Header>
-                    <Text style={styles.headTitle} >Sửa Hóa Đơn Nhập</Text>
+                    <Text style={styles.headTitle} >Sửa Công Thức</Text>
                 </Header>
                 <View style={styles.body}>
                     <TouchableOpacity
@@ -597,7 +459,7 @@ class EditFormulation extends React.Component {
                                 if (this.state.id == '') {
                                     Alert.alert(
                                         'Thông Báo',
-                                        'Bạn cần lưu hóa đơn trước khi in',
+                                        'Bạn cần lưu công thức trước khi in',
                                         [
                                             { text: 'Ok' },
                                         ]
@@ -619,12 +481,10 @@ class EditFormulation extends React.Component {
                                     });
 
                                     let options = {
-                                        html: invoiceTemplate(supplierName, this.state.id,
-                                            this.state.date, this.state.total, this.state.totalIncludeVat,
-                                            this.state.vat, this.state.oldDebt, this.state.pay, this.state.newDebt,
-                                            formulationDetails),
+                                        html: formulationTemplate(supplierName, this.state.id,
+                                            this.state.date, this.state.total, formulationDetails),
                                         css: css(),
-                                        fileName: "invoice",
+                                        fileName: "formulation",
                                         fonts: [this.state.fontPath]
                                     };
                                     try {
@@ -824,42 +684,22 @@ const styles = {
 const mapStateToProps = (state, ownProps) => {
     const {
         id,
-        supplierId,
         date,
         formulationDetails,
         total,
-        vat,
-        tax,
-        taxId,
-        pay,
-        oldDebt,
-        newDebt,
-        debtSupplierId,
-        totalIncludeVat,
         loaded,
         error
     } = state.formulations;
-    const { suppliers } = state.suppliers;
     const { units, selectedProducts, selectCompleted } = state.products;
     const { isAuthenticated, user } = state.auth;
     return {
         id,
-        supplierId,
         date,
         formulationDetails,
         total,
-        vat,
-        tax,
-        taxId,
-        pay,
-        oldDebt,
-        newDebt,
-        debtSupplierId,
-        totalIncludeVat,
         loaded,
         units,
         error,
-        suppliers,
         selectedProducts,
         selectCompleted,
         user

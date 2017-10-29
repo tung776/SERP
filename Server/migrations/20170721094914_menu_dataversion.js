@@ -292,24 +292,19 @@ exports.up = function (knex, Promise) {
         })
         .createTableIfNotExists('formulations', (table) => {
             table.increments();
-            table.integer('userId').references('id').inTable('users');
-            table.integer('formulationTypeId').references('id').inTable('formulationTypes');
+            table.date('date').defaultTo(knex.fn.now());  
             table.integer('producId').references('id').inTable('products');
-            table.integer('warehourseId').references('id').inTable('warehouses');
             table.integer('unitId').references('id').inTable('units');
             table.float('quantity').defaultTo(0);
             table.boolean('isActive').defaultTo(false);
             table.string('note');
-            table.timestamps();
         })
         .createTableIfNotExists('formulationDetails', (table) => {
             table.increments();
             table.integer('formulationId').references('id').inTable('formulations');
             table.integer('productId').references('id').inTable('products');
             table.integer('unitId').references('id').inTable('units');
-            table.integer('warehourseId').references('id').inTable('warehouses');
             table.float('quantity').defaultTo(0);
-            table.timestamps();
         })
         .createTableIfNotExists('billOfMaterials', (table) => {
             table.increments();

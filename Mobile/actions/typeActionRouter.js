@@ -51,13 +51,13 @@ export const NEW_SUPPLIER_ACT = 42;
 export const SUPPLIER_DEPT_ACT = 43;
 export const SALE_BY_SUPPLIER = 44;
 
-export const RESEARCH_ACT = 45;
-export const NEW_RESEARCH_ACT = 46;
+export const FORMULATION_ACT = 45;
+export const NEW_FORMULATION_ACT = 46;
 export const COST_TEMP_ACT = 47;
-export const SEARCH_RESEARCH_ACT = 48;
-export const TRANSFER_RESEARCH_ACT = 49;
-export const REPORT_RESEARCH_ACT = 50;
-export const GENERAL_REPORT_RESEARCH_ACT = 51;
+export const SEARCH_FORMULATION_ACT = 48;
+export const TRANSFER_FORMULATION_ACT = 49;
+export const REPORT_FORMULATION_ACT = 50;
+export const GENERAL_REPORT_FORMULATION_ACT = 51;
 
 export const MANUFACTURER_ACT = 52;
 export const MANUFACTURE_COMMAND_ACT = 53;
@@ -196,20 +196,20 @@ export const getActionForMenus = (menu) => {
         case SALE_BY_SUPPLIER:
             return Actions.reportSaleBySupplier();
 
-        case RESEARCH_ACT:
+        case FORMULATION_ACT:
             return null;
-        case NEW_RESEARCH_ACT:
-            return Actions.newResearch();
+        case NEW_FORMULATION_ACT:
+            return Actions.newFormulation();
         case COST_TEMP_ACT:
             return Actions.reportCostTemp();
-        case SEARCH_RESEARCH_ACT:
-            return Actions.searchResearch();
-        case TRANSFER_RESEARCH_ACT:
-            return Actions.transferResearch();
-        case REPORT_RESEARCH_ACT:
-            return Actions.reportResearch();
-        case GENERAL_REPORT_RESEARCH_ACT:
-            return Actions.generalReportResearch();
+        case SEARCH_FORMULATION_ACT:
+            return Actions.searchFormulation();
+        case TRANSFER_FORMULATION_ACT:
+            return Actions.transferFormulation();
+        case REPORT_FORMULATION_ACT:
+            return Actions.reportFormulation();
+        case GENERAL_REPORT_FORMULATION_ACT:
+            return Actions.generalReportFormulation();
 
         case MANUFACTURER_ACT:
             return null;

@@ -5,100 +5,23 @@ import dataversionHelper from '../helpers/saveNewDataversion';
 import fs from 'fs';
 import path from 'path';
 import moment from '../../Shared/utils/moment';
-import DocDefinition from '../../Shared/templates/formulationTemplate';
 
-const Printer = require('pdfmake');
 const FormulationRouter = Router();
 
-FormulationRouter.get('/getInvoice/:formulationId', async (req, res) => {
-    const formulationId = req.params.formulationId;
-
-    const formulation = await Knex.raw(`
-        SELECT s."id", s."date" , s."customerId", s."userId", s."debtCustomerId", s."formulationTypeId", 
-        s."title", s."total", s."totalIncludeVat", s."vat", s."taxId" d."newDebt", d."oldDebt", d."minus"
-        FROM "formulations" as s
-        INNER JOIN "debtCustomers" AS d ON d."id" = s."debtCustomerId" 
-        WHERE s."id" = ${formulationId};                      
-    `);
-    const formulationDetails = await Knex.raw(`
-        SELECT s."id" , s."formulationId", s."productId", s."unitId", u."name" AS "unitName", s."quantity", s."salePrice", p."name" 
-        FROM "saleOderDetails" as s
-        INNER JOIN "products" AS p ON p."id" = s."productId" 
-        INNER JOIN "units" AS u ON u."id" = s."unitId" 
-        WHERE s."formulationId" = ${formulationId};                      
-    `);
-
-    const {
-        id,
-        customerId,
-        date,
-        total,
-        totalIncludeVat,
-        vat,
-        taxId,
-        oldDebt,
-        minus,
-        newDebt,
-    } = formulation.rows[0];
-
-    const customer = await Knex('customers')
-        .where({ id: customerId });
-
-    const fontDescriptors = {
-        Roboto: {
-            normal: path.resolve('Shared/templates/fonts/Roboto.ttf'),
-            bold: path.resolve('Shared/templates/fonts/Roboto_medium.ttf'),
-            italics: path.resolve('Shared/templates/fonts/Roboto_medium.ttf'),
-            bolditalics: path.resolve('Shared/templates/fonts/Roboto_medium.ttf'),
-        }
-    };
-
-    const printer = new Printer(fontDescriptors);
-    const docDefin = DocDefinition(
-        id,
-        customer.name,
-        date,
-        total,
-        totalIncludeVat,
-        vat,
-        oldDebt,
-        minus,
-        newDebt,
-        formulationDetails.rows
-    );
-    // console.log('docDefin = ', docDefin);
-    let doc = printer.createPdfKitDocument(docDefin);
-    // res.send('success');
-    let chunks = [];
-    let result;
-
-    doc.on('data', function (chunk) {
-        chunks.push(chunk);
-    });
-    doc.on('end', function () {
-        result = Buffer.concat(chunks);
-
-        res.contentType('application/pdf');
-        res.send(result);
-    });
-    doc.end();
-});
 
 FormulationRouter.post('/getById', async (req, res) => {
     const { formulationId } = req.body;
 
     try {
         const formulation = await Knex.raw(`
-            SELECT s."id", s."date" , s."customerId", s."userId", s."debtCustomerId", s."formulationTypeId", 
-            s."title", s."total", s."totalIncludeVat", s."vat", s."taxId", d."newDebt", d."oldDebt", d."minus"
+            SELECT s."id", s."date", s."productId", s."isActive", s."unitId", s."unitId", s."quantity", s."note"
             FROM "formulations" as s
-            INNER JOIN "debtCustomers" AS d ON d."id" = s."debtCustomerId" 
             WHERE s."id" = ${formulationId};                      
         `);
 
         
         const formulationDetails = await Knex.raw(`
-        SELECT s."id" , s."formulationId", s."productId", s."unitId", s."quantity", s."salePrice", p."name" 
+        SELECT s."id" , s."formulationId", s."productId", s."unitId", s."quantity" , p."name"
         FROM "saleOderDetails" as s
         INNER JOIN "products" AS p ON p."id" = s."productId" 
         WHERE s."formulationId" = ${formulationId};                      
@@ -119,13 +42,13 @@ FormulationRouter.post('/getById', async (req, res) => {
 
 });
 
-FormulationRouter.post('/getByCustomerId', async (req, res) => {
-    const { customerId } = req.body;
+FormulationRouter.post('/getByProductId', async (req, res) => {
+    const { productId } = req.body;
     const count = 10; //10 dòng trong 1 trang
     const page = 1;
     try {
         const formulations = await Knex('formulations')
-            .where({ customerId })
+            .where({ productId })
             .formulationBy('id', 'desc')
         // .limit(count)
         // .offset(30);
@@ -145,12 +68,12 @@ FormulationRouter.post('/getByCustomerId', async (req, res) => {
 
 FormulationRouter.post('/new', async (req, res) => {
     let {
-        date, title, customerId, total, totalIncludeVat, vat, taxId, pay,
+        date, title, productId, total, totalIncludeVat, vat, taxId, pay,
         newDebt, oldebt, saleOderDetails, debtCustomerId, user
     } = req.body;
     // return;
     const { isValid, errors } = NewFormulationValidator({
-        date, title, customerId, total, totalIncludeVat, vat, pay,
+        date, title, productId, total, totalIncludeVat, vat, pay,
         newDebt, oldebt, saleOderDetails,
     });
     let formulation = []

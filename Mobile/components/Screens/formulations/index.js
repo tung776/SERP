@@ -11,24 +11,24 @@ import { connect } from 'react-redux';
 import stylesCommon from '../../../styles';
 import { Ionicons } from '@expo/vector-icons';
 import {
-    loadFormulationListDataFromServerByCustomerId
+    loadFormulationListDataFromServerByProductId
 } from '../../../actions/formulationActions';
-import { loadCustomerListDataFromSqlite } from '../../../actions/customerAction';
+import { loadProductByNameFromSqlite } from '../../../actions/productActions';
 import { Spinner } from '../../commons/Spinner';
 import SqlService from '../../../database/sqliteService';
 import moment from '../../../../Shared/utils/moment';
 
 class FormulationList extends React.Component {
     state = {
-        customerId: null,
+        ProductId: null,
         error: null,
         formulationList: [],
         loaded: false
     }
 
     componentWillMount() {
-        if (this.props.customers.length == 0) {
-            this.props.loadCustomerListDataFromSqlite();
+        if (this.props.Products.length == 0) {
+            this.props.loadProductByNameFromSqlite();
         }
     }
 
@@ -51,7 +51,7 @@ class FormulationList extends React.Component {
                                     }}
                                 >
                                     <View style={styles.listItem}>
-                                        <Text style={styles.itemTitle}>Hóa Đơn số: {item.id} - {moment(item.date, moment.ISO_8601).format('LL')}</Text>
+                                        <Text style={styles.itemTitle}>Mã Công Thức: {item.id} - {moment(item.date, moment.ISO_8601).format('LL')}</Text>
                                     </View>
                                 </TouchableWithoutFeedback>
                             )
@@ -64,16 +64,16 @@ class FormulationList extends React.Component {
         }
         return (
             <View>
-                <Text>Không tìm thấy hóa đơn bạn cần</Text>
+                <Text>Không tìm thấy công thức bạn cần</Text>
             </View>
         );
     }
 
     onSearch() {
-        if (this.state.customerId === null ) {
+        if (this.state.ProductId === null ) {
             return Alert.alert(
                 'Báo lỗi',
-                'Bạn chưa chọn nhóm khách hàng hoặc khách hàng',
+                'Bạn chưa chọn sản phẩm',
                 [
                     {
                         text: 'Xác Nhận'
@@ -82,29 +82,29 @@ class FormulationList extends React.Component {
                 ]
             );
         }
-        this.props.loadFormulationListDataFromServerByCustomerId(this.state.customerId);
+        this.props.loadFormulationListDataFromServerByProductId(this.state.ProductId);
     }
 
     render() {
         return (
             <View style={styles.container}>
                 <Header>
-                    <Text style={styles.headTitle}>Tìm Hóa Đơn</Text>
+                    <Text style={styles.headTitle}>Tìm Công Thức</Text>
                 </Header>
                 <View style={styles.body}>
                     <View style={styles.InputContainer}>
                         <View style={styles.groupControl} >
                             <Picker
                                 style={{ flex: 1 }}
-                                selectedValue={this.state.customerId}
+                                selectedValue={this.state.ProductId}
                                 onValueChange={
                                     (itemValue, itemIndex) => this.setState({
-                                        customerId: itemValue
+                                        ProductId: itemValue
                                     })
                                 }
                             >
                                 <Picker.Item key={0} label="" value={null} />
-                                {this.props.customers && this.props.customers.map((item) => (
+                                {this.props.Products && this.props.Products.map((item) => (
                                     <Picker.Item key={item.id} label={item.name} value={item.id} />
                                 ))
                                 }
@@ -123,7 +123,7 @@ class FormulationList extends React.Component {
                 <Footer>
                     <TouchableOpacity style={styles.addNewGroupBtn} onPress={() => { Actions.newFormulation(); }}>
                         <Ionicons name="ios-add-circle" size={32} color="#FFFFFF" />
-                        <Text style={{ alignSelf: 'center', paddingLeft: 10, fontSize: 16, color: '#FFFFFF', fontWeight: '600' }}>Thêm Hóa Đơn</Text>
+                        <Text style={{ alignSelf: 'center', paddingLeft: 10, fontSize: 16, color: '#FFFFFF', fontWeight: '600' }}>Thêm Công Thức</Text>
                     </TouchableOpacity>
                 </Footer>
             </View>
@@ -203,15 +203,15 @@ const styles = {
 };
 const mapStateToProps = (state, ownProps) => {
     const { loading, loaded, formulationList } = state.formulations;
-    const { customers } = state.customers;
+    const { Products } = state.Products;
     return {
         loading,
         loaded,
         formulationList,
-        customers
+        Products
     };
 };
 export default connect(mapStateToProps, {
-    loadFormulationListDataFromServerByCustomerId,
-    loadCustomerListDataFromSqlite,
+    loadFormulationListDataFromServerByProductId,
+    loadProductByNameFromSqlite,
 })(FormulationList);

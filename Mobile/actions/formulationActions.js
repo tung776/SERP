@@ -17,7 +17,7 @@ import SqlService from '../database/sqliteService';
 import { Actions } from 'react-native-router-flux';
 import db from '../database/sqliteConfig';
 
-export const loadFormulationListDataFromServerByCustomerId = (customerId) => async (dispatch) => {
+export const loadFormulationListDataFromServerByProductId = (customerId) => async (dispatch) => {
     dispatch({
         type: FORMULATION_PENDING
     });
