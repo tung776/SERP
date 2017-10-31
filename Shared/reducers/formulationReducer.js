@@ -1,6 +1,6 @@
 import {
     ADD_FORMULATION, FORMULATION_PENDING, FORMULATION_CHANGE_FAIL,
-    FORMULATION_CHANGE_SUCCESS, FORMULATION_CHANGE, LOAD_TAX_SUCCESS,
+    FORMULATION_CHANGE_SUCCESS, FORMULATION_CHANGE, 
     FORMULATION_LOADED_SERVER, FORMULATION_LIST_LOADED_SERVER, FORMULATION_DELETE_SUCCESS,
     RESET_FORMULATION_FORM, FORMULATION_DETAIL_CHANGE, SELECTED_PRODUCT_TO_FORMULATION_DETAIL
 } from '../actions/types';
@@ -8,17 +8,13 @@ import moment from '../utils/moment';
 
 const INITIAL_STATE = {
     id: '',
-    customerId: '',
+    productId: '',
     date: '',
-    title: '',
-    total: '',
-    totalIncludeVat: '',
-    vat: '',
-    tax:'',
-    taxId: 0,
-    newDebt: '',
-    oldDebt: '',
-    pay: '',
+    note: '',
+    total: 0,
+    unitId: '',
+    note: 0,
+    note: '',
     formulationDetails: [],
     formulationList: [],
     units: [],
@@ -37,10 +33,13 @@ export default (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 isSave: false,
-                customerId: '',
+                productId: '',
                 date: '',
-                title: '',
-                taxId: 0,
+                note: '',
+                total: 0,
+                unitId: '',
+                note: '',
+                note: 0,
                 formulationDetails: [],
                 error: ''
             };
@@ -82,8 +81,8 @@ export default (state = INITIAL_STATE, action) => {
                     id: item.id,
                     unitId: item.unitId,
                     productId: item.productId,
-                    salePrice: item.salePrice,
-                    quantity: item.quantity,
+                    purchasePrice: item.purchasePrice,
+                    note: item.note,
                     name: item.name,
                     key: item.id
                 });
@@ -92,17 +91,13 @@ export default (state = INITIAL_STATE, action) => {
                 ...state,
                 isSave: false,
                 id: action.payload.formulation[0].id,
-                customerId: action.payload.formulation[0].customerId,
+                productId: action.payload.formulation[0].productId,
                 date: action.payload.formulation[0].date,
-                title: action.payload.formulation[0].title,
+                note: action.payload.formulation[0].note,
                 total: action.payload.formulation[0].total,
-                totalIncludeVat: action.payload.formulation[0].totalIncludeVat,
-                vat: action.payload.formulation[0].vat,
-                taxId: action.payload.formulation[0].taxId,
-                debtCustomerId: action.payload.formulation[0].debtCustomerId,
-                newDebt: action.payload.formulation[0].newDebt,
-                oldDebt: action.payload.formulation[0].oldDebt,
-                pay: action.payload.formulation[0].minus,
+                quantity: action.payload.formulation[0].quantity,
+                unitId: action.payload.formulation[0].unitId,
+                note: action.payload.formulation[0].note,
                 formulationDetails: formulationDetails,
                 error: '',
                 loading: false,
@@ -129,15 +124,16 @@ export default (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 id: "",
-                customerId: '',
+                productId: '',
                 date: '',
-                title: '',
+                note: '',
+                quantity: 0,
+                unitId: '',
                 formulationDetails: [],
                 error: '',
                 loading: false,
             };
-        case LOAD_TAX_SUCCESS:
-            return { ...state, tax: action.payload };
+        
         default:
             return state;
     }

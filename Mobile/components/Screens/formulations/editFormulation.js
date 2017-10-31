@@ -34,7 +34,7 @@ import {
     unformat
 } from '../../../../Shared/utils/format';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
-import formulationTemplate, { css, sendEmail, sendMessage } from '../../../../Shared/templates/formulationTemplate';
+// import formulationTemplate, { css, sendEmail, sendMessage } from '../../../../Shared/templates/formulationTemplate';
 import loadAsset from '../../../utils/loadAsset';
 import { fontUrl, URL } from '../../../../env';
 
@@ -142,7 +142,7 @@ class EditFormulation extends React.Component {
     }
 
     caculateTotalPrice(formulationDetails = []) {
-        let total = 0,
+        let total = 0;
 
         formulationDetails.forEach((formulation) => {
             const temp = formulation.purchasePrice * formulation.quantity;

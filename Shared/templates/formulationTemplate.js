@@ -16,10 +16,10 @@ export default (
     oldDebt,
     pay,
     newDebt,
-    OrderDetail
+    FomulationDetail
 ) => {
-		const htmlOrderDetail = [];
-		htmlOrderDetail.push(
+		const htmlFomulationDetail = [];
+		htmlFomulationDetail.push(
 			[ 
 				{
 					text: 'Sản Phẩm',
@@ -43,9 +43,9 @@ export default (
 				} 
 			]
 		);
-		OrderDetail.forEach((order) => {
+		FomulationDetail.forEach((order) => {
 			const totalPrice = order.salePrice * order.quantity;
-			htmlOrderDetail.push(
+			htmlFomulationDetail.push(
 				[ 
 					{
 						text: `${order.name}`,
@@ -70,7 +70,7 @@ export default (
 				]
 			);
 		});
-		console.log('htmlOrderDetail = ', htmlOrderDetail);
+		console.log('htmlFomulationDetail = ', htmlFomulationDetail);
 	
 	return {
 		header: {
@@ -172,7 +172,7 @@ export default (
 				headerRows: 1,
 				widths: ['*', 40, 60, 70, 100],
 		
-				body: htmlOrderDetail
+				body: htmlFomulationDetail
 			  }, 
 			},
 			{

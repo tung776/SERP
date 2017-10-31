@@ -14,6 +14,7 @@ import paymentCustomerReducer from '../../Shared/reducers/paymentCustomerReducer
 import suppliers from '../../Shared/reducers/supplierReducer';
 import purchaseOrders from '../../Shared/reducers/purchaseOrderReducer';
 import paymentSupplierReducer from '../../Shared/reducers/paymentSupplierReducer';
+import formulationsReducer from '../../Shared/reducers/formulationReducer';
 
 const reducers = combineReducers({
     main: () => null,
@@ -33,6 +34,7 @@ const reducers = combineReducers({
     suppliers: suppliers,
     purchaseOrders: purchaseOrders,
     paymentSupplier: paymentSupplierReducer,
+    formulations: formulationsReducer,
 
 });
 export default reducers;
