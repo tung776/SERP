@@ -66,24 +66,41 @@ export const ProductChange = ({ prop, value }) => ({
     type: PRODUCT_CHANGE,
     payload: { prop, value }
 });
-export const loadProductListDataFromSqlite = (categoryId) => async (dispatch) => {
+export const loadProductListDataFromSqlite = (categoryId = null) => async (dispatch) => {
     dispatch({
         type: PRODUCT_PENDING
     });
 
-    SqlService.query(`select * from products where categoryId = ${categoryId}`).then(
-        result => {
-            const products = [];
-            result.forEach((item) => {
-                const convertedData = { ...item, key: item.id, quantity: 0 };
-                products.push(convertedData);
-            });
-            dispatch({
-                type: PRODUCT_LIST_LOADED_SQLITE,
-                payload: products
-            });
-        }
-    );
+    if (categoryId == null) {
+        SqlService.query(`select * from products`).then(
+            result => {
+                const products = [];
+                result.forEach((item) => {
+                    const convertedData = { ...item, key: item.id, quantity: 0 };
+                    products.push(convertedData);
+                });
+                dispatch({
+                    type: PRODUCT_LIST_LOADED_SQLITE,
+                    payload: products
+                });
+            }
+        );
+    } else {
+        SqlService.query(`select * from products where categoryId = ${categoryId}`).then(
+            result => {
+                const products = [];
+                result.forEach((item) => {
+                    const convertedData = { ...item, key: item.id, quantity: 0 };
+                    products.push(convertedData);
+                });
+                dispatch({
+                    type: PRODUCT_LIST_LOADED_SQLITE,
+                    payload: products
+                });
+            }
+        );
+    }
+
 };
 
 export const loadProductByIdFromSqlite = (productId) => async (dispatch) => {
@@ -94,7 +111,7 @@ export const loadProductByIdFromSqlite = (productId) => async (dispatch) => {
     dispatch({
         type: PRODUCT_PENDING
     });
-    
+
     SqlService.query(`select * from products where id = ${productId}`).then(
         result => {
             dispatch({
@@ -227,7 +244,7 @@ export const ProductUpdate = (product) => async (dispatch) => {
             ]
         );
     } else {
-        const apiUrl = `${URL}/api/product/update`;        
+        const apiUrl = `${URL}/api/product/update`;
 
         axios.post(apiUrl, product).then(
             (res) => {
@@ -367,14 +384,14 @@ export const AddNewProduct = (product) => async (dispatch) => {
             ]
         );
     } else {
-        const apiUrl = `${URL}/api/product/new`;  
+        const apiUrl = `${URL}/api/product/new`;
         axios.post(apiUrl, product).then(
             (res) => {
                 //Dữ liệu đã được lưu thành công trên server,
                 //Tiến hàng lưu dữ liệu lên sqlite cho mục đích offline
                 db.transaction(
                     tx => {
-                        
+
                         tx.executeSql(`UPDATE dataVersions 
                             SET products = '${res.data.dataversion[0].products}'                    
                             WHERE id = 1;`
@@ -409,7 +426,7 @@ export const AddNewProduct = (product) => async (dispatch) => {
                                     `;
 
                         tx.executeSql(strSql);
-                        
+
                         tx.executeSql(
                             'select * from products',
                             null,

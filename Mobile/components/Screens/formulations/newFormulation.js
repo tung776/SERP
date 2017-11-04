@@ -9,7 +9,6 @@ import stylesCommon from '../../../styles';
 import { Ionicons } from '@expo/vector-icons';
 import {
     loadUnits,
-    toggleProductToSelectList,
     ProductChange,
     loadProductListDataFromSqlite
 } from '../../../actions/productActions';
@@ -41,7 +40,6 @@ class NewFormulation extends React.Component {
         fontPath: null,
     }
     async componentWillMount() {
-        this.props.resetData();
         if (!this.props.products || this.props.products.length == 0) {
             this.props.loadProductListDataFromSqlite();
         }
@@ -279,6 +277,7 @@ class NewFormulation extends React.Component {
     }
 
     renderHeaderFomulation() {
+        console.log('renderHeaderFomulation this.props.products = ', this.props.products);
         if (this.state.isExpanded) {
             return (
                 <ScrollView>
@@ -689,29 +688,37 @@ const mapStateToProps = (state, ownProps) => {
         formulationDetails,
         loaded,
         error,
+        note,
+        unitId,
+        quantity,        
         isSave,
+        total
     } = state.formulations;
-    const { selectedProducts, selectCompleted, units } = state.products;
+    const { selectedProducts, selectCompleted, units, products } = state.products;
     const { isAuthenticated, user } = state.auth;
     return {
         isSave,
         id,
         productId,
         date,
+        note,
+        quantity,
+        total,
+        unitId,
         formulationDetails,
         loaded,
         units,
         error,
         selectedProducts,
         user,
-        selectCompleted
+        selectCompleted,
+        products
     };
 };
 export default connect(mapStateToProps, {
     resetData,
     loadUnits,
     loadProductListDataFromSqlite,
-    toggleProductToSelectList,
     AddNewFormulation,
     ProductChange
 })(NewFormulation);

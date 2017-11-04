@@ -66,7 +66,6 @@ SaleOrderRouter.get('/getInvoice/:orderId', async (req, res) => {
         newDebt,
         saleOrderDetails.rows
     );
-    // console.log('docDefin = ', docDefin);
     let doc = printer.createPdfKitDocument(docDefin);
     // res.send('success');
     let chunks = [];
@@ -103,7 +102,6 @@ SaleOrderRouter.post('/getById', async (req, res) => {
         INNER JOIN "products" AS p ON p."id" = s."productId" 
         WHERE s."saleOrderId" = ${orderId};                      
         `);
-        console.log('saleOrderDetails = ', saleOrderDetails.rows);
         res.status(200).json({
             success: true,
             saleOrder: saleOrder.rows,
@@ -351,7 +349,6 @@ SaleOrderRouter.post('/update', async (req, res) => {
                             data = [debt];
                             data[0].newDebt = _newDebt;
                             data[0].oldDebt = _oldDebt;
-                            console.log('customerDebt = ', data);
                         });
                     }
 
@@ -453,7 +450,6 @@ SaleOrderRouter.post('/delete', async (req, res) => {
     const { id, date, title, customerId, total, totalIncludeVat, vat, pay,
         newDebt, oldebt, saleOrderDetails, debtCustomerId, user } = req.body;
     let newDataversion;
-    console.log('deleting order ', id);
 
     try {
         Knex.transaction(async (t) => {
@@ -463,7 +459,6 @@ SaleOrderRouter.post('/delete', async (req, res) => {
                 let { debtCustomers } = dataVersion[0];
 
                 debtCustomers++;
-                console.log('go 1');
                 newDataversion = await t('dataVersions')
                     .returning('*')
                     .whereRaw('id = 1')
@@ -471,27 +466,22 @@ SaleOrderRouter.post('/delete', async (req, res) => {
                         id: 1,
                         debtCustomers
                     });
-                console.log('go 2');
                 const saleOrder = await Knex('saleOrders')
                     .where({ id: id });
                 //Lấy thông tin bảng công nợ sẽ bị xóa
-                console.log('go 3');
                 const customerDebt = await Knex('debtCustomers')
                     .where({ id: saleOrder[0].debtCustomerId });
 
                 //phát sinh giảm - phát sinh tăng
                 const So_tien_Dieu_Chinh = parseFloat(customerDebt[0].minus) - parseFloat(saleOrder[0].totalIncludeVat);
-                console.log('totalIncludeVat = ', totalIncludeVat);
-                console.log('saleOrder[0].totalIncludeVat = ', saleOrder[0].totalIncludeVat);
-                console.log('So_tien_Dieu_Chinh = ', So_tien_Dieu_Chinh);
+
                 //Lấy toàn bộ bảng dữ liệu công nợ có liên quan đến bảng công nợ bị xóa
-                console.log('go 3');
+  
                 const customerDebtBeChanged = await Knex('debtCustomers')
                     .whereRaw(`id > ${saleOrder[0].debtCustomerId} AND "customerId" = ${saleOrder[0].customerId}`);
                 //Điều chỉnh toàn bộ công nợ có liêu quan
                 if (customerDebtBeChanged.length > 0) {
                     customerDebtBeChanged.forEach(async (debt) => {
-                        console.log('debt = ', debt);
                         await t('debtCustomers')
                             .returning('*')
                             .whereRaw(`id = ${debt.id}`)
@@ -503,7 +493,6 @@ SaleOrderRouter.post('/delete', async (req, res) => {
                 }
 
                 //xoa hóa đơn chi tiết có liên quan
-                console.log('go 5');
                 await Knex('saleOderDetails')
                     .transacting(t)
                     .where({ saleOrderId: id })
@@ -512,7 +501,6 @@ SaleOrderRouter.post('/delete', async (req, res) => {
                         console.error('delete saleOderDetails error: ', error);
                     });
                 //Xóa hóa đơn
-                console.log('go 6');
                 await Knex('saleOrders')
                     .transacting(t)
                     .where({ id: id })
@@ -521,7 +509,6 @@ SaleOrderRouter.post('/delete', async (req, res) => {
                         console.error('delete saleOrders error: ', error);
                     });
                 //Xóa bảng công nợ
-                console.log('go 4');
                 await Knex('debtCustomers')
                     .transacting(t)
                     .where({ id: saleOrder[0].debtCustomerId })

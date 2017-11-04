@@ -26,7 +26,6 @@ import Expo from 'expo';
  */
 Asset.prototype.downloadAsyncWithoutHash = async function({ cache }) {
   const path = `${Expo.FileSystem.documentDirectory}${this.name}.${this.type}`;
-  console.log('path = ', path);
 
   if (this.downloaded) {
     __DEV__ && console.log('asset already downloaded');
@@ -61,7 +60,6 @@ Asset.prototype.downloadAsyncWithoutHash = async function({ cache }) {
         }`);
       }
     }
-    console.log('go 3');
     if (!exists) {
       __DEV__ && console.log('downloading it');
       ({

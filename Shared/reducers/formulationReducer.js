@@ -13,8 +13,7 @@ const INITIAL_STATE = {
     note: '',
     total: 0,
     unitId: '',
-    note: 0,
-    note: '',
+    quantity: 0,
     formulationDetails: [],
     formulationList: [],
     units: [],
@@ -38,8 +37,7 @@ export default (state = INITIAL_STATE, action) => {
                 note: '',
                 total: 0,
                 unitId: '',
-                note: '',
-                note: 0,
+                quantity: 0,
                 formulationDetails: [],
                 error: ''
             };
@@ -82,7 +80,6 @@ export default (state = INITIAL_STATE, action) => {
                     unitId: item.unitId,
                     productId: item.productId,
                     purchasePrice: item.purchasePrice,
-                    note: item.note,
                     name: item.name,
                     key: item.id
                 });

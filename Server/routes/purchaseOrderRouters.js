@@ -27,7 +27,6 @@ PurchaseOrderRouter.post('/getById', async (req, res) => {
         INNER JOIN "products" AS p ON p."id" = s."productId" 
         WHERE s."purchaseOrderId" = ${orderId};                      
         `);
-        console.log('purchaseOrderDetails = ', purchaseOrderDetails.rows);
         res.status(200).json({
             success: true,
             purchaseOrder: purchaseOrder.rows,
@@ -77,7 +76,6 @@ PurchaseOrderRouter.post('/new', async (req, res) => {
         date, supplierId, total, totalIncludeVat, vat, pay,
         newDebt, oldebt, purchaseOrderDetails,
     });
-    console.log('purchaseOrderDetails = ', purchaseOrderDetails);
     // return;
     let order = []
     if (isValid) {
@@ -115,7 +113,6 @@ PurchaseOrderRouter.post('/new', async (req, res) => {
 
                     
                     purchaseOrderDetails.forEach(async ({ id, unitId, quantity, purchasePrice }) => {
-                        console.log(`orderId = ${order[0].id} and productid = ${id}`);
                         const total = quantity * purchasePrice;
                         const temp = await t('purchaseOrderDetails')
                             .returning('*')
@@ -275,7 +272,6 @@ PurchaseOrderRouter.post('/update', async (req, res) => {
                             data = [debt];
                             data[0].newDebt = _newDebt;
                             data[0].oldDebt = _oldDebt;
-                            console.log('supplierDebt = ', data);
                         });
                     }
 
@@ -375,7 +371,6 @@ PurchaseOrderRouter.post('/delete', async (req, res) => {
     const { id, date, supplierId, total, totalIncludeVat, vat, pay,
         newDebt, oldebt, purchaseOrderDetails, debtSupplierId, user } = req.body;
     let newDataversion;
-    console.log('deleting order ', id);
 
     try {
         Knex.transaction(async (t) => {
@@ -385,7 +380,6 @@ PurchaseOrderRouter.post('/delete', async (req, res) => {
                 let { debtSuppliers } = dataVersion[0];
 
                 debtSuppliers++;
-                console.log('go 1');
                 newDataversion = await t('dataVersions')
                     .returning('*')
                     .whereRaw('id = 1')
@@ -393,27 +387,22 @@ PurchaseOrderRouter.post('/delete', async (req, res) => {
                         id: 1,
                         debtSuppliers
                     });
-                console.log('go 2');
                 const purchaseOrder = await Knex('purchaseOrders')
                     .where({ id: id });
                 //Lấy thông tin bảng công nợ sẽ bị xóa
-                console.log('go 3');
                 const supplierDebt = await Knex('debtSuppliers')
                     .where({ id: purchaseOrder[0].debtSupplierId });
 
                 //phát sinh giảm - phát sinh tăng
                 const So_tien_Dieu_Chinh = parseFloat(supplierDebt[0].minus) - parseFloat(purchaseOrder[0].totalIncludeVat);
-                console.log('totalIncludeVat = ', totalIncludeVat);
-                console.log('purchaseOrder[0].totalIncludeVat = ', purchaseOrder[0].totalIncludeVat);
-                console.log('So_tien_Dieu_Chinh = ', So_tien_Dieu_Chinh);
+
                 //Lấy toàn bộ bảng dữ liệu công nợ có liên quan đến bảng công nợ bị xóa
-                console.log('go 3');
+
                 const supplierDebtBeChanged = await Knex('debtSuppliers')
                     .whereRaw(`id > ${purchaseOrder[0].debtSupplierId} AND "supplierId" = ${purchaseOrder[0].supplierId}`);
                 //Điều chỉnh toàn bộ công nợ có liêu quan
                 if (supplierDebtBeChanged.length > 0) {
                     supplierDebtBeChanged.forEach(async (debt) => {
-                        console.log('debt = ', debt);
                         await t('debtSuppliers')
                             .returning('*')
                             .whereRaw(`id = ${debt.id}`)
@@ -425,7 +414,6 @@ PurchaseOrderRouter.post('/delete', async (req, res) => {
                 }
 
                 //xoa hóa đơn chi tiết có liên quan
-                console.log('go 5');
                 await Knex('purchaseOrderDetails')
                     .transacting(t)
                     .where({ purchaseOrderId: id })
@@ -434,7 +422,6 @@ PurchaseOrderRouter.post('/delete', async (req, res) => {
                         console.error('delete purchaseOrderDetails error: ', error);
                     });
                 //Xóa hóa đơn
-                console.log('go 6');
                 await Knex('purchaseOrders')
                     .transacting(t)
                     .where({ id: id })
@@ -443,7 +430,6 @@ PurchaseOrderRouter.post('/delete', async (req, res) => {
                         console.error('delete purchaseOrders error: ', error);
                     });
                 //Xóa bảng công nợ
-                console.log('go 4');
                 await Knex('debtSuppliers')
                     .transacting(t)
                     .where({ id: purchaseOrder[0].debtSupplierId })
