@@ -110,15 +110,25 @@ class NewFormulation extends React.Component {
     }
 
     caculateTotalPrice(formulationDetails = []) {
-        let total = 0
+        let total, totalPrice = 0
+
+        
 
         formulationDetails.forEach((formulation) => {
+
+            this.props.units.forEach((unit) => {
+                if(unit.id == formulation.unitId) {
+                    total = total + formulation.quantity * unit.rate;
+                }
+            })
+
             const temp = formulation.purchasePrice * formulation.quantity;
-            total += temp;
+            totalPrice += temp;
         });
 
         return {
-            total
+            total,
+            totalPrice
         };
 
     }
@@ -277,7 +287,6 @@ class NewFormulation extends React.Component {
     }
 
     renderHeaderFomulation() {
-        console.log('renderHeaderFomulation this.props.products = ', this.props.products);
         if (this.state.isExpanded) {
             return (
                 <ScrollView>
@@ -331,59 +340,7 @@ class NewFormulation extends React.Component {
                             </Picker>
                         </View>
                     </View>
-                    <View style={{ flex: 0.4 }}>
-                        <TextInput
-                            editable={!this.props.isSave}
-                            disableFullscreenUI
-                            underlineColorAndroid={'transparent'}
-                            style={styles.textInput}
-                            blurOnSubmit
-                            value={formatNumber(this.state.quantity)}
-                            onChangeText={text => {
-                                this.state.formulationDetails.forEach((product) => {
-                                    if (product.key == this.state.key) {
-                                        product.quantity = unformat(text);
-                                    }
-                                });
-                                const { total } = this.caculateTotalPrice(this.state.formulationDetails);
-                                this.setState({
-                                    formulationDetails: this.state.formulationDetails,
-                                    total
-                                });
-                            }}
-                            type="Text"
-                            name="Description"
-                            placeholder="Số Lượng"
-                        />
-                    </View>
-
-                    <Picker
-                        enabled={!this.props.isSave}
-                        style={{ flex: 1.3, alignItems: 'center' }}
-                        selectedValue={this.state.unitId}
-                        onValueChange={
-                            (itemValue, itemIndex) => {
-                                // let oldPrice = unformat(product.purchasePrice);
-                                // let newRate = 1;
-                                // this.props.units.forEach((unit) => {
-                                //     if (unit.id == product.unitId) {
-                                //         oldPrice = unformat(product.purchasePrice) / unit.rate;
-                                //         oldPrice = Math.round(oldPrice);
-                                //     }
-                                //     if (unit.id == newUnitId) {
-                                //         newRate = unit.rate;
-                                //     }
-                                // });
-                                this.setState({
-                                    uinitId: itemValue
-                                })
-                            }}
-                    >
-                        {this.props.units && this.props.units.map((unit) => (
-                            <Picker.Item key={unit.id} label={unit.name} value={unit.id} />
-                        ))
-                        }
-                    </Picker>
+                    
                     <View style={styles.controlContainer}>
                         <Text style={styles.label} >Ghi Chú</Text>
                         <View style={styles.groupControl}>
