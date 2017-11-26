@@ -67,9 +67,10 @@ FormulationRouter.post('/getByProductId', async (req, res) => {
 
 FormulationRouter.post('/new', async (req, res) => {
     let {
-        date, title, productId, total, totalIncludeVat, vat, taxId, pay,
-        newDebt, oldebt, saleOderDetails, debtCustomerId, user
+        date, title, productId, unitId, quantity, isActive, formulationDetails
     } = req.body;
+
+    console.log({date, title, productId, unitId, quantity, isActive, formulationDetails})
     // return;
     const { isValid, errors } = NewFormulationValidator({
         date, title, productId, total, totalIncludeVat, vat, pay,

@@ -31,13 +31,14 @@ class NewFormulation extends React.Component {
         productId: '',
         date: '',
         note: '',
-        quantity: 0,
         isActive: false,
         unitId: 0,
         formulationDetails: [],
         fontLocation: null,
         appIsReady: false,
         fontPath: null,
+        totalPrice: 0,
+        quantity: 0
     }
     async componentWillMount() {
         if (!this.props.products || this.props.products.length == 0) {
@@ -64,10 +65,11 @@ class NewFormulation extends React.Component {
                 this.state.formulationDetails.push({ ...detail, key: `${detail.id}-${detail.unitId}-${detail.quantity}-${Math.random() * 10}` });
             });
 
-            const { total } = this.caculateTotalPrice(this.state.formulationDetails);
+            const { quantity, totalPrice } = this.caculateTotalPrice(this.state.formulationDetails);
 
             this.setState({
-                total,
+                quantity,
+                totalPrice,
                 formulationDetails: this.state.formulationDetails,
             });
             nextProps.ProductChange({ prop: 'selectCompleted', value: false })
@@ -89,10 +91,10 @@ class NewFormulation extends React.Component {
                     text: 'Xác Nhận',
                     onPress: () => {
                         const {
-                            date, productId, formulationDetails
+                            date, productId, title, quantity, formulationDetails
                         } = this.state;
                         this.props.AddNewFormulation({
-                            date, productId, formulationDetails, user: this.props.user
+                            date, productId, title, quantity, formulationDetails, user: this.props.user
                         });
                     }
                 },
@@ -110,7 +112,7 @@ class NewFormulation extends React.Component {
     }
 
     caculateTotalPrice(formulationDetails = []) {
-        let total, totalPrice = 0
+        let quantity = 0, totalPrice = 0
 
         
 
@@ -118,7 +120,8 @@ class NewFormulation extends React.Component {
 
             this.props.units.forEach((unit) => {
                 if(unit.id == formulation.unitId) {
-                    total = total + formulation.quantity * unit.rate;
+                    console.log(`${formulation.quantity} x ${unit.rate}`)
+                    quantity = quantity + formulation.quantity * unit.rate;
                 }
             })
 
@@ -126,8 +129,12 @@ class NewFormulation extends React.Component {
             totalPrice += temp;
         });
 
+        if( quantity != 0) totalPrice = totalPrice/quantity;
+
+        console.log(`quantity = ${quantity}, totalPrice = ${totalPrice}`)
+
         return {
-            total,
+            quantity,
             totalPrice
         };
 
@@ -153,9 +160,10 @@ class NewFormulation extends React.Component {
             }
         });
 
-        const { total } = this.caculateTotalPrice(formulationDetails);
+        const { quantity, totalPrice } = this.caculateTotalPrice(formulationDetails);
         this.setState({
-            total,
+            quantity,
+            totalPrice,
             formulationDetails
         });
     }
@@ -182,10 +190,11 @@ class NewFormulation extends React.Component {
                                                 }
                                             });
 
-                                            const { total } = this.caculateTotalPrice(this.state.formulationDetails);
+                                            const { quantity, totalPq } = this.caculateTotalPrice(this.state.formulationDetails);
 
                                             this.setState({
-                                                total,
+                                                quantity,
+                                                totalPrice,
                                                 formulationDetails: this.state.formulationDetails,
                                             });
                                         }}
@@ -216,10 +225,11 @@ class NewFormulation extends React.Component {
                                                                 product.quantity = unformat(text);
                                                             }
                                                         });
-                                                        const { total } = this.caculateTotalPrice(this.state.formulationDetails);
+                                                        const { quantity, totalPrice } = this.caculateTotalPrice(this.state.formulationDetails);
                                                         this.setState({
                                                             formulationDetails: this.state.formulationDetails,
-                                                            total
+                                                            quantity,
+                                                            totalPrice
                                                         });
                                                     }}
                                                     type="Text"
@@ -257,10 +267,11 @@ class NewFormulation extends React.Component {
                                                                 product.purchasePrice = unformat(text);
                                                             }
                                                         });
-                                                        const { total } = this.caculateTotalPrice(this.state.formulationDetails);
+                                                        const { quantity, totalPrice } = this.caculateTotalPrice(this.state.formulationDetails);
                                                         this.setState({
                                                             formulationDetails: this.state.formulationDetails,
-                                                            total
+                                                            quantity,
+                                                            totalPrice
                                                         });
                                                     }}
                                                     type="Text"
@@ -367,10 +378,14 @@ class NewFormulation extends React.Component {
     renderToTal() {
         if (this.state.isExpandedTotal) {
             return (
-                <View style={{ height: 180 }}>
+                <View style={{ height: 80 }}>
                     <View style={styles.totalControlGroup}>
-                        <Text style={styles.label} >Tổng Tiền</Text>
-                        <Text style={styles.label}>{formatNumber(this.state.total)}</Text>
+                        <Text style={styles.label} >Số Lượng Sản Phẩm (lý thuyết)</Text>
+                        <Text style={styles.label}>{formatNumber(this.state.quantity)} Kg</Text>
+                    </View>
+                    <View style={styles.totalControlGroup}>
+                        <Text style={styles.label} >Giá Thành (tạm tính)</Text>
+                        <Text style={styles.label}>{formatNumber(this.state.totalPrice)}/Kg</Text>
                     </View>
                 </View>
             );
@@ -464,7 +479,7 @@ class NewFormulation extends React.Component {
                                     });
                                     let options = {
                                         html: formulationTemplate(productName, this.props.id,
-                                            this.state.date, this.state.total, formulationDetails),
+                                            this.state.date, this.state.quantity, formulationDetails),
                                         css: css(),
                                         fileName: "formulation",
                                         fonts: [this.state.fontPath]
@@ -504,7 +519,7 @@ class NewFormulation extends React.Component {
                                     }
                                 });
                                 sendMessage(
-                                    productPhone, productName, this.state.date, this.state.total, formulationDetails
+                                    productPhone, productName, this.state.date, this.state.quantity, formulationDetails
                                 );
                             }}
                         >
@@ -531,7 +546,7 @@ class NewFormulation extends React.Component {
                                     }
                                 });
                                 sendEmail(
-                                    productEmail, productName, this.state.date, this.state.total, formulationDetails
+                                    productEmail, productName, this.state.date, this.state.quantity, formulationDetails
                                 );
                             }}
                         >
@@ -646,10 +661,9 @@ const mapStateToProps = (state, ownProps) => {
         loaded,
         error,
         note,
-        unitId,
-        quantity,        
+        unitId,      
         isSave,
-        total
+        quantity
     } = state.formulations;
     const { selectedProducts, selectCompleted, units, products } = state.products;
     const { isAuthenticated, user } = state.auth;
@@ -660,7 +674,6 @@ const mapStateToProps = (state, ownProps) => {
         date,
         note,
         quantity,
-        total,
         unitId,
         formulationDetails,
         loaded,
