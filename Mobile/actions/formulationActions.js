@@ -17,12 +17,12 @@ import SqlService from '../database/sqliteService';
 import { Actions } from 'react-native-router-flux';
 import db from '../database/sqliteConfig';
 
-export const loadFormulationListDataFromServerByProductId = (customerId) => async (dispatch) => {
+export const loadFormulationListDataFromServerByProductId = (FormulationId) => async (dispatch) => {
     dispatch({
         type: FORMULATION_PENDING
     });
 
-    axios.post(`${URL}/api/formulation/getByCustomerId`, { customerId }).then(
+    axios.post(`${URL}/api/formulation/getByFormulationId`, { FormulationId }).then(
         res => {
             dispatch({
                 type: FORMULATION_LIST_LOADED_SERVER,
@@ -32,7 +32,7 @@ export const loadFormulationListDataFromServerByProductId = (customerId) => asyn
     );
 };
 
-export const loadFormulationByCustomerOrCustomerGroupIdFromServer = (customerId = null) => (dispatch) => {
+export const loadFormulationByFormulationOrFormulationGroupIdFromServer = (FormulationId = null) => (dispatch) => {
     /*
         Phương thức này sẽ trả về danh sách các sản phẩm có tên gần nhất với tên sản phẩm được cung cấp
     */
@@ -40,25 +40,25 @@ export const loadFormulationByCustomerOrCustomerGroupIdFromServer = (customerId 
         type: FORMULATION_PENDING
     });
     let strSql = '';
-    if (customerId !== null) {
+    if (FormulationId !== null) {
         strSql = `select
-         id, title, date, customerId, customerGroupId 
+         id, title, date, FormulationId, FormulationGroupId 
          from formulations 
          where id IN (
                     SELECT max(id) FROM formulations  
-                    GROUP BY customerGroupId, customerId
+                    GROUP BY FormulationGroupId, FormulationId
                 ) 
-        and customerId = ${customerId}
+        and FormulationId = ${FormulationId}
          `;
     } else {
         strSql = `
-        select id, title, date, customerId, customerGroupId 
+        select id, title, date, FormulationId, FormulationGroupId 
         from formulations 
         where id IN (
                     SELECT max(id) FROM formulations  
-                    GROUP BY customerGroupId, customerId
+                    GROUP BY FormulationGroupId, FormulationId
                 ) 
-        and customerGroupId = ${customerGroupId}
+        and FormulationGroupId = ${FormulationGroupId}
         `;
     }
     SqlService.query(strSql).then(
@@ -149,14 +149,14 @@ export const FormulationDelete = (formulation) => async (dispatch) => {
                 tx => {
                     tx => {
                         tx.executeSql(`UPDATE dataVersions 
-                        SET debtCustomers = '${res.data.dataversion[0].debtCustomers}'                    
+                        SET debtFormulations = '${res.data.dataversion[0].debtFormulations}'                    
                         WHERE id = 1;`
                     );
-                    tx.executeSql(`delete from debtCustomers where id = ${formulation.debtCustomerId}`);
-                    const strSql = `insert into debtCustomers 
+                    tx.executeSql(`delete from debtFormulations where id = ${formulation.debtFormulationId}`);
+                    const strSql = `insert into debtFormulations 
                                 (
                                     id,
-                                    customerId,
+                                    FormulationId,
                                     createdDate,
                                     title,
                                     newDebt,
@@ -165,14 +165,14 @@ export const FormulationDelete = (formulation) => async (dispatch) => {
                                     plus
                                 ) 
                                 values (
-                                        ${res.data.debtCustomers[0].id},
-                                        ${res.data.debtCustomers[0].customerId}, 
-                                        '${res.data.debtCustomers[0].createdDate}', 
-                                        '${res.data.debtCustomers[0].title}', 
-                                        ${res.data.debtCustomers[0].newDebt}, 
-                                        ${res.data.debtCustomers[0].oldDebt},
-                                        ${res.data.debtCustomers[0].minus}, 
-                                        ${res.data.debtCustomers[0].plus}
+                                        ${res.data.debtFormulations[0].id},
+                                        ${res.data.debtFormulations[0].FormulationId}, 
+                                        '${res.data.debtFormulations[0].createdDate}', 
+                                        '${res.data.debtFormulations[0].title}', 
+                                        ${res.data.debtFormulations[0].newDebt}, 
+                                        ${res.data.debtFormulations[0].oldDebt},
+                                        ${res.data.debtFormulations[0].minus}, 
+                                        ${res.data.debtFormulations[0].plus}
                                     )
                                 `;
 
@@ -187,7 +187,7 @@ export const FormulationDelete = (formulation) => async (dispatch) => {
             });
             dispatch({
                 type: ADD_FLASH_MESSAGE,
-                payload: { message: 'Bạn đã xóa hóa đơn bán thành công', TypeMessage: SUCCESS_MESSAGE }
+                payload: { message: 'Bạn đã xóa nghiên cứu thực nghiệm thành công', TypeMessage: SUCCESS_MESSAGE }
             });
             Alert.alert(
                 'Thông Báo',
@@ -207,7 +207,7 @@ export const FormulationDelete = (formulation) => async (dispatch) => {
                 });
                 dispatch({
                     type: ADD_FLASH_MESSAGE,
-                    payload: { message: `Xóa hóa đơn bán thất bại: ${err.response.data.error}`, TypeMessage: ERROR_MESSAGE }
+                    payload: { message: `Xóa nghiên cứu thực nghiệm thất bại: ${err.response.data.error}`, TypeMessage: ERROR_MESSAGE }
                 });
             } else {
                 dispatch({
@@ -216,7 +216,7 @@ export const FormulationDelete = (formulation) => async (dispatch) => {
                 });
                 dispatch({
                     type: ADD_FLASH_MESSAGE,
-                    payload: { message: `Xóa hóa đơn bán thất bại: ${err}`, TypeMessage: ERROR_MESSAGE }
+                    payload: { message: `Xóa nghiên cứu thực nghiệm thất bại: ${err}`, TypeMessage: ERROR_MESSAGE }
                 });
             }
             Alert.alert(
@@ -258,26 +258,26 @@ export const FormulationUpdate = (formulation) => async (dispatch) => {
                     db.transaction(
                         tx => {
                             tx.executeSql(`UPDATE dataVersions 
-                            SET debtCustomers = '${res.data.dataversion[0].debtCustomers}'                    
+                            SET debtFormulations = '${res.data.dataversion[0].debtFormulations}'                    
                             WHERE id = 1;`
                             );
                         
 
                         tx.executeSql(`
-                        update debtCustomers 
-                        set customerId = ${res.data.debtCustomers[0].customerId},
-                        createdDate = '${res.data.debtCustomers[0].createdDate}',
-                        title = '${res.data.debtCustomers[0].title}',
-                        newDebt = ${res.data.debtCustomers[0].newDebt},
-                        oldDebt = ${res.data.debtCustomers[0].oldDebt},
-                        minus = ${res.data.debtCustomers[0].minus},
-                        plus = ${res.data.debtCustomers[0].plus}
-                        where id = ${res.data.debtCustomers[0].id} 
+                        update debtFormulations 
+                        set FormulationId = ${res.data.debtFormulations[0].FormulationId},
+                        createdDate = '${res.data.debtFormulations[0].createdDate}',
+                        title = '${res.data.debtFormulations[0].title}',
+                        newDebt = ${res.data.debtFormulations[0].newDebt},
+                        oldDebt = ${res.data.debtFormulations[0].oldDebt},
+                        minus = ${res.data.debtFormulations[0].minus},
+                        plus = ${res.data.debtFormulations[0].plus}
+                        where id = ${res.data.debtFormulations[0].id} 
                         `,
                             null,
                             null,
                             (e) => {
-                                console.log('lỗi update debtCustomers = ', e);
+                                console.log('lỗi update debtFormulations = ', e);
                             }
                         );
                     })
@@ -289,7 +289,7 @@ export const FormulationUpdate = (formulation) => async (dispatch) => {
                 });
                 dispatch({
                     type: ADD_FLASH_MESSAGE,
-                    payload: { message: 'Bạn đã lưu hóa đơn bán thành công', TypeMessage: SUCCESS_MESSAGE }
+                    payload: { message: 'Bạn đã lưu nghiên cứu thực nghiệm thành công', TypeMessage: SUCCESS_MESSAGE }
                 });
                 Alert.alert(
                     'Thông Báo',
@@ -309,7 +309,7 @@ export const FormulationUpdate = (formulation) => async (dispatch) => {
                     });
                     dispatch({
                         type: ADD_FLASH_MESSAGE,
-                        payload: { message: `Tạo hóa đơn bán thất bại: ${err.response.data.error}`, TypeMessage: ERROR_MESSAGE }
+                        payload: { message: `Tạo nghiên cứu thực nghiệm thất bại: ${err.response.data.error}`, TypeMessage: ERROR_MESSAGE }
                     });
                 } else {
                     dispatch({
@@ -318,7 +318,7 @@ export const FormulationUpdate = (formulation) => async (dispatch) => {
                     });
                     dispatch({
                         type: ADD_FLASH_MESSAGE,
-                        payload: { message: `Tạo hóa đơn bán thất bại: ${err}`, TypeMessage: ERROR_MESSAGE }
+                        payload: { message: `Tạo nghiên cứu thực nghiệm thất bại: ${err}`, TypeMessage: ERROR_MESSAGE }
                     });
                 }
                 Alert.alert(
@@ -355,43 +355,6 @@ export const AddNewFormulation = (formulation) => async (dispatch) => {
 
         axios.post(apiUrl, formulation).then(
             (res) => {
-                //Dữ liệu đã được lưu thành công trên server,
-                //Tiến hàng lưu dữ liệu lên sqlite cho mục đích offline
-                db.transaction(
-                    tx => {
-                        tx.executeSql(`UPDATE dataVersions 
-                            SET debtCustomers = '${res.data.dataversion[0].debtCustomers}'                    
-                            WHERE id = 1;`
-                        );
-                        tx.executeSql(`delete from debtCustomers where id = ${formulation.debtCustomerId}`);
-                        const strSql = `insert into debtCustomers 
-                                    (
-                                        id,
-                                        customerId,
-                                        createdDate,
-                                        title,
-                                        newDebt,
-                                        oldDebt,
-                                        minus,
-                                        plus
-                                    ) 
-                                    values (
-                                            ${res.data.debtCustomers[0].id},
-                                            ${res.data.debtCustomers[0].customerId}, 
-                                            '${res.data.debtCustomers[0].createdDate}', 
-                                            '${res.data.debtCustomers[0].title}', 
-                                            ${res.data.debtCustomers[0].newDebt}, 
-                                            ${res.data.debtCustomers[0].oldDebt},
-                                            ${res.data.debtCustomers[0].minus}, 
-                                            ${res.data.debtCustomers[0].plus}
-                                        )
-                                    `;
-
-                        tx.executeSql(strSql);
-                    },
-                    (e) => console.log('Lỗi update sqlite: ', e),
-                    null
-                );
 
                 dispatch({
                     type: ADD_FORMULATION,
@@ -399,7 +362,7 @@ export const AddNewFormulation = (formulation) => async (dispatch) => {
                 });
                 dispatch({
                     type: ADD_FLASH_MESSAGE,
-                    payload: { message: 'Bạn đã tạo hóa đơn bán thành công', TypeMessage: SUCCESS_MESSAGE }
+                    payload: { message: 'Bạn đã tạo nghiên cứu thực nghiệm thành công', TypeMessage: SUCCESS_MESSAGE }
                 });
                 Alert.alert(
                     'Thông Báo',
@@ -419,7 +382,7 @@ export const AddNewFormulation = (formulation) => async (dispatch) => {
                     });
                     dispatch({
                         type: ADD_FLASH_MESSAGE,
-                        payload: { message: `Tạo hóa đơn bán thất bại: ${err.response.data.error}`, TypeMessage: ERROR_MESSAGE }
+                        payload: { message: `Tạo nghiên cứu thực nghiệm thất bại: ${err.response.data.error}`, TypeMessage: ERROR_MESSAGE }
                     });
                 } else {
                     dispatch({
@@ -428,7 +391,7 @@ export const AddNewFormulation = (formulation) => async (dispatch) => {
                     });
                     dispatch({
                         type: ADD_FLASH_MESSAGE,
-                        payload: { message: `Tạo hóa đơn bán thất bại: ${err}`, TypeMessage: ERROR_MESSAGE }
+                        payload: { message: `Tạo nghiên cứu thực nghiệm thất bại: ${err}`, TypeMessage: ERROR_MESSAGE }
                     });
                 }
                 Alert.alert(
@@ -443,13 +406,4 @@ export const AddNewFormulation = (formulation) => async (dispatch) => {
     }
 };
 
-export const loadTax = () => async (dispatch) => {
-    SqlService.query('select * from tax').then(
-        result => {
-            dispatch({
-                type: LOAD_TAX_SUCCESS,
-                payload: result
-            });
-        }
-    );
-};
+

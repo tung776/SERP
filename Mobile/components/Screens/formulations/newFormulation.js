@@ -38,7 +38,8 @@ class NewFormulation extends React.Component {
         appIsReady: false,
         fontPath: null,
         totalPrice: 0,
-        quantity: 0
+        quantity: 0,
+        isActive: true
     }
     async componentWillMount() {
         if (!this.props.products || this.props.products.length == 0) {
@@ -91,10 +92,10 @@ class NewFormulation extends React.Component {
                     text: 'Xác Nhận',
                     onPress: () => {
                         const {
-                            date, productId, title, quantity, formulationDetails
+                            date, productId, note, quantity, isActive, formulationDetails
                         } = this.state;
                         this.props.AddNewFormulation({
-                            date, productId, title, quantity, formulationDetails, user: this.props.user
+                            date, productId, unitId: 1, note, isActive, quantity, formulationDetails, user: this.props.user
                         });
                     }
                 },
@@ -190,7 +191,7 @@ class NewFormulation extends React.Component {
                                                 }
                                             });
 
-                                            const { quantity, totalPq } = this.caculateTotalPrice(this.state.formulationDetails);
+                                            const { quantity, totalPrice } = this.caculateTotalPrice(this.state.formulationDetails);
 
                                             this.setState({
                                                 quantity,
@@ -663,12 +664,14 @@ const mapStateToProps = (state, ownProps) => {
         note,
         unitId,      
         isSave,
-        quantity
+        quantity,
+        isActive
     } = state.formulations;
     const { selectedProducts, selectCompleted, units, products } = state.products;
     const { isAuthenticated, user } = state.auth;
     return {
         isSave,
+        isActive,
         id,
         productId,
         date,

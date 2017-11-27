@@ -22,7 +22,7 @@ FormulationRouter.post('/getById', async (req, res) => {
         
         const formulationDetails = await Knex.raw(`
         SELECT s."id" , s."formulationId", s."productId", s."unitId", s."quantity" , p."name"
-        FROM "saleOderDetails" as s
+        FROM "formulationDetails" as s
         INNER JOIN "products" AS p ON p."id" = s."productId" 
         WHERE s."formulationId" = ${formulationId};                      
         `);
@@ -67,78 +67,59 @@ FormulationRouter.post('/getByProductId', async (req, res) => {
 
 FormulationRouter.post('/new', async (req, res) => {
     let {
-        date, title, productId, unitId, quantity, isActive, formulationDetails
+        date, note, productId, unitId, quantity, isActive, formulationDetails
     } = req.body;
 
-    console.log({date, title, productId, unitId, quantity, isActive, formulationDetails})
-    // return;
+    console.log({date, note, productId, unitId, quantity, isActive, formulationDetails})
+    return;
     const { isValid, errors } = NewFormulationValidator({
-        date, title, productId, total, totalIncludeVat, vat, pay,
-        newDebt, oldebt, saleOderDetails,
+        date, isActive, note, productId, unitId, total, quantity, formulationDetails,
     });
     let formulation = []
     if (isValid) {
-        let newDataversion;
         let data;
         try {
             Knex.transaction(async (t) => {
                 try {
-
-                    data = await t('debtCustomers')
-                        .returning('*')
-                        .insert({
-                            customerId: customerId,
-                            createdDate: moment(date, 'DD-MM-YYYY').format('YYYY-MM-DD'),
-                            title: title,
-                            newDebt: newDebt,
-                            oldDebt: oldebt,
-                            minus: pay,
-                            plus: totalIncludeVat
-                        });
-
+                    
                     formulation = await t('formulations')
                         .returning('*')
                         .insert({
-                            customerId: customerId,
-                            userId: user.id,
-                            debtCustomerId: data[0].id,
+                            productId: productId,
+                            unitIdId: 1,
+                            quantity:quantity,
+                            isActive: isActive,
                             formulationTypeId: 1,
-                            title: title,
-                            total: total,
-                            vat: vat,
-                            taxId,
-                            totalIncludeVat: totalIncludeVat,
+                            note: note,
                             date: moment(date, 'DD-MM-YYYY').format('YYYY-MM-DD')
                         });
 
 
-                    saleOderDetails.forEach(async ({ id, unitId, quantity, salePrice }) => {
+                    formulationDetails.forEach(async ({ id, unitId, quantity, salePrice }) => {
 
                         const total = quantity * salePrice;
-                        const temp = await t('saleOderDetails')
+                        const temp = await t('formulationDetails')
                             .returning('*')
                             .insert({
                                 formulationId: formulation[0].id,
                                 productId: id,
                                 unitId,
-                                quantity,
-                                salePrice,
-                                total
+                                quantity
                             });
                     });
 
                     const dataVersion = await Knex('dataVersions').where('id', 1);
 
-                    let { debtCustomers } = dataVersion[0];
+                    let { debtformulations } = dataVersion[0];
 
-                    debtCustomers++;
+                    debtformulations++;
 
                     newDataversion = await t('dataVersions')
                         .returning('*')
                         .whereRaw('id = 1')
                         .update({
                             id: 1,
-                            debtCustomers
+                            debtformulations
                         });
 
                 } catch (e) {
@@ -150,7 +131,7 @@ FormulationRouter.post('/new', async (req, res) => {
                 () => {
                     res.json({
                         success: true,
-                        debtCustomers: data,
+                        debtformulations: data,
                         dataversion: newDataversion,
                         formulation: formulation
                     });
@@ -171,12 +152,12 @@ FormulationRouter.post('/new', async (req, res) => {
 FormulationRouter.post('/update', async (req, res) => {
 
     let {
-        id, date, title, customerId, total, totalIncludeVat, vat, taxId, pay,
-        newDebt, oldDebt, formulationDetails, debtCustomerId, user
+        id, date, title, formulationId, total, totalIncludeVat, vat, taxId, pay,
+        newDebt, oldDebt, formulationDetails, debtformulationId, user
     } = req.body;
 
     const { isValid, errors } = NewFormulationValidator({
-        date, title, customerId, total, totalIncludeVat, vat, pay,
+        date, title, formulationId, total, totalIncludeVat, vat, pay,
         newDebt, oldDebt, formulationDetails,
     });
 
@@ -186,7 +167,7 @@ FormulationRouter.post('/update', async (req, res) => {
     let detailBeRemoved = [];
     let detailBeUpdated = [];
     let detailBeInsersted = [];
-    let detailInDatabase = await Knex('saleOderDetails')
+    let detailInDatabase = await Knex('formulationDetails')
         .whereRaw(`"formulationId" = ${id}`);
 
     detailInDatabase.forEach(detailInData => {
@@ -210,12 +191,12 @@ FormulationRouter.post('/update', async (req, res) => {
     const formulation = await Knex('formulations')
         .where({ id: id });
 
-    const customerDebtBeChanged = await Knex('debtCustomers')
+    const formulationDebtBeChanged = await Knex('debtformulations')
         .formulationBy('id', 'asc')
-        .whereRaw(`id > ${formulation[0].debtCustomerId} AND "customerId" = ${formulation[0].customerId}`);
+        .whereRaw(`id > ${formulation[0].debtformulationId} AND "formulationId" = ${formulation[0].formulationId}`);
 
-    const customerDebt = await Knex('debtCustomers')
-        .where({ id: debtCustomerId });
+    const formulationDebt = await Knex('debtformulations')
+        .where({ id: debtformulationId });
 
     const dataVersion = await Knex('dataVersions').where('id', 1);
 
@@ -226,24 +207,24 @@ FormulationRouter.post('/update', async (req, res) => {
             Knex.transaction(async (t) => {
                 try {
 
-                    let { debtCustomers } = dataVersion[0];
-                    debtCustomers++;
+                    let { debtformulations } = dataVersion[0];
+                    debtformulations++;
                     newDataversion = await t('dataVersions')
                         .returning('*')
                         .whereRaw('id = 1')
                         .update({
                             id: 1,
-                            debtCustomers
+                            debtformulations
                         });
 
-                    const So_tien_Dieu_Chinh = totalIncludeVat - formulation[0].totalIncludeVat - (pay - customerDebt[0].minus);
+                    const So_tien_Dieu_Chinh = totalIncludeVat - formulation[0].totalIncludeVat - (pay - formulationDebt[0].minus);
 
-                    data = await t('debtCustomers')
+                    data = await t('debtformulations')
                         // .debug(true)
                         .returning('*')
-                        .whereRaw(`id = ${debtCustomerId}`)
+                        .whereRaw(`id = ${debtformulationId}`)
                         .update({
-                            customerId: customerId,
+                            formulationId: formulationId,
                             createdDate: moment(date, 'DD-MM-YYYY').format('YYYY-MM-DD'),
                             title: title,
                             newDebt: newDebt,
@@ -255,14 +236,14 @@ FormulationRouter.post('/update', async (req, res) => {
                     //Lấy toàn bộ bảng dữ liệu công nợ có liên quan đến bảng công nợ bị xóa
 
                     //Điều chỉnh toàn bộ công nợ có liêu quan
-                    if (customerDebtBeChanged.length >= 0) {
-                        customerDebtBeChanged.forEach(async (debt) => {
+                    if (formulationDebtBeChanged.length >= 0) {
+                        formulationDebtBeChanged.forEach(async (debt) => {
                             if (debt.newDebt == 'NAN') debt.newDebt = 0;
                             if (debt.oldDebt == 'NAN') debt.oldDebt = 0;
                             const _newDebt = debt.newDebt + So_tien_Dieu_Chinh;
                             const _oldDebt = debt.oldDebt + So_tien_Dieu_Chinh;
 
-                            await t('debtCustomers')
+                            await t('debtformulations')
                                 .debug(true)
                                 .returning('*')
                                 .formulationBy('id', 'asc')
@@ -278,7 +259,7 @@ FormulationRouter.post('/update', async (req, res) => {
                     }
 
                     detailBeInsersted.forEach(async (detail) => {
-                        await Knex('saleOderDetails')
+                        await Knex('formulationDetails')
                             .transacting(t)
                             .debug(true)
                             .insert({
@@ -292,7 +273,7 @@ FormulationRouter.post('/update', async (req, res) => {
                     });
 
                     detailBeRemoved.forEach(async detail => {
-                        await Knex('saleOderDetails')
+                        await Knex('formulationDetails')
                             .transacting(t)
                             // .debug(true)
                             .whereRaw(`"id" = ${detail.id}`)
@@ -300,7 +281,7 @@ FormulationRouter.post('/update', async (req, res) => {
                     });
 
                     detailBeUpdated.forEach(async detail => {
-                        await Knex('saleOderDetails')
+                        await Knex('formulationDetails')
                             .transacting(t)
                             .debug(true)
                             .whereRaw(`id = ${detail.id}`)
@@ -315,11 +296,11 @@ FormulationRouter.post('/update', async (req, res) => {
                     });
 
 
-                    // data = await t('debtCustomers')
+                    // data = await t('debtformulations')
                     //     .returning('*')
-                    //     .whereRaw(`id = ${debtCustomerId}`)
+                    //     .whereRaw(`id = ${debtformulationId}`)
                     //     .update({
-                    //         customerId: customerId,
+                    //         formulationId: formulationId,
                     //         createdDate: moment(date, 'DD-MM-YYYY').format('YYYY-MM-DD'),
                     //         title: title,
                     //         newDebt: newDebt,
@@ -332,9 +313,9 @@ FormulationRouter.post('/update', async (req, res) => {
                         .returning('*')
                         .whereRaw(`id = ${id}`)
                         .update({
-                            customerId: customerId,
+                            formulationId: formulationId,
                             userId: user.id,
-                            debtCustomerId: debtCustomerId,
+                            debtformulationId: debtformulationId,
                             formulationTypeId: 1,
                             title: title,
                             total: total,
@@ -353,7 +334,7 @@ FormulationRouter.post('/update', async (req, res) => {
                 () => {
                     res.json({
                         success: true,
-                        debtCustomers: [...data],
+                        debtformulations: [...data],
                         dataversion: newDataversion
                     });
                 }
@@ -372,8 +353,8 @@ FormulationRouter.post('/update', async (req, res) => {
 
 FormulationRouter.post('/delete', async (req, res) => {
 
-    const { id, date, title, customerId, total, totalIncludeVat, vat, pay,
-        newDebt, oldebt, formulationDetails, debtCustomerId, user } = req.body;
+    const { id, date, title, formulationId, total, totalIncludeVat, vat, pay,
+        newDebt, oldebt, formulationDetails, debtformulationId, user } = req.body;
     let newDataversion;
 
     try {
@@ -381,32 +362,32 @@ FormulationRouter.post('/delete', async (req, res) => {
             try {
                 const dataVersion = await Knex('dataVersions').where('id', 1);
 
-                let { debtCustomers } = dataVersion[0];
+                let { debtformulations } = dataVersion[0];
 
-                debtCustomers++;
+                debtformulations++;
                 newDataversion = await t('dataVersions')
                     .returning('*')
                     .whereRaw('id = 1')
                     .update({
                         id: 1,
-                        debtCustomers
+                        debtformulations
                     });
                 const formulation = await Knex('formulations')
                     .where({ id: id });
                 //Lấy thông tin bảng công nợ sẽ bị xóa
-                const customerDebt = await Knex('debtCustomers')
-                    .where({ id: formulation[0].debtCustomerId });
+                const formulationDebt = await Knex('debtformulations')
+                    .where({ id: formulation[0].debtformulationId });
 
                 //phát sinh giảm - phát sinh tăng
-                const So_tien_Dieu_Chinh = parseFloat(customerDebt[0].minus) - parseFloat(formulation[0].totalIncludeVat);
+                const So_tien_Dieu_Chinh = parseFloat(formulationDebt[0].minus) - parseFloat(formulation[0].totalIncludeVat);
 
                 //Lấy toàn bộ bảng dữ liệu công nợ có liên quan đến bảng công nợ bị xóa
-                const customerDebtBeChanged = await Knex('debtCustomers')
-                    .whereRaw(`id > ${formulation[0].debtCustomerId} AND "customerId" = ${formulation[0].customerId}`);
+                const formulationDebtBeChanged = await Knex('debtformulations')
+                    .whereRaw(`id > ${formulation[0].debtformulationId} AND "formulationId" = ${formulation[0].formulationId}`);
                 //Điều chỉnh toàn bộ công nợ có liêu quan
-                if (customerDebtBeChanged.length > 0) {
-                    customerDebtBeChanged.forEach(async (debt) => {
-                        await t('debtCustomers')
+                if (formulationDebtBeChanged.length > 0) {
+                    formulationDebtBeChanged.forEach(async (debt) => {
+                        await t('debtformulations')
                             .returning('*')
                             .whereRaw(`id = ${debt.id}`)
                             .update({
@@ -417,12 +398,12 @@ FormulationRouter.post('/delete', async (req, res) => {
                 }
 
                 //xoa hóa đơn chi tiết có liên quan
-                await Knex('saleOderDetails')
+                await Knex('formulationDetails')
                     .transacting(t)
                     .where({ formulationId: id })
                     .del()
                     .catch((error) => {
-                        console.error('delete saleOderDetails error: ', error);
+                        console.error('delete formulationDetails error: ', error);
                     });
                 //Xóa hóa đơn
                 await Knex('formulations')
@@ -433,12 +414,12 @@ FormulationRouter.post('/delete', async (req, res) => {
                         console.error('delete formulations error: ', error);
                     });
                 //Xóa bảng công nợ
-                await Knex('debtCustomers')
+                await Knex('debtformulations')
                     .transacting(t)
-                    .where({ id: formulation[0].debtCustomerId })
+                    .where({ id: formulation[0].debtformulationId })
                     .del()
                     .catch((error) => {
-                        console.error('delete debtCustomers error: ', error);
+                        console.error('delete debtformulations error: ', error);
                     });
             } catch (e) {
                 t.rollback();
